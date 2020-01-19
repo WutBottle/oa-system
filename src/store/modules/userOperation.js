@@ -1,13 +1,13 @@
 /*
 * Author: zp
-* Date: 2019.06.14
 * 登录处理
 */
 import api from '@/api/apiSugar'
+import {ACCESS_TOKEN} from '@/store/mutation-types'
 
 const state = {
   status: '',
-  token: localStorage.getItem('token') || '',
+  token: localStorage.getItem(ACCESS_TOKEN) || '',
   user: {},
 };
 
@@ -37,15 +37,15 @@ const actions = {
     return new Promise((resolve, reject) => {
       commit('authRequest');
       api.userController.loginUser(params).then(res => {
-        const token = res.data.token;
+        const token = res.data.data.token;
         //更新本地token
-        localStorage.setItem('token', token);
-        localStorage.setItem('userRole', res.data.user.userRole);
+        localStorage.setItem(ACCESS_TOKEN, token);
+        // localStorage.setItem('userRole', res.data.user.userRole);
         commit('authSuccess', token, res.data.user);
         resolve(res);
       }).catch(error => {
         commit('authError');
-        localStorage.removeItem('token');
+        localStorage.removeItem(ACCESS_TOKEN);
         reject(error);
       });
     })
@@ -66,12 +66,12 @@ const actions = {
       api.userController.checkIn(params).then(res => {
         const token = res.data.token;
         //更新本地token
-        localStorage.setItem('token', token);
+        localStorage.setItem(ACCESS_TOKEN, token);
         commit('authSuccess', token, res.data.user);
         resolve(res);
       }).catch(error => {
         commit('authError');
-        localStorage.removeItem('token');
+        localStorage.removeItem(ACCESS_TOKEN);
         reject(error);
       })
     });

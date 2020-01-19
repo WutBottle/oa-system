@@ -3,28 +3,31 @@
     background-color: #F0F3F7;
     min-height: 100vh;
     text-align: center;
+
     .header-wrapper {
       display: flex;
       align-items: center;
       justify-content: center;
       position: absolute;
       left: 50%;
-      top: 100px;
-      margin-left: -190px;
+      top: 110px;
+      margin-left: -150px;
+
       .logo {
-        width: 100px;
-        height: 100px;
-        background:url('~@/assets/OA.png') no-repeat top left;
+        width: 44px;
+        height: 44px;
+        background: url('~@/assets/OA.png') no-repeat top left;
         background-size: cover;
       }
 
       .logo-title {
+        margin-left: 12px;
         font-size: 40px;
         font-weight: bold;
-        font-family: "Myriad Pro",serif;
+        font-family: "Myriad Pro", serif;
       }
 
-      .logo,.logo-title {
+      .logo, .logo-title {
         display: inline-block;
       }
     }
@@ -34,15 +37,28 @@
       width: 370px;
       margin-top: 220px;
       text-align: left;
+
       #components-form-demo-normal-login .login-form {
         max-width: 300px;
       }
+
       #components-form-demo-normal-login .login-form-forgot {
         float: right;
       }
+
       #components-form-demo-normal-login .login-form-button {
         width: 100%;
       }
+    }
+
+    .copyright-wrapper {
+      position: absolute;
+      width: 100%;
+      bottom: 0;
+      padding: 0 16px;
+      margin: 48px 0 24px;
+      font-size: 14px;
+      color: rgba(0,0,0,.45);
     }
   }
 </style>
@@ -51,7 +67,7 @@
   <div class="LoginPage">
     <div class="header-wrapper">
       <div class="logo"></div>
-      <div class="logo-title">OA System Pro</div>
+      <div class="logo-title">CSADI OA Pro</div>
     </div>
     <div class="login-wrapper">
       <a-form
@@ -62,6 +78,7 @@
       >
         <a-form-item>
           <a-input
+                  size="large"
                   v-decorator="[
           'userName',
           { rules: [{ required: true, message: '请输入账户名!' }] }
@@ -77,6 +94,7 @@
         </a-form-item>
         <a-form-item>
           <a-input
+                  size="large"
                   v-decorator="[
           'password',
           { rules: [{ required: true, message: '请输入密码!' }] }
@@ -127,22 +145,42 @@
 </template>
 
 <script>
+  import {mapState, mapActions} from 'vuex'
+
   export default {
     name: 'LoginPage',
     props: {
       msg: String
     },
-    beforeCreate () {
+    beforeCreate() {
       this.form = this.$form.createForm(this);
     },
+    computed: {
+      ...mapState({
+        loginStatus: state => state.userOperation.status,//登录状态记录
+      }),
+    },
     methods: {
-      handleSubmit (e) {
+      ...mapActions({
+        login: 'userOperation/login',
+      }),
+      handleSubmit(e) {
         e.preventDefault();
         this.form.validateFields((err, values) => {
           if (!err) {
-            localStorage.setItem('token', '1');
-            this.$router.push('/main');
-            this.$message.success('登录成功');
+            this.login({
+              password: values.password,
+              username: values.userName,
+            }).then((data) => {
+              if (data.data.meta.success) {
+                this.$router.push('/main/workplace');
+                this.$message.success('登录成功');
+              } else {
+                this.$message.error(data.data.meta.message);
+              }
+            }).catch((error) => {
+              this.$message.error(error);
+            });
           }
         });
       },

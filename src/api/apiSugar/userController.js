@@ -13,9 +13,9 @@ const userController = {
   getUserList () {
     return axios.get(`${baseUrl.userController}/list`);
   },
-  // 更新单个用户状态
+  // 登录用户
   loginUser (params) {
-    return axios.post(`${baseUrl.userController}/login`, params);
+    return axios.post(`${baseUrl.userController}`, params);
   },
   // 注册新用户
   registerUserList (params) {

@@ -9,29 +9,18 @@ import baseUrl from '../baseUrl'; // 导入接口域名列表
 import qs from 'qs'; // 根据需求是否导入qs模块
 
 const userController = {
-  // 查询所有用户
-  getUserList () {
-    return axios.get(`${baseUrl.userController}/list`);
-  },
   // 登录用户
-  loginUser (params) {
+  loginUser(params) {
     return axios.post(`${baseUrl.userController}`, params);
   },
+  // 注销用户
+  logout(params) {
+    return axios.post(`${baseUrl.userController}/logout`, params);
+  },
   // 注册新用户
-  registerUserList (params) {
+  registerUserList(params) {
     return axios.post(`${baseUrl.userController}/register`, qs.stringify(params));
   },
-  // 删除单个用户
-  removeUserList (params) {
-    return axios.post(`${baseUrl.userController}/remove`, qs.stringify(params));
-  },
-  // 修改密码
-  updateUser (params) {
-    return axios.post(`${baseUrl.userController}/update`, params);
-  },
-  checkIn(params) {
-    return axios.post(`${baseUrl.userController}/checkin`, params);
-  }
 };
 
 export default userController;

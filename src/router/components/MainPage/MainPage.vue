@@ -160,7 +160,7 @@
       .footer {
         font-size: 14px;
         color: rgba(0, 0, 0, .45);
-        padding: 48px 0;
+        padding: 24px 48px 34px 48px;
         text-align: center;
         background-color: #f0f2f5;
       }
@@ -222,7 +222,7 @@
                   <span class="avatar">
                     <img src="@/assets/OA.png" alt="avatar">
                   </span>
-                  <span>huang</span>
+                  <span>{{this.username}}</span>
                 </span>
                   <a-menu slot="overlay">
                     <a-menu-item key="0">
@@ -239,7 +239,7 @@
                     </a-menu-item>
                     <a-menu-divider/>
                     <a-menu-item key="3">
-                      <a href="/main">
+                      <a @click="handleLogout">
                         <a-icon type="logout" style="margin-right: 8px"/>
                         <span>退出登录</span>
                       </a>
@@ -264,6 +264,7 @@
 </template>
 
 <script>
+  import {mapState, mapActions} from 'vuex'
   export default {
     name: 'MainPage',
     props: {
@@ -278,13 +279,29 @@
     created() {
       this.menuDefault = this.$route.path
     },
+    computed: {
+      ...mapState({
+        username: state => state.userOperation.username,// 选择合同数
+      }),
+    },
     methods: {
+      ...mapActions({
+        logout: 'userOperation/logout',
+      }),
       toggleCollapsed() {
         this.collapsed = !this.collapsed
       },
       handleSelect(key, keyPath) {
         this.$router.push(key.key);
-      }
+      },
+      handleLogout() {
+        this.logout().then((data) => {
+          this.$message.success('已退出');
+          this.$router.push('/');
+        }).catch((error) => {
+          this.$message.error(error);
+        });
+      },
     }
   }
 </script>

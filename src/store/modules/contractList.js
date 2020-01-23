@@ -10,9 +10,9 @@ const state = {
   totalMoney: 0,
   selectedRowKeys: [], // 选中的keys
   paginationProps: {
-    pageSize: 2, // 默认每页显示数量
+    pageSize: 1, // 默认每页显示数量
     showSizeChanger: true, // 显示可改变每页数量
-    pageSizeOptions: ['10', '20', '30', '40'], // 每页数量选项
+    pageSizeOptions: ['1', '5', '10'], // 每页数量选项
     total: 0,
     current: 1,
   },
@@ -21,7 +21,6 @@ const state = {
 
 const mutations = {
   setSelectedRowKeys(state, data) {
-    console.log(data)
     state.selectedRowKeys = data;
     state.countNum = data.length;
     let tempMoney = 0;
@@ -31,7 +30,7 @@ const mutations = {
     state.totalMoney = tempMoney;
   },
   setPageInfo(state, data) {
-    state.paginationProps.total = data.totalPages;
+    state.paginationProps.total = data.totalElements;
     state.tableData = data.content.map((item, index) => {
       return {
         key: index,
@@ -49,7 +48,7 @@ const mutations = {
         invoicedUncollectedAmount: '', // 已开发票未收款金额
         actualSigningDate: '', // 实际签约日期
         contractFilingDate: moment(item.contractDate).format('YYYY-MM-DD HH:mm:ss'), // 合同归档日期
-        itemCategory: '', // 项目类别
+        itemCategory: item.projectCategories, // 项目类别
         mainDesignDepartment: item.departmentDesign, // 主设计部门
         managementDepartment: item.departmentRunning, // 经营部门
         projectManager: item.projectManager, // 项目经理
@@ -62,21 +61,47 @@ const mutations = {
         class1: item.buildOne, // 建筑一级分类
         class2: item.buildTwo, // 建筑二级分类
         epc: item.epc, // 是否EPC项目
-        contractFile: item.contractFile, // 合同扫描文件
+        contractFile: {
+          isDownload: false,
+          contractId: item.contractId
+        }, // 合同扫描文件
       }
     });
-  }
+  },
 };
 
 const actions = {
-  getContractList({commit}, params) {
+  // 下载合同文件
+  downloadContract({commit}, params) {
     return new Promise((resolve, reject) => {
-      api.contractController.getContractList(params)
+      api.contractController.downloadContract(params)
         .then(res => {
-          commit('setPageInfo', res.data.data);
           resolve(res);
         }).catch(error => {
+        console.log(error, '合同文件下载失败');
+        reject(error);
+      });
+    });
+  },
+  // 合同号模糊查询
+  getContractListById({commit}, params) {
+    return new Promise((resolve, reject) => {
+      api.contractController.getContractListById(params).then(res => {
+        commit('setPageInfo', res.data.data);
+        resolve(res);
+      }).catch(error => {
         console.log(error, '获取合同信息失败');
+        reject(error);
+      });
+    });
+  },
+  // 添加合同信息
+  addContract({commit}, params) {
+    return new Promise((resolve, reject) => {
+      api.contractController.addContract(params).then(res => {
+        resolve(res);
+      }).catch(error => {
+        console.log(error, '添加合同信息失败');
         reject(error);
       });
     });

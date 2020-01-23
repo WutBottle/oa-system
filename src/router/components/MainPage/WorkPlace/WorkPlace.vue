@@ -99,7 +99,7 @@
         </div>
         <div class="content">
           <div class="title">
-            晚上好，{{userName}}，天气冷了要加衣服！
+            {{username}}，天气冷了要加衣服！
           </div>
           <div>
             建筑院院长 | CSADI - 某某某项目组 - OA平台
@@ -176,11 +176,16 @@
 </template>
 
 <script>
+  import {mapState} from 'vuex'
   export default {
     name: "WorkPlace",
+    computed: {
+      ...mapState({
+        username: state => state.userOperation.username,// 选择合同数
+      }),
+    },
     data() {
       return {
-        userName: 'huang',
         data: [
           {
             title: 'Ant Design Title 1',

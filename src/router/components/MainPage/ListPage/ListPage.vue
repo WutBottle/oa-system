@@ -63,7 +63,7 @@
                   :label-col="formItemLayout.labelCol"
                   :wrapper-col="formItemLayout.wrapperCol"
           >
-            <a-input placeholder="请输入合同名称"/>
+            <a-input v-model="contractId" placeholder="请输入合同名称"/>
           </a-form-item>
           <a-form-item
                   :wrapper-col="buttonItemLayout.wrapperCol"
@@ -79,15 +79,21 @@
         <div class="table-wrapper">
           <a-spin :spinning="spinning" tip="Loading...">
             <a-table bordered :columns="columns" :dataSource="tableData" :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}" :pagination="paginationProps"
-                     @change="handleTableChange" :scroll="{ x: 'max-content', y: 240 }">
+                     @change="handleTableChange" :scroll="{ x: 'max-content'}">
               <span slot="serial" slot-scope="text, record, index">
                 {{ index + 1 }}
               </span>
               <span slot="signState" slot-scope="text">
                 <a-badge :status="text | statusTypeFilter" :text="text | statusFilter" />
               </span>
+              <span slot="itemCategory" slot-scope="tags">
+                <a-tag v-for="tag in tags" color="blue" :key="tag.projectCategoryName">{{tag.projectCategoryName}}</a-tag>
+              </span>
+              <span slot="epc" slot-scope="text">
+                <a-icon :style="{color: text ? 'green' : 'red'}" :type="text ? 'check' : 'close'"/>
+              </span>
               <span slot="contractFile" slot-scope="text">
-                <a-button type="primary" icon="download" @click="handleFileDownload(text)">
+                <a-button type="primary" icon="download" :loading="text.isDownload" @click="handleFileDownload(text)">
                   下载文件
                 </a-button>
               </span>
@@ -124,6 +130,7 @@
           wrapperCol: {span: 14, offset: 0}
         },
         spinning: false,
+        contractId: '', // 模糊查询的合同id
         columns: [
           {
             title: '序号',
@@ -225,6 +232,7 @@
             width: 150,
             key: 'itemCategory',
             dataIndex: 'itemCategory',
+            scopedSlots: { customRender: 'itemCategory' }
           },
           {
             title: '主设计部门',
@@ -297,6 +305,7 @@
             width: 120,
             key: 'epc',
             dataIndex: 'epc',
+            scopedSlots: { customRender: 'epc' }
           },
           {
             fixed: 'right',
@@ -331,17 +340,18 @@
     },
     mounted() {
       this.spinning = true;
-      this.getContractList({
+      const params = {
+        contractId: this.contractId,
         pageNum: this.paginationProps.current,
         pageLimit: this.paginationProps.pageSize
-      }).then((data) => {
+      };
+      this.getContractListById(params).then((data) => {
         if (data.data.meta.success){
           this.spinning = false;
         } else {
           this.$message.error(data.data.meta.message);
         }
       }).catch((error) => {
-        this.$message.error(error);
         this.spinning = false;
       });
     },
@@ -350,21 +360,70 @@
         setSelectedRowKeys: 'contractList/setSelectedRowKeys', // 设置选中的keys
       }),
       ...mapActions({
-        getContractList: 'contractList/getContractList',
+        downloadContract: 'contractList/downloadContract',
+        getContractListById: 'contractList/getContractListById',
       }),
       handleQuery() {
-        this.spinning = !this.spinning
+        this.paginationProps.current = 1;
+        this.spinning = true;
+        const params = {
+          contractId: this.contractId,
+          pageNum: this.paginationProps.current,
+          pageLimit: this.paginationProps.pageSize
+        };
+        this.getContractListById(params).then((data) => {
+          if (data.data.meta.success){
+            this.spinning = false;
+          } else {
+            this.$message.error(data.data.meta.message);
+          }
+        }).catch((error) => {
+          this.spinning = false;
+        });
       },
-      handleFileDownload(scanningFile) {
-        console.log('正在下载文件！'+ scanningFile);
+      handleFileDownload(contractFile) {
+        contractFile.isDownload = true;
+        this.downloadContract({
+          contractId: contractFile.contractId,
+        }).then((data) => {
+          console.log(data);
+          if (!data.data) {
+            return
+          }
+          let url = window.URL.createObjectURL(new Blob([data.data]));
+          let link = document.createElement('a');
+          link.style.display = 'none';
+          link.href = url;
+          link.setAttribute('download', contractFile.contractId + '.pdf');
+          document.body.appendChild(link);
+          link.click();
+          contractFile.isDownload = false;
+          this.$message.success("下载成功");
+        }).catch((error) => {
+          contractFile.isDownload = false;
+        });
       },
       handleTableChange(pagination) {
-        console.log(pagination);
+        this.spinning = true;
         this.paginationProps.current = pagination.current;
         this.paginationProps.pageSize = pagination.pageSize;
+        const params = {
+          contractId: this.contractId,
+          pageNum: pagination.current,
+          pageLimit: pagination.pageSize
+        };
+        this.getContractListById(params).then((data) => {
+          if (data.data.meta.success){
+            this.spinning = false;
+          } else {
+            this.$message.error(data.data.meta.message);
+          }
+        }).catch((error) => {
+          console.log(error);
+          this.spinning = false;
+        });
       },
       onSelectChange (selectedRowKeys) {
-        console.log(selectedRowKeys)
         this.setSelectedRowKeys(selectedRowKeys);
       }
     }

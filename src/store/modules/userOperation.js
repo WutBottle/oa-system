@@ -3,32 +3,40 @@
 * 登录处理
 */
 import api from '@/api/apiSugar'
-import {ACCESS_TOKEN} from '@/store/mutation-types'
+import {ACCESS_TOKEN, ROLE, USERNAME} from '@/store/mutation-types'
 
 const state = {
   status: '',
   token: localStorage.getItem(ACCESS_TOKEN) || '',
-  user: {},
+  role: localStorage.getItem(ROLE) || '',
+  username: localStorage.getItem(USERNAME) || '',
 };
 
 const mutations = {
   authRequest(state) {
     state.status = 'loading';
   },
-  authSuccess(state, token, user) {
+  authSuccess(state, user) {
     state.status = 'success';
-    state.token = token;
-    state.user = user;
+    localStorage.setItem(ROLE, user.role);
+    localStorage.setItem(USERNAME, user.username);
+    state.role = user.role;
+    state.username = user.username;
   },
   authError(state) {
     state.status = 'error';
-  },
-  updateUser(state, user) {
-    state.user = user;
+    localStorage.removeItem(ACCESS_TOKEN);
+    localStorage.removeItem(ROLE);
+    localStorage.removeItem(USERNAME);
   },
   logOut(state) {
-    state.status = '';
     state.token = '';
+    state.status = '';
+    state.role = '';
+    state.username = '';
+    localStorage.removeItem(ACCESS_TOKEN);
+    localStorage.removeItem(ROLE);
+    localStorage.removeItem(USERNAME);
   },
 };
 
@@ -41,40 +49,25 @@ const actions = {
         //更新本地token
         localStorage.setItem(ACCESS_TOKEN, token);
         // localStorage.setItem('userRole', res.data.user.userRole);
-        commit('authSuccess', token, res.data.user);
+        commit('authSuccess', res.data.data);
         resolve(res);
       }).catch(error => {
         commit('authError');
-        localStorage.removeItem(ACCESS_TOKEN);
         reject(error);
       });
     })
   },
-  update({commit}, params) {
-    return new Promise((resolve, reject) => {
-      api.userController.updateUser(params).then(res => {
-        commit('updateUser', res.data.user);
-        resolve(res);
-      }).catch(error => {
-        reject(error);
-      });
-    })
-  },
-  checkIn({commit}, params){
+  logout({dispatch, commit, rootState}, params) {
     return new Promise((resolve, reject) => {
       commit('authRequest');
-      api.userController.checkIn(params).then(res => {
-        const token = res.data.token;
-        //更新本地token
-        localStorage.setItem(ACCESS_TOKEN, token);
-        commit('authSuccess', token, res.data.user);
+      api.userController.logout(params).then(res => {
+        localStorage.removeItem(ACCESS_TOKEN);
+        commit('logOut');
         resolve(res);
       }).catch(error => {
-        commit('authError');
-        localStorage.removeItem(ACCESS_TOKEN);
         reject(error);
-      })
-    });
+      });
+    })
   }
 };
 

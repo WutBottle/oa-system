@@ -72,22 +72,32 @@
               查询
             </a-button>
           </a-form-item>
+          <a-form-item
+                  :wrapper-col="buttonItemLayout.wrapperCol"
+          >
+            <a-button :disabled="!this.selectedRowKeys.length" type="primary" @click="handleExport">
+              导出
+            </a-button>
+          </a-form-item>
         </a-form>
         <div class="info-wrapper">
           <a-alert :message="messageContent" type="info" showIcon/>
         </div>
         <div class="table-wrapper">
           <a-spin :spinning="spinning" tip="Loading...">
-            <a-table bordered :columns="columns" :dataSource="tableData" :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}" :pagination="paginationProps"
+            <a-table bordered :columns="columns" :dataSource="tableData"
+                     :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
+                     :pagination="paginationProps"
                      @change="handleTableChange" :scroll="{ x: 'max-content'}">
               <span slot="serial" slot-scope="text, record, index">
                 {{ index + 1 }}
               </span>
               <span slot="signState" slot-scope="text">
-                <a-badge :status="text | statusTypeFilter" :text="text | statusFilter" />
+                <a-badge :status="text | statusTypeFilter" :text="text | statusFilter"/>
               </span>
               <span slot="itemCategory" slot-scope="tags">
-                <a-tag v-for="tag in tags" color="blue" :key="tag.projectCategoryName">{{tag.projectCategoryName}}</a-tag>
+                <a-tag v-for="tag in tags" color="blue"
+                       :key="tag.projectCategoryName">{{tag.projectCategoryName}}</a-tag>
               </span>
               <span slot="epc" slot-scope="text">
                 <a-icon :style="{color: text ? 'green' : 'red'}" :type="text ? 'check' : 'close'"/>
@@ -117,6 +127,7 @@
     }
   };
   import {mapState, mapMutations, mapActions} from 'vuex'
+
   export default {
     name: "ListPage",
     data() {
@@ -131,6 +142,7 @@
         },
         spinning: false,
         contractId: '', // 模糊查询的合同id
+        contractIds: [], // 导出合同id
         columns: [
           {
             title: '序号',
@@ -138,7 +150,7 @@
             fixed: 'left',
             dataIndex: 'serial',
             key: 'serial',
-            scopedSlots: { customRender: 'serial' }
+            scopedSlots: {customRender: 'serial'}
           },
           {
             title: '合同号',
@@ -153,7 +165,7 @@
             fixed: 'left',
             dataIndex: 'signState',
             key: 'signState',
-            scopedSlots: { customRender: 'signState' }
+            scopedSlots: {customRender: 'signState'}
           },
           {
             title: '设计号',
@@ -232,7 +244,7 @@
             width: 150,
             key: 'itemCategory',
             dataIndex: 'itemCategory',
-            scopedSlots: { customRender: 'itemCategory' }
+            scopedSlots: {customRender: 'itemCategory'}
           },
           {
             title: '主设计部门',
@@ -305,7 +317,7 @@
             width: 120,
             key: 'epc',
             dataIndex: 'epc',
-            scopedSlots: { customRender: 'epc' }
+            scopedSlots: {customRender: 'epc'}
           },
           {
             fixed: 'right',
@@ -313,7 +325,7 @@
             title: '合同扫描文件',
             key: 'contractFile',
             dataIndex: 'contractFile',
-            scopedSlots: { customRender: 'contractFile' }
+            scopedSlots: {customRender: 'contractFile'}
           },
         ],
       }
@@ -327,14 +339,14 @@
         selectedRowKeys: state => state.contractList.selectedRowKeys, //选中的keys
       }),
       messageContent() {
-        return <span> 已选择: <a>{this.countNum}< /a>&nbsp;&nbsp;合同金额总计<a>{this.totalMoney}元</a></span>;
+        return <span>已选择:<a>{this.countNum}< /a>&nbsp;&nbsp;合同金额总计<a>{this.totalMoney}元</a></span>;
       },
     },
     filters: {
-      statusFilter (type) {
+      statusFilter(type) {
         return statusMap[type].text
       },
-      statusTypeFilter (type) {
+      statusTypeFilter(type) {
         return statusMap[type].status
       }
     },
@@ -346,7 +358,7 @@
         pageLimit: this.paginationProps.pageSize
       };
       this.getContractListById(params).then((data) => {
-        if (data.data.meta.success){
+        if (data.data.meta.success) {
           this.spinning = false;
         } else {
           this.$message.error(data.data.meta.message);
@@ -362,6 +374,7 @@
       ...mapActions({
         downloadContract: 'contractList/downloadContract',
         getContractListById: 'contractList/getContractListById',
+        exportContract: 'contractList/exportContract',
       }),
       handleQuery() {
         this.paginationProps.current = 1;
@@ -372,7 +385,7 @@
           pageLimit: this.paginationProps.pageSize
         };
         this.getContractListById(params).then((data) => {
-          if (data.data.meta.success){
+          if (data.data.meta.success) {
             this.spinning = false;
           } else {
             this.$message.error(data.data.meta.message);
@@ -413,7 +426,7 @@
           pageLimit: pagination.pageSize
         };
         this.getContractListById(params).then((data) => {
-          if (data.data.meta.success){
+          if (data.data.meta.success) {
             this.spinning = false;
           } else {
             this.$message.error(data.data.meta.message);
@@ -423,7 +436,30 @@
           this.spinning = false;
         });
       },
-      onSelectChange (selectedRowKeys) {
+      handleExport() {
+        this.exportContract({
+          contractIds: this.contractIds
+        }).then((data) => {
+          if (!data.data) {
+            return
+          }
+          let url = window.URL.createObjectURL(new Blob([data.data]));
+          let link = document.createElement('a');
+          link.style.display = 'none';
+          link.href = url;
+          link.setAttribute('download', 'export.xls');
+          document.body.appendChild(link);
+          link.click();
+          this.$message.success("导出成功");
+        }).catch((error) => {
+          console.log(error);
+        });
+      },
+      onSelectChange(selectedRowKeys) {
+        this.contractIds = [];
+        selectedRowKeys.forEach((item) => {
+          this.contractIds.push(this.tableData[item].contractNum)
+        });
         this.setSelectedRowKeys(selectedRowKeys);
       }
     }

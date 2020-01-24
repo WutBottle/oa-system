@@ -185,23 +185,18 @@
                 :inlineCollapsed="collapsed"
                 @select="handleSelect"
         >
-          <a-menu-item key="/main/workplace">
-            <a-icon type="desktop"/>
-            <span>工作台</span>
-          </a-menu-item>
-          <a-menu-item key="/main/list">
-            <a-icon type="table"/>
-            <span>合同列表</span>
-          </a-menu-item>
-          <a-menu-item key="/main/analysis">
-            <a-icon type="pie-chart"/>
-            <span>分析中心</span>
-          </a-menu-item>
-          <a-sub-menu key="sub1">
-            <span slot="title"><a-icon type="user"/><span>个人页</span></span>
-            <a-menu-item key="/main/usercenter">个人中心</a-menu-item>
-            <a-menu-item key="/main/setting">个人设置</a-menu-item>
-          </a-sub-menu>
+          <template v-for="item in menuList">
+            <a-menu-item v-if="!item.sideBars" :key="item.router">
+              <a-icon :type="item.iconType"/>
+              <span>{{item.name}}</span>
+            </a-menu-item>
+            <a-sub-menu v-else :key="item.name">
+              <span slot="title"><a-icon :type="item.iconType"/><span>{{item.name}}</span></span>
+              <template v-for="info in item.sideBars">
+                <a-menu-item :key="info.router">{{info.name}}</a-menu-item>
+              </template>
+            </a-sub-menu>
+          </template>
         </a-menu>
       </div>
     </div>
@@ -226,13 +221,13 @@
                 </span>
                   <a-menu slot="overlay">
                     <a-menu-item key="0">
-                      <a href="/main">
+                      <a @click="() => {this.$router.push('/main/usercenter')}">
                         <a-icon type="user" style="margin-right: 8px"/>
                         <span>个人中心</span>
                       </a>
                     </a-menu-item>
                     <a-menu-item key="1">
-                      <a href="/main">
+                      <a @click="() => {this.$router.push('/main/setting')}">
                         <a-icon type="setting" style="margin-right: 8px"/>
                         <span>账户设置</span>
                       </a>
@@ -265,15 +260,62 @@
 
 <script>
   import {mapState, mapActions} from 'vuex'
+
   export default {
     name: 'MainPage',
     props: {
       msg: String
     },
+    mounted() {
+      if (this.role === 'ROLE_ADMIN') {
+        const adminMenu = {
+          name: "数据管理",
+          iconType: "user",
+          sideBars: [
+            {
+              name: "合同录入",
+              router: "/main/contractmanager",
+            }
+          ]
+        };
+        this.menuList = this.menuList.concat(adminMenu);
+      }
+    },
     data() {
       return {
         collapsed: false,
         menuDefault: '',
+        menuList: [
+          {
+            name: '工作台',
+            router: "/main/workplace",
+            iconType: "desktop",
+          },
+          {
+            name: '合同列表',
+            router: "/main/list",
+            iconType: "table",
+          },
+          {
+            name: '分析中心',
+            router: "/main/analysis",
+            iconType: "pie-chart",
+          },
+          {
+            name: "个人页",
+            iconType: "user",
+            sideBars: [
+              {
+                name: "个人中心",
+                router: "/main/usercenter",
+              },
+              {
+                name: "个人设置",
+                router: "/main/setting",
+              }
+            ]
+          }
+        ]
       }
     },
     created() {
@@ -282,6 +324,7 @@
     computed: {
       ...mapState({
         username: state => state.userOperation.username,// 选择合同数
+        role: state => state.userOperation.role
       }),
     },
     methods: {
@@ -295,9 +338,9 @@
         this.$router.push(key.key);
       },
       handleLogout() {
-        this.logout().then((data) => {
+        this.logout().then(() => {
           this.$message.success('已退出');
-          this.$router.push('/');
+          this.$router.push('/user/login');
         }).catch((error) => {
           this.$message.error(error);
         });

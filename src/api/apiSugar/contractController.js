@@ -19,6 +19,12 @@ const contractController = {
     getContractListById(params) {
       return axios.post(`${baseUrl.contractController}/getContractListByIdLike`, params);
     },
+    // 导出合同文件
+    exportContract(params) {
+      return axios.post(`${baseUrl.contractController}/export`, params, {
+        responseType: 'blob'
+      });
+    },
     // 添加合同信息
     addContract(params) {
       return axios.post(`${baseUrl.contractController}/addContract`, params);

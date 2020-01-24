@@ -95,6 +95,17 @@ const actions = {
       });
     });
   },
+  // 导出合同文件
+  exportContract({commit}, params) {
+    return new Promise((resolve, reject) => {
+      api.contractController.exportContract(params).then(res => {
+        resolve(res);
+      }).catch(error => {
+        console.log(error, '导出合同失败');
+        reject(error);
+      });
+    });
+  },
   // 添加合同信息
   addContract({commit}, params) {
     return new Promise((resolve, reject) => {

@@ -1,4 +1,3 @@
-import Vue from 'vue'
 import router from './router'
 
 import NProgress from 'nprogress'
@@ -7,24 +6,36 @@ import 'nprogress/nprogress.css'
 import {ACCESS_TOKEN} from '@/store/mutation-types'
 
 NProgress.configure({showSpinner: false}); // NProgress Configuration
+const whiteList = ['LoginPage']; // no redirect whitelist
+const defaultRoutePath = '/main/workplace';
 
 router.beforeEach((to, from, next) => {
   NProgress.start(); // start progress bar
-  if (to.matched.some(record => record.meta.requiresAuth)) {
-    // 判断当前是否有登录的权限
-    if (!localStorage.getItem(ACCESS_TOKEN)) {
-      Vue.prototype.$message.error('请重新登录');
-      NProgress.done();
-      next({
-        path: '/',
-      })
+  if (localStorage.getItem(ACCESS_TOKEN)) {
+    if (to.path === '/user/login') {
+      next({path: defaultRoutePath});
+      NProgress.done()
     } else {
-      NProgress.done();
-      next()
+      // if (!store.getters.role) {
+      //   store.dispatch('permission/GenerateRoutes').then(() => {
+      //     // 根据roles权限生成可访问的路由表
+      //     // 动态添加可访问路由表
+      //     router.addRoutes(store.getters.addRouters);
+      //     next();
+      //   });
+      // } else {
+      //   next();
+      // }
+      next();
     }
   } else {
-    NProgress.done();
-    next() // 确保一定要调用 next()
+    if (whiteList.includes(to.name)) {
+      // 在免登录白名单，直接进入
+      next()
+    } else {
+      next({path: '/user/login', query: {redirect: to.fullPath}});
+      NProgress.done() // if current page is login will not trigger afterEach hook, so manually handle it
+    }
   }
 });
 

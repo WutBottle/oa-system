@@ -19,7 +19,7 @@ Vue.use(VueCookies);
  */
 const toLogin = () => {
   router.replace({
-    path: '/',
+    path: '/user/login',
   });
 };
 

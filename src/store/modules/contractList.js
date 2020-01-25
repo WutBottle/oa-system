@@ -16,6 +16,7 @@ const state = {
     total: 0,
     current: 1,
   },
+  projectCategoryList: [],
   tableData: [],
 };
 
@@ -39,14 +40,14 @@ const mutations = {
         designNum: item.designId, // 设计号
         employerContractNum: item.ownerId, // 发包人合同编号
         contractName: item.contractName, // 合同名称
-        contractNode: item.contractNode, // 合同节点
+        contractNodes: item.contractNodes, // 合同节点
         contractAmount: item.contractAmount, // 合同额(元)
-        accumulatedCashReceipts: '', // 累计现金回款(元)
-        remainingContractAmount: '', // 剩余合同额(元)
-        receivedProportion: '', // 已收款比例
-        cumulativeInvoicedAmount: '', // 累计开票金额(元)
-        invoicedUncollectedAmount: '', // 已开发票未收款金额
-        actualSigningDate: '', // 实际签约日期
+        accumulatedCashReceipts: item.cashAmount, // 累计现金回款(元)
+        remainingContractAmount: item.receiptRemain, // 剩余合同额(元)
+        receivedProportion: item.ratio, // 已收款比例
+        cumulativeInvoicedAmount: item.receiptAmount, // 累计开票金额(元)
+        invoicedUncollectedAmount: item.receiptNotCash, // 已开发票未收款金额
+        actualSigningDate: moment(item.actualDate).format('YYYY-MM-DD HH:mm:ss'), // 实际签约日期
         contractFilingDate: moment(item.contractDate).format('YYYY-MM-DD HH:mm:ss'), // 合同归档日期
         itemCategory: item.projectCategories, // 项目类别
         mainDesignDepartment: item.departmentDesign, // 主设计部门
@@ -68,6 +69,9 @@ const mutations = {
       }
     });
   },
+  setProjectCategoryList(state, data) {
+    state.projectCategoryList = data;
+  }
 };
 
 const actions = {
@@ -113,6 +117,40 @@ const actions = {
         resolve(res);
       }).catch(error => {
         console.log(error, '添加合同信息失败');
+        reject(error);
+      });
+    });
+  },
+  // 上传合同扫描文件
+  uploadContract({commit}, params) {
+    return new Promise((resolve, reject) => {
+      api.contractController.uploadContract(params).then(res => {
+        resolve(res);
+      }).catch(error => {
+        console.log(error, '上传合同扫描文件失败');
+        reject(error);
+      });
+    });
+  },
+  // 获取项目类型列表
+  getProjectCategoryList({commit}, params) {
+    return new Promise((resolve, reject) => {
+      api.projectCategoryController.getProjectCategoryList(params).then(res => {
+        commit('setProjectCategoryList', res.data.data);
+        resolve(res);
+      }).catch(error => {
+        console.log(error, '获取项目类型失败');
+        reject(error);
+      });
+    });
+  },
+  // 上传合同录入excel信息
+  contractInput({commit}, params) {
+    return new Promise((resolve, reject) => {
+      api.contractController.contractInput(params).then(res => {
+        resolve(res);
+      }).catch(error => {
+        console.log(error, '上传文件失败');
         reject(error);
       });
     });

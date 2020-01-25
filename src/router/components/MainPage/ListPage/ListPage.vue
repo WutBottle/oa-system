@@ -95,6 +95,10 @@
               <span slot="signState" slot-scope="text">
                 <a-badge :status="text | statusTypeFilter" :text="text | statusFilter"/>
               </span>
+              <span slot="contractNodes" slot-scope="tags">
+                <a-tag v-for="tag in tags" color="green"
+                       :key="tag.nodeDescription">{{tag.nodeDescription}}</a-tag>
+              </span>
               <span slot="itemCategory" slot-scope="tags">
                 <a-tag v-for="tag in tags" color="blue"
                        :key="tag.projectCategoryName">{{tag.projectCategoryName}}</a-tag>
@@ -188,8 +192,9 @@
           {
             title: '合同节点',
             width: 100,
-            key: 'contractNode',
-            dataIndex: 'contractNode',
+            key: 'contractNodes',
+            dataIndex: 'contractNodes',
+            scopedSlots: {customRender: 'contractNodes'}
           },
           {
             title: '合同额(元)',

@@ -28,7 +28,15 @@ const contractController = {
     // 添加合同信息
     addContract(params) {
       return axios.post(`${baseUrl.contractController}/addContract`, params);
-    }
+    },
+    // 上传合同扫描文件
+    uploadContract(params) {
+      return axios.post(`${baseUrl.contractController}/upload`, params);
+    },
+    // 上传合同录入excel信息
+    contractInput(params) {
+      return axios.post(`${baseUrl.contractController}/input`, params);
+    },
   }
 ;
 

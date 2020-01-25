@@ -9,6 +9,7 @@ const distributeUrl = {
   // 用户信息
   userController: serverBaseUrl + 'tokens',
   contractController: serverBaseUrl + 'contract',
+  projectCategoryController: serverBaseUrl + 'projectCategory',
 };
 
 export default distributeUrl;

@@ -63,7 +63,7 @@
                   :label-col="formItemLayout.labelCol"
                   :wrapper-col="formItemLayout.wrapperCol"
           >
-            <a-input v-model="contractId" placeholder="请输入合同名称"/>
+            <a-input v-model="contractId" placeholder="请输入合同号"/>
           </a-form-item>
           <a-form-item
                   :wrapper-col="buttonItemLayout.wrapperCol"

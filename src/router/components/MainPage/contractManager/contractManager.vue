@@ -486,7 +486,7 @@
               values = Object.assign(values, {contractFile: this.fileName});
               values = Object.assign(values, {projectCategory: projectCategory});
               this.addContract(values).then((data) => {
-                this.$message.success(data.data);
+                this.$message.success(data.data.data);
               }).catch((error) => {
                 this.$message.error('文件已上传');
               });
@@ -537,7 +537,12 @@
           });
           // 手动上传
           this.contractInput(formData).then((data) => {
-            this.$message.success('文件已上传');
+            for (let i = 1; i < data.data.data.inputSize + 1; i++) {
+              this.$notification.open({
+                message: data.data.data[i],
+                icon: data.data.data[i].indexOf('添加成功') != -1 ? <a-icon type="check-circle" style="color: green" /> : <a-icon type="close-circle" style="color: red" />,
+            });
+            }
           }).catch((error) => {
             this.$message.error('上传失败');
             console.log(error);

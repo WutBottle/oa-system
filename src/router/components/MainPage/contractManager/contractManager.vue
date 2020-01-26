@@ -21,12 +21,13 @@
     .page-content {
       padding: 24px;
 
-      .form-wrapper{
+      .form-wrapper {
         padding: 24px 0;
       }
+
       .xls-upload {
-      padding: 24px 24px 0 0;
-    }
+        padding: 24px 24px 0 0;
+      }
     }
   }
 </style>
@@ -102,8 +103,8 @@
                       label="上传合同文件"
               >
                 <a-upload
-                        v-decorator="['contractFile', {
-          valuePropName: 'contractFile',
+                        v-decorator="['uploadFile', {
+          valuePropName: 'uploadFile',
         }]"
                         :fileList="pdfFileList"
                         :beforeUpload="beforeUpload"
@@ -299,46 +300,6 @@
               <a-form-item
                       :label-col="formItemLayout.labelCol"
                       :wrapper-col="formItemLayout.wrapperCol"
-                      label="累计现金回款(元)"
-              >
-                <a-input
-                        v-decorator="[
-          'cashAmount',
-          {rules: [{ required: true, message: '请输入累计现金回款！' }]}
-        ]"
-                        placeholder="请输入累计现金回款"
-                />
-              </a-form-item>
-              <a-form-item
-                      :label-col="formItemLayout.labelCol"
-                      :wrapper-col="formItemLayout.wrapperCol"
-                      label="剩余合同额(元)"
-              >
-                <a-input
-                        v-decorator="[
-          'receiptRemain',
-          {rules: [{ required: true, message: '请输入剩余合同额！' }]}
-        ]"
-                        placeholder="请输入剩余合同额"
-                />
-              </a-form-item>
-              <a-form-item
-                      :label-col="formItemLayout.labelCol"
-                      :wrapper-col="formItemLayout.wrapperCol"
-                      label="累计开票金额(元)"
-              >
-                <a-input
-                        v-decorator="[
-          'receiptAmount',
-          {rules: [{ required: true, message: '请输入累计开票金额！' }]}
-        ]"
-                        placeholder="请输入累计开票金额"
-                />
-              </a-form-item>
-
-              <a-form-item
-                      :label-col="formItemLayout.labelCol"
-                      :wrapper-col="formItemLayout.wrapperCol"
                       label="签约状态"
               >
                 <a-select
@@ -449,9 +410,10 @@
         <a-col :span="10">
           <div class="xls-upload">
             <a-affix :offsetTop="120">
-              <a-upload-dragger :multiple="false" :fileList="excelFileList" :remove="handleExcelRemove" :beforeUpload="beforeUploadXls">
+              <a-upload-dragger :multiple="false" :fileList="excelFileList" :remove="handleExcelRemove"
+                                :beforeUpload="beforeUploadXls">
                 <p class="ant-upload-drag-icon">
-                  <a-icon type="inbox" />
+                  <a-icon type="inbox"/>
                 </p>
                 <p class="ant-upload-text">点击或拖拽文件导入</p>
                 <p class="ant-upload-hint">将合同信息的excel文件拖入此处上传录入</p>
@@ -500,13 +462,34 @@
       ...mapActions({
         uploadContract: 'contractList/uploadContract',
         getProjectCategoryList: 'contractList/getProjectCategoryList',
-        contractInput: 'contractList/contractInput'
+        contractInput: 'contractList/contractInput',
+        addContract: 'contractList/addContract',
+        deleteContract: 'contractList/deleteContract'
       }),
       check() {
         this.form.validateFields(
           (err, values) => {
             if (!err) {
-              console.log(values)
+              let projectCategory = {};
+              projectCategory = this.projectCategoryList[this.projectCategoryList.findIndex((item) => item.projectCategoryId === values.projectCategoryId)];
+              delete values.projectCategoryId;
+
+              let contractNodes = values.contractNodes;
+              let tempContractNodes = [];
+              delete values.contractNodes;
+              contractNodes.forEach((item) => {
+                tempContractNodes.push({
+                  nodeDescription: item
+                })
+              });
+              values = Object.assign(values, {contractNodes: tempContractNodes});
+              values = Object.assign(values, {contractFile: this.fileName});
+              values = Object.assign(values, {projectCategory: projectCategory});
+              this.addContract(values).then((data) => {
+                this.$message.success(data.data);
+              }).catch((error) => {
+                this.$message.error('文件已上传');
+              });
             }
           },
         );
@@ -525,7 +508,7 @@
       },
       beforeUpload(file) {
         this.handlePdfRemove(file);
-        if (file.type === 'application/pdf'){
+        if (file.type === 'application/pdf') {
           const formData = new FormData();
           this.pdfFileList = [...this.pdfFileList, file];
           this.pdfFileList.forEach((file) => {
@@ -546,7 +529,7 @@
       },
       beforeUploadXls(file) {
         this.handleExcelRemove(file);
-        if (file.type === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' || file.type === 'application/vnd.ms-excel'){
+        if (file.type === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' || file.type === 'application/vnd.ms-excel') {
           const formData = new FormData();
           this.excelFileList = [...this.excelFileList, file];
           this.excelFileList.forEach((file) => {

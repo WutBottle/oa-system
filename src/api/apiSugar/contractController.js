@@ -37,6 +37,10 @@ const contractController = {
     contractInput(params) {
       return axios.post(`${baseUrl.contractController}/input`, params);
     },
+    // 批量删除合同信息
+    deleteContract(params) {
+      return axios.post(`${baseUrl.contractController}/deleteContract`, params);
+    },
   }
 ;
 

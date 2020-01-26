@@ -79,6 +79,16 @@
               导出
             </a-button>
           </a-form-item>
+          <a-form-item
+                  :wrapper-col="buttonItemLayout.wrapperCol"
+          >
+            <a-popconfirm title="确定删除?" @confirm="handleDelete" @cancel="cancelDelete" okText="确定" cancelText="取消">
+              <a-icon slot="icon" type="question-circle-o" style="color: red" />
+              <a-button :disabled="!this.contractIds.length" type="danger">
+                批量删除
+              </a-button>
+            </a-popconfirm>
+          </a-form-item>
         </a-form>
         <div class="info-wrapper">
           <a-alert :message="messageContent" type="info" showIcon/>
@@ -99,15 +109,14 @@
                 <a-tag v-for="tag in tags" color="green"
                        :key="tag.nodeDescription">{{tag.nodeDescription}}</a-tag>
               </span>
-              <span slot="itemCategory" slot-scope="tags">
-                <a-tag v-for="tag in tags" color="blue"
-                       :key="tag.projectCategoryName">{{tag.projectCategoryName}}</a-tag>
+              <span slot="itemCategory" slot-scope="tag">
+                <a-tag v-if="!!tag" color="blue">{{tag}}</a-tag>
               </span>
               <span slot="epc" slot-scope="text">
                 <a-icon :style="{color: text ? 'green' : 'red'}" :type="text ? 'check' : 'close'"/>
               </span>
               <span slot="contractFile" slot-scope="text">
-                <a-button type="primary" icon="download" :loading="text.isDownload" @click="handleFileDownload(text)">
+                <a-button :disabled="!text.contractId" type="primary" icon="download" :loading="text.isDownload" @click="handleFileDownload(text)">
                   下载文件
                 </a-button>
               </span>
@@ -146,7 +155,7 @@
         },
         spinning: false,
         contractId: '', // 模糊查询的合同id
-        contractIds: [], // 导出合同id
+        contractIds: [], // 选择的合同id
         columns: [
           {
             title: '序号',
@@ -357,20 +366,7 @@
     },
     mounted() {
       this.spinning = true;
-      const params = {
-        contractId: this.contractId,
-        pageNum: this.paginationProps.current,
-        pageLimit: this.paginationProps.pageSize
-      };
-      this.getContractListById(params).then((data) => {
-        if (data.data.meta.success) {
-          this.spinning = false;
-        } else {
-          this.$message.error(data.data.meta.message);
-        }
-      }).catch((error) => {
-        this.spinning = false;
-      });
+      this.updateTableData();
     },
     methods: {
       ...mapMutations({
@@ -380,10 +376,9 @@
         downloadContract: 'contractList/downloadContract',
         getContractListById: 'contractList/getContractListById',
         exportContract: 'contractList/exportContract',
+        deleteContract: 'contractList/deleteContract'
       }),
-      handleQuery() {
-        this.paginationProps.current = 1;
-        this.spinning = true;
+      updateTableData() {
         const params = {
           contractId: this.contractId,
           pageNum: this.paginationProps.current,
@@ -398,6 +393,11 @@
         }).catch((error) => {
           this.spinning = false;
         });
+      },
+      handleQuery() {
+        this.paginationProps.current = 1;
+        this.spinning = true;
+        this.updateTableData();
       },
       handleFileDownload(contractFile) {
         contractFile.isDownload = true;
@@ -466,7 +466,21 @@
           this.contractIds.push(this.tableData[item].contractNum)
         });
         this.setSelectedRowKeys(selectedRowKeys);
-      }
+      },
+      handleDelete(){
+        this.deleteContract({
+          contractIds: this.contractIds
+        }).then((data) => {
+          this.$message.success('删除成功');
+          this.setSelectedRowKeys([]);
+          this.updateTableData();
+        }).catch((error) => {
+          this.$message.error(error)
+        });
+      },
+      cancelDelete () {
+        this.$message.info('取消删除')
+      },
     }
   }
 </script>

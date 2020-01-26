@@ -10,9 +10,9 @@ const state = {
   totalMoney: 0,
   selectedRowKeys: [], // 选中的keys
   paginationProps: {
-    pageSize: 1, // 默认每页显示数量
+    pageSize: 10, // 默认每页显示数量
     showSizeChanger: true, // 显示可改变每页数量
-    pageSizeOptions: ['1', '5', '10'], // 每页数量选项
+    pageSizeOptions: ['10', '15', '20'], // 每页数量选项
     total: 0,
     current: 1,
   },
@@ -49,7 +49,7 @@ const mutations = {
         invoicedUncollectedAmount: item.receiptNotCash, // 已开发票未收款金额
         actualSigningDate: moment(item.actualDate).format('YYYY-MM-DD HH:mm:ss'), // 实际签约日期
         contractFilingDate: moment(item.contractDate).format('YYYY-MM-DD HH:mm:ss'), // 合同归档日期
-        itemCategory: item.projectCategories, // 项目类别
+        itemCategory: !item.projectCategory ? '' : item.projectCategory.projectCategoryName, // 项目类别
         mainDesignDepartment: item.departmentDesign, // 主设计部门
         managementDepartment: item.departmentRunning, // 经营部门
         projectManager: item.projectManager, // 项目经理
@@ -64,7 +64,7 @@ const mutations = {
         epc: item.epc, // 是否EPC项目
         contractFile: {
           isDownload: false,
-          contractId: item.contractId
+          contractId: item.contractFile ?  item.contractId: '',
         }, // 合同扫描文件
       }
     });
@@ -151,6 +151,17 @@ const actions = {
         resolve(res);
       }).catch(error => {
         console.log(error, '上传文件失败');
+        reject(error);
+      });
+    });
+  },
+  // 批量删除合同信息
+  deleteContract({commit}, params) {
+    return new Promise((resolve, reject) => {
+      api.contractController.deleteContract(params).then(res => {
+        resolve(res);
+      }).catch(error => {
+        console.log(error, '删除失败');
         reject(error);
       });
     });

@@ -105,9 +105,10 @@
                         v-decorator="['contractFile', {
           valuePropName: 'contractFile',
         }]"
+                        :fileList="pdfFileList"
                         :beforeUpload="beforeUpload"
+                        :remove="handlePdfRemove"
                         :multiple="false"
-                        :remove="PDFremove"
                 >
                   <a-button>
                     <a-icon type="upload"/>
@@ -448,7 +449,7 @@
         <a-col :span="10">
           <div class="xls-upload">
             <a-affix :offsetTop="120">
-              <a-upload-dragger :multiple="false" :beforeUpload="beforeUploadXls">
+              <a-upload-dragger :multiple="false" :fileList="excelFileList" :remove="handleExcelRemove" :beforeUpload="beforeUploadXls">
                 <p class="ant-upload-drag-icon">
                   <a-icon type="inbox" />
                 </p>
@@ -483,6 +484,8 @@
         formTailLayout,
         form: this.$form.createForm(this),
         fileName: '',
+        pdfFileList: [],
+        excelFileList: [],
       };
     },
     computed: {
@@ -508,43 +511,59 @@
           },
         );
       },
+      handlePdfRemove(file) {
+        const index = this.pdfFileList.indexOf(file);
+        const newFileList = this.pdfFileList.slice();
+        newFileList.splice(index, 1);
+        this.pdfFileList = newFileList
+      },
+      handleExcelRemove(file) {
+        const index = this.excelFileList.indexOf(file);
+        const newFileList = this.excelFileList.slice();
+        newFileList.splice(index, 1);
+        this.excelFileList = newFileList
+      },
       beforeUpload(file) {
-        console.log(file.type)
+        this.handlePdfRemove(file);
         if (file.type === 'application/pdf'){
           const formData = new FormData();
-          formData.append('multipartFiles', file);
+          this.pdfFileList = [...this.pdfFileList, file];
+          this.pdfFileList.forEach((file) => {
+            formData.append('multipartFiles', file);
+          });
           // 手动上传
           this.uploadContract(formData).then((data) => {
             this.fileName = data.data.data;
             this.$message.success('文件已上传');
-            return true;
           }).catch((error) => {
-            console.log(error);
-            return false;
+            this.$message.error('上传失败');
           });
         } else {
           this.$message.error('只能上传.pdf文件类型');
-          return false;
+          this.handlePdfRemove(file);
         }
+        return false;
       },
       beforeUploadXls(file) {
+        this.handleExcelRemove(file);
         if (file.type === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' || file.type === 'application/vnd.ms-excel'){
           const formData = new FormData();
-          formData.append('multipartFiles', file);
+          this.excelFileList = [...this.excelFileList, file];
+          this.excelFileList.forEach((file) => {
+            formData.append('multipartFiles', file);
+          });
           // 手动上传
           this.contractInput(formData).then((data) => {
-            this.fileName = data.data.data;
             this.$message.success('文件已上传');
-            return true;
           }).catch((error) => {
+            this.$message.error('上传失败');
             console.log(error);
-            return false;
           });
-          return false;
         } else {
           this.$message.error('只能上传.xls或者.xlsx文件类型');
-          return false;
+          this.handleExcelRemove(file);
         }
+        return false;
       },
     },
   }

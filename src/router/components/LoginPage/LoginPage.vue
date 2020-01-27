@@ -179,7 +179,7 @@
                 this.$message.error(data.data.meta.message);
               }
             }).catch((error) => {
-              this.$message.error(error);
+              this.$message.error('网络错误');
             });
           }
         });

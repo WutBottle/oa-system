@@ -82,12 +82,15 @@
           <a-form-item
                   :wrapper-col="buttonItemLayout.wrapperCol"
           >
-            <a-popconfirm title="确定删除?" @confirm="handleDelete" @cancel="cancelDelete" okText="确定" cancelText="取消">
+            <a-popconfirm v-if="!!this.contractIds.length" title="确定删除?" @confirm="handleDelete" @cancel="cancelDelete" okText="确定" cancelText="取消">
               <a-icon slot="icon" type="question-circle-o" style="color: red" />
               <a-button :disabled="!this.contractIds.length" type="danger">
                 批量删除
               </a-button>
             </a-popconfirm>
+            <a-button v-else :disabled="!this.contractIds.length" type="danger">
+              批量删除
+            </a-button>
           </a-form-item>
         </a-form>
         <div class="info-wrapper">
@@ -457,7 +460,7 @@
           link.click();
           this.$message.success("导出成功");
         }).catch((error) => {
-          console.log(error);
+          this.$message.success("导出失败");
         });
       },
       onSelectChange(selectedRowKeys) {
@@ -473,6 +476,7 @@
         }).then((data) => {
           this.$message.success('删除成功');
           this.setSelectedRowKeys([]);
+          this.contractIds = [];
           this.updateTableData();
         }).catch((error) => {
           this.$message.error(error)

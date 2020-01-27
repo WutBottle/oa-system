@@ -418,6 +418,34 @@
                 <p class="ant-upload-text">点击或拖拽文件导入</p>
                 <p class="ant-upload-hint">将合同信息的excel文件拖入此处上传录入</p>
               </a-upload-dragger>
+              <a-list
+                      bordered
+                      size="small"
+                      class="contract-list"
+                      itemLayout="horizontal"
+                      :dataSource="contractsData"
+                      style="margin-top: 8px"
+              >
+                <a-list-item slot="renderItem" slot-scope="item, index">
+                  <a-list-item-meta>
+                    <a slot="title" @click="showDrawer(index)">合同{{item.contractId}}</a>
+                  </a-list-item-meta>
+                </a-list-item>
+              </a-list>
+              <a-drawer
+                      title="合同详情"
+                      placement="right"
+                      :width="720"
+                      :closable="false"
+                      @close="onClose"
+                      :visible="visible"
+              >
+                <a-list :grid="{ gutter: 8, column: 2}" :dataSource="contractData">
+                  <a-list-item slot="renderItem" slot-scope="item, index">
+                    <a-card :title="item.title">{{item.value}}</a-card>
+                  </a-list-item>
+                </a-list>
+              </a-drawer>
             </a-affix>
           </div>
         </a-col>
@@ -428,6 +456,7 @@
 
 <script>
   import {mapState, mapActions} from 'vuex'
+  import moment from 'moment'
 
   const formItemLayout = {
     labelCol: {span: 6},
@@ -448,6 +477,125 @@
         fileName: '',
         pdfFileList: [],
         excelFileList: [],
+        contractsData: [],
+        visible: false,
+        contractData: [
+          {
+            key: 'contractId',
+            title: '合同号',
+            value: '',
+          },
+          {
+            key: 'contractName',
+            title: '合同名称',
+            value: '',
+          },
+          {
+            key: 'ownerId',
+            title: '发包人合同编号',
+            value: '',
+          },
+          {
+            key: 'designId',
+            title: '设计编号',
+            value: '',
+          },
+          {
+            key: 'contractAmount',
+            title: '合同额(元)',
+            value: '',
+          },
+          {
+            key: 'actualDate',
+            title: '实际签约日期',
+            value: '',
+          },
+          {
+            key: 'contractDate',
+            title: '合同归档日期',
+            value: '',
+          },
+          {
+            key: 'departmentDesign',
+            title: '主设计部门',
+            value: '',
+          },
+          {
+            key: 'departmentRunning',
+            title: '经营部门',
+            value: '',
+          },
+          {
+            key: 'runningManager',
+            title: '经营经理',
+            value: '',
+          },
+          {
+            key: 'projectManager',
+            title: '项目经理',
+            value: '',
+          },
+          {
+            key: 'projectSecretary',
+            title: '项目预算秘书',
+            value: '',
+          },
+          {
+            key: 'owner',
+            title: '发包方',
+            value: '',
+          },
+          {
+            key: 'investment',
+            title: '投资额(万元)',
+            value: '',
+          },
+          {
+            key: 'scale',
+            title: '项目规模(平方米)',
+            value: '',
+          },
+          {
+            key: 'district',
+            title: '地区关键词',
+            value: '',
+          },
+          {
+            key: 'buildOne',
+            title: '建筑一级分类',
+            value: '',
+          },
+          {
+            key: 'buildTwo',
+            title: '建筑二级分类',
+            value: '',
+          },
+          {
+            key: 'sign',
+            title: '签约状态',
+            value: '',
+          },
+          {
+            key: 'region',
+            title: '地域',
+            value: '',
+          },
+          {
+            key: 'epc',
+            title: '是否EPC项目',
+            value: '',
+          },
+          {
+            key: 'projectCategory',
+            title: '项目类型',
+            value: '',
+          },
+          {
+            key: 'contractNodes',
+            title: '合同节点',
+            value: '',
+          },
+        ],
       };
     },
     computed: {
@@ -486,7 +634,7 @@
               values = Object.assign(values, {contractFile: this.fileName});
               values = Object.assign(values, {projectCategory: projectCategory});
               this.addContract(values).then((data) => {
-                this.$message.success(data.data);
+                this.$message.success(data.data.data);
               }).catch((error) => {
                 this.$message.error('文件已上传');
               });
@@ -530,6 +678,7 @@
       beforeUploadXls(file) {
         this.handleExcelRemove(file);
         if (file.type === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' || file.type === 'application/vnd.ms-excel') {
+          this.contractsData = []; // 初始化录入合同列表
           const formData = new FormData();
           this.excelFileList = [...this.excelFileList, file];
           this.excelFileList.forEach((file) => {
@@ -537,7 +686,13 @@
           });
           // 手动上传
           this.contractInput(formData).then((data) => {
-            this.$message.success('文件已上传');
+            for (let i = 1; i < data.data.data.inputSize + 1; i++) {
+              this.$notification.open({
+                message: data.data.data[i],
+                icon: data.data.data[i].indexOf('添加成功') != -1 ? <a-icon type="check-circle" style="color: green" /> : <a-icon type="close-circle" style="color: red" />,
+            });
+              this.contractsData = data.data.data.contracts;
+            }
           }).catch((error) => {
             this.$message.error('上传失败');
             console.log(error);
@@ -547,6 +702,59 @@
           this.handleExcelRemove(file);
         }
         return false;
+      },
+      showDrawer(index) {
+        this.handleContractsData(index);
+        this.visible = true
+      },
+      handleContractsData(contractIndex){
+        this.contractData.forEach((item, index) => {
+          switch (this.contractData[index].key) {
+            case 'contractDate':
+              this.contractData[index].value = moment(this.contractsData[contractIndex][item.key]).format('YYYY-MM-DD HH:mm:ss');
+              break;
+            case 'actualDate':
+              this.contractData[index].value = moment(this.contractsData[contractIndex][item.key]).format('YYYY-MM-DD HH:mm:ss');
+              break;
+            case 'sign':
+              if (this.contractsData[contractIndex][item.key] === true){
+                this.contractData[index].value = '已签约'
+              }else {
+                this.contractData[index].value = '未签约'
+              }
+              break;
+            case 'region':
+              if (this.contractsData[contractIndex][item.key] === true){
+                this.contractData[index].value = '省内'
+              }else {
+                this.contractData[index].value = '省外'
+              }
+              break;
+            case 'epc':
+              if (this.contractsData[contractIndex][item.key] === true){
+                this.contractData[index].value = '是'
+              }else {
+                this.contractData[index].value = '否'
+              }
+              break;
+            case 'projectCategory':
+              this.contractData[index].value = this.contractsData[contractIndex][item.key].projectCategoryName
+              break;
+            case 'contractNodes':
+              let temp = '';
+              this.contractsData[contractIndex][item.key].forEach((item) => {
+                temp += item.nodeDescription;
+              });
+              this.contractData[index].value = temp;
+              break;
+            default:
+              this.contractData[index].value = this.contractsData[contractIndex][item.key];
+              break;
+          }
+        })
+      },
+      onClose() {
+        this.visible = false
       },
     },
   }

@@ -80,6 +80,7 @@
             </a-button>
           </a-form-item>
           <a-form-item
+                  v-if="this.role === 'ROLE_ADMIN'"
                   :wrapper-col="buttonItemLayout.wrapperCol"
           >
             <a-popconfirm v-if="!!this.contractIds.length" title="确定删除?" @confirm="handleDelete" @cancel="cancelDelete" okText="确定" cancelText="取消">
@@ -101,7 +102,7 @@
             <a-table bordered :columns="columns" :dataSource="tableData"
                      :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
                      :pagination="paginationProps"
-                     @change="handleTableChange" :scroll="{ x: 'max-content'}">
+                     @change="handleTableChange" :scroll="{ x: 'max-content', y: 500}">
               <span slot="serial" slot-scope="text, record, index">
                 {{ index + 1 }}
               </span>
@@ -123,15 +124,29 @@
                   下载文件
                 </a-button>
               </span>
+              <a slot="operation" slot-scope="text, record" @click="handleContractEdit(record)">修改</a>
             </a-table>
           </a-spin>
         </div>
+        <a-drawer
+                title="修改合同"
+                placement="right"
+                width="550"
+                :closable="false"
+                @close="onEditClose"
+                :visible="editVisible"
+        >
+          <UpdateContract :formData="this.contractEditData" :projectCategoryList="this.projectCategoryList"></UpdateContract>
+        </a-drawer>
       </div>
     </div>
   </div>
 </template>
 
 <script>
+  import {mapState, mapMutations, mapActions} from 'vuex'
+  import UpdateContract from "../UpdateContract/UpdateContract";
+  import moment from "moment";
   const statusMap = {
     true: {
       status: 'success',
@@ -142,10 +157,11 @@
       text: '未签约'
     }
   };
-  import {mapState, mapMutations, mapActions} from 'vuex'
-
   export default {
     name: "ListPage",
+    components:{
+      UpdateContract,
+    },
     data() {
       return {
         formLayout: 'inline',
@@ -178,7 +194,6 @@
           {
             title: '签约状态',
             width: 100,
-            fixed: 'left',
             dataIndex: 'signState',
             key: 'signState',
             scopedSlots: {customRender: 'signState'}
@@ -203,14 +218,14 @@
           },
           {
             title: '合同节点',
-            width: 100,
+            width: 200,
             key: 'contractNodes',
             dataIndex: 'contractNodes',
             scopedSlots: {customRender: 'contractNodes'}
           },
           {
             title: '合同额(元)',
-            width: 100,
+            width: 150,
             key: 'contractAmount',
             dataIndex: 'contractAmount',
           },
@@ -258,7 +273,7 @@
           },
           {
             title: '项目类别',
-            width: 150,
+            width: 250,
             key: 'itemCategory',
             dataIndex: 'itemCategory',
             scopedSlots: {customRender: 'itemCategory'}
@@ -280,6 +295,12 @@
             width: 150,
             key: 'projectManager',
             dataIndex: 'projectManager',
+          },
+          {
+            title: '经营经理',
+            width: 150,
+            key: 'runningManager',
+            dataIndex: 'runningManager',
           },
           {
             title: '项目预算秘书',
@@ -337,7 +358,6 @@
             scopedSlots: {customRender: 'epc'}
           },
           {
-            fixed: 'right',
             width: 150,
             title: '合同扫描文件',
             key: 'contractFile',
@@ -345,6 +365,8 @@
             scopedSlots: {customRender: 'contractFile'}
           },
         ],
+        editVisible: false, // 编辑窗口参数
+        contractEditData: [], // 需要编辑的合同表单数据
       }
     },
     computed: {
@@ -354,6 +376,8 @@
         paginationProps: state => state.contractList.paginationProps, // 分页选项
         tableData: state => state.contractList.tableData, // 合同数据
         selectedRowKeys: state => state.contractList.selectedRowKeys, //选中的keys
+        role: state => state.userOperation.role,
+        projectCategoryList: state => state.contractList.projectCategoryList,// 项目类型
       }),
       messageContent() {
         return <span>已选择:<a>{this.countNum}< /a>&nbsp;&nbsp;合同金额总计<a>{this.totalMoney}元</a></span>;
@@ -370,6 +394,17 @@
     mounted() {
       this.spinning = true;
       this.updateTableData();
+      this.getProjectCategoryList();
+      if (this.role === 'ROLE_ADMIN') {
+        const adminMenu = {
+          title: '编辑合同',
+          key: 'operation',
+          fixed: 'right',
+          width: 100,
+          scopedSlots: { customRender: 'operation' },
+        };
+        this.columns.push(adminMenu);
+      }
     },
     methods: {
       ...mapMutations({
@@ -379,7 +414,8 @@
         downloadContract: 'contractList/downloadContract',
         getContractListById: 'contractList/getContractListById',
         exportContract: 'contractList/exportContract',
-        deleteContract: 'contractList/deleteContract'
+        deleteContract: 'contractList/deleteContract',
+        getProjectCategoryList: 'contractList/getProjectCategoryList',
       }),
       updateTableData() {
         const params = {
@@ -485,6 +521,22 @@
       cancelDelete () {
         this.$message.info('取消删除')
       },
+      handleContractEdit(selectContractData) {
+        // 初始化输入数据
+        this.contractEditData = JSON.parse(JSON.stringify(selectContractData));
+        let tempNodes = [];
+        this.contractEditData.contractNodes.map((item) => {
+          tempNodes.push(item.nodeDescription);
+        });
+        this.contractEditData.contractNodes = tempNodes;
+        this.contractEditData.itemCategory = this.projectCategoryList[this.projectCategoryList.findIndex((item) => this.contractEditData.itemCategory === item.projectCategoryName)].projectCategoryId;
+        this.contractEditData.contractFilingDate = moment(this.contractEditData.contractFilingDate);
+        this.contractEditData.actualSigningDate = moment(this.contractEditData.actualSigningDate);
+        this.editVisible = true;
+      },
+      onEditClose() {
+        this.editVisible = false;
+      }
     }
   }
 </script>

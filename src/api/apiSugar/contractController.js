@@ -41,6 +41,10 @@ const contractController = {
     deleteContract(params) {
       return axios.post(`${baseUrl.contractController}/deleteContract`, params);
     },
+    // 修改合同信息
+    verifyContract(params) {
+      return axios.post(`${baseUrl.contractController}/verifyContract`, params);
+    },
   }
 ;
 

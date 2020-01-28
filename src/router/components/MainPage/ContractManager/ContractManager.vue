@@ -612,7 +612,6 @@
         getProjectCategoryList: 'contractList/getProjectCategoryList',
         contractInput: 'contractList/contractInput',
         addContract: 'contractList/addContract',
-        deleteContract: 'contractList/deleteContract'
       }),
       check() {
         this.form.validateFields(

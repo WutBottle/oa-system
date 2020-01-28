@@ -16,7 +16,7 @@ const state = {
     total: 0,
     current: 1,
   },
-  projectCategoryList: [],
+  projectCategoryList: [], // 拉取的项目类型
   tableData: [],
 };
 
@@ -53,6 +53,7 @@ const mutations = {
         mainDesignDepartment: item.departmentDesign, // 主设计部门
         managementDepartment: item.departmentRunning, // 经营部门
         projectManager: item.projectManager, // 项目经理
+        runningManager: item.runningManager, // 经营经理
         projectSecretary: item.projectSecretary, // 项目预算秘书
         contractingParty: item.owner, // 发包方
         investmentAmount: item.investment, // 投资额(万元)
@@ -162,6 +163,17 @@ const actions = {
         resolve(res);
       }).catch(error => {
         console.log(error, '删除失败');
+        reject(error);
+      });
+    });
+  },
+  // 修改合同信息
+  verifyContract({commit}, params) {
+    return new Promise((resolve, reject) => {
+      api.contractController.verifyContract(params).then(res => {
+        resolve(res);
+      }).catch(error => {
+        console.log(error, '修改失败');
         reject(error);
       });
     });

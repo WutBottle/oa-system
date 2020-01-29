@@ -178,6 +178,17 @@ const actions = {
       });
     });
   },
+  // 获取合同id迷糊查询列表
+  getContractIdsByIdLike({commit}, params) {
+    return new Promise((resolve, reject) => {
+      api.contractController.getContractIdsByIdLike(params).then(res => {
+        resolve(res);
+      }).catch(error => {
+        console.log(error, '获取失败');
+        reject(error);
+      });
+    });
+  },
 };
 
 export default {

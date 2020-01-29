@@ -4,10 +4,12 @@
 import userController from './userController';
 import contractController from './contractController';
 import projectCategoryController from './projectCategoryController';
+import receiptController from './receiptController';
 
 // 导出接口
 export default {
   userController: userController,// 用户管理
   contractController: contractController,// 合同管理
   projectCategoryController: projectCategoryController, // 项目类型管理
+  receiptController: receiptController, // 发票管理
 }

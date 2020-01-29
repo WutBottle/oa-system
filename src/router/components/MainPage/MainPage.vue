@@ -270,11 +270,15 @@
       if (this.role === 'ROLE_ADMIN') {
         const adminMenu = {
           name: "数据管理",
-          iconType: "user",
+          iconType: "file-text",
           sideBars: [
             {
               name: "合同录入",
               router: "/main/contractmanager",
+            },
+            {
+              name: "发票录入",
+              router: "/main/invoice",
             }
           ]
         };

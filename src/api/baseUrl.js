@@ -10,6 +10,7 @@ const distributeUrl = {
   userController: serverBaseUrl + 'tokens',
   contractController: serverBaseUrl + 'contract',
   projectCategoryController: serverBaseUrl + 'projectCategory',
+  receiptController: serverBaseUrl + 'receipt',
 };
 
 export default distributeUrl;

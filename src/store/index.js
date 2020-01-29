@@ -5,6 +5,7 @@ import getters from './getters'
 import userOperation from './modules/userOperation'
 import contractList from './modules/contractList'
 import permission from './modules/permission'
+import receiptOperation from './modules/receiptOperation'
 
 Vue.use(Vuex);
 
@@ -12,7 +13,8 @@ const store = new Vuex.Store({
   modules: {
     userOperation, //登录
     contractList, //合同信息
-    permission,
+    permission, // 权限控制
+    receiptOperation, // 发票信息
   },
   getters
 });

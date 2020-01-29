@@ -45,6 +45,10 @@ const contractController = {
     verifyContract(params) {
       return axios.post(`${baseUrl.contractController}/verifyContract`, params);
     },
+    // 获取合同id迷糊查询列表
+    getContractIdsByIdLike(params) {
+      return axios.post(`${baseUrl.contractController}/getContractIdsByIdLike`, params);
+    },
   }
 ;
 

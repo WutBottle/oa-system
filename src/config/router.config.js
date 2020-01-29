@@ -50,7 +50,12 @@ export const constantRouterMap = [
         path: 'contractmanager',
         name: 'ContractManager',
         component: () => import('components/MainPage/ContractManager/ContractManager'),
-      }
+      },
+      {
+        path: 'invoice',
+        name: 'invoice',
+        component: () => import('components/MainPage/InvoicePage/InvoicePage'),
+      },
     ]
   }
 ];

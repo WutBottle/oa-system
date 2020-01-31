@@ -397,12 +397,14 @@
                       :label-col="formTailLayout.labelCol"
                       :wrapper-col="formTailLayout.wrapperCol"
               >
-                <a-button
-                        type="primary"
-                        @click="check"
-                >
-                  提交
-                </a-button>
+                <a-spin :spinning="uploadSpinning">
+                  <a-button
+                          type="primary"
+                          @click="check"
+                  >
+                    提交
+                  </a-button>
+                </a-spin>
               </a-form-item>
             </a-form>
           </div>
@@ -596,6 +598,7 @@
             value: '',
           },
         ],
+        uploadSpinning: false, // 判断是否正在上传文件
       };
     },
     computed: {
@@ -614,7 +617,7 @@
         addContract: 'contractList/addContract',
       }),
       check() {
-        this.form.validateFields(
+        this.uploadController && this.form.validateFields(
           (err, values) => {
             if (!err) {
               let projectCategory = {};
@@ -645,7 +648,7 @@
         const index = this.pdfFileList.indexOf(file);
         const newFileList = this.pdfFileList.slice();
         newFileList.splice(index, 1);
-        this.pdfFileList = newFileList
+        this.pdfFileList = newFileList;
       },
       handleExcelRemove(file) {
         const index = this.excelFileList.indexOf(file);
@@ -654,6 +657,7 @@
         this.excelFileList = newFileList
       },
       beforeUpload(file) {
+        this.uploadSpinning = true;
         this.handlePdfRemove(file);
         if (file.type === 'application/pdf') {
           const formData = new FormData();
@@ -665,12 +669,15 @@
           this.uploadContract(formData).then((data) => {
             this.fileName = data.data.data;
             this.$message.success('文件已上传');
+            this.uploadSpinning = false;
           }).catch((error) => {
             this.$message.error('上传失败');
+            this.uploadSpinning = false;
           });
         } else {
           this.$message.error('只能上传.pdf文件类型');
           this.handlePdfRemove(file);
+          this.uploadSpinning = false;
         }
         return false;
       },

@@ -15,7 +15,18 @@ const receiptController = {
     // 根据合同查询发票信息
     getReceiptsByContractId(params) {
       return axios.post(`${baseUrl.receiptController}/getReceiptsByContractId`, params);
-    }
+    },
+    // 添加发票信息
+    addReceipt(params) {
+      return axios.post(`${baseUrl.receiptController}/addReceipt`, params);
+    },
+    // 修改发票信息
+    verifyReceipt(params) {
+      return axios.post(`${baseUrl.receiptController}/verifyReceipt`, params);
+    },
+    deleteReceipt(params) {
+      return axios.post(`${baseUrl.receiptController}/deleteReceipt`, params);
+    },
   }
 ;
 

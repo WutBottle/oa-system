@@ -27,6 +27,7 @@ const receiptController = {
     deleteReceipt(params) {
       return axios.post(`${baseUrl.receiptController}/deleteReceipt`, params);
     },
+
   }
 ;
 

@@ -31,14 +31,6 @@
           margin-bottom: 18px;
         }
 
-        .info-wrapper {
-          margin-bottom: 16px;
-
-          a {
-            font-weight: 600;
-          }
-        }
-
         .table-wrapper {
         }
       }
@@ -94,9 +86,6 @@
             </a-button>
           </a-form-item>
         </a-form>
-        <div class="info-wrapper">
-          <a-alert :message="messageContent" type="info" showIcon/>
-        </div>
         <div class="table-wrapper">
           <a-spin :spinning="spinning" tip="Loading...">
             <a-table bordered :columns="columns" :dataSource="tableData"
@@ -111,7 +100,7 @@
               </span>
               <span slot="contractNodes" slot-scope="tags">
                 <a-tag v-for="tag in tags" color="green"
-                       :key="tag.nodeDescription">{{tag.nodeDescription}}</a-tag>
+                       :key="tag.nodeId">{{tag.nodeDescription}}</a-tag>
               </span>
               <span slot="itemCategory" slot-scope="tag">
                 <a-tag v-if="!!tag" color="blue">{{tag}}</a-tag>
@@ -136,7 +125,7 @@
                 @close="onEditClose"
                 :visible="editVisible"
         >
-          <UpdateContract :formData="this.contractEditData" :projectCategoryList="this.projectCategoryList"></UpdateContract>
+          <UpdateContract @refreshData="afterEditData" :formData="this.contractEditData" :projectCategoryList="this.projectCategoryList"></UpdateContract>
         </a-drawer>
       </div>
     </div>
@@ -371,17 +360,12 @@
     },
     computed: {
       ...mapState({
-        countNum: state => state.contractList.countNum,// 选择合同数
-        totalMoney: state => state.contractList.totalMoney, // 合同总金额
         paginationProps: state => state.contractList.paginationProps, // 分页选项
         tableData: state => state.contractList.tableData, // 合同数据
         selectedRowKeys: state => state.contractList.selectedRowKeys, //选中的keys
         role: state => state.userOperation.role,
         projectCategoryList: state => state.contractList.projectCategoryList,// 项目类型
       }),
-      messageContent() {
-        return <span>已选择:<a>{this.countNum}< /a>&nbsp;&nbsp;合同金额总计<a>{this.totalMoney}元</a></span>;
-      },
     },
     filters: {
       statusFilter(type) {
@@ -392,7 +376,6 @@
       }
     },
     mounted() {
-      this.spinning = true;
       this.updateTableData();
       this.getProjectCategoryList();
       if (this.role === 'ROLE_ADMIN') {
@@ -418,6 +401,7 @@
         getProjectCategoryList: 'contractList/getProjectCategoryList',
       }),
       updateTableData() {
+        this.spinning = true;
         const params = {
           contractId: this.contractId,
           pageNum: this.paginationProps.current,
@@ -536,6 +520,10 @@
       },
       onEditClose() {
         this.editVisible = false;
+      },
+      afterEditData() {
+        this.editVisible = false;
+        this.updateTableData();
       }
     }
   }

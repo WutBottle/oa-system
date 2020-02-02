@@ -6,8 +6,6 @@ import api from '@/api/apiSugar'
 import moment from 'moment'
 
 const state = {
-  countNum: 0,
-  totalMoney: 0,
   selectedRowKeys: [], // 选中的keys
   paginationProps: {
     pageSize: 10, // 默认每页显示数量
@@ -23,12 +21,6 @@ const state = {
 const mutations = {
   setSelectedRowKeys(state, data) {
     state.selectedRowKeys = data;
-    state.countNum = data.length;
-    let tempMoney = 0;
-    data.forEach((item) => {
-      tempMoney += state.tableData[item].contractAmount;
-    });
-    state.totalMoney = tempMoney;
   },
   setPageInfo(state, data) {
     state.paginationProps.total = data.totalElements;

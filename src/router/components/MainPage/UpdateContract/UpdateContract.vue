@@ -436,6 +436,8 @@
               this.verifyContract(values).then((data) => {
                 this.spinning = false;
                 this.$message.success(data.data.data);
+                this.form.resetFields();
+                this.$emit('refreshData');
               }).catch((error) => {
                 this.spinning = false;
                 this.$message.error('合同修改失败');

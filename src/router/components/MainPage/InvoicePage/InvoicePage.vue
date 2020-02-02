@@ -356,7 +356,6 @@
         contractsData: [],
         fetching: false,
         formLayout: 'inline',
-        invoiceId: '', // 发票id
         tableSpinning: false,
         columns: [
           {

@@ -279,6 +279,14 @@
             {
               name: "发票录入",
               router: "/main/invoice",
+            },
+            {
+              name: "现金录入",
+              router: "/main/cash",
+            },
+            {
+              name: "分包录入",
+              router: "/main/outsource",
             }
           ]
         };
@@ -299,6 +307,16 @@
             name: '合同列表',
             router: "/main/list",
             iconType: "table",
+          },
+          {
+            name: '现金发票',
+            router: "/main/receipt",
+            iconType: "snippets",
+          },
+          {
+            name: '分包列表',
+            router: "/main/outcontractlist",
+            iconType: "layout",
           },
           {
             name: '分析中心',

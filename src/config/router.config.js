@@ -32,6 +32,11 @@ export const constantRouterMap = [
         component: () => import('components/MainPage/ListPage/ListPage'),
       },
       {
+        path: 'receipt',
+        name: 'receipt',
+        component: () => import('components/MainPage/ReceiptPage/ReceiptPage'),
+      },
+      {
         path: 'analysis',
         name: 'analysis',
         component: () => import('components/MainPage/AnalysisPage/AnalysisPage'),
@@ -55,6 +60,21 @@ export const constantRouterMap = [
         path: 'invoice',
         name: 'invoice',
         component: () => import('components/MainPage/InvoicePage/InvoicePage'),
+      },
+      {
+        path: 'cash',
+        name: 'cash',
+        component: () => import('components/MainPage/CashPage/CashPage'),
+      },
+      {
+        path: 'outsource',
+        name: 'outsource',
+        component: () => import('components/MainPage/OutContractPage/OutContractPage'),
+      },
+      {
+        path: 'outcontractlist',
+        name: 'outcontractlist',
+        component: () => import('components/MainPage/OutContractListPage/OutContractListPage'),
       },
     ]
   }

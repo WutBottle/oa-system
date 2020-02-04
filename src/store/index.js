@@ -7,6 +7,7 @@ import contractList from './modules/contractList'
 import permission from './modules/permission'
 import receiptOperation from './modules/receiptOperation'
 import outContractOperation from './modules/outContractOperation'
+import cashOperation from './modules/cashOperation'
 
 Vue.use(Vuex);
 
@@ -17,6 +18,7 @@ const store = new Vuex.Store({
     permission, // 权限控制
     receiptOperation, // 发票信息
     outContractOperation, // 外包合同信息
+    cashOperation, // 现金回款信息
   },
   getters
 });

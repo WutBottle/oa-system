@@ -227,15 +227,23 @@
       },
       // 导出处理
       handleExport() {
-
-      },
-      // 批量删除外包合同
-      handleDelete() {
-
-      },
-      // 取消删除外包合同
-      cancelDelete() {
-
+        this.exportContract({
+          contractIds: this.contractIds
+        }).then((data) => {
+          if (!data.data) {
+            return
+          }
+          let url = window.URL.createObjectURL(new Blob([data.data]));
+          let link = document.createElement('a');
+          link.style.display = 'none';
+          link.href = url;
+          link.setAttribute('download', 'export.xls');
+          document.body.appendChild(link);
+          link.click();
+          this.$message.success("导出成功");
+        }).catch((error) => {
+          this.$message.success("导出失败");
+        });
       },
       // 处理对list中的合同选择
       onSelectChange(selectedRowKeys) {

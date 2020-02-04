@@ -346,7 +346,7 @@
       return {
         current: 0,
         steps: [{
-          title: '选择合同',
+          title: '选择合同号',
           type: 'searchContract',
         }, {
           title: '添加发票信息',

@@ -6,6 +6,7 @@ import contractController from './contractController';
 import projectCategoryController from './projectCategoryController';
 import receiptController from './receiptController';
 import outContractController from './outContractController';
+import cashController from './cashController';
 
 // 导出接口
 export default {
@@ -14,4 +15,5 @@ export default {
   projectCategoryController: projectCategoryController, // 项目类型管理
   receiptController: receiptController, // 发票管理
   outContractController: outContractController, // 外包合同管理
+  cashController: cashController, // 现金回款管理
 }

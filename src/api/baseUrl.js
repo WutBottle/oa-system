@@ -14,6 +14,7 @@ const distributeUrl = {
   outContractController: serverBaseUrl + 'outContract',
   outContractCategoryController: serverBaseUrl + 'outContractCategory',
   outProjectCategoryController: serverBaseUrl + 'outProjectCategory',
+  cashController: serverBaseUrl + 'cash',
 };
 
 export default distributeUrl;

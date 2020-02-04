@@ -385,7 +385,7 @@
       return {
         current: 0,
         steps: [{
-          title: '选择合同',
+          title: '选择合同号',
           type: 'searchContract',
         }, {
           title: '添加分包信息',
@@ -510,7 +510,6 @@
           pageNum: 1,
           pageLimit: 10,
         };
-        this.data = [];
         this.fetching = true;
         this.getContractIdsByIdLike(params).then((res) => {
           this.contractsData = res.data.data;
@@ -546,6 +545,7 @@
           this.tableSpinning = false;
         }).catch((error) => {
           this.$message.error(error);
+          this.tableSpinning = false;
         });
       },
       // 添加发票信息

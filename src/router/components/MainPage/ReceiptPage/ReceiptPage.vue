@@ -39,7 +39,39 @@
     </div>
     <div class="page-content">
       <a-tabs @change="callback" style="background-color: #fff; padding: 10px 20px 40px 20px">
-        <a-tab-pane tab="现金列表" key="cash">Content of Tab Pane 1</a-tab-pane>
+        <a-tab-pane tab="现金列表" key="cash">
+          <a-form class="form-wrapper" :layout="formLayout">
+            <a-form-item
+                    label="合同号"
+                    :label-col="formItemLayout.labelCol"
+                    :wrapper-col="formItemLayout.wrapperCol"
+            >
+              <a-select
+                      showSearch
+                      :value="cashContractId"
+                      placeholder="搜索合同号"
+                      :showArrow="false"
+                      style="width: 160px"
+                      :filterOption="false"
+                      @search="fetchCashContract"
+                      @change="handleCashContractChange"
+                      notFoundContent="无搜索结果"
+                      :defaultActiveFirstOption="false"
+              >
+                <a-spin v-if="fetching" slot="notFoundContent" size="small"/>
+                <a-select-option v-for="d in contractsData" :key="d">{{d}}</a-select-option>
+              </a-select>
+            </a-form-item>
+          </a-form>
+          <div class="table-wrapper">
+            <a-spin :spinning="cashSpinning" tip="Loading...">
+              <a-table bordered :columns="cashColumns" :dataSource="cashListTableData"
+                       :pagination="cashListPaginationProps"
+                       @change="handleCashTableChange" :scroll="{ x: 'max-content', y: 500}">
+              </a-table>
+            </a-spin>
+          </div>
+        </a-tab-pane>
         <a-tab-pane tab="发票列表" key="receipt">
           <a-form class="form-wrapper" :layout="formLayout">
             <a-form-item
@@ -79,6 +111,7 @@
 
 <script>
   import {mapState, mapActions} from 'vuex';
+  import {debounce} from 'debounce';
 
   const formItemLayout = {
     labelCol: {span: 6},
@@ -94,6 +127,7 @@
   export default {
     name: "ReceiptPage",
     data() {
+      this.fetchCashContract = debounce(this.fetchCashContract, 800);
       return {
         formItemLayout,
         formTailLayout,
@@ -153,17 +187,43 @@
             scopedSlots: {customRender: 'receiptFile'}
           },
         ], // 发票列表项
+        cashContractId: '',// 现金回款查询合同号
+        contractsData: [], // 获取的合同id列表
+        fetching: false, // 查询合同号加载控制
+        cashSpinning: false, // 现金回款加载控制
+        cashColumns: [
+          {
+            title: '现金回款日期',
+            width: 200,
+            key: 'cashDate',
+            dataIndex: 'cashDate',
+          }, {
+            title: '现金回款金额',
+            width: 200,
+            key: 'cashAmount',
+            dataIndex: 'cashAmount',
+          }, {
+            title: '对应合同节点',
+            width: 200,
+            key: 'nodeName',
+            dataIndex: 'nodeName',
+          },
+        ], // 现金回款列表项
       }
     },
     computed: {
       ...mapState({
         receiptListData: state => state.receiptOperation.receiptListData,// 发票list数据
         receiptPaginationProps: state => state.receiptOperation.receiptPaginationProps,// 发票list分页数据
+        cashListPaginationProps: state => state.cashOperation.cashListPaginationProps,// 现金列表分页数据
+        cashListTableData: state => state.cashOperation.cashListTableData,// 现金回款table数据
       }),
     },
     methods: {
       ...mapActions({
         getReceiptListByIdLike: 'receiptOperation/getReceiptListByIdLike',
+        getContractIdsByIdLike: 'contractList/getContractIdsByIdLike',
+        getCashesByContractId: 'cashOperation/getCashesByContractId',
       }),
       // 获取发票信息列表
       updateTableData() {
@@ -182,7 +242,7 @@
       },
       callback(key) {
         if (key === 'cash') {
-
+          this.updateCashTableData();
         } else {
           this.updateTableData();
         }
@@ -201,6 +261,49 @@
         this.receiptPaginationProps.current = pagination.current;
         this.receiptPaginationProps.pageSize = pagination.pageSize;
         this.updateTableData();
+      },
+      // 合同模糊查询
+      fetchCashContract(value) {
+        const params = {
+          contractId: value,
+          pageNum: 1,
+          pageLimit: 10,
+        };
+        this.fetching = true;
+        this.getContractIdsByIdLike(params).then((res) => {
+          this.contractsData = res.data.data;
+          this.fetching = false;
+        });
+      },
+      // 选择合同号处理
+      handleCashContractChange(value) {
+        Object.assign(this, {
+          cashContractId: value,
+          contractsData: [],
+          fetching: false,
+        });
+        this.updateCashTableData();
+      },
+      // 控制现金回款列表分页
+      handleCashTableChange(pagination) {
+        this.cashListPaginationProps.current = pagination.current;
+        this.cashListPaginationProps.pageSize = pagination.pageSize;
+        this.updateCashTableData();
+      },
+      // 现金回款列表数据更新
+      updateCashTableData() {
+        this.cashSpinning = true;
+        const params = {
+          contractId: this.cashContractId,
+          pageNum: this.cashListPaginationProps.current,
+          pageLimit: this.cashListPaginationProps.pageSize
+        };
+        this.getCashesByContractId(params).then((data) => {
+          this.cashSpinning = false;
+        }).catch((error) => {
+          this.$message.error(error);
+          this.cashSpinning = false;
+        });
       },
     }
   }

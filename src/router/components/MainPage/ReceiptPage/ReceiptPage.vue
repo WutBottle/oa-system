@@ -242,7 +242,6 @@
       },
       callback(key) {
         if (key === 'cash') {
-          this.updateCashTableData();
         } else {
           this.updateTableData();
         }

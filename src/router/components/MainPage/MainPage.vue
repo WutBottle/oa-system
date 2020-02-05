@@ -287,6 +287,10 @@
             {
               name: "分包录入",
               router: "/main/outsource",
+            },
+            {
+              name: "分包付款录入",
+              router: "/main/outcontractpaid",
             }
           ]
         };

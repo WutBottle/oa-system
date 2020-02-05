@@ -65,7 +65,14 @@
                   :wrapper-col="buttonItemLayout.wrapperCol"
           >
             <a-button :disabled="!this.selectedRowKeys.length" type="primary" @click="handleExport">
-              导出
+              分包导出
+            </a-button>
+          </a-form-item>
+          <a-form-item
+                  :wrapper-col="buttonItemLayout.wrapperCol"
+          >
+            <a-button :disabled="!this.selectedRowKeys.length" type="primary" @click="handlePaidExport">
+              分包回款导出
             </a-button>
           </a-form-item>
         </a-form>
@@ -74,17 +81,34 @@
             <a-table bordered :columns="columns" :dataSource="listTableData"
                      :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
                      :pagination="listPaginationProps"
-                     @change="handleTableChange" :scroll="{ x: 'max-content', y: 500}">
+                     @change="handleOutPaidTableChange" :scroll="{ x: 'max-content', y: 500}">
               <span slot="serial" slot-scope="text, record, index">
                 {{ index + 1 }}
               </span>
               <span slot="outContractCategory" slot-scope="id">{{outContractCategoryList[outContractCategoryList.findIndex((item) => item.outContractCategoryId === id)].outContractCategoryName}}</span>
               <span slot="outProjectCategory" slot-scope="id">{{outProjectCategoryList[outProjectCategoryList.findIndex((item) => item.outProjectCategoryId === id)].outProjectCategoryName}}</span>
+              <span slot="operation" slot-scope="text, record">
+                    <a @click="openOutPaid(record)">查看</a>
+              </span>
             </a-table>
           </a-spin>
         </div>
       </div>
     </div>
+    <a-modal
+            title="分包付款详情"
+            v-model="outPaidVisible"
+            okText="确定"
+            cancelText="取消"
+            width="700px"
+    >
+      <a-spin :spinning="outPaidTableSpinning">
+        <a-table bordered :columns="outPaidColumns" :dataSource="outPaidTableData"
+                 :pagination="outPaidPaginationProps"
+                 @change="handleOutPaidTableChange" :scroll="{ x:'max-content', y: 450}">
+        </a-table>
+      </a-spin>
+    </a-modal>
   </div>
 </template>
 
@@ -186,8 +210,36 @@
             width: 150,
             key: 'note',
             dataIndex: 'note',
+          }, {
+            title: '分包付款',
+            width: 100,
+            fixed: 'right',
+            key: 'operation',
+            scopedSlots: {customRender: 'operation'},
           }],
-
+        outContractValue: '', // 被选择的分包合同号
+        outPaidVisible: false, // 分包付款显示控制
+        outPaidColumns: [
+          {
+            title: '付费时间',
+            width: 200,
+            key: 'paidDate',
+            dataIndex: 'paidDate',
+          },
+          {
+            title: '付费金额(元)',
+            width: 200,
+            key: 'paidAmount',
+            dataIndex: 'paidAmount',
+          },
+          {
+            title: '备注',
+            width: 200,
+            key: 'paidNote',
+            dataIndex: 'paidNote',
+          }
+        ], // 分包付款表头
+        outPaidTableSpinning: false, // 分包付款信息加载控制
       }
     },
     computed: {
@@ -198,6 +250,8 @@
         listPaginationProps: state => state.outContractOperation.listPaginationProps, // 分页控制
         outContractCategoryList: state => state.outContractOperation.outContractCategoryList, // 外包类型选项
         outProjectCategoryList: state => state.outContractOperation.outProjectCategoryList, // 外包项目类型
+        outPaidTableData: state => state.outPaidOperation.tableData, // table数据
+        outPaidPaginationProps: state => state.outPaidOperation.paginationProps,// 分页控制
       }),
     },
     mounted() {
@@ -219,6 +273,9 @@
         getOutContractListByIdLike: 'outContractOperation/getOutContractListByIdLike',
         getOutContractCategoryList: 'outContractOperation/getOutContractCategoryList', // 获取分包类型
         getOutProjectCategoryList: 'outContractOperation/getOutProjectCategoryList', // 获取分包项目类型
+        getOutPaidsByOutContractId: 'outPaidOperation/getOutPaidsByOutContractId', // 获取分包付款信息
+        exportOutContract: 'outContractOperation/exportOutContract', // 导出分包合同
+        outPaidExport: 'outPaidOperation/outPaidExport', // 分包回款导出
       }),
       // 查询处理
       handleQuery() {
@@ -227,8 +284,8 @@
       },
       // 导出处理
       handleExport() {
-        this.exportContract({
-          contractIds: this.contractIds
+        this.exportOutContract({
+          outContractIds: this.outContractIds
         }).then((data) => {
           if (!data.data) {
             return
@@ -237,7 +294,27 @@
           let link = document.createElement('a');
           link.style.display = 'none';
           link.href = url;
-          link.setAttribute('download', 'export.xls');
+          link.setAttribute('download', 'outContractsExport.xlsx');
+          document.body.appendChild(link);
+          link.click();
+          this.$message.success("导出成功");
+        }).catch((error) => {
+          this.$message.success("导出失败");
+        });
+      },
+      // 分包回款导出
+      handlePaidExport() {
+        this.outPaidExport({
+          outContractIds: this.outContractIds
+        }).then((data) => {
+          if (!data.data) {
+            return
+          }
+          let url = window.URL.createObjectURL(new Blob([data.data]));
+          let link = document.createElement('a');
+          link.style.display = 'none';
+          link.href = url;
+          link.setAttribute('download', 'outPaidExport.xlsx');
           document.body.appendChild(link);
           link.click();
           this.$message.success("导出成功");
@@ -272,6 +349,7 @@
       },
       // 更新列表数据
       updateTableData() {
+        this.setSelectedRowKeys([]);
         this.spinning = true;
         this.setSelectedRowKeys([]);
         const params = {
@@ -285,6 +363,32 @@
           this.spinning = false;
           this.$message.error(error);
         });
+      },
+      // 刷新分包付款
+      updateOutPaidTableData() {
+        this.outPaidTableSpinning = true;
+        const params = {
+          outContractId: this.outContractValue,
+          pageNum: this.outPaidPaginationProps.current,
+          pageLimit: this.outPaidPaginationProps.pageSize
+        };
+        this.getOutPaidsByOutContractId(params).then((data) => {
+          this.outPaidTableSpinning = false;
+        }).catch((error) => {
+          this.$message.error(error);
+          this.outPaidTableSpinning = false;
+        });
+      },
+      // 查看分包付款
+      openOutPaid(selectOutPaidData) {
+        this.outContractValue = selectOutPaidData.outContractId;
+        this.outPaidVisible = true;
+        this.updateOutPaidTableData();
+      },
+      handleOutPaidTableChange(pagination) {
+        this.outPaidPaginationProps.current = pagination.current;
+        this.outPaidPaginationProps.pageSize = pagination.pageSize;
+        this.updateOutPaidTableData();
       },
     }
   }

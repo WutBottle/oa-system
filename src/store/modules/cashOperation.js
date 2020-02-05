@@ -84,6 +84,17 @@ const actions = {
       });
     });
   },
+  // 合同现金发票导出
+  cashExport({commit}, params) {
+    return new Promise((resolve, reject) => {
+      api.cashController.cashExport(params).then(res => {
+        resolve(res);
+      }).catch(error => {
+        console.log(error, '现金发票导出失败');
+        reject(error);
+      });
+    });
+  },
 };
 
 export default {

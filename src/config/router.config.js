@@ -76,6 +76,11 @@ export const constantRouterMap = [
         name: 'outcontractlist',
         component: () => import('components/MainPage/OutContractListPage/OutContractListPage'),
       },
+      {
+        path: 'outcontractpaid',
+        name: 'outcontractpaid',
+        component: () => import('components/MainPage/OutContractPaidPage/OutContractPaidPage'),
+      },
     ]
   }
 ];

@@ -68,7 +68,14 @@
                   :wrapper-col="buttonItemLayout.wrapperCol"
           >
             <a-button :disabled="!this.selectedRowKeys.length" type="primary" @click="handleExport">
-              导出
+              合同导出
+            </a-button>
+          </a-form-item>
+          <a-form-item
+                  :wrapper-col="buttonItemLayout.wrapperCol"
+          >
+            <a-button :disabled="!this.selectedRowKeys.length" type="primary" @click="handleCashExport">
+              现金发票导出
             </a-button>
           </a-form-item>
           <a-form-item
@@ -399,8 +406,10 @@
         exportContract: 'contractList/exportContract',
         deleteContract: 'contractList/deleteContract',
         getProjectCategoryList: 'contractList/getProjectCategoryList',
+        cashExport: 'cashOperation/cashExport'
       }),
       updateTableData() {
+        this.setSelectedRowKeys([]);
         this.spinning = true;
         const params = {
           contractId: this.contractId,
@@ -475,7 +484,26 @@
           let link = document.createElement('a');
           link.style.display = 'none';
           link.href = url;
-          link.setAttribute('download', 'export.xls');
+          link.setAttribute('download', 'export.xlsx');
+          document.body.appendChild(link);
+          link.click();
+          this.$message.success("导出成功");
+        }).catch((error) => {
+          this.$message.success("导出失败");
+        });
+      },
+      handleCashExport() {
+        this.cashExport({
+          contractIds: this.contractIds
+        }).then((data) => {
+          if (!data.data) {
+            return
+          }
+          let url = window.URL.createObjectURL(new Blob([data.data]));
+          let link = document.createElement('a');
+          link.style.display = 'none';
+          link.href = url;
+          link.setAttribute('download', 'cashReceiptExport.xlsx');
           document.body.appendChild(link);
           link.click();
           this.$message.success("导出成功");

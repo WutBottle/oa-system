@@ -8,6 +8,7 @@ import permission from './modules/permission'
 import receiptOperation from './modules/receiptOperation'
 import outContractOperation from './modules/outContractOperation'
 import cashOperation from './modules/cashOperation'
+import outPaidOperation from "./modules/outPaidOperation";
 
 Vue.use(Vuex);
 
@@ -19,6 +20,7 @@ const store = new Vuex.Store({
     receiptOperation, // 发票信息
     outContractOperation, // 外包合同信息
     cashOperation, // 现金回款信息
+    outPaidOperation, // 分包付款信息
   },
   getters
 });

@@ -36,6 +36,16 @@ const outContractController = {
   deleteOutContract(params) {
     return axios.post(`${baseUrl.outContractController}/deleteOutContract`, params);
   },
+  // 根据id模糊查询分包合同
+  getOutContractIdsByIdLike(params) {
+    return axios.post(`${baseUrl.outContractController}/getOutContractIdsByIdLike`, params);
+  },
+  // 分包合同导出
+  exportOutContract(params) {
+    return axios.post(`${baseUrl.outContractController}/export`, params, {
+      responseType: 'blob'
+    });
+  },
 };
 
 export default outContractController;

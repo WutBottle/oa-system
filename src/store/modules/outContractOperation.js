@@ -161,6 +161,27 @@ const actions = {
       });
     });
   },
+  getOutContractIdsByIdLike({commit}, params) {
+    return new Promise((resolve, reject) => {
+      api.outContractController.getOutContractIdsByIdLike(params).then(res => {
+        resolve(res);
+      }).catch(error => {
+        console.log(error, '获取外包合同失败');
+        reject(error);
+      });
+    });
+  },
+  // 导出分包合同
+  exportOutContract({commit}, params) {
+    return new Promise((resolve, reject) => {
+      api.outContractController.exportOutContract(params).then(res => {
+        resolve(res);
+      }).catch(error => {
+        console.log(error, '导出分包合同失败');
+        reject(error);
+      });
+    });
+  },
 };
 
 export default {

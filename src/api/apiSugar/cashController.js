@@ -24,7 +24,12 @@ const cashController = {
   deleteCash(params) {
     return axios.post(`${baseUrl.cashController}/deleteCash`, params);
   },
-
+  // 现金发票导出
+  cashExport(params) {
+    return axios.post(`${baseUrl.cashController}/export`, params, {
+      responseType: 'blob'
+    });
+  },
 };
 
 export default cashController;

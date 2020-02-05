@@ -98,9 +98,8 @@
     <a-modal
             title="分包付款详情"
             v-model="outPaidVisible"
-            okText="确定"
-            cancelText="取消"
             width="700px"
+            :footer="null"
     >
       <a-spin :spinning="outPaidTableSpinning">
         <a-table bordered :columns="outPaidColumns" :dataSource="outPaidTableData"

@@ -98,6 +98,16 @@ const actions = {
       });
     });
   },
+  outPaidInput({commit}, params) {
+    return new Promise((resolve, reject) => {
+      api.outPaidController.outPaidInput(params).then(res => {
+        resolve(res);
+      }).catch(error => {
+        console.log(error, '分包回款导入失败');
+        reject(error);
+      });
+    });
+  },
 };
 
 export default {

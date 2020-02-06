@@ -53,7 +53,7 @@
         <a-breadcrumb-item><a href="/main/workplace">首页</a></a-breadcrumb-item>
         <a-breadcrumb-item>分包录入</a-breadcrumb-item>
       </a-breadcrumb>
-      <p class="title">分包录入</p>
+      <p class="title">分包录入<OutContractInput/></p>
     </div>
     <div class="page-content">
       <a-row style="background-color: #fff; padding: 24px;">
@@ -146,7 +146,13 @@
           <a-input
                   v-decorator="[
           'outContractId',
-          {rules: [{required: true, message: '请输入分包合同号!'}]}
+          {rules: [{
+            required: true, message: '请输入分包合同号!'
+          }, {
+                type: 'number',
+                message: '请输入数字',
+                transform:(value)=> {return Number(value)}
+          }]}
         ]"
                   placeholder="请输入分包合同号"
           />
@@ -182,7 +188,13 @@
           <a-input
                   v-decorator="[
           'outContractAmount',
-          {rules: [{required: true, message: '请输入分包合同金额!'}]}
+          {rules: [{
+            required: true, message: '请输入分包合同金额!'
+          }, {
+                type: 'number',
+                message: '请输入数字',
+                transform:(value)=> {return Number(value)}
+          }]}
         ]"
                   placeholder="请输入分包合同金额"
           />
@@ -292,7 +304,13 @@
           <a-input
                   v-decorator="[
           'outContractAmount',
-          {initialValue: this.editFormData.outContractAmount, rules: [{required: true, message: '请输入分包合同金额!'}]}
+          {initialValue: this.editFormData.outContractAmount, rules: [{
+            required: true, message: '请输入分包合同金额!'
+          }, {
+                type: 'number',
+                message: '请输入数字',
+                transform:(value)=> {return Number(value)}
+          }]}
         ]"
                   placeholder="请输入分包合同金额"
           />
@@ -368,6 +386,7 @@
   import {mapState, mapActions} from 'vuex';
   import {debounce} from 'debounce';
   import moment from 'moment'
+  import OutContractInput from "../OutContractInput/OutContractInput";
 
   const formItemLayout = {
     labelCol: {span: 6},
@@ -380,6 +399,9 @@
 
   export default {
     name: "OutContractPage",
+    components: {
+      OutContractInput,
+    },
     data() {
       this.fetchOutContract = debounce(this.fetchOutContract, 800);
       return {

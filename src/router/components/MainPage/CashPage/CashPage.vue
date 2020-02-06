@@ -53,7 +53,7 @@
         <a-breadcrumb-item><a href="/main/workplace">首页</a></a-breadcrumb-item>
         <a-breadcrumb-item>现金录入</a-breadcrumb-item>
       </a-breadcrumb>
-      <p class="title">现金录入</p>
+      <p class="title">现金录入<CashReceiptInput/></p>
     </div>
     <div class="page-content">
       <a-row style="background-color: #fff; padding: 24px;">
@@ -157,7 +157,13 @@
           <a-input
                   v-decorator="[
           'cashAmount',
-          {rules: [{required: true, message: '请输入现金回款金额!'}]}
+          {rules: [{
+            required: true, message: '请输入现金回款金额!'
+          }, {
+                type: 'number',
+                message: '请输入数字',
+                transform:(value)=> {return Number(value)}
+          }]}
         ]"
                   placeholder="请输入现金回款金额"
           />
@@ -226,7 +232,13 @@
           <a-input
                   v-decorator="[
           'cashAmount',
-          {initialValue: this.editFormData.cashAmount, rules: [{required: true, message: '请输入现金回款金额!'}]}
+          {initialValue: this.editFormData.cashAmount, rules: [{
+            required: true, message: '请输入现金回款金额!'
+          }, {
+                type: 'number',
+                message: '请输入数字',
+                transform:(value)=> {return Number(value)}
+          }]}
         ]"
                   placeholder="请输入现金回款金额"
           />
@@ -269,6 +281,7 @@
   import {mapState, mapActions} from 'vuex';
   import {debounce} from 'debounce';
   import moment from 'moment';
+  import CashReceiptInput from "../CashReceiptInput/CashReceiptInput";
 
   const formItemLayout = {
     labelCol: {span: 8},
@@ -280,6 +293,9 @@
   };
   export default {
     name: "CashPage",
+    components: {
+      CashReceiptInput,
+    },
     data() {
       this.fetchOutContract = debounce(this.fetchOutContract, 800);
       return {
@@ -389,7 +405,7 @@
         };
         this.fetching = true;
         this.getContractIdsByIdLike(params).then((res) => {
-          this.contractsData = res.data.data;
+          this.contractsData = res && res.data.data;
           this.fetching = false;
         });
       },

@@ -53,7 +53,7 @@
         <a-breadcrumb-item><a href="/main/workplace">首页</a></a-breadcrumb-item>
         <a-breadcrumb-item>发票录入</a-breadcrumb-item>
       </a-breadcrumb>
-      <p class="title">发票录入</p>
+      <p class="title">发票录入<CashReceiptInput/></p>
     </div>
     <div class="page-content">
       <a-row style="background-color: #fff; padding: 24px;">
@@ -151,7 +151,13 @@
           <a-input
                   v-decorator="[
           'receiptId',
-          {rules: [{required: true, message: '请输入发票号!'}]}
+          {rules: [{
+            required: true, message: '请输入发票号!'
+          }, {
+                type: 'number',
+                message: '请输入数字',
+                transform:(value)=> {return Number(value)}
+          }]}
         ]"
                   placeholder="请输入发票号"
           />
@@ -175,7 +181,13 @@
           <a-input
                   v-decorator="[
           'receiptAmount',
-          {rules: [{required: true, message: '请输入发票金额!'}]}
+          {rules: [{
+            required: true, message: '请输入发票金额!'
+          }, {
+                type: 'number',
+                message: '请输入数字',
+                transform:(value)=> {return Number(value)}
+          }]}
         ]"
                   placeholder="请输入发票金额"
           />
@@ -264,7 +276,13 @@
           <a-input
                   v-decorator="[
           'receiptAmount',
-          {initialValue: this.editFormData.receiptAmount, rules: [{required: true, message: '请输入发票金额!'}]}
+          {initialValue: this.editFormData.receiptAmount, rules: [{
+            required: true, message: '请输入发票金额!'
+          }, {
+                type: 'number',
+                message: '请输入数字',
+                transform:(value)=> {return Number(value)}
+          }]}
         ]"
                   placeholder="请输入发票金额"
           />
@@ -329,6 +347,7 @@
   import {mapState, mapActions} from 'vuex';
   import {debounce} from 'debounce';
   import moment from 'moment'
+  import CashReceiptInput from "../CashReceiptInput/CashReceiptInput";
 
   const formItemLayout = {
     labelCol: {span: 6},
@@ -341,6 +360,9 @@
 
   export default {
     name: "InvoicePage",
+    components: {
+      CashReceiptInput,
+    },
     data() {
       this.fetchContracts = debounce(this.fetchContracts, 800);
       return {

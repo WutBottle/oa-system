@@ -54,7 +54,13 @@
                 <a-input
                         v-decorator="[
           'contractId',
-          {rules: [{ required: true, message: '请输入合同号！' }]}
+          {rules: [{
+            required: true, message: '请输入合同号！'
+          }, {
+                type: 'number',
+                message: '请输入数字',
+                transform:(value)=> {return Number(value)}
+          }]}
         ]"
                         placeholder="请输入合同号"
                 />
@@ -80,7 +86,13 @@
                 <a-input
                         v-decorator="[
           'ownerId',
-          {rules: [{ required: true, message: '请输入发包人合同编号！' }]}
+          {rules: [{
+            required: true, message: '请输入发包人合同编号！'
+          }, {
+                type: 'number',
+                message: '请输入数字',
+                transform:(value)=> {return Number(value)}
+          }]}
         ]"
                         placeholder="请输入发包人合同编号"
                 />
@@ -125,7 +137,13 @@
                 <a-input
                         v-decorator="[
           'contractAmount',
-          {rules: [{ required: true, message: '请输入合同额！' }]}
+          {rules: [{
+            required: true, message: '请输入合同额！'
+          }, {
+                type: 'number',
+                message: '请输入数字',
+                transform:(value)=> {return Number(value)}
+          }]}
         ]"
                         placeholder="请输入合同额"
                 />
@@ -240,7 +258,13 @@
                 <a-input
                         v-decorator="[
           'investment',
-          {rules: [{ required: true, message: '请输入投资额！' }]}
+          {rules: [{
+            required: true, message: '请输入投资额！'
+          }, {
+                type: 'number',
+                message: '请输入数字',
+                transform:(value)=> {return Number(value)}
+          }]}
         ]"
                         placeholder="请输入投资额"
                 />
@@ -253,7 +277,13 @@
                 <a-input
                         v-decorator="[
           'scale',
-          {rules: [{ required: true, message: '请输入项目规模！' }]}
+          {rules: [{
+            required: true, message: '请输入项目规模！'
+          }, {
+                type: 'number',
+                message: '请输入数字',
+                transform:(value)=> {return Number(value)}
+          }]}
         ]"
                         placeholder="请输入项目规模"
                 />
@@ -617,7 +647,7 @@
         addContract: 'contractList/addContract',
       }),
       check() {
-        this.uploadController && this.form.validateFields(
+        this.form.validateFields(
           (err, values) => {
             if (!err) {
               let projectCategory = {};
@@ -638,7 +668,7 @@
               this.addContract(values).then((data) => {
                 this.$message.success(data.data.data);
               }).catch((error) => {
-                this.$message.error('文件已上传');
+                this.$message.error('添加失败');
               });
             }
           },
@@ -695,6 +725,7 @@
             for (let i = 1; i < data.data.data.inputSize + 1; i++) {
               this.$notification.open({
                 message: data.data.data[i],
+                duration: 10,
                 icon: data.data.data[i].indexOf('添加成功') != -1 ? <a-icon type="check-circle" style="color: green" /> : <a-icon type="close-circle" style="color: red" />,
             });
               this.contractsData = data.data.data.contracts;

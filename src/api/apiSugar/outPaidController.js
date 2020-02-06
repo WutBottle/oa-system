@@ -30,6 +30,12 @@ const outPaidController = {
       responseType: 'blob'
     });
   },
+  // 分包回款导入
+  outPaidInput(params) {
+    return axios.post(`${baseUrl.outPaidController}/input`, params, {
+      responseType: 'blob'
+    });
+  },
 };
 
 export default outPaidController;

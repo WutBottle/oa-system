@@ -30,6 +30,10 @@ const cashController = {
       responseType: 'blob'
     });
   },
+  // 现金发票导入
+  cashInput(params) {
+    return axios.post(`${baseUrl.cashController}/input`, params);
+  },
 };
 
 export default cashController;

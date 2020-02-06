@@ -46,6 +46,10 @@ const outContractController = {
       responseType: 'blob'
     });
   },
+  // 分包合同录入
+  outContractInput(params) {
+    return axios.post(`${baseUrl.outContractController}/input`, params);
+  },
 };
 
 export default outContractController;

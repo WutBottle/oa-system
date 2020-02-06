@@ -182,6 +182,17 @@ const actions = {
       });
     });
   },
+  // 分包合同录入
+  outContractInput({commit}, params) {
+    return new Promise((resolve, reject) => {
+      api.outContractController.outContractInput(params).then(res => {
+        resolve(res);
+      }).catch(error => {
+        console.log(error, '分包合同录入失败');
+        reject(error);
+      });
+    });
+  },
 };
 
 export default {

@@ -1,0 +1,69 @@
+<style lang="scss" scoped>
+  .CashReceiptInput {
+    padding-left: 24px;
+  }
+</style>
+
+<template>
+  <span class="CashReceiptInput">
+    <a-upload
+            :multiple="false" :fileList="fileList" :remove="handleExcelRemove"
+            :beforeUpload="beforeUploadXls"
+    >
+      <a-button> <a-icon type="upload" />一键导入</a-button>
+    </a-upload>
+  </span>
+</template>
+
+<script>
+  import {mapActions} from 'vuex'
+
+  export default {
+    name: "CashReceiptInput",
+    data() {
+      return {
+        fileList: [],
+      }
+    },
+    methods: {
+      ...mapActions({
+        cashInput: 'cashOperation/cashInput',
+      }),
+      handleExcelRemove(file) {
+        const index = this.fileList.indexOf(file);
+        const newFileList = this.fileList.slice();
+        newFileList.splice(index, 1);
+        this.fileList = newFileList
+      },
+      beforeUploadXls(file) {
+        this.handleExcelRemove(file);
+        if (file.type === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' || file.type === 'application/vnd.ms-excel') {
+          const formData = new FormData();
+          this.fileList = [...this.fileList, file];
+          this.fileList.forEach((file) => {
+            formData.append('multipartFiles', file);
+          });
+          // 手动上传
+          this.cashInput(formData).then((data) => {
+            console.log(data.data.data.receipt_results)
+            for (let i = 0; i < data.data.data.receipt_results.length; i++) {
+              this.$notification.open({
+                message: data.data.data.receipt_results[i],
+                duration: 10,
+                icon: data.data.data.receipt_results[i].indexOf('添加成功') != -1 ? <a-icon type="check-circle" style="color: green" /> : <a-icon type="close-circle" style="color: red" />,
+            })
+            }
+          }).catch((error) => {
+            console.log(error)
+            this.$message.error('上传失败');
+          });
+        } else {
+          this.$message.error('只能上传.xls或者.xlsx文件类型');
+          this.handleExcelRemove(file);
+        }
+        return false;
+      },
+
+    }
+  }
+</script>

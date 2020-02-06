@@ -54,7 +54,7 @@
         <a-breadcrumb-item><a href="/main/workplace">首页</a></a-breadcrumb-item>
         <a-breadcrumb-item>分包付款录入</a-breadcrumb-item>
       </a-breadcrumb>
-      <p class="title">分包付款录入</p>
+      <p class="title">分包付款录入<OutPaidInput/></p>
     </div>
     <div class="page-content">
       <a-row style="background-color: #fff; padding: 24px;">
@@ -158,7 +158,13 @@
           <a-input
                   v-decorator="[
           'paidAmount',
-          {rules: [{required: true, message: '请输入付费金额!'}]}
+          {rules: [{
+            required: true, message: '请输入付费金额!'
+          }, {
+                type: 'number',
+                message: '请输入数字',
+                transform:(value)=> {return Number(value)}
+          }]}
         ]"
                   placeholder="请输入付费金额"
           />
@@ -221,7 +227,13 @@
           <a-input
                   v-decorator="[
           'paidAmount',
-          {initialValue: this.editFormData.paidAmount, rules: [{required: true, message: '请输入付费金额!'}]}
+          {initialValue: this.editFormData.paidAmount, rules: [{
+            required: true, message: '请输入付费金额!'
+          }, {
+                type: 'number',
+                message: '请输入数字',
+                transform:(value)=> {return Number(value)}
+          }]}
         ]"
                   placeholder="请输入付费金额"
           />
@@ -260,6 +272,7 @@
   import {mapState, mapActions} from 'vuex';
   import {debounce} from 'debounce';
   import moment from 'moment'
+  import OutPaidInput from "../OutPaidInput/OutPaidInput";
 
   const formItemLayout = {
     labelCol: {span: 6},
@@ -272,6 +285,9 @@
 
   export default {
     name: "OutContractPaidPage",
+    components: {
+      OutPaidInput,
+    },
     data() {
       this.fetchOutContract = debounce(this.fetchOutContract, 800);
       return {

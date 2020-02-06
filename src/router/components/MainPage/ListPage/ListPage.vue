@@ -469,7 +469,7 @@
             this.$message.error(data.data.meta.message);
           }
         }).catch((error) => {
-          console.log(error);
+          this.$message.error(error);
           this.spinning = false;
         });
       },

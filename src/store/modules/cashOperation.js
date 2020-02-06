@@ -95,6 +95,17 @@ const actions = {
       });
     });
   },
+  // 现金发票导入
+  cashInput({commit}, params) {
+    return new Promise((resolve, reject) => {
+      api.cashController.cashInput(params).then(res => {
+        resolve(res);
+      }).catch(error => {
+        console.log(error, '现金发票导入失败');
+        reject(error);
+      });
+    });
+  },
 };
 
 export default {

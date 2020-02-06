@@ -17,7 +17,9 @@
                   disabled
                   v-decorator="[
           'contractId',
-          {initialValue: this.formData.contractNum, rules: [{ required: true, message: '请输入合同号！' }]}
+          {initialValue: this.formData.contractNum, rules: [{
+            required: true, message: '请输入合同号！'
+          }]}
         ]"
                   placeholder="请输入合同号"
           />
@@ -43,7 +45,9 @@
           <a-input
                   v-decorator="[
           'ownerId',
-          {initialValue: this.formData.employerContractNum, rules: [{ required: true, message: '请输入发包人合同编号！' }]}
+          {initialValue: this.formData.employerContractNum, rules: [{
+            required: true, message: '请输入发包人合同编号！'
+          }]}
         ]"
                   placeholder="请输入发包人合同编号"
           />
@@ -88,7 +92,13 @@
           <a-input
                   v-decorator="[
           'contractAmount',
-          {initialValue: this.formData.contractAmount, rules: [{ required: true, message: '请输入合同额！' }]}
+          {initialValue: this.formData.contractAmount, rules: [{
+            required: true, message: '请输入合同额！'
+          }, {
+                type: 'number',
+                message: '请输入数字',
+                transform:(value)=> {return Number(value)}
+          }]}
         ]"
                   placeholder="请输入合同额"
           />
@@ -205,7 +215,13 @@
           <a-input
                   v-decorator="[
           'investment',
-          {initialValue: this.formData.investmentAmount, rules: [{ required: true, message: '请输入投资额！' }]}
+          {initialValue: this.formData.investmentAmount, rules: [{
+            required: true, message: '请输入投资额！'
+          }, {
+                type: 'number',
+                message: '请输入数字',
+                transform:(value)=> {return Number(value)}
+          }]}
         ]"
                   placeholder="请输入投资额"
           />
@@ -218,7 +234,13 @@
           <a-input
                   v-decorator="[
           'scale',
-          {initialValue: this.formData.projectScale, rules: [{ required: true, message: '请输入项目规模！' }]}
+          {initialValue: this.formData.projectScale, rules: [{
+            required: true, message: '请输入项目规模！'
+          }, {
+                type: 'number',
+                message: '请输入数字',
+                transform:(value)=> {return Number(value)}
+          }]}
         ]"
                   placeholder="请输入项目规模"
           />

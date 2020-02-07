@@ -383,7 +383,6 @@
       }
     },
     mounted() {
-      this.updateTableData();
       this.getProjectCategoryList();
       if (this.role === 'ROLE_ADMIN') {
         const adminMenu = {
@@ -395,6 +394,9 @@
         };
         this.columns.push(adminMenu);
       }
+    },
+    activated() {
+      this.updateTableData();
     },
     methods: {
       ...mapMutations({
@@ -409,7 +411,7 @@
         cashExport: 'cashOperation/cashExport'
       }),
       updateTableData() {
-        this.setSelectedRowKeys([]);
+        this.resetSelectKeys();
         this.spinning = true;
         const params = {
           contractId: this.contractId,
@@ -453,25 +455,14 @@
           contractFile.isDownload = false;
         });
       },
+      resetSelectKeys() {
+        this.setSelectedRowKeys([]);
+        this.contractIds = [];
+      },
       handleTableChange(pagination) {
-        this.spinning = true;
         this.paginationProps.current = pagination.current;
         this.paginationProps.pageSize = pagination.pageSize;
-        const params = {
-          contractId: this.contractId,
-          pageNum: pagination.current,
-          pageLimit: pagination.pageSize
-        };
-        this.getContractListById(params).then((data) => {
-          if (data.data.meta.success) {
-            this.spinning = false;
-          } else {
-            this.$message.error(data.data.meta.message);
-          }
-        }).catch((error) => {
-          this.$message.error(error);
-          this.spinning = false;
-        });
+        this.updateTableData();
       },
       handleExport() {
         this.exportContract({
@@ -512,7 +503,7 @@
         });
       },
       onSelectChange(selectedRowKeys) {
-        this.contractIds = [];
+        this.resetSelectKeys();
         selectedRowKeys.forEach((item) => {
           this.contractIds.push(this.tableData[item].contractNum)
         });
@@ -523,8 +514,6 @@
           contractIds: this.contractIds
         }).then((data) => {
           this.$message.success('删除成功');
-          this.setSelectedRowKeys([]);
-          this.contractIds = [];
           this.updateTableData();
         }).catch((error) => {
           this.$message.error(error)

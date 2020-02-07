@@ -103,7 +103,6 @@ const actions = {
       api.outPaidController.outPaidInput(params).then(res => {
         resolve(res);
       }).catch(error => {
-        console.log(error, '分包回款导入失败');
         reject(error);
       });
     });

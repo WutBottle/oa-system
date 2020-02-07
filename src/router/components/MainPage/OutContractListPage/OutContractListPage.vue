@@ -81,7 +81,7 @@
             <a-table bordered :columns="columns" :dataSource="listTableData"
                      :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
                      :pagination="listPaginationProps"
-                     @change="handleOutPaidTableChange" :scroll="{ x: 'max-content', y: 500}">
+                     @change="handleTableChange" :scroll="{ x: 'max-content', y: 500}">
               <span slot="serial" slot-scope="text, record, index">
                 {{ index + 1 }}
               </span>
@@ -254,15 +254,11 @@
       }),
     },
     mounted() {
-      this.getOutContractCategoryList().then(() => {
-        this.getOutProjectCategoryList().then(() => {
-          this.updateTableData();
-        }).catch((error) => {
-          this.$message.error(error);
-        });
-      }).catch((error) => {
-        this.$message.error(error);
-      });
+      this.getOutContractCategoryList();
+      this.getOutProjectCategoryList();
+    },
+    activated() {
+      this.updateTableData();
     },
     methods: {
       ...mapMutations({
@@ -323,7 +319,7 @@
       },
       // 处理对list中的合同选择
       onSelectChange(selectedRowKeys) {
-        this.outContractIds = [];
+        this.resetSelectKeys();
         selectedRowKeys.forEach((item) => {
           this.outContractIds.push(this.listTableData[item].outContractId)
         });
@@ -331,26 +327,18 @@
       },
       // 选择每页个数
       handleTableChange(pagination) {
-        this.spinning = true;
         this.listPaginationProps.current = pagination.current;
         this.listPaginationProps.pageSize = pagination.pageSize;
-        const params = {
-          outContractId: this.outContractId,
-          pageNum: pagination.current,
-          pageLimit: pagination.pageSize
-        };
-        this.getOutContractListByIdLike(params).then((data) => {
-          this.spinning = false;
-        }).catch((error) => {
-          this.spinning = false;
-          this.$message.error(error);
-        });
+        this.updateTableData();
+      },
+      resetSelectKeys() {
+        this.setSelectedRowKeys([]);
+        this.outContractIds = [];
       },
       // 更新列表数据
       updateTableData() {
-        this.setSelectedRowKeys([]);
         this.spinning = true;
-        this.setSelectedRowKeys([]);
+        this.resetSelectKeys();
         const params = {
           outContractId: this.outContractId,
           pageNum: this.listPaginationProps.current,

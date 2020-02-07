@@ -45,7 +45,7 @@
           });
           // 手动上传
           this.outContractInput(formData).then((data) => {
-            for (let i = 1; i < data.data.data.inputSize + 1; i++) {
+            for (let i = 0; i < data.data.data.length; i++) {
               this.$notification.open({
                 message: data.data.data[i],
                 duration: 10,

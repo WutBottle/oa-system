@@ -45,15 +45,13 @@
           });
           // 手动上传
           this.outPaidInput(formData).then((data) => {
-            for (let i = 1; i < data.data.data.inputSize + 1; i++) {
               this.$notification.open({
-                message: data.data.data[i],
+                message: data.data.meta.success === true ? '外包回款添加成功' : '外包回款添加失败',
                 duration: 10,
-                icon: data.data.data[i].indexOf('添加成功') != -1 ? <a-icon type="check-circle" style="color: green" /> : <a-icon type="close-circle" style="color: red" />,
+                icon: data.data.meta.success === true ? <a-icon type="check-circle" style="color: green" /> : <a-icon type="close-circle" style="color: red" />,
             });
-            }
           }).catch((error) => {
-            this.$message.error('上传失败');
+            console.log(error);
           });
         } else {
           this.$message.error('只能上传.xls或者.xlsx文件类型');

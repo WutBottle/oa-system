@@ -10,7 +10,7 @@ const state = {
   paginationProps: {
     pageSize: 10, // 默认每页显示数量
     showSizeChanger: true, // 显示可改变每页数量
-    pageSizeOptions: ['10', '15', '20'], // 每页数量选项
+    pageSizeOptions: ['5', '15', '20'], // 每页数量选项
     total: 0,
     current: 1,
   },
@@ -64,6 +64,12 @@ const mutations = {
   },
   setProjectCategoryList(state, data) {
     state.projectCategoryList = data;
+  },
+  handleFinalDelete(state, data) {
+    const finalPage = Math.ceil(state.paginationProps.total / state.paginationProps.pageSize);
+    if (state.tableData.length === data.contractIds.length && state.paginationProps.current != 1 && state.paginationProps.current === finalPage) {
+      state.paginationProps.current--;
+    }
   }
 };
 
@@ -152,6 +158,7 @@ const actions = {
   deleteContract({commit}, params) {
     return new Promise((resolve, reject) => {
       api.contractController.deleteContract(params).then(res => {
+        commit('handleFinalDelete', params);
         resolve(res);
       }).catch(error => {
         console.log(error, '删除失败');

@@ -224,6 +224,7 @@
             width: 150,
             key: 'contractAmount',
             dataIndex: 'contractAmount',
+            sorter: (a, b) => a.contractAmount - b.contractAmount,
           },
           {
             title: '累计现金回款(元)',

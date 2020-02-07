@@ -87,6 +87,9 @@
                 <a-table bordered :columns="columns" :dataSource="tableData"
                          :pagination="paginationProps"
                          @change="handleTableChange" :scroll="{ y: 450}">
+                  <span slot="serial" slot-scope="text, record, index">
+                  {{ index + 1 }}
+                  </span>
                   <span slot="operation" slot-scope="text, record">
                     <a @click="handleInvoiceEdit(record)">修改</a>
                     <a-divider type="vertical" />
@@ -381,29 +384,36 @@
         tableSpinning: false,
         columns: [
           {
+            title: '序号',
+            width: 70,
+            dataIndex: 'serial',
+            key: 'serial',
+            scopedSlots: {customRender: 'serial'}
+          },
+          {
             title: '发票号',
-            width: '18%',
+            width: 150,
             key: 'receiptId',
             dataIndex: 'receiptId',
           }, {
             title: '开票日期',
-            width: '20%',
+            width: 200,
             key: 'receiptDate',
             dataIndex: 'receiptDate',
           }, {
             title: '发票金额(元)',
-            width: '15%',
+            width: 150,
             key: 'receiptAmount',
             dataIndex: 'receiptAmount',
           }, {
             title: '发票类型',
-            width: '20%',
+            width: 150,
             key: 'receiptClass',
             dataIndex: 'receiptClass',
             scopedSlots: {customRender: 'receiptClass'}
           }, {
             title: '发票文件',
-            width: '16%',
+            width: 150,
             key: 'receiptFile',
             dataIndex: 'receiptFile',
             scopedSlots: {customRender: 'receiptFile'}
@@ -629,6 +639,7 @@
           this.updateTableData();
           this.$message.success(res.data.data)
         }).catch((error) => {
+          console.log(error);
           this.$message.error(error);
         })
       }

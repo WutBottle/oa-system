@@ -28,6 +28,9 @@ const mutations = {
     state.cashListTableData = data.cashes.content.map((item, index) => {
       return {
         key: index,
+        contractId: data.contractId,
+        designId: data.designId,
+        contractName: data.contractName,
         cashId: item.cashId,
         cashAmount: item.cashAmount,
         cashDate: moment(item.cashDate).format('YYYY-MM-DD HH:mm:ss'),
@@ -36,6 +39,12 @@ const mutations = {
       }
     });
   },
+  handleFinalDelete(state, data) {
+    const finalPage = Math.ceil(state.cashListPaginationProps.total / state.cashListPaginationProps.pageSize);
+    if (state.cashListTableData.length === data.cashIds.length && state.cashListPaginationProps.current != 1 && state.cashListPaginationProps.current === finalPage) {
+      state.cashListPaginationProps.current--;
+    }
+  }
 };
 
 const actions = {
@@ -66,6 +75,7 @@ const actions = {
   deleteCash({commit}, params) {
     return new Promise((resolve, reject) => {
       api.cashController.deleteCash(params).then(res => {
+        commit('handleFinalDelete', params)
         resolve(res);
       }).catch(error => {
         console.log(error, '删除现金回款失败');

@@ -56,12 +56,17 @@ const mutations = {
         receiptId: item.receipt.receiptId,
         receiptFile: item.receipt.receiptFile,
         receiptAmount: item.receipt.receiptAmount,
-        receiptClass: item.receipt.receiptClass ? '增值税专用发票':'增值税普通发票',
+        receiptClass: item.receipt.receiptClass ? '增值税专用发票' : '增值税普通发票',
         receiptDate: moment(item.receipt.receiptDate).format('YYYY-MM-DD HH:mm:ss'),
       }
     });
   },
-
+  handleFinalDelete(state, data) {
+    const finalPage = Math.ceil(state.paginationProps.total / state.paginationProps.pageSize);
+    if (state.tableData.length === data.receiptIds.length && state.paginationProps.current != 1 && state.paginationProps.current === finalPage) {
+      state.paginationProps.current--;
+    }
+  }
 };
 
 const actions = {
@@ -99,6 +104,7 @@ const actions = {
   deleteReceipt({commit}, params) {
     return new Promise((resolve, reject) => {
       api.receiptController.deleteReceipt(params).then(res => {
+        commit('handleFinalDelete', params);
         resolve(res);
       }).catch(error => {
         console.log(error, '删除发票信息失败');

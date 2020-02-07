@@ -68,6 +68,9 @@
               <a-table bordered :columns="cashColumns" :dataSource="cashListTableData"
                        :pagination="cashListPaginationProps"
                        @change="handleCashTableChange" :scroll="{ x: 'max-content', y: 500}">
+                <span slot="serial" slot-scope="text, record, index">
+                {{ index + 1 }}
+                </span>
               </a-table>
             </a-spin>
           </div>
@@ -99,6 +102,9 @@
                           @click="handleOpenReceiptFile(text)">
                   查看文件
                 </a-button>
+              </span>
+              <span slot="serial" slot-scope="text, record, index">
+              {{ index + 1 }}
               </span>
               </a-table>
             </a-spin>
@@ -137,9 +143,15 @@
         receiptSpinning: false, // 发票加载控制
         receiptColumns: [
           {
+            title: '序号',
+            width: 70,
+            dataIndex: 'serial',
+            key: 'serial',
+            scopedSlots: {customRender: 'serial'}
+          },
+          {
             title: '发票号',
-            width: 200,
-            fixed: 'left',
+            width: 150,
             key: 'receiptId',
             dataIndex: 'receiptId',
           },
@@ -193,6 +205,27 @@
         cashSpinning: false, // 现金回款加载控制
         cashColumns: [
           {
+            title: '序号',
+            width: 70,
+            dataIndex: 'serial',
+            key: 'serial',
+            scopedSlots: {customRender: 'serial'}
+          }, {
+            title: '合同号',
+            width: 120,
+            key: 'contractId',
+            dataIndex: 'contractId',
+          }, {
+            title: '合同名称',
+            width: 200,
+            key: 'contractName',
+            dataIndex: 'contractName',
+          }, {
+            title: '设计号',
+            width: 120,
+            key: 'designId',
+            dataIndex: 'designId',
+          }, {
             title: '现金回款日期',
             width: 200,
             key: 'cashDate',

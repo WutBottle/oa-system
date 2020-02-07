@@ -87,6 +87,9 @@
                 <a-table bordered :columns="columns" :dataSource="tableData"
                          :pagination="paginationProps"
                          @change="handleTableChange" :scroll="{ x:'max-content', y: 450}">
+                  <span slot="serial" slot-scope="text, record, index">
+                    {{ index + 1 }}
+                  </span>
                   <span slot="operation" slot-scope="text, record">
                     <a @click="handleInvoiceEdit(record)">修改</a>
                     <a-divider type="vertical"/>
@@ -420,6 +423,13 @@
         tableSpinning: false,
         columns: [
           {
+            title: '序号',
+            width: 70,
+            fixed: 'left',
+            dataIndex: 'serial',
+            key: 'serial',
+            scopedSlots: {customRender: 'serial'}
+          }, {
             title: '分包合同号',
             width: 150,
             fixed: 'left',

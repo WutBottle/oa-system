@@ -87,6 +87,9 @@
                 <a-table bordered :columns="columns" :dataSource="tableData"
                          :pagination="paginationProps"
                          @change="handleTableChange" :scroll="{ x:'max-content', y: 450}">
+                  <span slot="serial" slot-scope="text, record, index">
+                    {{ index + 1 }}
+                  </span>
                   <span slot="operation" slot-scope="text, record">
                     <a @click="handleCashEdit(record)">修改</a>
                     <a-divider type="vertical"/>
@@ -317,24 +320,29 @@
         tableSpinning: false, // table数据更新加载控制
         columns: [
           {
+            title: '序号',
+            width: 70,
+            dataIndex: 'serial',
+            key: 'serial',
+            scopedSlots: {customRender: 'serial'}
+          }, {
             title: '现金回款日期',
-            width: '25%',
+            width: 200,
             key: 'cashDate',
             dataIndex: 'cashDate',
           }, {
             title: '现金回款金额',
-            width: '25%',
+            width: 150,
             key: 'cashAmount',
             dataIndex: 'cashAmount',
           }, {
             title: '对应合同节点',
-            width: '25%',
+            width: 150,
             key: 'nodeInfo',
             dataIndex: 'nodeInfo',
             scopedSlots: {customRender: 'nodeInfo'},
           }, {
             title: '编辑现金回款',
-            width: '25%',
             key: 'operation',
             scopedSlots: {customRender: 'operation'},
           }

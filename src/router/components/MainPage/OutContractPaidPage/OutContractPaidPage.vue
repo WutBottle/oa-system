@@ -89,6 +89,9 @@
                 <a-table bordered :columns="columns" :dataSource="tableData"
                          :pagination="paginationProps"
                          @change="handleTableChange" :scroll="{ x:'max-content', y: 450}">
+                  <span slot="serial" slot-scope="text, record, index">
+                    {{ index + 1 }}
+                  </span>
                   <span slot="operation" slot-scope="text, record">
                     <a @click="handleOutPaidEdit(record)">修改</a>
                     <a-divider type="vertical"/>
@@ -308,26 +311,32 @@
         tableSpinning: false,
         columns: [
           {
+            title: '序号',
+            width: 70,
+            dataIndex: 'serial',
+            key: 'serial',
+            scopedSlots: {customRender: 'serial'}
+          },
+          {
             title: '付费时间',
-            width: '25%',
+            width: 200,
             key: 'paidDate',
             dataIndex: 'paidDate',
           },
           {
             title: '付费金额(元)',
-            width: '25%',
+            width: 150,
             key: 'paidAmount',
             dataIndex: 'paidAmount',
           },
           {
             title: '备注',
-            width: '25%',
+            width: 150,
             key: 'paidNote',
             dataIndex: 'paidNote',
           },
           {
             title: '编辑分包付款',
-            width: '25%',
             key: 'operation',
             scopedSlots: {customRender: 'operation'},
           }

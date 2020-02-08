@@ -18,6 +18,8 @@ const mutations = {
   },
   authSuccess(state, user) {
     state.status = 'success';
+    //更新本地token
+    localStorage.setItem(ACCESS_TOKEN, user.token);
     localStorage.setItem(ROLE, user.role);
     localStorage.setItem(USERNAME, user.username);
     state.role = user.role;
@@ -45,11 +47,7 @@ const actions = {
     return new Promise((resolve, reject) => {
       commit('authRequest');
       api.userController.loginUser(params).then(res => {
-        const token = res.data.data.token;
-        //更新本地token
-        localStorage.setItem(ACCESS_TOKEN, token);
-        // localStorage.setItem('userRole', res.data.user.userRole);
-        commit('authSuccess', res.data.data);
+        res.data.data && commit('authSuccess', res.data.data);
         resolve(res);
       }).catch(error => {
         commit('authError');

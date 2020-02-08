@@ -67,36 +67,55 @@
           <a-form-item
                   :wrapper-col="buttonItemLayout.wrapperCol"
           >
-            <a-button :disabled="!this.selectedRowKeys.length" type="primary" @click="handleExport">
+            <a-button type="primary" @click="handleExport">
               合同导出
             </a-button>
           </a-form-item>
           <a-form-item
                   :wrapper-col="buttonItemLayout.wrapperCol"
           >
-            <a-button :disabled="!this.selectedRowKeys.length" type="primary" @click="handleCashExport">
+            <a-button type="primary" @click="handleCashExport">
               现金发票导出
             </a-button>
+          </a-form-item>
+          <a-form-item
+                  :wrapper-col="buttonItemLayout.wrapperCol"
+          >
+            <a-popover title="合同导出列表" placement="bottom" trigger="click" v-model="popVisible">
+              <template slot="content">
+                <div v-if="!!selectContractInfo.length" style="width: 350px">
+                  <template v-for="(item, index) in selectContractInfo">
+                    <div :key="index">
+                      <span>{{index + 1}}</span>
+                      <a-divider type="vertical"/>
+                      <span>{{item.contractId}}</span>
+                      <a-divider type="vertical"/>
+                      <span>{{item.contractName}}</span>
+                    </div>
+                  </template>
+                </div>
+                <a-empty v-else/>
+              </template>
+              <a-button type="dashed" @click="() => this.popVisible = true">
+                已选合同列表
+              </a-button>
+            </a-popover>
           </a-form-item>
           <a-form-item
                   v-if="this.role === 'ROLE_ADMIN'"
                   :wrapper-col="buttonItemLayout.wrapperCol"
           >
-            <a-popconfirm v-if="!!this.contractIds.length" title="确定删除?" @confirm="handleDelete" @cancel="cancelDelete" okText="确定" cancelText="取消">
+            <a-popconfirm title="确定删除?" @confirm="handleDelete" @cancel="cancelDelete" okText="确定" cancelText="取消">
               <a-icon slot="icon" type="question-circle-o" style="color: red" />
-              <a-button :disabled="!this.contractIds.length" type="danger">
+              <a-button type="danger">
                 批量删除
               </a-button>
             </a-popconfirm>
-            <a-button v-else :disabled="!this.contractIds.length" type="danger">
-              批量删除
-            </a-button>
           </a-form-item>
         </a-form>
         <div class="table-wrapper">
           <a-spin :spinning="spinning" tip="Loading...">
             <a-table bordered :columns="columns" :dataSource="tableData"
-                     :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
                      :pagination="paginationProps"
                      @change="handleTableChange" :scroll="{ x: 'max-content', y: 500}">
               <span slot="serial" slot-scope="text, record, index">
@@ -118,6 +137,14 @@
               <span slot="contractFile" slot-scope="text">
                 <a-button :disabled="!text.contractId" type="primary" icon="download" :loading="text.isDownload" @click="handleFileDownload(text)">
                   下载文件
+                </a-button>
+              </span>
+              <span slot="selectIndex" slot-scope="text, record">
+                <a-button v-if="text" type="danger" @click="handleRemoved(record)">
+                  移除
+                </a-button>
+                <a-button v-else type="primary" @click="handleSelected(record)">
+                  选择
                 </a-button>
               </span>
               <a slot="operation" slot-scope="text, record" @click="handleContractEdit(record)">修改</a>
@@ -170,7 +197,6 @@
         },
         spinning: false,
         contractId: '', // 模糊查询的合同id
-        contractIds: [], // 选择的合同id
         columns: [
           {
             title: '序号',
@@ -361,9 +387,18 @@
             dataIndex: 'contractFile',
             scopedSlots: {customRender: 'contractFile'}
           },
+          {
+            width: 100,
+            title: '选择状态',
+            fixed: 'right',
+            key: 'selectIndex',
+            dataIndex: 'selectIndex',
+            scopedSlots: {customRender: 'selectIndex'}
+          }
         ],
         editVisible: false, // 编辑窗口参数
         contractEditData: [], // 需要编辑的合同表单数据
+        popVisible: false,
       }
     },
     computed: {
@@ -373,6 +408,7 @@
         selectedRowKeys: state => state.contractList.selectedRowKeys, //选中的keys
         role: state => state.userOperation.role,
         projectCategoryList: state => state.contractList.projectCategoryList,// 项目类型
+        selectContractInfo: state => state.contractList.selectContractInfo, // 项目类型
       }),
     },
     filters: {
@@ -401,7 +437,8 @@
     },
     methods: {
       ...mapMutations({
-        setSelectedRowKeys: 'contractList/setSelectedRowKeys', // 设置选中的keys
+        addContractInfo: 'contractList/addContractInfo', // 添加选中的合同
+        removeContractInfo: 'contractList/removeContractInfo', // 移除选中的合同
       }),
       ...mapActions({
         downloadContract: 'contractList/downloadContract',
@@ -412,7 +449,6 @@
         cashExport: 'cashOperation/cashExport'
       }),
       updateTableData() {
-        this.resetSelectKeys();
         this.spinning = true;
         const params = {
           contractId: this.contractId,
@@ -456,10 +492,6 @@
           contractFile.isDownload = false;
         });
       },
-      resetSelectKeys() {
-        this.setSelectedRowKeys([]);
-        this.contractIds = [];
-      },
       handleTableChange(pagination) {
         this.paginationProps.current = pagination.current;
         this.paginationProps.pageSize = pagination.pageSize;
@@ -467,7 +499,7 @@
       },
       handleExport() {
         this.exportContract({
-          contractIds: this.contractIds
+          contractIds: this.selectContractInfo.map((item) => {return item.contractId}),
         }).then((data) => {
           if (!data.data) {
             return
@@ -486,7 +518,7 @@
       },
       handleCashExport() {
         this.cashExport({
-          contractIds: this.contractIds
+          contractIds: this.selectContractInfo.map((item) => {return item.contractId}),
         }).then((data) => {
           if (!data.data) {
             return
@@ -503,16 +535,9 @@
           this.$message.success("导出失败");
         });
       },
-      onSelectChange(selectedRowKeys) {
-        this.resetSelectKeys();
-        selectedRowKeys.forEach((item) => {
-          this.contractIds.push(this.tableData[item].contractNum)
-        });
-        this.setSelectedRowKeys(selectedRowKeys);
-      },
       handleDelete(){
         this.deleteContract({
-          contractIds: this.contractIds
+          contractIds: this.selectContractInfo.map((item) => {return item.contractId}),
         }).then((data) => {
           this.$message.success('删除成功');
           this.updateTableData();
@@ -542,7 +567,22 @@
       afterEditData() {
         this.editVisible = false;
         this.updateTableData();
-      }
+      },
+      // 处理合同选择
+      handleSelected(rowData) {
+        rowData.selectIndex = true;
+        this.addContractInfo({
+          contractId: rowData.contractNum,
+          contractName: rowData.contractName
+        })
+        this.popVisible = true;
+      },
+      // 处理合同移除
+      handleRemoved(rowData) {
+        rowData.selectIndex = false;
+        this.removeContractInfo(rowData.contractNum);
+        this.popVisible = true;
+      },
     }
   }
 </script>

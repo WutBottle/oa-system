@@ -56,7 +56,7 @@ const actions = {
   getOutPaidsByOutContractId({commit}, params) {
     return new Promise((resolve, reject) => {
       api.outPaidController.getOutPaidsByOutContractId(params).then(res => {
-        commit('setTableData', res.data.data);
+        res.data.data && commit('setTableData', res.data.data);
         resolve(res);
       }).catch(error => {
         console.log(error, '获取分包付款列表失败');

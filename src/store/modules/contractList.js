@@ -16,6 +16,7 @@ const state = {
   },
   projectCategoryList: [], // 拉取的项目类型
   tableData: [],
+  selectContractInfo: [], // 被选中的合同数据
 };
 
 const mutations = {
@@ -59,6 +60,7 @@ const mutations = {
           isDownload: false,
           contractId: item.contractFile ?  item.contractId: '',
         }, // 合同扫描文件
+        selectIndex: !!state.selectContractInfo.find(value => value.contractId === item.contractId),
       }
     });
   },
@@ -70,6 +72,12 @@ const mutations = {
     if (state.tableData.length === data.contractIds.length && state.paginationProps.current != 1 && state.paginationProps.current === finalPage) {
       state.paginationProps.current--;
     }
+  },
+  addContractInfo(state, data) {
+    state.selectContractInfo.push(data);
+  },
+  removeContractInfo(state, id) {
+    state.selectContractInfo.splice(state.selectContractInfo.findIndex(item => item.contractId === id), 1);
   }
 };
 

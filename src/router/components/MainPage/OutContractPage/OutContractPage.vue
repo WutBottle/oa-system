@@ -574,6 +574,11 @@
           pageLimit: this.paginationProps.pageSize
         };
         this.getOutContractsByContractId(params).then((data) => {
+          if (!data.data.data) {
+            this.current = 0;
+            this.contractValue = undefined;
+            this.$message.error(data.data.meta.message);
+          }
           this.tableSpinning = false;
         }).catch((error) => {
           this.$message.error(error);

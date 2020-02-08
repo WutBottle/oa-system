@@ -363,23 +363,21 @@
             </template>
           </a-select>
         </a-form-item>
-        <a-form-item
-                :label-col="formItemLayout.labelCol"
-                :wrapper-col="formItemLayout.wrapperCol"
-                label="合同节点"
-        >
-          <a-select
-                  v-decorator="[
-          'contractNodes',
-          {initialValue: this.formData.contractNodes, rules: [{ required: true, message: '请输入合同节点！' }]}
-        ]"
-                  mode="tags"
-                  placeholder="请输入合同节点"
-          >
-            <a-select-option v-for="i in 25" :key="(i + 9).toString(36) + i">{{(i + 9).toString(36) + i}}
-            </a-select-option>
-          </a-select>
-        </a-form-item>
+<!--        <a-form-item-->
+<!--                :label-col="formItemLayout.labelCol"-->
+<!--                :wrapper-col="formItemLayout.wrapperCol"-->
+<!--                label="合同节点"-->
+<!--        >-->
+<!--          <a-select-->
+<!--                  v-decorator="[-->
+<!--          'contractNodes',-->
+<!--          {initialValue: this.formData.contractNodes, rules: [{ required: true, message: '请输入合同节点！' }]}-->
+<!--        ]"-->
+<!--                  mode="tags"-->
+<!--                  placeholder="请输入合同节点"-->
+<!--          >-->
+<!--          </a-select>-->
+<!--        </a-form-item>-->
         <a-form-item
                 :label-col="formTailLayout.labelCol"
                 :wrapper-col="formTailLayout.wrapperCol"
@@ -444,15 +442,16 @@
               projectCategory = this.projectCategoryList[this.projectCategoryList.findIndex((item) => item.projectCategoryId === values.projectCategoryId)];
               delete values.projectCategoryId;
 
-              let contractNodes = values.contractNodes;
-              let tempContractNodes = [];
-              delete values.contractNodes;
-              contractNodes.forEach((item) => {
-                tempContractNodes.push({
-                  nodeDescription: item
-                })
-              });
-              values = Object.assign(values, {contractNodes: tempContractNodes});
+              // let contractNodes = values.contractNodes;
+              // let tempContractNodes = [];
+              // delete values.contractNodes;
+              // contractNodes.forEach((item) => {
+              //   tempContractNodes.push({
+              //     nodeDescription: item
+              //   })
+              // });
+              // values = Object.assign(values, {contractNodes: tempContractNodes});
+
               values = Object.assign(values, {contractFile: this.fileName});
               values = Object.assign(values, {projectCategory: projectCategory});
               this.verifyContract(values).then((data) => {

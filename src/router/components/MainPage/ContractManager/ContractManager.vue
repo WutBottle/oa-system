@@ -419,8 +419,6 @@
                         mode="tags"
                         placeholder="请输入合同节点"
                 >
-                  <a-select-option v-for="i in 25" :key="(i + 9).toString(36) + i">{{(i + 9).toString(36) + i}}
-                  </a-select-option>
                 </a-select>
               </a-form-item>
               <a-form-item

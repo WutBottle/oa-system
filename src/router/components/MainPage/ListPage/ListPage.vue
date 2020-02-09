@@ -45,7 +45,7 @@
         <a-breadcrumb-item><a href="/main/workplace">首页</a></a-breadcrumb-item>
         <a-breadcrumb-item>合同列表</a-breadcrumb-item>
       </a-breadcrumb>
-      <p class="title">合同列表</p>
+      <div class="title">合同列表</div>
     </div>
     <div class="page-content">
       <div class="content-wrapper">
@@ -67,21 +67,28 @@
           <a-form-item
                   :wrapper-col="buttonItemLayout.wrapperCol"
           >
-            <a-button type="primary" @click="handleExport">
-              合同导出
-            </a-button>
+            <a-dropdown :trigger="['click']">
+              <a-button icon="down" type="primary">
+                导出
+              </a-button>
+              <a-menu slot="overlay">
+                <a-menu-item key="0">
+                  <a-button type="primary" @click="handleExport">
+                    合同导出
+                  </a-button>
+                </a-menu-item>
+                <a-menu-item key="1">
+                  <a-button type="primary" @click="handleCashExport">
+                    现金发票
+                  </a-button>
+                </a-menu-item>
+              </a-menu>
+            </a-dropdown>
           </a-form-item>
           <a-form-item
                   :wrapper-col="buttonItemLayout.wrapperCol"
           >
-            <a-button type="primary" @click="handleCashExport">
-              现金发票导出
-            </a-button>
-          </a-form-item>
-          <a-form-item
-                  :wrapper-col="buttonItemLayout.wrapperCol"
-          >
-            <a-popover title="合同导出列表" placement="bottom" trigger="click" v-model="popVisible">
+            <a-popover title="合同选择列表" placement="bottom" trigger="click" v-model="popVisible">
               <template slot="content">
                 <div v-if="!!selectContractInfo.length" style="width: 350px">
                   <template v-for="(item, index) in selectContractInfo">
@@ -97,7 +104,7 @@
                 <a-empty v-else/>
               </template>
               <a-button type="dashed" @click="() => this.popVisible = true">
-                已选合同列表
+                选择列表
               </a-button>
             </a-popover>
           </a-form-item>
@@ -112,12 +119,30 @@
               </a-button>
             </a-popconfirm>
           </a-form-item>
+          <a-form-item
+                  :wrapper-col="buttonItemLayout.wrapperCol"
+          >
+            <a-popover title="表单配置" placement="bottom" trigger="click" v-model="settingVisible">
+              <template slot="content">
+                <div style="width: 480px">
+                  <a-checkbox-group :defaultValue="defaultOptions" @change="onTableHeaderChange">
+                    <a-row>
+                      <a-col :span="8" v-for="(item, index) in options" :key="index">
+                        <a-checkbox :value="item.value">{{item.label}}</a-checkbox>
+                      </a-col>
+                    </a-row>
+                  </a-checkbox-group>
+                </div>
+              </template>
+              <a-button type="primary" shape="circle" icon="setting"/>
+            </a-popover>
+          </a-form-item>
         </a-form>
         <div class="table-wrapper">
           <a-spin :spinning="spinning" tip="Loading...">
             <a-table bordered :columns="columns" :dataSource="tableData"
                      :pagination="paginationProps"
-                     @change="handleTableChange" :scroll="{ x: 'max-content', y: 500}">
+                     @change="handleTableChange" :scroll="{ x: scrollX, y: 550}">
               <span slot="serial" slot-scope="text, record, index">
                 {{ index + 1 }}
               </span>
@@ -139,15 +164,18 @@
                   下载文件
                 </a-button>
               </span>
-              <span slot="selectIndex" slot-scope="text, record">
-                <a-button v-if="text" type="danger" @click="handleRemoved(record)">
+              <template slot="selectIndex" slot-scope="text, record">
+                <span v-if="role === 'ROLE_ADMIN'">
+                  <a @click="handleContractEdit(record)">修改</a>
+                  <a-divider type="vertical" />
+                </span>
+                <a-button v-if="text" type="danger" size="small" @click="handleRemoved(record)">
                   移除
                 </a-button>
-                <a-button v-else type="primary" @click="handleSelected(record)">
+                <a-button v-else type="primary" size="small" @click="handleSelected(record)">
                   选择
                 </a-button>
-              </span>
-              <a slot="operation" slot-scope="text, record" @click="handleContractEdit(record)">修改</a>
+              </template>
             </a-table>
           </a-spin>
         </div>
@@ -190,215 +218,20 @@
         formLayout: 'inline',
         formItemLayout: {
           labelCol: {span: 5},
-          wrapperCol: {span: 16}
+          wrapperCol: {span: 19}
         },
         buttonItemLayout: {
           wrapperCol: {span: 14, offset: 0}
         },
         spinning: false,
         contractId: '', // 模糊查询的合同id
-        columns: [
-          {
-            title: '序号',
-            width: 70,
-            fixed: 'left',
-            dataIndex: 'serial',
-            key: 'serial',
-            scopedSlots: {customRender: 'serial'}
-          },
-          {
-            title: '合同号',
-            width: 100,
-            fixed: 'left',
-            key: 'contractNum',
-            dataIndex: 'contractNum',
-          },
-          {
-            title: '签约状态',
-            width: 100,
-            dataIndex: 'signState',
-            key: 'signState',
-            scopedSlots: {customRender: 'signState'}
-          },
-          {
-            title: '设计号',
-            width: 120,
-            key: 'designNum',
-            dataIndex: 'designNum',
-          },
-          {
-            title: '发包人合同编号',
-            width: 150,
-            key: 'employerContractNum',
-            dataIndex: 'employerContractNum',
-          },
-          {
-            title: '合同名称',
-            width: 150,
-            key: 'contractName',
-            dataIndex: 'contractName',
-          },
-          {
-            title: '合同节点',
-            width: 200,
-            key: 'contractNodes',
-            dataIndex: 'contractNodes',
-            scopedSlots: {customRender: 'contractNodes'}
-          },
-          {
-            title: '合同额(元)',
-            width: 150,
-            key: 'contractAmount',
-            dataIndex: 'contractAmount',
-            sorter: (a, b) => a.contractAmount - b.contractAmount,
-          },
-          {
-            title: '累计现金回款(元)',
-            width: 150,
-            key: 'accumulatedCashReceipts',
-            dataIndex: 'accumulatedCashReceipts',
-          },
-          {
-            title: '剩余合同额(元)',
-            width: 150,
-            key: 'remainingContractAmount',
-            dataIndex: 'remainingContractAmount',
-          },
-          {
-            title: '已收款比例',
-            width: 110,
-            key: 'receivedProportion',
-            dataIndex: 'receivedProportion',
-          },
-          {
-            title: '累计开票金额(元)',
-            width: 150,
-            key: 'cumulativeInvoicedAmount',
-            dataIndex: 'cumulativeInvoicedAmount',
-          },
-          {
-            title: '已开发票未收款金额',
-            width: 150,
-            key: 'invoicedUncollectedAmount',
-            dataIndex: 'invoicedUncollectedAmount',
-          },
-          {
-            title: '实际签约日期',
-            width: 150,
-            key: 'actualSigningDate',
-            dataIndex: 'actualSigningDate',
-          },
-          {
-            title: '合同归档日期',
-            width: 150,
-            key: 'contractFilingDate',
-            dataIndex: 'contractFilingDate',
-          },
-          {
-            title: '项目类别',
-            width: 250,
-            key: 'itemCategory',
-            dataIndex: 'itemCategory',
-            scopedSlots: {customRender: 'itemCategory'}
-          },
-          {
-            title: '主设计部门',
-            width: 150,
-            key: 'mainDesignDepartment',
-            dataIndex: 'mainDesignDepartment',
-          },
-          {
-            title: '经营部门',
-            width: 150,
-            key: 'managementDepartment',
-            dataIndex: 'managementDepartment',
-          },
-          {
-            title: '项目经理',
-            width: 150,
-            key: 'projectManager',
-            dataIndex: 'projectManager',
-          },
-          {
-            title: '经营经理',
-            width: 150,
-            key: 'runningManager',
-            dataIndex: 'runningManager',
-          },
-          {
-            title: '项目预算秘书',
-            width: 150,
-            key: 'projectSecretary',
-            dataIndex: 'projectSecretary',
-          },
-          {
-            title: '发包方',
-            width: 150,
-            key: 'contractingParty',
-            dataIndex: 'contractingParty',
-          },
-          {
-            title: '投资额(万元)',
-            width: 150,
-            key: 'investmentAmount',
-            dataIndex: 'investmentAmount',
-          },
-          {
-            title: '项目规模(平方米)',
-            width: 150,
-            key: 'projectScale',
-            dataIndex: 'projectScale',
-          },
-          {
-            title: '地域',
-            width: 150,
-            key: 'region',
-            dataIndex: 'region',
-          },
-          {
-            title: '地区关键词',
-            width: 150,
-            key: 'regionalKeyWords',
-            dataIndex: 'regionalKeyWords',
-          },
-          {
-            title: '建筑一级分类',
-            width: 120,
-            key: 'class1',
-            dataIndex: 'class1',
-          },
-          {
-            title: '建筑二级分类',
-            width: 120,
-            key: 'class2',
-            dataIndex: 'class2',
-          },
-          {
-            title: '是否EPC项目',
-            width: 120,
-            key: 'epc',
-            dataIndex: 'epc',
-            scopedSlots: {customRender: 'epc'}
-          },
-          {
-            width: 150,
-            title: '合同扫描文件',
-            key: 'contractFile',
-            dataIndex: 'contractFile',
-            scopedSlots: {customRender: 'contractFile'}
-          },
-          {
-            width: 100,
-            title: '选择状态',
-            fixed: 'right',
-            key: 'selectIndex',
-            dataIndex: 'selectIndex',
-            scopedSlots: {customRender: 'selectIndex'}
-          }
-        ],
+        columns: [],
         editVisible: false, // 编辑窗口参数
         contractEditData: [], // 需要编辑的合同表单数据
-        popVisible: false,
+        popVisible: false, // 选择列表的弹出
+        settingVisible: false, // 配置表头菜单弹出控制
+        selectValue: [],
+        scrollX: 0,
       }
     },
     computed: {
@@ -409,6 +242,9 @@
         role: state => state.userOperation.role,
         projectCategoryList: state => state.contractList.projectCategoryList,// 项目类型
         selectContractInfo: state => state.contractList.selectContractInfo, // 项目类型
+        totalColumns: state => state.contractList.totalColumns, // 表单头部数据
+        options: state => state.contractList.options, // 表头总数据
+        defaultOptions: state => state.contractList.defaultOptions, // 表头默认数据
       }),
     },
     filters: {
@@ -421,16 +257,8 @@
     },
     mounted() {
       this.getProjectCategoryList();
-      if (this.role === 'ROLE_ADMIN') {
-        const adminMenu = {
-          title: '编辑合同',
-          key: 'operation',
-          fixed: 'right',
-          width: 100,
-          scopedSlots: { customRender: 'operation' },
-        };
-        this.columns.push(adminMenu);
-      }
+      this.loadSettingOptions();
+      this.loadTableColumns(this.defaultOptions);
     },
     activated() {
       this.updateTableData();
@@ -439,6 +267,7 @@
       ...mapMutations({
         addContractInfo: 'contractList/addContractInfo', // 添加选中的合同
         removeContractInfo: 'contractList/removeContractInfo', // 移除选中的合同
+        loadSettingOptions: 'contractList/loadSettingOptions', // 加载表头选项
       }),
       ...mapActions({
         downloadContract: 'contractList/downloadContract',
@@ -582,6 +411,30 @@
         rowData.selectIndex = false;
         this.removeContractInfo(rowData.contractNum);
         this.popVisible = true;
+      },
+      // 处理表头选择
+      onTableHeaderChange(checkedValues) {
+        this.loadTableColumns(checkedValues);
+      },
+      // 排序算法
+      compare(property){
+        return function(a,b){
+          let value1 = a[property];
+          let value2 = b[property];
+          return value1 - value2;
+        }
+      },
+      // 生成表格样式
+      loadTableColumns(data) {
+        this.columns = [];
+        this.scrollX = 230;
+        this.columns.push(this.totalColumns[29]);
+        this.columns.push(this.totalColumns[30]);
+        data.map(item => {
+          this.columns.push(this.totalColumns[item]);
+          this.scrollX += this.totalColumns[item].width;
+        });
+        this.columns = this.columns.sort(this.compare('sort'))
       },
     }
   }

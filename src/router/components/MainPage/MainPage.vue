@@ -296,9 +296,17 @@
         };
         this.menuList = this.menuList.concat(adminMenu);
       }
+      this.screenWidth = document.body.clientWidth;
+      window.onresize = () => {
+        return (() => {
+          this.screenWidth = document.body.clientWidth;
+          this.collapsed = this.screenWidth <= 1024;
+        })();
+      };
     },
     data() {
       return {
+        screenWidth: '',
         collapsed: false,
         menuDefault: '',
         menuList: [

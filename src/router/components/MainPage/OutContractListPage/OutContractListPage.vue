@@ -81,7 +81,7 @@
             <a-table bordered :columns="columns" :dataSource="listTableData"
                      :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
                      :pagination="listPaginationProps"
-                     @change="handleTableChange" :scroll="{ x: 'max-content', y: 500}">
+                     @change="handleTableChange" :scroll="{ x: 2280, y: 500}">
               <span slot="serial" slot-scope="text, record, index">
                 {{ index + 1 }}
               </span>
@@ -104,7 +104,7 @@
       <a-spin :spinning="outPaidTableSpinning">
         <a-table bordered :columns="outPaidColumns" :dataSource="outPaidTableData"
                  :pagination="outPaidPaginationProps"
-                 @change="handleOutPaidTableChange" :scroll="{ x:'max-content', y: 450}">
+                 @change="handleOutPaidTableChange" :scroll="{ x: 600, y: 450}">
         </a-table>
       </a-spin>
     </a-modal>

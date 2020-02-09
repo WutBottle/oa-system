@@ -17,6 +17,237 @@ const state = {
   projectCategoryList: [], // 拉取的项目类型
   tableData: [],
   selectContractInfo: [], // 被选中的合同数据
+  totalColumns: [
+    {
+      title: '合同号',
+      width: 100,
+      key: 'contractNum',
+      dataIndex: 'contractNum',
+      sort: 1,
+    },
+    {
+      title: '签约状态',
+      width: 100,
+      dataIndex: 'signState',
+      sort: 2,
+      key: 'signState',
+      scopedSlots: {customRender: 'signState'}
+    },
+    {
+      title: '设计号',
+      width: 120,
+      key: 'designNum',
+      dataIndex: 'designNum',
+      sort: 3,
+    },
+    {
+      title: '发包人合同编号',
+      width: 150,
+      key: 'employerContractNum',
+      dataIndex: 'employerContractNum',
+      sort: 4,
+    },
+    {
+      title: '合同名称',
+      width: 150,
+      key: 'contractName',
+      dataIndex: 'contractName',
+      sort: 5,
+    },
+    {
+      title: '合同节点',
+      width: 200,
+      key: 'contractNodes',
+      dataIndex: 'contractNodes',
+      sort: 6,
+      scopedSlots: {customRender: 'contractNodes'}
+    },
+    {
+      title: '合同额(元)',
+      width: 150,
+      key: 'contractAmount',
+      dataIndex: 'contractAmount',
+      sort: 7,
+      sorter: (a, b) => a.contractAmount - b.contractAmount,
+    },
+    {
+      title: '累计现金回款(元)',
+      width: 150,
+      key: 'accumulatedCashReceipts',
+      sort: 8,
+      dataIndex: 'accumulatedCashReceipts',
+    },
+    {
+      title: '剩余合同额(元)',
+      width: 150,
+      key: 'remainingContractAmount',
+      dataIndex: 'remainingContractAmount',
+      sort: 9,
+    },
+    {
+      title: '已收款比例',
+      width: 130,
+      key: 'receivedProportion',
+      dataIndex: 'receivedProportion',
+      sort: 10,
+    },
+    {
+      title: '累计开票金额(元)',
+      width: 150,
+      key: 'cumulativeInvoicedAmount',
+      dataIndex: 'cumulativeInvoicedAmount',
+      sort: 11,
+    },
+    {
+      title: '已开发票未收款金额',
+      width: 160,
+      key: 'invoicedUncollectedAmount',
+      dataIndex: 'invoicedUncollectedAmount',
+      sort: 12,
+    },
+    {
+      title: '实际签约日期',
+      width: 150,
+      key: 'actualSigningDate',
+      dataIndex: 'actualSigningDate',
+      sort: 13,
+    },
+    {
+      title: '合同归档日期',
+      width: 150,
+      key: 'contractFilingDate',
+      dataIndex: 'contractFilingDate',
+      sort: 14,
+    },
+    {
+      title: '项目类别',
+      width: 300,
+      key: 'itemCategory',
+      dataIndex: 'itemCategory',
+      sort: 15,
+      scopedSlots: {customRender: 'itemCategory'}
+    },
+    {
+      title: '主设计部门',
+      width: 150,
+      key: 'mainDesignDepartment',
+      dataIndex: 'mainDesignDepartment',
+      sort: 16,
+    },
+    {
+      title: '经营部门',
+      width: 150,
+      key: 'managementDepartment',
+      dataIndex: 'managementDepartment',
+      sort: 17,
+    },
+    {
+      title: '项目经理',
+      width: 150,
+      key: 'projectManager',
+      dataIndex: 'projectManager',
+      sort: 18,
+    },
+    {
+      title: '经营经理',
+      width: 150,
+      key: 'runningManager',
+      dataIndex: 'runningManager',
+      sort: 19,
+    },
+    {
+      title: '项目预算秘书',
+      width: 150,
+      key: 'projectSecretary',
+      dataIndex: 'projectSecretary',
+      sort: 20,
+    },
+    {
+      title: '发包方',
+      width: 150,
+      key: 'contractingParty',
+      dataIndex: 'contractingParty',
+      sort: 21,
+    },
+    {
+      title: '投资额(万元)',
+      width: 150,
+      key: 'investmentAmount',
+      dataIndex: 'investmentAmount',
+      sort: 22,
+    },
+    {
+      title: '项目规模(平方米)',
+      width: 150,
+      key: 'projectScale',
+      dataIndex: 'projectScale',
+      sort: 23,
+    },
+    {
+      title: '地域',
+      width: 150,
+      key: 'region',
+      dataIndex: 'region',
+      sort: 24,
+    },
+    {
+      title: '地区关键词',
+      width: 150,
+      key: 'regionalKeyWords',
+      dataIndex: 'regionalKeyWords',
+      sort: 25,
+    },
+    {
+      title: '建筑一级分类',
+      width: 120,
+      key: 'class1',
+      dataIndex: 'class1',
+      sort: 26,
+    },
+    {
+      title: '建筑二级分类',
+      width: 120,
+      key: 'class2',
+      dataIndex: 'class2',
+      sort: 27,
+    },
+    {
+      title: '是否EPC项目',
+      width: 120,
+      key: 'epc',
+      dataIndex: 'epc',
+      sort: 28,
+      scopedSlots: {customRender: 'epc'}
+    },
+    {
+      width: 150,
+      title: '合同扫描文件',
+      key: 'contractFile',
+      dataIndex: 'contractFile',
+      sort: 29,
+      scopedSlots: {customRender: 'contractFile'}
+    },
+    {
+      title: '序号',
+      width: 70,
+      fixed: 'left',
+      dataIndex: 'serial',
+      key: 'serial',
+      sort: 0,
+      scopedSlots: {customRender: 'serial'}
+    },
+    {
+      width: 150,
+      title: '合同操作',
+      fixed: 'right',
+      key: 'selectIndex',
+      dataIndex: 'selectIndex',
+      sort: 31,
+      scopedSlots: {customRender: 'selectIndex'}
+    },
+  ], // 表单配置的全部数据
+  options: [], // 表头总数据
+  defaultOptions: [0, 1, 2, 3, 4, 6, 7, 8, 9, 10, 11, 12, 28], // 默认出现的表头
 };
 
 const mutations = {
@@ -78,6 +309,14 @@ const mutations = {
   },
   removeContractInfo(state, id) {
     state.selectContractInfo.splice(state.selectContractInfo.findIndex(item => item.contractId === id), 1);
+  },
+  loadSettingOptions(state) {
+    state.options = state.totalColumns.filter(item => !item.fixed).map((item, index) => {
+      return {
+        label: item.title,
+        value: index,
+      }
+    });
   }
 };
 

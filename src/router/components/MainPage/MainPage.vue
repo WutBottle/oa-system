@@ -268,32 +268,46 @@
     },
     mounted() {
       if (this.role === 'ROLE_ADMIN') {
-        const adminMenu = {
-          name: "数据管理",
-          iconType: "file-text",
-          sideBars: [
-            {
-              name: "合同录入",
-              router: "/main/contractmanager",
-            },
-            {
-              name: "发票录入",
-              router: "/main/invoice",
-            },
-            {
-              name: "现金录入",
-              router: "/main/cash",
-            },
-            {
-              name: "分包录入",
-              router: "/main/outsource",
-            },
-            {
-              name: "分包付款录入",
-              router: "/main/outcontractpaid",
-            }
-          ]
-        };
+        const adminMenu = [
+          {
+            name: "数据管理",
+            iconType: "file-text",
+            sideBars: [
+              {
+                name: "合同录入",
+                router: "/main/contractmanager",
+              },
+              {
+                name: "发票录入",
+                router: "/main/invoice",
+              },
+              {
+                name: "现金录入",
+                router: "/main/cash",
+              },
+              {
+                name: "分包录入",
+                router: "/main/outsource",
+              },
+              {
+                name: "分包付款录入",
+                router: "/main/outcontractpaid",
+              }
+            ]
+          }, {
+            name: "系统管理",
+            iconType: "cluster",
+            sideBars: [
+              {
+                name: "参数配置",
+                router: "/main/parameter",
+              },
+              {
+                name: "用户管理",
+                router: "/main/users",
+              }
+            ]
+          }];
         this.menuList = this.menuList.concat(adminMenu);
       }
       this.screenWidth = document.body.clientWidth;
@@ -316,7 +330,7 @@
             iconType: "desktop",
           },
           {
-            name: '合同列表',
+            name: '项目列表',
             router: "/main/list",
             iconType: "table",
           },
@@ -334,20 +348,6 @@
             name: '分析中心',
             router: "/main/analysis",
             iconType: "pie-chart",
-          },
-          {
-            name: "个人页",
-            iconType: "user",
-            sideBars: [
-              {
-                name: "个人中心",
-                router: "/main/usercenter",
-              },
-              {
-                name: "个人设置",
-                router: "/main/setting",
-              }
-            ]
           }
         ]
       }
@@ -357,13 +357,13 @@
     },
     computed: {
       ...mapState({
-        username: state => state.userOperation.username,// 选择合同数
-        role: state => state.userOperation.role
+        username: state => state.tokensOperation.username,// 选择合同数
+        role: state => state.tokensOperation.role
       }),
     },
     methods: {
       ...mapActions({
-        logout: 'userOperation/logout',
+        logout: 'tokensOperation/logout',
       }),
       toggleCollapsed() {
         this.collapsed = !this.collapsed

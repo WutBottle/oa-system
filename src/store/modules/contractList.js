@@ -19,17 +19,10 @@ const state = {
   selectContractInfo: [], // 被选中的合同数据
   totalColumns: [
     {
-      title: '合同号',
-      width: 100,
-      key: 'contractNum',
-      dataIndex: 'contractNum',
-      sort: 1,
-    },
-    {
       title: '签约状态',
       width: 100,
       dataIndex: 'signState',
-      sort: 2,
+      sort: 1,
       key: 'signState',
       scopedSlots: {customRender: 'signState'}
     },
@@ -38,6 +31,13 @@ const state = {
       width: 120,
       key: 'designNum',
       dataIndex: 'designNum',
+      sort: 2,
+    },
+    {
+      title: '合同号',
+      width: 100,
+      key: 'contractNum',
+      dataIndex: 'contractNum',
       sort: 3,
     },
     {
@@ -55,11 +55,19 @@ const state = {
       sort: 5,
     },
     {
+      width: 150,
+      title: '合同扫描文件',
+      key: 'contractFile',
+      dataIndex: 'contractFile',
+      sort: 6,
+      scopedSlots: {customRender: 'contractFile'}
+    },
+    {
       title: '合同节点',
       width: 200,
       key: 'contractNodes',
       dataIndex: 'contractNodes',
-      sort: 6,
+      sort: 7,
       scopedSlots: {customRender: 'contractNodes'}
     },
     {
@@ -67,14 +75,14 @@ const state = {
       width: 150,
       key: 'contractAmount',
       dataIndex: 'contractAmount',
-      sort: 7,
+      sort: 8,
       sorter: (a, b) => a.contractAmount - b.contractAmount,
     },
     {
       title: '累计现金回款(元)',
       width: 150,
       key: 'accumulatedCashReceipts',
-      sort: 8,
+      sort: 9,
       dataIndex: 'accumulatedCashReceipts',
     },
     {
@@ -82,49 +90,49 @@ const state = {
       width: 150,
       key: 'remainingContractAmount',
       dataIndex: 'remainingContractAmount',
-      sort: 9,
+      sort: 10,
     },
     {
       title: '已收款比例',
       width: 130,
       key: 'receivedProportion',
       dataIndex: 'receivedProportion',
-      sort: 10,
+      sort: 11,
     },
     {
       title: '累计开票金额(元)',
       width: 150,
       key: 'cumulativeInvoicedAmount',
       dataIndex: 'cumulativeInvoicedAmount',
-      sort: 11,
+      sort: 12,
     },
     {
       title: '已开发票未收款金额',
       width: 160,
       key: 'invoicedUncollectedAmount',
       dataIndex: 'invoicedUncollectedAmount',
-      sort: 12,
+      sort: 13,
     },
     {
       title: '实际签约日期',
       width: 150,
       key: 'actualSigningDate',
       dataIndex: 'actualSigningDate',
-      sort: 13,
+      sort: 14,
     },
     {
       title: '合同归档日期',
       width: 150,
       key: 'contractFilingDate',
       dataIndex: 'contractFilingDate',
-      sort: 14,
+      sort: 15,
     },
     {
       title: '项目类别',
       width: 300,
       key: 'itemCategory',
       dataIndex: 'itemCategory',
-      sort: 15,
+      sort: 16,
       scopedSlots: {customRender: 'itemCategory'}
     },
     {
@@ -132,27 +140,20 @@ const state = {
       width: 150,
       key: 'mainDesignDepartment',
       dataIndex: 'mainDesignDepartment',
-      sort: 16,
+      sort: 17,
     },
     {
       title: '经营部门',
       width: 150,
       key: 'managementDepartment',
       dataIndex: 'managementDepartment',
-      sort: 17,
+      sort: 18,
     },
     {
       title: '项目经理',
       width: 150,
       key: 'projectManager',
       dataIndex: 'projectManager',
-      sort: 18,
-    },
-    {
-      title: '经营经理',
-      width: 150,
-      key: 'runningManager',
-      dataIndex: 'runningManager',
       sort: 19,
     },
     {
@@ -163,69 +164,68 @@ const state = {
       sort: 20,
     },
     {
+      title: '经营经理',
+      width: 150,
+      key: 'runningManager',
+      dataIndex: 'runningManager',
+      sort: 21,
+    },
+    {
       title: '发包方',
       width: 150,
       key: 'contractingParty',
       dataIndex: 'contractingParty',
-      sort: 21,
+      sort: 22,
     },
     {
       title: '投资额(万元)',
       width: 150,
       key: 'investmentAmount',
       dataIndex: 'investmentAmount',
-      sort: 22,
+      sort: 23,
     },
     {
       title: '项目规模(平方米)',
       width: 150,
       key: 'projectScale',
       dataIndex: 'projectScale',
-      sort: 23,
+      sort: 24,
     },
     {
       title: '地域',
       width: 150,
       key: 'region',
       dataIndex: 'region',
-      sort: 24,
+      sort: 25,
     },
     {
       title: '地区关键词',
       width: 150,
       key: 'regionalKeyWords',
       dataIndex: 'regionalKeyWords',
-      sort: 25,
+      sort: 26,
     },
     {
       title: '建筑一级分类',
       width: 120,
       key: 'class1',
       dataIndex: 'class1',
-      sort: 26,
+      sort: 27,
     },
     {
       title: '建筑二级分类',
       width: 120,
       key: 'class2',
       dataIndex: 'class2',
-      sort: 27,
+      sort: 28,
     },
     {
       title: '是否EPC项目',
       width: 120,
       key: 'epc',
       dataIndex: 'epc',
-      sort: 28,
-      scopedSlots: {customRender: 'epc'}
-    },
-    {
-      width: 150,
-      title: '合同扫描文件',
-      key: 'contractFile',
-      dataIndex: 'contractFile',
       sort: 29,
-      scopedSlots: {customRender: 'contractFile'}
+      scopedSlots: {customRender: 'epc'}
     },
     {
       title: '序号',
@@ -242,12 +242,12 @@ const state = {
       fixed: 'right',
       key: 'selectIndex',
       dataIndex: 'selectIndex',
-      sort: 31,
+      sort: 30,
       scopedSlots: {customRender: 'selectIndex'}
     },
   ], // 表单配置的全部数据
   options: [], // 表头总数据
-  defaultOptions: [0, 1, 2, 3, 4, 6, 7, 8, 9, 10, 11, 12, 28], // 默认出现的表头
+  defaultOptions: [0, 1, 2, 3, 4, 5, 6, 7, 8, 28], // 默认出现的表头
 };
 
 const mutations = {
@@ -276,9 +276,9 @@ const mutations = {
         itemCategory: !item.projectCategory ? '' : item.projectCategory.projectCategoryName, // 项目类别
         mainDesignDepartment: item.departmentDesign, // 主设计部门
         managementDepartment: item.departmentRunning, // 经营部门
-        projectManager: item.projectManager, // 项目经理
-        runningManager: item.runningManager, // 经营经理
-        projectSecretary: item.projectSecretary, // 项目预算秘书
+        projectManager: item.projectManager.staffName, // 项目经理
+        runningManager: item.runningManager.staffName, // 经营经理
+        projectSecretary: item.projectSecretary.staffName, // 项目预算秘书
         contractingParty: item.owner, // 发包方
         investmentAmount: item.investment, // 投资额(万元)
         projectScale: item.scale, // 项目规模(平方米)

@@ -181,7 +181,7 @@
     name: "WorkPlace",
     computed: {
       ...mapState({
-        username: state => state.userOperation.username,// 选择合同数
+        username: state => state.tokensOperation.username,// 选择合同数
       }),
     },
     data() {

@@ -43,30 +43,24 @@
     <div class="page-header">
       <a-breadcrumb class="bread">
         <a-breadcrumb-item><a href="/main/workplace">首页</a></a-breadcrumb-item>
-        <a-breadcrumb-item>合同列表</a-breadcrumb-item>
+        <a-breadcrumb-item>项目列表</a-breadcrumb-item>
       </a-breadcrumb>
-      <div class="title">合同列表</div>
+      <div class="title">项目列表</div>
     </div>
     <div class="page-content">
       <div class="content-wrapper">
         <a-form class="form-wrapper" :layout="formLayout">
           <a-form-item
-                  label="合同号"
-                  :label-col="formItemLayout.labelCol"
-                  :wrapper-col="formItemLayout.wrapperCol"
+                  label="项目合同号"
           >
-            <a-input v-model="contractId" placeholder="请输入合同号"/>
+            <a-input style="width: 140px" v-model="contractId" placeholder="请输入合同号"/>
           </a-form-item>
-          <a-form-item
-                  :wrapper-col="buttonItemLayout.wrapperCol"
-          >
+          <a-form-item>
             <a-button type="primary" @click="handleQuery">
               查询
             </a-button>
           </a-form-item>
-          <a-form-item
-                  :wrapper-col="buttonItemLayout.wrapperCol"
-          >
+          <a-form-item>
             <a-dropdown :trigger="['click']">
               <a-button icon="down" type="primary">
                 导出
@@ -85,9 +79,7 @@
               </a-menu>
             </a-dropdown>
           </a-form-item>
-          <a-form-item
-                  :wrapper-col="buttonItemLayout.wrapperCol"
-          >
+          <a-form-item>
             <a-popover title="合同选择列表" placement="bottom" trigger="click" v-model="popVisible">
               <template slot="content">
                 <div v-if="!!selectContractInfo.length" style="width: 350px">
@@ -110,7 +102,6 @@
           </a-form-item>
           <a-form-item
                   v-if="this.role === 'ROLE_ADMIN'"
-                  :wrapper-col="buttonItemLayout.wrapperCol"
           >
             <a-popconfirm title="确定删除?" @confirm="handleDelete" @cancel="cancelDelete" okText="确定" cancelText="取消">
               <a-icon slot="icon" type="question-circle-o" style="color: red" />
@@ -239,7 +230,7 @@
         paginationProps: state => state.contractList.paginationProps, // 分页选项
         tableData: state => state.contractList.tableData, // 合同数据
         selectedRowKeys: state => state.contractList.selectedRowKeys, //选中的keys
-        role: state => state.userOperation.role,
+        role: state => state.tokensOperation.role,
         projectCategoryList: state => state.contractList.projectCategoryList,// 项目类型
         selectContractInfo: state => state.contractList.selectContractInfo, // 项目类型
         totalColumns: state => state.contractList.totalColumns, // 表单头部数据

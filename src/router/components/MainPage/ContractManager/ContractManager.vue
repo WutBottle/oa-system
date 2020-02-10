@@ -203,39 +203,66 @@
                       :wrapper-col="formItemLayout.wrapperCol"
                       label="经营经理"
               >
-                <a-input
+                <a-select
                         v-decorator="[
           'runningManager',
           {rules: [{ required: true, message: '请输入经营经理！' }]}
         ]"
                         placeholder="请输入经营经理"
-                />
+                        showSearch
+                        :showArrow="false"
+                        :filterOption="false"
+                        @search="fetchStaffData"
+                        notFoundContent="无该人员数据"
+                        :defaultActiveFirstOption="false"
+                >
+                  <a-spin v-if="fetching" slot="notFoundContent" size="small"/>
+                  <a-select-option v-for="d in staffData" :key="d.id">{{d.staffName}}</a-select-option>
+                </a-select>
               </a-form-item>
               <a-form-item
                       :label-col="formItemLayout.labelCol"
                       :wrapper-col="formItemLayout.wrapperCol"
                       label="项目经理"
               >
-                <a-input
+                <a-select
                         v-decorator="[
           'projectManager',
           {rules: [{ required: true, message: '请输入项目经理！' }]}
         ]"
                         placeholder="请输入项目经理"
-                />
+                        showSearch
+                        :showArrow="false"
+                        :filterOption="false"
+                        @search="fetchStaffData"
+                        notFoundContent="无该人员数据"
+                        :defaultActiveFirstOption="false"
+                >
+                  <a-spin v-if="fetching" slot="notFoundContent" size="small"/>
+                  <a-select-option v-for="d in staffData" :key="d.id">{{d.staffName}}</a-select-option>
+                </a-select>
               </a-form-item>
               <a-form-item
                       :label-col="formItemLayout.labelCol"
                       :wrapper-col="formItemLayout.wrapperCol"
                       label="项目预算秘书"
               >
-                <a-input
+                <a-select
                         v-decorator="[
           'projectSecretary',
           {rules: [{ required: true, message: '请输入项目预算秘书！' }]}
         ]"
                         placeholder="请输入项目预算秘书"
-                />
+                        showSearch
+                        :showArrow="false"
+                        :filterOption="false"
+                        @search="fetchStaffData"
+                        notFoundContent="无该人员数据"
+                        :defaultActiveFirstOption="false"
+                >
+                  <a-spin v-if="fetching" slot="notFoundContent" size="small"/>
+                  <a-select-option v-for="d in staffData" :key="d.id">{{d.staffName}}</a-select-option>
+                </a-select>
               </a-form-item>
               <a-form-item
                       :label-col="formItemLayout.labelCol"
@@ -487,6 +514,7 @@
 <script>
   import {mapState, mapActions} from 'vuex'
   import moment from 'moment'
+  import {debounce} from 'debounce';
 
   const formItemLayout = {
     labelCol: {span: 6},
@@ -500,6 +528,7 @@
   export default {
     name: "contractManager",
     data() {
+      this.fetchOutContract = debounce(this.fetchOutContract, 800);
       return {
         formItemLayout,
         formTailLayout,
@@ -627,11 +656,13 @@
           },
         ],
         uploadSpinning: false, // 判断是否正在上传文件
+        fetching: false, // 控制拉取列表
       };
     },
     computed: {
       ...mapState({
         projectCategoryList: state => state.contractList.projectCategoryList,// 项目类型
+        staffData: state => state.staffOperation.staffData, // 职员信息
       }),
     },
     mounted() {
@@ -643,6 +674,7 @@
         getProjectCategoryList: 'contractList/getProjectCategoryList',
         contractInput: 'contractList/contractInput',
         addContract: 'contractList/addContract',
+        getStaffListByNameLike: 'staffOperation/getStaffListByNameLike'
       }),
       check() {
         this.form.validateFields(
@@ -663,6 +695,15 @@
               values = Object.assign(values, {contractNodes: tempContractNodes});
               values = Object.assign(values, {contractFile: this.fileName});
               values = Object.assign(values, {projectCategory: projectCategory});
+              values.projectManager = {
+                id: values.projectManager
+              };
+              values.runningManager = {
+                id: values.runningManager
+              };
+              values.projectSecretary = {
+                id: values.projectSecretary
+              };
               this.addContract(values).then((data) => {
                 this.$message.success(data.data.data);
               }).catch((error) => {
@@ -791,6 +832,17 @@
       onClose() {
         this.visible = false
       },
+      fetchStaffData(value) {
+        const params = {
+          staffName: value,
+          pageNum: 1,
+          pageLimit: 10,
+        };
+        this.fetching = true;
+        this.getStaffListByNameLike(params).then((res) => {
+          this.fetching = false;
+        });
+      }
     },
   }
 </script>

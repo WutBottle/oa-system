@@ -3,11 +3,11 @@
 </style>
 
 <template>
-  <div>UserCenter</div>
+  <div>ParameterPage</div>
 </template>
 
 <script>
   export default {
-    name: "UserCenter"
+    name: "ParameterPage"
   }
 </script>

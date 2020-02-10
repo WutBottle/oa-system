@@ -244,7 +244,7 @@
     computed: {
       ...mapState({
         selectedRowKeys: state => state.outContractOperation.selectedRowKeys, //选中的keys
-        role: state => state.userOperation.role, // 角色信息
+        role: state => state.tokensOperation.role, // 角色信息
         listTableData: state => state.outContractOperation.listTableData, // 选中的keys
         listPaginationProps: state => state.outContractOperation.listPaginationProps, // 分页控制
         outContractCategoryList: state => state.outContractOperation.outContractCategoryList, // 外包类型选项

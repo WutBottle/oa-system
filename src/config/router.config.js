@@ -42,14 +42,14 @@ export const constantRouterMap = [
         component: () => import('components/MainPage/AnalysisPage/AnalysisPage'),
       },
       {
-        path: 'usercenter',
-        name: 'usercenter',
-        component: () => import('components/MainPage/UserCenter/UserCenter'),
+        path: 'parameter',
+        name: 'parameter',
+        component: () => import('components/MainPage/ParameterPage/ParameterPage'),
       },
       {
-        path: 'setting',
-        name: 'setting',
-        component: () => import('components/MainPage/SettingPage/SettingPage'),
+        path: 'users',
+        name: 'users',
+        component: () => import('components/MainPage/UsersPage/UsersPage'),
       },
       {
         path: 'contractmanager',

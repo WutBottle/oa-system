@@ -1,72 +1,58 @@
 /*
 * Author: zp
-* 登录处理
+* 用户管理
 */
 import api from '@/api/apiSugar'
-import {ACCESS_TOKEN, ROLE, USERNAME} from '@/store/mutation-types'
 
 const state = {
-  status: '',
-  token: localStorage.getItem(ACCESS_TOKEN) || '',
-  role: localStorage.getItem(ROLE) || '',
-  username: localStorage.getItem(USERNAME) || '',
+  paginationProps: {
+    pageSize: 4, // 默认每页显示数量
+    current: 1,
+  },
+  listData: [],
+  showLoadingMore: true,
 };
 
 const mutations = {
-  authRequest(state) {
-    state.status = 'loading';
+  setListData(state, data) {
+    if (state.paginationProps.current === data.totalPages){
+      state.showLoadingMore = false;
+    } else {
+      state.showLoadingMore = true;
+    }
+    state.listData = state.listData.concat(data.content);
   },
-  authSuccess(state, user) {
-    state.status = 'success';
-    //更新本地token
-    localStorage.setItem(ACCESS_TOKEN, user.token);
-    localStorage.setItem(ROLE, user.role);
-    localStorage.setItem(USERNAME, user.username);
-    state.role = user.role;
-    state.username = user.username;
-  },
-  authError(state) {
-    state.status = 'error';
-    localStorage.removeItem(ACCESS_TOKEN);
-    localStorage.removeItem(ROLE);
-    localStorage.removeItem(USERNAME);
-  },
-  logOut(state) {
-    state.token = '';
-    state.status = '';
-    state.role = '';
-    state.username = '';
-    localStorage.removeItem(ACCESS_TOKEN);
-    localStorage.removeItem(ROLE);
-    localStorage.removeItem(USERNAME);
-  },
+  resetListData(state) {
+    state.listData = [];
+    state.showLoadingMore = false;
+    state.paginationProps.current = 1;
+  }
 };
 
 const actions = {
-  login({dispatch, commit, rootState}, params) {
+  // 添加新用户
+  register({commit}, params) {
     return new Promise((resolve, reject) => {
-      commit('authRequest');
-      api.userController.loginUser(params).then(res => {
-        res.data.data && commit('authSuccess', res.data.data);
+      api.userController.register(params).then(res => {
         resolve(res);
       }).catch(error => {
-        commit('authError');
+        console.log(error, '添加人员信息失败');
         reject(error);
       });
-    })
+    });
   },
-  logout({dispatch, commit, rootState}, params) {
+  // 获取用户列表
+  getUserListByNameLike({commit}, params) {
     return new Promise((resolve, reject) => {
-      commit('authRequest');
-      api.userController.logout(params).then(res => {
-        localStorage.removeItem(ACCESS_TOKEN);
-        commit('logOut');
+      api.userController.getUserListByNameLike(params).then(res => {
         resolve(res);
+        res.data.data && commit('setListData', res.data.data);
       }).catch(error => {
+        console.log(error, '获取用户列表失败');
         reject(error);
       });
-    })
-  }
+    });
+  },
 };
 
 export default {

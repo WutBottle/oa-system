@@ -1,21 +1,25 @@
 /**
  * api接口的统一出口
  */
-import userController from './userController';
+import tokensController from './tokensController';
 import contractController from './contractController';
 import projectCategoryController from './projectCategoryController';
 import receiptController from './receiptController';
 import outContractController from './outContractController';
 import cashController from './cashController';
-import outPaidController from "./outPaidController";
+import outPaidController from './outPaidController';
+import userController from './userController';
+import staffController from "./staffController";
 
 // 导出接口
 export default {
-  userController: userController,// 用户管理
+  tokensController: tokensController,// 登录管理
   contractController: contractController,// 合同管理
   projectCategoryController: projectCategoryController, // 项目类型管理
   receiptController: receiptController, // 发票管理
   outContractController: outContractController, // 外包合同管理
   cashController: cashController, // 现金回款管理
   outPaidController: outPaidController, // 分包付款管理
+  userController: userController, // 用户管理
+  staffController: staffController, // 职员管理
 }

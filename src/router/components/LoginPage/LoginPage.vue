@@ -157,12 +157,12 @@
     },
     computed: {
       ...mapState({
-        loginStatus: state => state.userOperation.status,//登录状态记录
+        loginStatus: state => state.tokensOperation.status,//登录状态记录
       }),
     },
     methods: {
       ...mapActions({
-        login: 'userOperation/login',
+        login: 'tokensOperation/login',
       }),
       handleSubmit(e) {
         e.preventDefault();

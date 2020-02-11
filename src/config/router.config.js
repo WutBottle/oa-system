@@ -85,7 +85,17 @@ export const constantRouterMap = [
         path: 'staffentry',
         name: 'staffentry',
         component: () => import('components/MainPage/StaffEntryPage/StaffEntryPage'),
-      }
+      },
+      {
+        path: 'staff',
+        name: 'staff',
+        component: () => import('components/MainPage/StaffPage/StaffPage'),
+      },
+      {
+        path: 'salaryentry',
+        name: 'salaryentry',
+        component: () => import('components/MainPage/SalaryEntryPage/SalaryEntryPage'),
+      },
     ]
   }
 ];

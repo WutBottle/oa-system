@@ -214,7 +214,7 @@
                   :defaultActiveFirstOption="false"
           >
             <a-spin v-if="fetching" slot="notFoundContent" size="small"/>
-            <a-select-option v-for="d in staffData" :key="d.id">{{d.staffName}}</a-select-option>
+            <a-select-option v-for="d in staffData" :key="d.id">{{d.staffName}}<a-divider type="vertical" /><a-tag color="orange">{{d.staffCode}}</a-tag></a-select-option>
           </a-select>
         </a-form-item>
         <a-form-item
@@ -237,7 +237,7 @@
                   :defaultActiveFirstOption="false"
           >
             <a-spin v-if="fetching" slot="notFoundContent" size="small"/>
-            <a-select-option v-for="d in staffData" :key="d.id">{{d.staffName}}</a-select-option>
+            <a-select-option v-for="d in staffData" :key="d.id">{{d.staffName}}<a-divider type="vertical" /><a-tag color="orange">{{d.staffCode}}</a-tag></a-select-option>
           </a-select>
         </a-form-item>
         <a-form-item
@@ -260,7 +260,7 @@
                   :defaultActiveFirstOption="false"
           >
             <a-spin v-if="fetching" slot="notFoundContent" size="small"/>
-            <a-select-option v-for="d in staffData" :key="d.id">{{d.staffName}}</a-select-option>
+            <a-select-option v-for="d in staffData" :key="d.id">{{d.staffName}}<a-divider type="vertical" /><a-tag color="orange">{{d.staffCode}}</a-tag></a-select-option>
           </a-select>
         </a-form-item>
         <a-form-item

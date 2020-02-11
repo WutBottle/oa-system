@@ -351,6 +351,7 @@
       handleEdit(selectData) {
         this.editFormData = JSON.parse(JSON.stringify(selectData));
         this.currentStaffId = selectData.id;
+        this.editForm.resetFields();
         this.editVisible = true;
       },
       submitEditForm() {
@@ -366,11 +367,9 @@
               this.verifyStaff(params).then((res) => {
                 if (res.data.meta.success){
                   this.$message.success('修改成功');
-                  this.editForm.resetFields();
                   this.updateListData('first');
                   this.editVisible = false;
                 } else {
-                  this.editForm.resetFields();
                   this.$message.error(res.data.meta.message);
                 }
               }).catch((error) => {

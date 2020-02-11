@@ -3,6 +3,7 @@
 * 职员管理
 */
 import api from '@/api/apiSugar'
+import moment from "moment";
 
 const state = {
   staffData: [],
@@ -11,6 +12,14 @@ const state = {
     current: 1,
   },
   listData: [],
+  tablePaginationProps: {
+    pageSize: 5, // 默认每页显示数量
+    showSizeChanger: true, // 显示可改变每页数量
+    pageSizeOptions: ['5', '10', '15'], // 每页数量选项
+    total: 0,
+    current: 1,
+  },
+  tableData: [],
   showLoadingMore: true,
 };
 
@@ -25,6 +34,18 @@ const mutations = {
       state.showLoadingMore = true;
     }
     state.listData = state.listData.concat(data.content);
+  },
+  setTableData(state, data) {
+    state.tablePaginationProps.total = data.totalElements;
+    state.tableData = data.content.map((item, index) => {
+      return {
+        key: index,
+        id: item.id,
+        staffCode: item.staffCode,
+        staffNote: item.staffNote,
+        staffName: item.staffName,
+      }
+    });
   },
   resetListData(state) {
     state.listData = [];
@@ -46,7 +67,19 @@ const actions = {
       });
     });
   },
-  // 获取用户列表(list展示)
+  // 获取职员列表(table展示)
+  getStaffListByNameLikeTable({commit}, params) {
+    return new Promise((resolve, reject) => {
+      api.staffController.getStaffListByNameLike(params).then(res => {
+        resolve(res);
+        commit('setTableData', res.data.data)
+      }).catch(error => {
+        console.log(error, '获取职员列表失败');
+        reject(error);
+      });
+    });
+  },
+  // 获取职员列表(list展示)
   getStaffListByNameLikeList({commit}, params) {
     return new Promise((resolve, reject) => {
       api.staffController.getStaffListByNameLike(params).then(res => {

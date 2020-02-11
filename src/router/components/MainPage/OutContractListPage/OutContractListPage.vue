@@ -113,7 +113,6 @@
 
 <script>
   import {mapState, mapMutations, mapActions} from 'vuex'
-  import moment from "moment";
 
   const formLayout = 'inline';
   const formItemLayout = {

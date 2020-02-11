@@ -296,6 +296,10 @@
               {
                 name: "职员录入",
                 router: "/main/staffentry",
+              },
+              {
+                name: "工资录入",
+                router: "/main/salaryentry",
               }
             ]
           }, {
@@ -352,6 +356,11 @@
             name: '分析中心',
             router: "/main/analysis",
             iconType: "pie-chart",
+          },
+          {
+            name: '职员列表',
+            router: "/main/staff",
+            iconType: "team",
           }
         ]
       }

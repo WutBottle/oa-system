@@ -11,6 +11,7 @@ import cashOperation from './modules/cashOperation'
 import outPaidOperation from "./modules/outPaidOperation";
 import userOperation from "./modules/userOperation";
 import staffOperation from "./modules/staffOperation";
+import salaryOperation from "./modules/salaryOperation";
 
 Vue.use(Vuex);
 
@@ -25,6 +26,7 @@ const store = new Vuex.Store({
     outPaidOperation, // 分包付款信息
     userOperation, // 用户管理信息
     staffOperation, // 职员信息管理
+    salaryOperation, // 工资信息管理
   },
   getters
 });

@@ -10,6 +10,7 @@ import cashController from './cashController';
 import outPaidController from './outPaidController';
 import userController from './userController';
 import staffController from "./staffController";
+import salaryController from "./salaryController";
 
 // 导出接口
 export default {
@@ -22,4 +23,5 @@ export default {
   outPaidController: outPaidController, // 分包付款管理
   userController: userController, // 用户管理
   staffController: staffController, // 职员管理
+  salaryController: salaryController, // 工资管理
 }

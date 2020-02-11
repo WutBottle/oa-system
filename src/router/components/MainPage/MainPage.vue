@@ -292,6 +292,10 @@
               {
                 name: "分包付款录入",
                 router: "/main/outcontractpaid",
+              },
+              {
+                name: "职员录入",
+                router: "/main/staffentry",
               }
             ]
           }, {

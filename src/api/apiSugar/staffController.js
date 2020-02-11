@@ -12,6 +12,18 @@ const staffController = {
   getStaffListByNameLike(params) {
     return axios.post(`${baseUrl.staffController}/getStaffListByNameLike`, params);
   },
+  // 添加职员信息
+  addStaff(params) {
+    return axios.post(`${baseUrl.staffController}/addStaff`, params);
+  },
+  // 删除职员信息
+  deleteStaff(params) {
+    return axios.post(`${baseUrl.staffController}/deleteStaff`, params);
+  },
+  // 修改职员信息
+  verifyStaff(params) {
+    return axios.post(`${baseUrl.staffController}/verifyStaff`, params);
+  },
 };
 
 export default staffController;

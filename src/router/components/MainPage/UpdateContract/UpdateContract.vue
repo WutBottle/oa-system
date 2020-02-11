@@ -11,6 +11,39 @@
         <a-form-item
                 :label-col="formItemLayout.labelCol"
                 :wrapper-col="formItemLayout.wrapperCol"
+                label="签约状态"
+        >
+          <a-select
+                  v-decorator="[
+          'sign',
+          {initialValue: String(this.formData.signState), rules: [{ required: true, message: '请选择签约状态！' }]}
+        ]"
+                  placeholder="请选择签约状态"
+          >
+            <a-select-option value="true">
+              已签约
+            </a-select-option>
+            <a-select-option value="false">
+              未签约
+            </a-select-option>
+          </a-select>
+        </a-form-item>
+        <a-form-item
+                :label-col="formItemLayout.labelCol"
+                :wrapper-col="formItemLayout.wrapperCol"
+                label="设计号"
+        >
+          <a-input
+                  v-decorator="[
+          'designId',
+          {initialValue: this.formData.designNum, rules: [{ required: true, message: '请输入设计号！' }]}
+        ]"
+                  placeholder="请输入设计号"
+          />
+        </a-form-item>
+        <a-form-item
+                :label-col="formItemLayout.labelCol"
+                :wrapper-col="formItemLayout.wrapperCol"
                 label="合同号"
         >
           <a-input
@@ -22,19 +55,6 @@
           }]}
         ]"
                   placeholder="请输入合同号"
-          />
-        </a-form-item>
-        <a-form-item
-                :label-col="formItemLayout.labelCol"
-                :wrapper-col="formItemLayout.wrapperCol"
-                label="合同名称"
-        >
-          <a-input
-                  v-decorator="[
-          'contractName',
-          {initialValue: this.formData.contractName, rules: [{ required: true, message: '请输入合同名称！' }]}
-        ]"
-                  placeholder="请输入合同名称"
           />
         </a-form-item>
         <a-form-item
@@ -55,14 +75,14 @@
         <a-form-item
                 :label-col="formItemLayout.labelCol"
                 :wrapper-col="formItemLayout.wrapperCol"
-                label="设计号"
+                label="合同名称"
         >
           <a-input
                   v-decorator="[
-          'designId',
-          {initialValue: this.formData.designNum, rules: [{ required: true, message: '请输入设计号！' }]}
+          'contractName',
+          {initialValue: this.formData.contractName, rules: [{ required: true, message: '请输入合同名称！' }]}
         ]"
-                  placeholder="请输入设计号"
+                  placeholder="请输入合同名称"
           />
         </a-form-item>
         <a-form-item
@@ -132,6 +152,25 @@
         <a-form-item
                 :label-col="formItemLayout.labelCol"
                 :wrapper-col="formItemLayout.wrapperCol"
+                label="项目类别"
+        >
+          <a-select
+                  v-decorator="[
+          'projectCategoryId',
+          {initialValue: this.formData.itemCategory, rules: [{ required: true, message: '请选择项目类别！' }]}
+        ]"
+                  placeholder="请选择项目类别"
+          >
+            <template v-for="item in this.projectCategoryList">
+              <a-select-option :key="item.projectCategoryId" :value="item.projectCategoryId">
+                {{item.projectCategoryName}}
+              </a-select-option>
+            </template>
+          </a-select>
+        </a-form-item>
+        <a-form-item
+                :label-col="formItemLayout.labelCol"
+                :wrapper-col="formItemLayout.wrapperCol"
                 label="主设计部门"
         >
           <a-input
@@ -158,41 +197,71 @@
         <a-form-item
                 :label-col="formItemLayout.labelCol"
                 :wrapper-col="formItemLayout.wrapperCol"
-                label="经营经理"
-        >
-          <a-input
-                  v-decorator="[
-          'runningManager',
-          {initialValue: this.formData.runningManager, rules: [{ required: true, message: '请输入经营经理！' }]}
-        ]"
-                  placeholder="请输入经营经理"
-          />
-        </a-form-item>
-        <a-form-item
-                :label-col="formItemLayout.labelCol"
-                :wrapper-col="formItemLayout.wrapperCol"
                 label="项目经理"
         >
-          <a-input
+          <a-select
                   v-decorator="[
           'projectManager',
-          {initialValue: this.formData.projectManager, rules: [{ required: true, message: '请输入项目经理！' }]}
+          {initialValue: this.formData.projectManagerOptions, rules: [{ required: true, message: '请输入项目经理！' }]}
         ]"
+                  labelInValue
                   placeholder="请输入项目经理"
-          />
+                  showSearch
+                  :showArrow="false"
+                  :filterOption="false"
+                  @search="fetchStaffData"
+                  notFoundContent="无该人员数据"
+                  :defaultActiveFirstOption="false"
+          >
+            <a-spin v-if="fetching" slot="notFoundContent" size="small"/>
+            <a-select-option v-for="d in staffData" :key="d.id">{{d.staffName}}</a-select-option>
+          </a-select>
         </a-form-item>
         <a-form-item
                 :label-col="formItemLayout.labelCol"
                 :wrapper-col="formItemLayout.wrapperCol"
                 label="项目预算秘书"
         >
-          <a-input
+          <a-select
                   v-decorator="[
           'projectSecretary',
-          {initialValue: this.formData.projectSecretary, rules: [{ required: true, message: '请输入项目预算秘书！' }]}
+          {initialValue: this.formData.projectSecretaryOptions, rules: [{ required: true, message: '请输入项目预算秘书！' }]}
         ]"
+                  labelInValue
                   placeholder="请输入项目预算秘书"
-          />
+                  showSearch
+                  :showArrow="false"
+                  :filterOption="false"
+                  @search="fetchStaffData"
+                  notFoundContent="无该人员数据"
+                  :defaultActiveFirstOption="false"
+          >
+            <a-spin v-if="fetching" slot="notFoundContent" size="small"/>
+            <a-select-option v-for="d in staffData" :key="d.id">{{d.staffName}}</a-select-option>
+          </a-select>
+        </a-form-item>
+        <a-form-item
+                :label-col="formItemLayout.labelCol"
+                :wrapper-col="formItemLayout.wrapperCol"
+                label="经营经理"
+        >
+          <a-select
+                  v-decorator="[
+          'runningManager',
+          {initialValue: this.formData.runningManagerOptions, rules: [{ required: true, message: '请输入经营经理！' }]}
+        ]"
+                  labelInValue
+                  placeholder="请输入经营经理"
+                  showSearch
+                  :showArrow="false"
+                  :filterOption="false"
+                  @search="fetchStaffData"
+                  notFoundContent="无该人员数据"
+                  :defaultActiveFirstOption="false"
+          >
+            <a-spin v-if="fetching" slot="notFoundContent" size="small"/>
+            <a-select-option v-for="d in staffData" :key="d.id">{{d.staffName}}</a-select-option>
+          </a-select>
         </a-form-item>
         <a-form-item
                 :label-col="formItemLayout.labelCol"
@@ -248,6 +317,26 @@
         <a-form-item
                 :label-col="formItemLayout.labelCol"
                 :wrapper-col="formItemLayout.wrapperCol"
+                label="地域"
+        >
+          <a-select
+                  v-decorator="[
+          'region',
+          {initialValue: String(this.formData.region === '省内'), rules: [{ required: true, message: '请选择地域！' }]}
+        ]"
+                  placeholder="请选择地域"
+          >
+            <a-select-option value="true">
+              省内
+            </a-select-option>
+            <a-select-option value="false">
+              省外
+            </a-select-option>
+          </a-select>
+        </a-form-item>
+        <a-form-item
+                :label-col="formItemLayout.labelCol"
+                :wrapper-col="formItemLayout.wrapperCol"
                 label="地区关键词"
         >
           <a-input
@@ -287,46 +376,6 @@
         <a-form-item
                 :label-col="formItemLayout.labelCol"
                 :wrapper-col="formItemLayout.wrapperCol"
-                label="签约状态"
-        >
-          <a-select
-                  v-decorator="[
-          'sign',
-          {initialValue: String(this.formData.signState), rules: [{ required: true, message: '请选择签约状态！' }]}
-        ]"
-                  placeholder="请选择签约状态"
-          >
-            <a-select-option value="true">
-              已签约
-            </a-select-option>
-            <a-select-option value="false">
-              未签约
-            </a-select-option>
-          </a-select>
-        </a-form-item>
-        <a-form-item
-                :label-col="formItemLayout.labelCol"
-                :wrapper-col="formItemLayout.wrapperCol"
-                label="地域"
-        >
-          <a-select
-                  v-decorator="[
-          'region',
-          {initialValue: String(this.formData.region === '省内'), rules: [{ required: true, message: '请选择地域！' }]}
-        ]"
-                  placeholder="请选择地域"
-          >
-            <a-select-option value="true">
-              省内
-            </a-select-option>
-            <a-select-option value="false">
-              省外
-            </a-select-option>
-          </a-select>
-        </a-form-item>
-        <a-form-item
-                :label-col="formItemLayout.labelCol"
-                :wrapper-col="formItemLayout.wrapperCol"
                 label="是否EPC项目"
         >
           <a-select
@@ -342,25 +391,6 @@
             <a-select-option value="false">
               否
             </a-select-option>
-          </a-select>
-        </a-form-item>
-        <a-form-item
-                :label-col="formItemLayout.labelCol"
-                :wrapper-col="formItemLayout.wrapperCol"
-                label="项目类型"
-        >
-          <a-select
-                  v-decorator="[
-          'projectCategoryId',
-          {initialValue: this.formData.itemCategory, rules: [{ required: true, message: '请选择项目类型！' }]}
-        ]"
-                  placeholder="请选择项目类型"
-          >
-            <template v-for="item in this.projectCategoryList">
-              <a-select-option :key="item.projectCategoryId" :value="item.projectCategoryId">
-                {{item.projectCategoryName}}
-              </a-select-option>
-            </template>
           </a-select>
         </a-form-item>
 <!--        <a-form-item-->
@@ -396,7 +426,8 @@
 </template>
 
 <script>
-  import {mapActions} from 'vuex'
+  import {mapState, mapActions} from 'vuex'
+  import {debounce} from 'debounce';
 
   const formItemLayout = {
     labelCol: {span: 6},
@@ -419,6 +450,7 @@
       }
     },
     data() {
+      this.fetchStaffData = debounce(this.fetchStaffData, 800);
       return {
         formItemLayout,
         formTailLayout,
@@ -426,12 +458,19 @@
         fileName: '',
         form: this.$form.createForm(this),
         pdfFileList: [],
+        fetching: false, // 控制拉取列表
       }
+    },
+    computed: {
+      ...mapState({
+        staffData: state => state.staffOperation.staffData, // 职员信息
+      }),
     },
     methods: {
       ...mapActions({
         uploadContract: 'contractList/uploadContract',
         verifyContract: 'contractList/verifyContract',
+        getStaffListByNameLike: 'staffOperation/getStaffListByNameLike'
       }),
       check() {
         this.form.validateFields(
@@ -454,6 +493,15 @@
 
               values = Object.assign(values, {contractFile: this.fileName});
               values = Object.assign(values, {projectCategory: projectCategory});
+              values.projectManager = {
+                id: values.projectManager.key
+              };
+              values.runningManager = {
+                id: values.runningManager.key
+              };
+              values.projectSecretary = {
+                id: values.projectSecretary.key
+              };
               this.verifyContract(values).then((data) => {
                 this.spinning = false;
                 this.$message.success(data.data.data);
@@ -496,7 +544,18 @@
           this.handlePdfRemove(file);
         }
         return false;
-      }
+      },
+      fetchStaffData(value) {
+        const params = {
+          staffName: value,
+          pageNum: 1,
+          pageLimit: 10,
+        };
+        this.fetching = true;
+        this.getStaffListByNameLike(params).then((res) => {
+          this.fetching = false;
+        });
+      },
     },
   }
 </script>

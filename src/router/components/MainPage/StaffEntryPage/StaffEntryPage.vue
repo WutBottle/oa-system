@@ -1,5 +1,5 @@
 <style lang="scss" scoped>
-  .UsersPage {
+  .StaffEntryPage {
     .page-header {
       background: #fff;
       padding: 16px 32px 0;
@@ -29,13 +29,13 @@
 </style>
 
 <template>
-  <div class="UsersPage">
+  <div class="StaffEntryPage">
     <div class="page-header">
       <a-breadcrumb class="bread">
         <a-breadcrumb-item><a href="/main/workplace">首页</a></a-breadcrumb-item>
-        <a-breadcrumb-item>用户管理</a-breadcrumb-item>
+        <a-breadcrumb-item>职员录入</a-breadcrumb-item>
       </a-breadcrumb>
-      <p class="title">用户管理</p>
+      <p class="title">职员录入</p>
     </div>
     <div class="page-content">
       <div style="background-color: #fff;padding: 24px 32px">
@@ -44,7 +44,7 @@
             <a-form-item
                     label="用户名"
             >
-              <a-input placeholder="请输入用户名" v-model="userName" />
+              <a-input placeholder="请输入用户名" v-model="staffName" />
             </a-form-item>
             <a-form-item>
               <a-button type="primary" @click="handleQuery">
@@ -79,12 +79,12 @@
               <a-icon type="delete" :style="{color: 'red'}"/>
             </a-popconfirm>
             <a-list-item-meta
-                    :description="'昵称：' + item.nickname"
+                    :description="'备注：' + item.staffNote"
             >
               <a slot="title">
-                用户名：{{item.username}}<a-divider type="vertical" />
-                <a-tag v-for="tag in item.roles" :color="tag.id === 1 ? 'green' : 'red'"
-                       :key="tag.nodeId">{{tag.id === 1 ? '普通用户' : '管理员'}}</a-tag>
+                职员名称：{{item.staffName}}
+                <a-divider type="vertical" />
+                员工号：<a-tag color="orange">{{item.staffCode ? item.staffCode : '暂无'}}</a-tag>
               </a>
               <a-avatar
                       slot="avatar"
@@ -109,88 +109,45 @@
       >
         <a-form-item
                 v-bind="formItemLayout"
-                label="用户名"
+                label="员工号"
         >
           <a-input
                   v-decorator="[
-          'userName',
+          'staffCode',
           {rules: [{
-            required: true, message: '请输入用户名!'
+            required: true, message: '请输入员工号!'
           }]}
         ]"
-                  placeholder="请输入用户名"
+                  placeholder="请输入员工号"
           />
         </a-form-item>
         <a-form-item
                 v-bind="formItemLayout"
-                label="密码"
+                label="职员名称"
         >
           <a-input
                   v-decorator="[
-          'password',
+          'staffName',
           {rules: [{
-            required: true, message: '请输入密码!'
-          },{
-                validator: validateToNextPassword,
+            required: true, message: '请输入职员名称!'
           }]}
         ]"
-                  type="password"
-                  placeholder="请输入密码"
-          />
-        </a-form-item>
-        <a-form-item v-bind="formItemLayout" label="确认密码">
-          <a-input
-                  v-decorator="[
-          'confirm',
-          {
-            rules: [
-              {
-                required: true,
-                message: '请确认密码!',
-              },
-              {
-                validator: compareToFirstPassword,
-              },
-            ],
-          },
-        ]"
-                  placeholder="请确认密码"
-                  type="password"
-                  @blur="handleConfirmBlur"
+                  placeholder="请输入职员名称"
           />
         </a-form-item>
         <a-form-item
                 v-bind="formItemLayout"
-                label="昵称"
+                label="备注"
         >
           <a-input
                   v-decorator="[
-          'nickName',
+          'staffNote',
           {rules: [{
-            required: true, message: '请输入昵称!'
+            required: true, message: '请输入备注!'
           }]}
         ]"
-                  placeholder="请输入昵称"
+                  placeholder="请输入备注"
           />
-        </a-form-item>
-        <a-form-item
-                v-bind="formItemLayout"
-                label="用户权限"
-        >
-          <a-select
-                  v-decorator="[
-          'roles',
-          { rules: [{ required: true, message: '请选择用户权限!' }] },
-        ]"
-                  placeholder="请选择用户权限"
-          >
-            <a-select-option value="1">
-              普通用户
-            </a-select-option>
-            <a-select-option value="2">
-              管理员
-            </a-select-option>
-          </a-select>
         </a-form-item>
       </a-form>
     </a-modal>
@@ -207,51 +164,46 @@
       >
         <a-form-item
                 v-bind="formItemLayout"
-                label="用户名"
+                label="员工号"
         >
           <a-input
                   disabled
                   v-decorator="[
-          'userName',
-          {initialValue: this.editFormData.username, rules: [{
-            required: true, message: '请输入用户名!'
+          'staffCode',
+          {initialValue: this.editFormData.staffCode, rules: [{
+            required: true, message: '请输入员工号!'
           }]}
         ]"
-                  placeholder="请输入用户名"
+                  placeholder="请输入员工号"
           />
         </a-form-item>
         <a-form-item
                 v-bind="formItemLayout"
-                label="昵称"
+                label="职员名称"
         >
           <a-input
                   v-decorator="[
-          'nickName',
-          {initialValue: this.editFormData.nickname, rules: [{
-            required: true, message: '请输入昵称!'
+          'staffName',
+          {initialValue: this.editFormData.staffName, rules: [{
+            required: true, message: '请输入职员名称!'
           }]}
         ]"
-                  placeholder="请输入昵称"
+                  placeholder="请输入职员名称"
           />
         </a-form-item>
         <a-form-item
                 v-bind="formItemLayout"
-                label="用户权限"
+                label="备注"
         >
-          <a-select
+          <a-input
                   v-decorator="[
-          'roles',
-          {initialValue: this.editFormData.roles, rules: [{ required: true, message: '请选择用户权限!' }] },
+          'staffNote',
+          {initialValue: this.editFormData.staffNote, rules: [{
+            required: true, message: '请输入备注!'
+          }]}
         ]"
-                  placeholder="请选择用户权限"
-          >
-            <a-select-option value="1">
-              普通用户
-            </a-select-option>
-            <a-select-option value="2">
-              管理员
-            </a-select-option>
-          </a-select>
+                  placeholder="请输入备注"
+          />
         </a-form-item>
         <a-form-item
                 :label-col="formTailLayout.labelCol"
@@ -281,7 +233,7 @@
     wrapperCol: {span: 8, offset: 6},
   };
   export default {
-    name: "UsersPage",
+    name: "StaffEntryPage",
     data() {
       return {
         formLayout: 'inline',
@@ -289,21 +241,21 @@
         formTailLayout,
         loading: false,
         loadingMore: false,
-        userName: '', // 查询的用户名
+        staffName: '', // 查询的职员名
         addVisible: false,
         confirmDirty: false,
         addForm: this.$form.createForm(this),
         editVisible: false, // 编辑控制页面
         editFormData: {}, // 编辑当前表单数据
         editForm: this.$form.createForm(this),
-        currentUserId: '', // 当前编辑的用户id
+        currentStaffId: '', // 当前编辑的用户id
       }
     },
     computed: {
       ...mapState({
-        paginationProps: state => state.userOperation.paginationProps, // 分页数据
-        showLoadingMore: state => state.userOperation.showLoadingMore, // 控制加载更多按钮
-        listData: state => state.userOperation.listData, // list数据
+        paginationProps: state => state.staffOperation.paginationProps, // 分页数据
+        showLoadingMore: state => state.staffOperation.showLoadingMore, // 控制加载更多按钮
+        listData: state => state.staffOperation.listData, // list数据
       }),
     },
     mounted() {
@@ -311,13 +263,13 @@
     },
     methods: {
       ...mapMutations({
-        resetListData: 'userOperation/resetListData',
+        resetListData: 'staffOperation/resetListData',
       }),
       ...mapActions({
-        register: 'userOperation/register',
-        getUserListByNameLike: 'userOperation/getUserListByNameLike',
-        deleteUser: 'userOperation/deleteUser',
-        verifyUser: 'userOperation/verifyUser',
+        addStaff: 'staffOperation/addStaff',
+        getStaffListByNameLikeList: 'staffOperation/getStaffListByNameLikeList',
+        deleteStaff: 'staffOperation/deleteStaff',
+        verifyStaff: 'staffOperation/verifyStaff',
       }),
       updateListData(type) {
         if (type === 'first') {
@@ -327,11 +279,11 @@
           this.loadingMore = true;
         }
         const params = {
-          username: this.userName,
+          staffName: this.staffName,
           pageNum: this.paginationProps.current,
           pageLimit: this.paginationProps.pageSize,
         };
-        this.getUserListByNameLike(params).then(res => {
+        this.getStaffListByNameLikeList(params).then(res => {
           this.loading = false;
           this.loadingMore = false;
         }).catch(error => {
@@ -352,14 +304,11 @@
           (err, values) => {
             if (!err) {
               const params = {
-                username: values.userName,
-                password: values.password,
-                nickname: values.nickName,
-                roles: [{
-                  id: values.roles
-                }]
+                staffCode: values.staffCode,
+                staffName: values.staffName,
+                staffNote: values.staffNote,
               };
-              this.register(params).then(res => {
+              this.addStaff(params).then(res => {
                 if (res.data.meta.success){
                   this.$message.success('添加成功');
                   this.addVisible = false;
@@ -379,25 +328,6 @@
         this.addVisible = false;
         this.addForm.resetFields();
       },
-      handleConfirmBlur(e) {
-        const value = e.target.value;
-        this.confirmDirty = this.confirmDirty || !!value;
-      },
-      compareToFirstPassword(rule, value, callback) {
-        const form = this.addForm;
-        if (value && value !== form.getFieldValue('password')) {
-          callback('两次密码输入不一致!');
-        } else {
-          callback();
-        }
-      },
-      validateToNextPassword(rule, value, callback) {
-        const form = this.addForm;
-        if (value && this.confirmDirty) {
-          form.validateFields(['confirm'], { force: true });
-        }
-        callback();
-      },
       // 处理查询
       handleQuery() {
         this.updateListData('first');
@@ -405,9 +335,9 @@
       // 处理用户删除
       confirmDelete(data) {
         const params = {
-          userId: data.userId
+          id: data.id
         };
-        this.deleteUser(params).then(res => {
+        this.deleteStaff(params).then(res => {
           this.$message.success(res.data.data);
           this.updateListData('first')
         }).catch(error => {
@@ -420,8 +350,7 @@
       },
       handleEdit(selectData) {
         this.editFormData = JSON.parse(JSON.stringify(selectData));
-        this.editFormData.roles = String(this.editFormData.roles[0].id);
-        this.currentUserId = selectData.userId;
+        this.currentStaffId = selectData.id;
         this.editVisible = true;
       },
       submitEditForm() {
@@ -429,14 +358,12 @@
           (err, values) => {
             if (!err) {
               const params = {
-                userId: this.currentUserId,
-                username: values.userName,
-                nickname: values.nickName,
-                roles: [{
-                  id: values.roles
-                }]
+                id: this.currentStaffId,
+                staffName: values.staffName,
+                staffCode: values.staffCode,
+                staffNote: values.staffNote,
               };
-              this.verifyUser(params).then((res) => {
+              this.verifyStaff(params).then((res) => {
                 if (res.data.meta.success){
                   this.$message.success('修改成功');
                   this.editForm.resetFields();

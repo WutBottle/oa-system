@@ -16,6 +16,14 @@ const userController = {
   getUserListByNameLike(params) {
     return axios.post(`${baseUrl.userController}/getUserListByNameLike`, params);
   },
+  // 删除用户
+  deleteUser(params) {
+    return axios.post(`${baseUrl.userController}/deleteUser`, params);
+  },
+  // 修改用户
+  verifyUser(params) {
+    return axios.post(`${baseUrl.userController}/verifyUser`, params);
+  },
 };
 
 export default userController;

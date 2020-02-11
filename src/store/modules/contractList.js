@@ -279,6 +279,18 @@ const mutations = {
         projectManager: item.projectManager.staffName, // 项目经理
         runningManager: item.runningManager.staffName, // 经营经理
         projectSecretary: item.projectSecretary.staffName, // 项目预算秘书
+        projectManagerOptions: {
+          key: item.projectManager.id,
+          label: item.projectManager.staffName
+        }, // 项目经理
+        runningManagerOptions: {
+          key: item.runningManager.id,
+          label: item.runningManager.staffName
+        }, // 经营经理
+        projectSecretaryOptions: {
+          key: item.projectSecretary.id,
+          label: item.projectSecretary.staffName
+        }, // 项目预算秘书
         contractingParty: item.owner, // 发包方
         investmentAmount: item.investment, // 投资额(万元)
         projectScale: item.scale, // 项目规模(平方米)

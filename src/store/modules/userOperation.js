@@ -53,6 +53,28 @@ const actions = {
       });
     });
   },
+  // 删除用户
+  deleteUser({commit}, params) {
+    return new Promise((resolve, reject) => {
+      api.userController.deleteUser(params).then(res => {
+        resolve(res);
+      }).catch(error => {
+        console.log(error, '删除用户失败');
+        reject(error);
+      });
+    });
+  },
+  // 修改用户
+  verifyUser({commit}, params) {
+    return new Promise((resolve, reject) => {
+      api.userController.verifyUser(params).then(res => {
+        resolve(res);
+      }).catch(error => {
+        console.log(error, '修改用户失败');
+        reject(error);
+      });
+    });
+  },
 };
 
 export default {

@@ -528,7 +528,7 @@
   export default {
     name: "contractManager",
     data() {
-      this.fetchOutContract = debounce(this.fetchOutContract, 800);
+      this.fetchStaffData = debounce(this.fetchStaffData, 800);
       return {
         formItemLayout,
         formTailLayout,

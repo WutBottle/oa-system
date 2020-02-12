@@ -1,23 +1,5 @@
 <style lang="scss" scoped>
   .StaffEntryPage {
-    .page-header {
-      background: #fff;
-      padding: 16px 32px 0;
-      border-bottom: 1px solid #e8e8e8;
-
-      .bread {
-        margin-bottom: 16px;
-      }
-
-      .title {
-        font-size: 20px;
-        line-height: 28px;
-        font-weight: 500;
-        color: rgba(0, 0, 0, .85);
-        margin-bottom: 16px;
-      }
-    }
-
     .page-content {
       padding: 30px;
 
@@ -30,13 +12,7 @@
 
 <template>
   <div class="StaffEntryPage">
-    <div class="page-header">
-      <a-breadcrumb class="bread">
-        <a-breadcrumb-item><a href="/main/workplace">首页</a></a-breadcrumb-item>
-        <a-breadcrumb-item>职员录入</a-breadcrumb-item>
-      </a-breadcrumb>
-      <p class="title">职员录入</p>
-    </div>
+    <HeaderPage title="工资录入"/>
     <div class="page-content">
       <div style="background-color: #fff;padding: 24px 32px">
         <a-row style="margin-bottom: 24px">
@@ -223,7 +199,7 @@
 
 <script>
   import {mapState, mapActions, mapMutations} from 'vuex'
-
+  import HeaderPage from "../HeaderPage/HeaderPage";
   const formItemLayout = {
     labelCol: {span: 6},
     wrapperCol: {span: 14},
@@ -234,6 +210,9 @@
   };
   export default {
     name: "StaffEntryPage",
+    components: {
+      HeaderPage
+    },
     data() {
       return {
         formLayout: 'inline',
@@ -338,8 +317,12 @@
           id: data.id
         };
         this.deleteStaff(params).then(res => {
-          this.$message.success(res.data.data);
-          this.updateListData('first')
+          if (res.data.meta.success) {
+            this.$message.success(res.data.meta.message);
+            this.updateListData('first')
+          } else {
+            this.$message.error(res.data.meta.message);
+          }
         }).catch(error => {
           this.$message.error(error);
         });

@@ -1,13 +1,21 @@
 <style lang="scss" scoped>
+  .AnalysisPage {
 
+  }
 </style>
 
 <template>
-  <div>AnalysisPage</div>
+  <div class="AnalysisPage">
+    <HeaderPage title="分析中心"/>
+  </div>
 </template>
 
 <script>
+  import HeaderPage from "../HeaderPage/HeaderPage";
   export default {
-    name: "AnalysisPage"
+    name: "AnalysisPage",
+    components: {
+      HeaderPage,
+    },
   }
 </script>

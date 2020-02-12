@@ -1,23 +1,5 @@
 <style lang="scss" scoped>
   .ContractManager {
-    .page-header {
-      background: #fff;
-      padding: 16px 32px 0;
-      border-bottom: 1px solid #e8e8e8;
-
-      .bread {
-        margin-bottom: 16px;
-      }
-
-      .title {
-        font-size: 20px;
-        line-height: 28px;
-        font-weight: 500;
-        color: rgba(0, 0, 0, .85);
-        margin-bottom: 16px;
-      }
-    }
-
     .page-content {
       padding: 24px;
 
@@ -34,13 +16,7 @@
 
 <template>
   <div class="ContractManager">
-    <div class="page-header">
-      <a-breadcrumb class="bread">
-        <a-breadcrumb-item><a href="/main/workplace">首页</a></a-breadcrumb-item>
-        <a-breadcrumb-item>合同录入</a-breadcrumb-item>
-      </a-breadcrumb>
-      <p class="title">合同录入</p>
-    </div>
+    <HeaderPage title="合同录入"/>
     <div class="page-content">
       <a-row style="background-color: #fff">
         <a-col :span="14">
@@ -513,6 +489,7 @@
 
 <script>
   import {mapState, mapActions} from 'vuex'
+  import HeaderPage from "../HeaderPage/HeaderPage";
   import moment from 'moment'
   import {debounce} from 'debounce';
 
@@ -527,6 +504,9 @@
 
   export default {
     name: "contractManager",
+    components: {
+      HeaderPage
+    },
     data() {
       this.fetchStaffData = debounce(this.fetchStaffData, 800);
       return {

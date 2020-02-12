@@ -1,23 +1,5 @@
 <style lang="scss" scoped>
   .ListPage {
-    .page-header {
-      background: #fff;
-      padding: 16px 32px 0;
-      border-bottom: 1px solid #e8e8e8;
-
-      .bread {
-        margin-bottom: 16px;
-      }
-
-      .title {
-        font-size: 20px;
-        line-height: 28px;
-        font-weight: 500;
-        color: rgba(0, 0, 0, .85);
-        margin-bottom: 16px;
-      }
-    }
-
     .page-content {
       padding: 24px;
 
@@ -40,13 +22,7 @@
 
 <template>
   <div class="ListPage">
-    <div class="page-header">
-      <a-breadcrumb class="bread">
-        <a-breadcrumb-item><a href="/main/workplace">首页</a></a-breadcrumb-item>
-        <a-breadcrumb-item>项目列表</a-breadcrumb-item>
-      </a-breadcrumb>
-      <div class="title">项目列表</div>
-    </div>
+    <HeaderPage title="项目列表"/>
     <div class="page-content">
       <div class="content-wrapper">
         <a-form class="form-wrapper" :layout="formLayout">
@@ -188,6 +164,7 @@
 <script>
   import {mapState, mapMutations, mapActions} from 'vuex'
   import UpdateContract from "../UpdateContract/UpdateContract";
+  import HeaderPage from "../HeaderPage/HeaderPage";
   import moment from "moment";
   const statusMap = {
     true: {
@@ -203,6 +180,7 @@
     name: "ListPage",
     components:{
       UpdateContract,
+      HeaderPage,
     },
     data() {
       return {

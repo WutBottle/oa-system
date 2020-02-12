@@ -86,7 +86,7 @@
               <div class="table-wrapper">
                 <a-table bordered :columns="columns" :dataSource="tableData"
                          :pagination="paginationProps"
-                         @change="handleTableChange" :scroll="{ x: 1000, y: 450}">
+                         @change="handleTableChange" :scroll="{ x: 950, y: 450}">
                   <span slot="serial" slot-scope="text, record, index">
                   {{ index + 1 }}
                   </span>
@@ -386,29 +386,28 @@
           {
             title: '序号',
             width: 70,
-            fixed: 'left',
             dataIndex: 'serial',
             key: 'serial',
             scopedSlots: {customRender: 'serial'}
           },
           {
             title: '发票号',
-            width: 130,
+            width: 100,
             key: 'receiptId',
             dataIndex: 'receiptId',
           }, {
             title: '开票日期',
-            width: 200,
+            width: 100,
             key: 'receiptDate',
             dataIndex: 'receiptDate',
           }, {
             title: '发票金额(元)',
-            width: 150,
+            width: 100,
             key: 'receiptAmount',
             dataIndex: 'receiptAmount',
           }, {
             title: '发票类型',
-            width: 150,
+            width: 100,
             key: 'receiptClass',
             dataIndex: 'receiptClass',
             scopedSlots: {customRender: 'receiptClass'}
@@ -422,7 +421,6 @@
             title: '编辑发票',
             width: 120,
             key: 'operation',
-            fixed: 'right',
             scopedSlots: {customRender: 'operation'},
           }],
         addVisible: false, // 弹出框控制

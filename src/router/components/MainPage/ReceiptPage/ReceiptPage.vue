@@ -1,23 +1,5 @@
 <style lang="scss" scoped>
   .ReceiptPage {
-    .page-header {
-      background: #fff;
-      padding: 16px 32px 0;
-      border-bottom: 1px solid #e8e8e8;
-
-      .bread {
-        margin-bottom: 16px;
-      }
-
-      .title {
-        font-size: 20px;
-        line-height: 28px;
-        font-weight: 500;
-        color: rgba(0, 0, 0, .85);
-        margin-bottom: 16px;
-      }
-    }
-
     .page-content {
       padding: 24px;
 
@@ -30,13 +12,7 @@
 
 <template>
   <div class="ReceiptPage">
-    <div class="page-header">
-      <a-breadcrumb class="bread">
-        <a-breadcrumb-item><a href="/main/workplace">首页</a></a-breadcrumb-item>
-        <a-breadcrumb-item>现金发票</a-breadcrumb-item>
-      </a-breadcrumb>
-      <p class="title">现金发票</p>
-    </div>
+    <HeaderPage title="现金发票"/>
     <div class="page-content">
       <a-tabs @change="callback" style="background-color: #fff; padding: 10px 20px 40px 20px">
         <a-tab-pane tab="现金列表" key="cash">
@@ -117,6 +93,7 @@
 
 <script>
   import {mapState, mapActions} from 'vuex';
+  import HeaderPage from "../HeaderPage/HeaderPage";
   import {debounce} from 'debounce';
 
   const formItemLayout = {
@@ -132,6 +109,9 @@
   };
   export default {
     name: "ReceiptPage",
+    components: {
+      HeaderPage,
+    },
     data() {
       this.fetchCashContract = debounce(this.fetchCashContract, 500);
       return {

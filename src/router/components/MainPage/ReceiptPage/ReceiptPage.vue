@@ -133,7 +133,7 @@
   export default {
     name: "ReceiptPage",
     data() {
-      this.fetchCashContract = debounce(this.fetchCashContract, 800);
+      this.fetchCashContract = debounce(this.fetchCashContract, 500);
       return {
         formItemLayout,
         formTailLayout,

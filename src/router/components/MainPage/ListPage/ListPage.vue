@@ -295,7 +295,6 @@
         this.downloadContract({
           contractId: contractFile.contractId,
         }).then((data) => {
-          console.log(data);
           if (!data.data) {
             return
           }

@@ -406,7 +406,7 @@
       OutContractInput,
     },
     data() {
-      this.fetchOutContract = debounce(this.fetchOutContract, 800);
+      this.fetchOutContract = debounce(this.fetchOutContract, 500);
       return {
         current: 0,
         steps: [{

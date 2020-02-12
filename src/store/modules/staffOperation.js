@@ -124,6 +124,17 @@ const actions = {
       });
     });
   },
+  // 根据合同id获取工资信息
+  getSalaryListByContractId({commit}, params) {
+    return new Promise((resolve, reject) => {
+      api.staffController.getSalaryListByContractId(params).then(res => {
+        resolve(res);
+      }).catch(error => {
+        console.log(error, '获取工资信息失败');
+        reject(error);
+      });
+    });
+  },
 };
 
 export default {

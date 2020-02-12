@@ -86,7 +86,7 @@
               <div class="table-wrapper">
                 <a-table bordered :columns="columns" :dataSource="tableData"
                          :pagination="paginationProps"
-                         @change="handleTableChange" :scroll="{ y: 450}">
+                         @change="handleTableChange" :scroll="{ x: 1000, y: 450}">
                   <span slot="serial" slot-scope="text, record, index">
                   {{ index + 1 }}
                   </span>
@@ -367,7 +367,7 @@
       CashReceiptInput,
     },
     data() {
-      this.fetchContracts = debounce(this.fetchContracts, 800);
+      this.fetchContracts = debounce(this.fetchContracts, 500);
       return {
         current: 0,
         steps: [{
@@ -386,13 +386,14 @@
           {
             title: '序号',
             width: 70,
+            fixed: 'left',
             dataIndex: 'serial',
             key: 'serial',
             scopedSlots: {customRender: 'serial'}
           },
           {
             title: '发票号',
-            width: 150,
+            width: 130,
             key: 'receiptId',
             dataIndex: 'receiptId',
           }, {
@@ -419,7 +420,9 @@
             scopedSlots: {customRender: 'receiptFile'}
           }, {
             title: '编辑发票',
+            width: 120,
             key: 'operation',
+            fixed: 'right',
             scopedSlots: {customRender: 'operation'},
           }],
         addVisible: false, // 弹出框控制
@@ -644,7 +647,6 @@
           this.updateTableData();
           this.$message.success(res.data.data)
         }).catch((error) => {
-          console.log(error);
           this.$message.error(error);
         })
       }

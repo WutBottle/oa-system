@@ -450,7 +450,7 @@
       }
     },
     data() {
-      this.fetchStaffData = debounce(this.fetchStaffData, 800);
+      this.fetchStaffData = debounce(this.fetchStaffData, 500);
       return {
         formItemLayout,
         formTailLayout,

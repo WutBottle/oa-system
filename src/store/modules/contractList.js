@@ -8,7 +8,7 @@ import moment from 'moment'
 const state = {
   selectedRowKeys: [], // 选中的keys
   paginationProps: {
-    pageSize: 10, // 默认每页显示数量
+    pageSize: 5, // 默认每页显示数量
     showSizeChanger: true, // 显示可改变每页数量
     pageSizeOptions: ['5', '15', '20'], // 每页数量选项
     total: 0,
@@ -349,7 +349,7 @@ const actions = {
   getContractListById({commit}, params) {
     return new Promise((resolve, reject) => {
       api.contractController.getContractListById(params).then(res => {
-        commit('setPageInfo', res.data.data);
+        res.data.data && commit('setPageInfo', res.data.data);
         resolve(res);
       }).catch(error => {
         console.log(error, '获取合同信息失败');
@@ -394,7 +394,7 @@ const actions = {
   getProjectCategoryList({commit}, params) {
     return new Promise((resolve, reject) => {
       api.projectCategoryController.getProjectCategoryList(params).then(res => {
-        commit('setProjectCategoryList', res.data.data);
+        res.data.data && commit('setProjectCategoryList', res.data.data);
         resolve(res);
       }).catch(error => {
         console.log(error, '获取项目类型失败');

@@ -149,9 +149,6 @@
 
   export default {
     name: 'LoginPage',
-    props: {
-      msg: String
-    },
     beforeCreate() {
       this.form = this.$form.createForm(this);
     },

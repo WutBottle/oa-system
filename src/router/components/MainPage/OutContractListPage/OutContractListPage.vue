@@ -25,10 +25,8 @@
         <a-form class="form-wrapper" :layout="formLayout">
           <a-form-item
                   label="外包合同号"
-                  :label-col="formItemLayout.labelCol"
-                  :wrapper-col="formItemLayout.wrapperCol"
           >
-            <a-input v-model="outContractId" placeholder="请输入外包合同号"/>
+            <a-input style="width: 150px" v-model="outContractId" placeholder="请输入外包合同号"/>
           </a-form-item>
           <a-form-item
                   :wrapper-col="buttonItemLayout.wrapperCol"
@@ -40,32 +38,68 @@
           <a-form-item
                   :wrapper-col="buttonItemLayout.wrapperCol"
           >
-            <a-button :disabled="!this.selectedRowKeys.length" type="primary" @click="handleExport">
-              分包导出
-            </a-button>
+            <a-dropdown :trigger="['click']">
+              <a-button icon="down" type="primary">
+                导出
+              </a-button>
+              <a-menu slot="overlay">
+                <a-menu-item key="0">
+                  <a-button type="primary" @click="handleExport">
+                    分包导出
+                  </a-button>
+                </a-menu-item>
+                <a-menu-item key="1">
+                  <a-button type="primary" @click="handlePaidExport">
+                    分包回款导出
+                  </a-button>
+                </a-menu-item>
+              </a-menu>
+            </a-dropdown>
           </a-form-item>
-          <a-form-item
-                  :wrapper-col="buttonItemLayout.wrapperCol"
-          >
-            <a-button :disabled="!this.selectedRowKeys.length" type="primary" @click="handlePaidExport">
-              分包回款导出
-            </a-button>
+          <a-form-item>
+            <a-popover title="分包合同选择列表" placement="bottom" trigger="click" v-model="popVisible">
+              <template slot="content">
+                <div v-if="!!selectOutContractInfo.length" style="width: 350px">
+                  <template v-for="(item, index) in selectOutContractInfo">
+                    <div :key="index">
+                      <span>{{index + 1}}</span>
+                      <a-divider type="vertical"/>
+                      <span>{{item.outContractId}}</span>
+                      <a-divider type="vertical"/>
+                      <span>{{item.outContractName}}</span>
+                    </div>
+                  </template>
+                </div>
+                <a-empty v-else/>
+              </template>
+              <a-button type="dashed" @click="() => this.popVisible = true">
+                选择列表
+              </a-button>
+            </a-popover>
           </a-form-item>
         </a-form>
         <div class="table-wrapper">
           <a-spin :spinning="spinning" tip="Loading...">
             <a-table bordered :columns="columns" :dataSource="listTableData"
-                     :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
                      :pagination="listPaginationProps"
-                     @change="handleTableChange" :scroll="{ x: 2280, y: 500}">
+                     @change="handleTableChange" :scroll="{ x: 2200, y: 500}">
               <span slot="serial" slot-scope="text, record, index">
                 {{ index + 1 }}
               </span>
               <span slot="outContractCategory" slot-scope="id">{{outContractCategoryList[outContractCategoryList.findIndex((item) => item.outContractCategoryId === id)].outContractCategoryName}}</span>
               <span slot="outProjectCategory" slot-scope="id">{{outProjectCategoryList[outProjectCategoryList.findIndex((item) => item.outProjectCategoryId === id)].outProjectCategoryName}}</span>
-              <span slot="operation" slot-scope="text, record">
-                    <a @click="openOutPaid(record)">查看</a>
-              </span>
+              <template slot="selectIndex" slot-scope="text, record">
+                <span>
+                  <a @click="openOutPaid(record)">查看</a>
+                </span>
+                <a-divider type="vertical"/>
+                <a-button v-if="text.selectIndex" type="danger" size="small" @click="handleRemoved(record)">
+                  移除
+                </a-button>
+                <a-button v-else type="primary" size="small" @click="handleSelected(record)">
+                  选择
+                </a-button>
+              </template>
             </a-table>
           </a-spin>
         </div>
@@ -92,10 +126,6 @@
   import HeaderPage from "../HeaderPage/HeaderPage";
 
   const formLayout = 'inline';
-  const formItemLayout = {
-    labelCol: {span: 8},
-    wrapperCol: {span: 14}
-  };
   const buttonItemLayout = {
     wrapperCol: {span: 14, offset: 0}
   };
@@ -107,7 +137,6 @@
     data() {
       return {
         formLayout,
-        formItemLayout,
         buttonItemLayout,
         outContractId: '', // 模糊查询的外包合同号
         outContractIds: [], // 选择的外包合同id
@@ -122,7 +151,7 @@
             scopedSlots: {customRender: 'serial'}
           }, {
             title: '分包合同号',
-            width: 150,
+            width: 130,
             fixed: 'left',
             key: 'outContractId',
             dataIndex: 'outContractId',
@@ -189,11 +218,11 @@
             key: 'note',
             dataIndex: 'note',
           }, {
-            title: '分包付款',
-            width: 100,
+            title: '分包操作',
+            width: 130,
             fixed: 'right',
-            key: 'operation',
-            scopedSlots: {customRender: 'operation'},
+            key: 'selectIndex',
+            scopedSlots: {customRender: 'selectIndex'},
           }],
         outContractValue: '', // 被选择的分包合同号
         outPaidVisible: false, // 分包付款显示控制
@@ -218,11 +247,11 @@
           }
         ], // 分包付款表头
         outPaidTableSpinning: false, // 分包付款信息加载控制
+        popVisible: false,
       }
     },
     computed: {
       ...mapState({
-        selectedRowKeys: state => state.outContractOperation.selectedRowKeys, //选中的keys
         role: state => state.tokensOperation.role, // 角色信息
         listTableData: state => state.outContractOperation.listTableData, // 选中的keys
         listPaginationProps: state => state.outContractOperation.listPaginationProps, // 分页控制
@@ -230,18 +259,18 @@
         outProjectCategoryList: state => state.outContractOperation.outProjectCategoryList, // 外包项目类型
         outPaidTableData: state => state.outPaidOperation.tableData, // table数据
         outPaidPaginationProps: state => state.outPaidOperation.paginationProps,// 分页控制
+        selectOutContractInfo: state => state.outContractOperation.selectOutContractInfo, // 被选择的分包合同
       }),
     },
-    mounted() {
+    activated() {
       this.getOutContractCategoryList();
       this.getOutProjectCategoryList();
-    },
-    activated() {
       this.updateTableData();
     },
     methods: {
       ...mapMutations({
-        setSelectedRowKeys: 'outContractOperation/setSelectedRowKeys', // 设置选中的keys
+        addOutContractInfo: 'outContractOperation/addOutContractInfo',
+        removeOutContractInfo: 'outContractOperation/removeOutContractInfo', // 移除选中的合同
       }),
       ...mapActions({
         getOutContractListByIdLike: 'outContractOperation/getOutContractListByIdLike',
@@ -259,7 +288,7 @@
       // 导出处理
       handleExport() {
         this.exportOutContract({
-          outContractIds: this.outContractIds
+          outContractIds: this.selectOutContractInfo.map((item) => {return item.outContractId}),
         }).then((data) => {
           if (!data.data) {
             return
@@ -273,13 +302,13 @@
           link.click();
           this.$message.success("导出成功");
         }).catch((error) => {
-          this.$message.success("导出失败");
+          this.$message.error("导出失败");
         });
       },
       // 分包回款导出
       handlePaidExport() {
         this.outPaidExport({
-          outContractIds: this.outContractIds
+          outContractIds: this.selectOutContractInfo.map((item) => {return item.outContractId}),
         }).then((data) => {
           if (!data.data) {
             return
@@ -293,16 +322,8 @@
           link.click();
           this.$message.success("导出成功");
         }).catch((error) => {
-          this.$message.success("导出失败");
+          this.$message.error("导出失败");
         });
-      },
-      // 处理对list中的合同选择
-      onSelectChange(selectedRowKeys) {
-        this.resetSelectKeys();
-        selectedRowKeys.forEach((item) => {
-          this.outContractIds.push(this.listTableData[item].outContractId)
-        });
-        this.setSelectedRowKeys(selectedRowKeys);
       },
       // 选择每页个数
       handleTableChange(pagination) {
@@ -310,14 +331,9 @@
         this.listPaginationProps.pageSize = pagination.pageSize;
         this.updateTableData();
       },
-      resetSelectKeys() {
-        this.setSelectedRowKeys([]);
-        this.outContractIds = [];
-      },
       // 更新列表数据
       updateTableData() {
         this.spinning = true;
-        this.resetSelectKeys();
         const params = {
           outContractId: this.outContractId,
           pageNum: this.listPaginationProps.current,
@@ -355,6 +371,21 @@
         this.outPaidPaginationProps.current = pagination.current;
         this.outPaidPaginationProps.pageSize = pagination.pageSize;
         this.updateOutPaidTableData();
+      },
+      // 处理分包合同选择
+      handleSelected(rowData) {
+        rowData.selectIndex = true;
+        this.addOutContractInfo({
+          outContractId: rowData.outContractId,
+          outContractName: rowData.outContractName
+        });
+        this.popVisible = true;
+      },
+      // 处理合同移除
+      handleRemoved(rowData) {
+        rowData.selectIndex = false;
+        this.removeOutContractInfo(rowData.outContractId);
+        this.popVisible = true;
       },
     }
   }

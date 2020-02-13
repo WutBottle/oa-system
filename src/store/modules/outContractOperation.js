@@ -19,7 +19,6 @@ const state = {
   contractName: '',
   outContractCategoryList: [], // 分包类型
   outProjectCategoryList: [], // 分包项目类型
-  selectedRowKeys: [], // 被选中的合同key
   listTableData: [], // 外包合同列表数据
   listPaginationProps: {
     pageSize: 10, // 默认每页显示数量
@@ -27,7 +26,8 @@ const state = {
     pageSizeOptions: ['10', '15', '20'], // 每页数量选项
     total: 0,
     current: 1,
-  }
+  },
+  selectOutContractInfo: [], // 被选择的合同信息
 };
 
 const mutations = {
@@ -51,7 +51,7 @@ const mutations = {
         outContractAmount: item.outContractAmount,
         outPaid: item.outPaid,
         outUnpaid: item.outUnpaid,
-        ratio: item.ratio,
+        ratio: item.ratio.toFixed(4),
         outContractCategory: item.outContractCategory.outContractCategoryId,
         outProjectCategory: item.outProjectCategory.outProjectCategoryId,
         outContractDate: moment(item.outContractDate).format('YYYY-MM-DD HH:mm:ss'),
@@ -73,23 +73,27 @@ const mutations = {
         outContractAmount: item.outContract.outContractAmount,
         outPaid: item.outContract.outPaid,
         outUnpaid: item.outContract.outUnpaid,
-        ratio: item.outContract.ratio,
+        ratio: item.outContract.ratio.toFixed(4),
         outContractCategory: item.outContract.outContractCategory.outContractCategoryId,
         outProjectCategory: item.outContract.outProjectCategory.outProjectCategoryId,
         outContractDate: moment(item.outContract.outContractDate).format('YYYY-MM-DD HH:mm:ss'),
         note: item.outContract.note,
+        selectIndex: !!state.selectOutContractInfo.find(value => value.outContractId === item.outContract.outContractId),
       }
     });
-  },
-  setSelectedRowKeys(state, data) {
-    state.selectedRowKeys = data;
   },
   handleFinalDelete(state, data) {
     const finalPage = Math.ceil(state.paginationProps.total / state.paginationProps.pageSize);
     if (state.tableData.length === data.outContractIds.length && state.paginationProps.current != 1 && state.paginationProps.current === finalPage) {
       state.paginationProps.current--;
     }
-  }
+  },
+  addOutContractInfo(state, data) {
+    state.selectOutContractInfo.push(data);
+  },
+  removeOutContractInfo(state, id) {
+    state.selectOutContractInfo.splice(state.selectOutContractInfo.findIndex(item => item.outContractId === id), 1);
+  },
 };
 
 const actions = {

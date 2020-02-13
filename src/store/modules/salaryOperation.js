@@ -122,6 +122,17 @@ const actions = {
       });
     })
   },
+  // 导出员工工资
+  exportByStaff({commit}, params) {
+    return new Promise((resolve, reject) => {
+      api.salaryController.exportByStaff(params).then(res => {
+        resolve(res);
+      }).catch(error => {
+        console.log(error, '导出工资信息失败');
+        reject(error);
+      });
+    })
+  },
 };
 
 export default {

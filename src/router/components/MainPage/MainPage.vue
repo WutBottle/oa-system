@@ -263,9 +263,6 @@
 
   export default {
     name: 'MainPage',
-    props: {
-      msg: String
-    },
     mounted() {
       if (this.role === 'ROLE_ADMIN') {
         const adminMenu = [
@@ -339,7 +336,7 @@
           },
           {
             name: '项目列表',
-            router: "/main/list",
+            router: "/main/project",
             iconType: "table",
           },
           {

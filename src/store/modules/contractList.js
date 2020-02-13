@@ -6,17 +6,7 @@ import api from '@/api/apiSugar'
 import moment from 'moment'
 
 const state = {
-  selectedRowKeys: [], // 选中的keys
-  paginationProps: {
-    pageSize: 5, // 默认每页显示数量
-    showSizeChanger: true, // 显示可改变每页数量
-    pageSizeOptions: ['5', '15', '20'], // 每页数量选项
-    total: 0,
-    current: 1,
-  },
   projectCategoryList: [], // 拉取的项目类型
-  tableData: [],
-  selectContractInfo: [], // 被选中的合同数据
   totalColumns: [
     {
       title: '签约状态',
@@ -237,13 +227,13 @@ const state = {
       scopedSlots: {customRender: 'serial'}
     },
     {
-      width: 150,
+      width: 120,
       title: '合同操作',
       fixed: 'right',
-      key: 'selectIndex',
-      dataIndex: 'selectIndex',
+      key: 'operation',
+      dataIndex: 'operation',
       sort: 30,
-      scopedSlots: {customRender: 'selectIndex'}
+      scopedSlots: {customRender: 'operation'}
     },
   ], // 表单配置的全部数据
   options: [], // 表头总数据
@@ -251,76 +241,8 @@ const state = {
 };
 
 const mutations = {
-  setSelectedRowKeys(state, data) {
-    state.selectedRowKeys = data;
-  },
-  setPageInfo(state, data) {
-    state.paginationProps.total = data.totalElements;
-    state.tableData = data.content.map((item, index) => {
-      return {
-        key: index,
-        contractNum: item.contractId, // 合同号
-        signState: item.sign, // 签约状态
-        designNum: item.designId, // 设计号
-        employerContractNum: item.ownerId, // 发包人合同编号
-        contractName: item.contractName, // 合同名称
-        contractNodes: item.contractNodes, // 合同节点
-        contractAmount: item.contractAmount, // 合同额(元)
-        accumulatedCashReceipts: item.cashAmount, // 累计现金回款(元)
-        remainingContractAmount: item.contractRemain, // 剩余合同额(元)
-        receivedProportion: item.ratio, // 已收款比例
-        cumulativeInvoicedAmount: item.receiptAmount, // 累计开票金额(元)
-        invoicedUncollectedAmount: item.receiptNotCash, // 已开发票未收款金额
-        actualSigningDate: moment(item.actualDate).format('YYYY-MM-DD HH:mm:ss'), // 实际签约日期
-        contractFilingDate: moment(item.contractDate).format('YYYY-MM-DD HH:mm:ss'), // 合同归档日期
-        itemCategory: !item.projectCategory ? '' : item.projectCategory.projectCategoryName, // 项目类别
-        mainDesignDepartment: item.departmentDesign, // 主设计部门
-        managementDepartment: item.departmentRunning, // 经营部门
-        projectManager: item.projectManager.staffName, // 项目经理
-        runningManager: item.runningManager.staffName, // 经营经理
-        projectSecretary: item.projectSecretary.staffName, // 项目预算秘书
-        projectManagerOptions: {
-          key: item.projectManager.id,
-          label: item.projectManager.staffName
-        }, // 项目经理
-        runningManagerOptions: {
-          key: item.runningManager.id,
-          label: item.runningManager.staffName
-        }, // 经营经理
-        projectSecretaryOptions: {
-          key: item.projectSecretary.id,
-          label: item.projectSecretary.staffName
-        }, // 项目预算秘书
-        contractingParty: item.owner, // 发包方
-        investmentAmount: item.investment, // 投资额(万元)
-        projectScale: item.scale, // 项目规模(平方米)
-        region: item.region ? '省内' : '省外', // 地域
-        regionalKeyWords: item.district, // 地区关键词
-        class1: item.buildOne, // 建筑一级分类
-        class2: item.buildTwo, // 建筑二级分类
-        epc: item.epc, // 是否EPC项目
-        contractFile: {
-          isDownload: false,
-          contractId: item.contractFile ?  item.contractId: '',
-        }, // 合同扫描文件
-        selectIndex: !!state.selectContractInfo.find(value => value.contractId === item.contractId),
-      }
-    });
-  },
   setProjectCategoryList(state, data) {
     state.projectCategoryList = data;
-  },
-  handleFinalDelete(state, data) {
-    const finalPage = Math.ceil(state.paginationProps.total / state.paginationProps.pageSize);
-    if (state.tableData.length === data.contractIds.length && state.paginationProps.current != 1 && state.paginationProps.current === finalPage) {
-      state.paginationProps.current--;
-    }
-  },
-  addContractInfo(state, data) {
-    state.selectContractInfo.push(data);
-  },
-  removeContractInfo(state, id) {
-    state.selectContractInfo.splice(state.selectContractInfo.findIndex(item => item.contractId === id), 1);
   },
   loadSettingOptions(state) {
     state.options = state.totalColumns.filter(item => !item.fixed).map((item, index) => {
@@ -346,10 +268,20 @@ const actions = {
     });
   },
   // 合同号模糊查询
-  getContractListById({commit}, params) {
+  getContractListByIdLike({commit}, params) {
     return new Promise((resolve, reject) => {
-      api.contractController.getContractListById(params).then(res => {
-        res.data.data && commit('setPageInfo', res.data.data);
+      api.contractController.getContractListByIdLike(params).then(res => {
+        resolve(res);
+      }).catch(error => {
+        console.log(error, '获取合同信息失败');
+        reject(error);
+      });
+    });
+  },
+  // 精确查找
+  getContractListByContractId({commit}, params) {
+    return new Promise((resolve, reject) => {
+      api.contractController.getContractListByContractId(params).then(res => {
         resolve(res);
       }).catch(error => {
         console.log(error, '获取合同信息失败');
@@ -417,7 +349,6 @@ const actions = {
   deleteContract({commit}, params) {
     return new Promise((resolve, reject) => {
       api.contractController.deleteContract(params).then(res => {
-        commit('handleFinalDelete', params);
         resolve(res);
       }).catch(error => {
         console.log(error, '删除失败');
@@ -454,6 +385,17 @@ const actions = {
         resolve(res);
       }).catch(error => {
         console.log(error, '获取节点列表失败');
+        reject(error);
+      });
+    });
+  },
+  // 根据合同号获取项目列表
+  getProjectListByIdLike({commit}, params) {
+    return new Promise((resolve, reject) => {
+      api.contractController.getProjectListByIdLike(params).then(res => {
+        resolve(res);
+      }).catch(error => {
+        console.log(error, '获取项目列表失败');
         reject(error);
       });
     });

@@ -155,6 +155,7 @@
       ...mapActions({
         getStaffListByNameLikeTable: 'staffOperation/getStaffListByNameLikeTable', // 获取职员列表
         getSalaryListByStaffId: 'salaryOperation/getSalaryListByStaffId', // 获取职员工资列表
+        exportByStaff: 'salaryOperation/exportByStaff', // 导出职员工资
       }),
       handleQuery() {
         this.updateStaffTableData();
@@ -181,7 +182,24 @@
         });
       },
       handleSalaryExport(data) {
-        console.log(data)
+        let fileName = data.staffName + data.staffCode + '.xlsx';
+        this.exportByStaff({
+          id: data.id,
+        }).then((data) => {
+          if (!data.data) {
+            return
+          }
+          let url = window.URL.createObjectURL(new Blob([data.data]));
+          let link = document.createElement('a');
+          link.style.display = 'none';
+          link.href = url;
+          link.setAttribute('download', fileName);
+          document.body.appendChild(link);
+          link.click();
+          this.$message.success("导出成功");
+        }).catch((error) => {
+          this.$message.error("导出失败");
+        });
       },
       openSalary(data) {
         this.currentStaffName = data.staffName;

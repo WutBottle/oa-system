@@ -16,8 +16,12 @@ const contractController = {
     });
   },
   // 获取合同列表(带模糊查询)
-  getContractListById(params) {
+  getContractListByIdLike(params) {
     return axios.post(`${baseUrl.contractController}/getContractListByIdLike`, params);
+  },
+  // 获取合同列表(精确查找)
+  getContractListByContractId(params) {
+    return axios.post(`${baseUrl.contractController}/getContractListByContractId`, params);
   },
   // 导出合同文件
   exportContract(params) {
@@ -52,6 +56,10 @@ const contractController = {
   // 根据合同id获取节点列表
   getContractNodesByContractId(params) {
     return axios.post(`${baseUrl.contractController}/getContractNodesByContractId`, params);
+  },
+  // 根据合同号获取项目列表
+  getProjectListByIdLike(params) {
+    return axios.post(`${baseUrl.contractController}/getProjectListByIdLike`, params);
   },
 };
 

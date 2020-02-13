@@ -491,8 +491,10 @@
               // });
               // values = Object.assign(values, {contractNodes: tempContractNodes});
 
-              values = Object.assign(values, {contractFile: this.fileName});
-              values = Object.assign(values, {projectCategory: projectCategory});
+              values = Object.assign(values, {
+                contractFile: this.fileName,
+                projectCategory: projectCategory
+              });
               values.projectManager = {
                 id: values.projectManager.key
               };
@@ -503,10 +505,15 @@
                 id: values.projectSecretary.key
               };
               this.verifyContract(values).then((data) => {
-                this.spinning = false;
-                this.$message.success(data.data.data);
-                this.form.resetFields();
-                this.$emit('refreshData');
+                if (data.data.meta.success) {
+                  this.spinning = false;
+                  this.$message.success(data.data.data);
+                  this.form.resetFields();
+                  this.$emit('refreshData');
+                } else {
+                  this.$message.error(data.data.meta.message);
+                  this.spinning = false;
+                }
               }).catch((error) => {
                 this.spinning = false;
                 this.$message.error('合同修改失败');

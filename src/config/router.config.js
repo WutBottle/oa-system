@@ -27,9 +27,9 @@ export const constantRouterMap = [
         component: () => import('components/MainPage/WorkPlace/WorkPlace'),
       },
       {
-        path: 'list',
-        name: 'list',
-        component: () => import('components/MainPage/ListPage/ListPage'),
+        path: 'project',
+        name: 'project',
+        component: () => import('components/MainPage/ProjectPage/ProjectPage'),
       },
       {
         path: 'receipt',

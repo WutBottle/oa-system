@@ -28,6 +28,12 @@ const salaryController = {
   verifySalary(params) {
     return axios.post(`${baseUrl.salaryController}/verifySalary`, params);
   },
+  // 导出员工工资信息
+  exportByStaff(params) {
+    return axios.post(`${baseUrl.salaryController}/exportByStaff`, params, {
+      responseType: 'blob'
+    });
+  },
 };
 
 export default salaryController;

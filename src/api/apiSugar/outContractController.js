@@ -12,14 +12,6 @@ const outContractController = {
   addOutContract(params) {
     return axios.post(`${baseUrl.outContractController}/addOutContract`, params);
   },
-  // 获取分包类型选项
-  getOutContractCategoryList() {
-    return axios.get(`${baseUrl.outContractCategoryController}/getOutContractCategoryList`);
-  },
-  // 获取分包项目类型选项
-  getOutProjectCategoryList() {
-    return axios.get(`${baseUrl.outProjectCategoryController}/getOutProjectCategoryList`);
-  },
   // 模糊插叙分包合同列表
   getOutContractListByIdLike(params) {
     return axios.post(`${baseUrl.outContractController}/getOutContractListByIdLike`, params);

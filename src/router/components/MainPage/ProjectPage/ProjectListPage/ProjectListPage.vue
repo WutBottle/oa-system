@@ -24,7 +24,7 @@
       <a-spin :spinning="spinning" tip="Loading...">
         <a-table bordered :columns="columns" :dataSource="tableData"
                  :pagination="paginationProps"
-                 @change="handleTableChange" :scroll="{ x: 2080, y: 550}">
+                 @change="handleTableChange" :scroll="{ x: 2230, y: 550}">
           <span slot="serial" slot-scope="text, record, index">
             {{ index + 1 }}
           </span>
@@ -122,6 +122,12 @@
             key: 'isSign',
             dataIndex: 'isSign',
             scopedSlots: {customRender: 'isSign'}
+          },
+          {
+            title: '项目规模(平方米)',
+            width: 150,
+            key: 'scale',
+            dataIndex: 'scale',
           },
           {
             title: '累计开票金额(元)',
@@ -226,6 +232,7 @@
                 contractRemain: item.contractRemain,
                 projectInvestment: item.projectInvestment,
                 isSign: item.isSign,
+                scale: item.scale,
                 ratio: item.ratio && item.ratio.toFixed(4)
               }
             });

@@ -3,10 +3,8 @@
 * 合同信息
 */
 import api from '@/api/apiSugar'
-import moment from 'moment'
 
 const state = {
-  projectCategoryList: [], // 拉取的项目类型
   totalColumns: [
     {
       title: '签约状态',
@@ -241,9 +239,6 @@ const state = {
 };
 
 const mutations = {
-  setProjectCategoryList(state, data) {
-    state.projectCategoryList = data;
-  },
   loadSettingOptions(state) {
     state.options = state.totalColumns.filter(item => !item.fixed).map((item, index) => {
       return {
@@ -318,18 +313,6 @@ const actions = {
         resolve(res);
       }).catch(error => {
         console.log(error, '上传合同扫描文件失败');
-        reject(error);
-      });
-    });
-  },
-  // 获取项目类型列表
-  getProjectCategoryList({commit}, params) {
-    return new Promise((resolve, reject) => {
-      api.projectCategoryController.getProjectCategoryList(params).then(res => {
-        res.data.data && commit('setProjectCategoryList', res.data.data);
-        resolve(res);
-      }).catch(error => {
-        console.log(error, '获取项目类型失败');
         reject(error);
       });
     });

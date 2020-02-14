@@ -137,7 +137,7 @@
     computed: {
       ...mapState({
         role: state => state.tokensOperation.role,
-        projectCategoryList: state => state.contractList.projectCategoryList,// 项目类型
+        projectCategoryList: state => state.projectCategoryOperation.projectCategoryList,// 项目类型
         totalColumns: state => state.contractList.totalColumns, // 表单头部数据
         options: state => state.contractList.options, // 表头总数据
         defaultOptions: state => state.contractList.defaultOptions, // 表头默认数据
@@ -219,6 +219,7 @@
               isDownload: false,
               contractId: item.contractFile ?  item.contractId: '',
             }, // 合同扫描文件
+            sup: item.sup, // 是否是补充文件
           }
         });
       },

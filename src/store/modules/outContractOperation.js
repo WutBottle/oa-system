@@ -17,8 +17,6 @@ const state = {
   contractId: '', // 模糊查询的id
   designId: '',
   contractName: '',
-  outContractCategoryList: [], // 分包类型
-  outProjectCategoryList: [], // 分包项目类型
   listTableData: [], // 外包合同列表数据
   listPaginationProps: {
     pageSize: 10, // 默认每页显示数量
@@ -31,12 +29,6 @@ const state = {
 };
 
 const mutations = {
-  setOutContractCategoryList(state, data) {
-    state.outContractCategoryList = data;
-  },
-  setOutProjectCategoryList(state, data) {
-    state.outProjectCategoryList = data;
-  },
   setTableData(state, data) {
     state.paginationProps.total = data.outContracts.totalElements;
     state.contractId = data.contractId;
@@ -103,28 +95,6 @@ const actions = {
         resolve(res);
       }).catch(error => {
         console.log(error, '添加外包合同失败');
-        reject(error);
-      });
-    });
-  },
-  getOutContractCategoryList({commit}, params) {
-    return new Promise((resolve, reject) => {
-      api.outContractController.getOutContractCategoryList(params).then(res => {
-        commit('setOutContractCategoryList', res.data.data);
-        resolve(res);
-      }).catch(error => {
-        console.log(error, '获取分包类型失败');
-        reject(error);
-      });
-    });
-  },
-  getOutProjectCategoryList({commit}, params) {
-    return new Promise((resolve, reject) => {
-      api.outContractController.getOutProjectCategoryList(params).then(res => {
-        commit('setOutProjectCategoryList', res.data.data);
-        resolve(res);
-      }).catch(error => {
-        console.log(error, '获取分包项目类别失败');
         reject(error);
       });
     });

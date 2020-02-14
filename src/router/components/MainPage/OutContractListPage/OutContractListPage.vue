@@ -255,8 +255,8 @@
         role: state => state.tokensOperation.role, // 角色信息
         listTableData: state => state.outContractOperation.listTableData, // 选中的keys
         listPaginationProps: state => state.outContractOperation.listPaginationProps, // 分页控制
-        outContractCategoryList: state => state.outContractOperation.outContractCategoryList, // 外包类型选项
-        outProjectCategoryList: state => state.outContractOperation.outProjectCategoryList, // 外包项目类型
+        outContractCategoryList: state => state.outContractCategoryOperation.outContractCategoryList, // 外包类型选项
+        outProjectCategoryList: state => state.outProjectCategoryOperation.outProjectCategoryList, // 外包项目类型
         outPaidTableData: state => state.outPaidOperation.tableData, // table数据
         outPaidPaginationProps: state => state.outPaidOperation.paginationProps,// 分页控制
         selectOutContractInfo: state => state.outContractOperation.selectOutContractInfo, // 被选择的分包合同
@@ -274,8 +274,8 @@
       }),
       ...mapActions({
         getOutContractListByIdLike: 'outContractOperation/getOutContractListByIdLike',
-        getOutContractCategoryList: 'outContractOperation/getOutContractCategoryList', // 获取分包类型
-        getOutProjectCategoryList: 'outContractOperation/getOutProjectCategoryList', // 获取分包项目类型
+        getOutContractCategoryList: 'outContractCategoryOperation/getOutContractCategoryList', // 获取分包类型
+        getOutProjectCategoryList: 'outProjectCategoryOperation/getOutProjectCategoryList', // 获取分包项目类型
         getOutPaidsByOutContractId: 'outPaidOperation/getOutPaidsByOutContractId', // 获取分包付款信息
         exportOutContract: 'outContractOperation/exportOutContract', // 导出分包合同
         outPaidExport: 'outPaidOperation/outPaidExport', // 分包回款导出

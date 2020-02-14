@@ -438,7 +438,7 @@
     wrapperCol: {span: 8, offset: 6},
   };
   export default {
-    name: "updateContract",
+    name: "UpdateContract",
     props: {
       formData: {
         type: Object,
@@ -492,6 +492,8 @@
               // values = Object.assign(values, {contractNodes: tempContractNodes});
 
               values = Object.assign(values, {
+                id: this.formData.id,
+                sup: this.formData.sup,
                 contractFile: this.fileName,
                 projectCategory: projectCategory
               });

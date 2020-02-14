@@ -461,7 +461,7 @@
     },
     computed: {
       ...mapState({
-        projectCategoryList: state => state.contractList.projectCategoryList,// 项目类型
+        projectCategoryList: state => state.projectCategoryOperation.projectCategoryList,// 项目类型
         staffData: state => state.staffOperation.staffData, // 职员信息
       }),
     },
@@ -471,7 +471,7 @@
     methods: {
       ...mapActions({
         uploadContract: 'contractList/uploadContract',
-        getProjectCategoryList: 'contractList/getProjectCategoryList',
+        getProjectCategoryList: 'projectCategoryOperation/getProjectCategoryList',
         addContract: 'contractList/addContract',
         getStaffListByNameLike: 'staffOperation/getStaffListByNameLike',
         getProjectListByIdLike: 'contractList/getProjectListByIdLike',

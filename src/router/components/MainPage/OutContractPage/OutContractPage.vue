@@ -511,8 +511,8 @@
         contractId: state => state.outContractOperation.contractId, // 合同号
         designId: state => state.outContractOperation.designId, // 设计号
         contractName: state => state.outContractOperation.contractName, // 合同名称
-        outContractCategoryList: state => state.outContractOperation.outContractCategoryList, // 外包类型选项
-        outProjectCategoryList: state => state.outContractOperation.outProjectCategoryList, // 外包项目类型
+        outContractCategoryList: state => state.outContractCategoryOperation.outContractCategoryList, // 外包类型选项
+        outProjectCategoryList: state => state.outProjectCategoryOperation.outProjectCategoryList, // 外包项目类型
       }),
     },
     mounted() {
@@ -525,8 +525,8 @@
         getContractIdsByIdLike: 'contractList/getContractIdsByIdLike',
         addOutContract: 'outContractOperation/addOutContract', // 添加分包合同
         deleteOutContract: 'outContractOperation/deleteOutContract',
-        getOutContractCategoryList: 'outContractOperation/getOutContractCategoryList', // 获取分包类型
-        getOutProjectCategoryList: 'outContractOperation/getOutProjectCategoryList', // 获取分包项目类型
+        getOutContractCategoryList: 'outContractCategoryOperation/getOutContractCategoryList', // 获取分包类型
+        getOutProjectCategoryList: 'outProjectCategoryOperation/getOutProjectCategoryList', // 获取分包项目类型
         verifyOutContract: 'outContractOperation/verifyOutContract', // 修改分包合同
       }),
       next() {

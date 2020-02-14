@@ -52,7 +52,7 @@
     },
     methods: {
       ...mapActions({
-        getProjectCategoryList: 'contractList/getProjectCategoryList',
+        getProjectCategoryList: 'projectCategoryOperation/getProjectCategoryList',
       }),
       onEdit(targetKey, action) {
         this[action](targetKey);

@@ -24,7 +24,7 @@
       <a-spin :spinning="spinning" tip="Loading...">
         <a-table bordered :columns="columns" :dataSource="tableData"
                  :pagination="paginationProps"
-                 @change="handleTableChange" :scroll="{ x: 2230, y: 550}">
+                 @change="handleTableChange" :scroll="{ x: 2180, y: 550}">
           <span slot="serial" slot-scope="text, record, index">
             {{ index + 1 }}
           </span>
@@ -54,6 +54,7 @@
               </a-menu>
             </a-dropdown>
           </template>
+          <a-progress slot="ratio" slot-scope="text" type="circle" :percent="text*100" :width="60" />
         </a-table>
       </a-spin>
     </div>
@@ -130,6 +131,13 @@
             dataIndex: 'scale',
           },
           {
+            title: '收款比例',
+            width: 100,
+            key: 'ratio',
+            dataIndex: 'ratio',
+            scopedSlots: {customRender: 'ratio'}
+          },
+          {
             title: '累计开票金额(元)',
             width: 150,
             key: 'receiptAmount',
@@ -170,12 +178,6 @@
             width: 150,
             key: 'projectInvestment',
             dataIndex: 'projectInvestment',
-          },
-          {
-            title: '已收款比例',
-            width: 150,
-            key: 'ratio',
-            dataIndex: 'ratio',
           },
           {
             width: 180,

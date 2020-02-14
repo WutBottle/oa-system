@@ -248,6 +248,7 @@
         ], // 分包付款表头
         outPaidTableSpinning: false, // 分包付款信息加载控制
         popVisible: false,
+        firstComing: 0,
       }
     },
     computed: {
@@ -262,10 +263,16 @@
         selectOutContractInfo: state => state.outContractOperation.selectOutContractInfo, // 被选择的分包合同
       }),
     },
+    mounted() {
+      this.getOutContractCategoryList().then(res => {
+        this.getOutProjectCategoryList().then(res => {
+          this.updateTableData();
+        });
+      });
+    },
     activated() {
-      this.getOutContractCategoryList();
-      this.getOutProjectCategoryList();
-      this.updateTableData();
+      this.firstComing != 0 && this.updateTableData();
+      this.firstComing++;
     },
     methods: {
       ...mapMutations({

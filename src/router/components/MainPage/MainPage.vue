@@ -179,6 +179,8 @@
           </a>
         </div>
         <a-menu
+                :openKeys="openKeys"
+                @openChange="onOpenChange"
                 :defaultSelectedKeys="[menuDefault]"
                 mode="inline"
                 theme="dark"
@@ -327,6 +329,8 @@
       return {
         screenWidth: '',
         collapsed: false,
+        openKeys: [],
+        rootSubmenuKeys: ['数据管理', '系统管理'],
         menuDefault: '',
         menuList: [
           {
@@ -388,6 +392,14 @@
         }).catch((error) => {
           this.$message.error(error);
         });
+      },
+      onOpenChange(openKeys) {
+        const latestOpenKey = openKeys.find(key => this.openKeys.indexOf(key) === -1);
+        if (this.rootSubmenuKeys.indexOf(latestOpenKey) === -1) {
+          this.openKeys = openKeys;
+        } else {
+          this.openKeys = latestOpenKey ? [latestOpenKey] : [];
+        }
       },
     }
   }

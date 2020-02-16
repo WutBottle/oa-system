@@ -453,10 +453,14 @@
                 }],
               };
               this.addOutPaid(params).then((res) => {
-                this.$message.success(res.data.data);
-                this.addForm.resetFields();
-                this.updateTableData();
-                this.addVisible = false;
+                if (res.data.meta.success){
+                  this.$message.success(res.data.data);
+                  this.addForm.resetFields();
+                  this.updateTableData();
+                  this.addVisible = false;
+                } else {
+                  this.$message.error(res.data.meta.message);
+                }
               }).catch((error) => {
                 this.$message.error(error);
               })
@@ -478,10 +482,14 @@
                 paidNote: values.paidNote
               };
               this.verifyOutPaid(params).then((res) => {
-                this.$message.success(res.data.data);
-                this.editForm.resetFields();
-                this.editVisible = false;
-                this.updateTableData();
+                if (res.data.meta.success){
+                  this.$message.success(res.data.data);
+                  this.editForm.resetFields();
+                  this.editVisible = false;
+                  this.updateTableData();
+                } else {
+                  this.$message.error(res.data.meta.message);
+                }
               }).catch((error) => {
                 this.$message.error(error);
               })

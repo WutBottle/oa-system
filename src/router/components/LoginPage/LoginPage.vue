@@ -110,23 +110,23 @@
           </a-input>
         </a-form-item>
         <a-form-item>
-          <a-checkbox
-                  v-decorator="[
-          'auto',
-          {
-            valuePropName: 'checked',
-            initialValue: true,
-          }
-        ]"
-          >
-            自动登录
-          </a-checkbox>
-          <a
-                  class="login-form-forgot"
-                  href=""
-          >
-            忘记密码
-          </a>
+<!--          <a-checkbox-->
+<!--                  v-decorator="[-->
+<!--          'auto',-->
+<!--          {-->
+<!--            valuePropName: 'checked',-->
+<!--            initialValue: true,-->
+<!--          }-->
+<!--        ]"-->
+<!--          >-->
+<!--            自动登录-->
+<!--          </a-checkbox>-->
+<!--          <a-->
+<!--                  class="login-form-forgot"-->
+<!--                  href=""-->
+<!--          >-->
+<!--            忘记密码-->
+<!--          </a>-->
           <a-button
                   type="primary"
                   html-type="submit"
@@ -134,9 +134,9 @@
           >
             登录
           </a-button>
-          Or <a href="">
-          register now!
-        </a>
+<!--          Or <a href="">-->
+<!--          register now!-->
+<!--        </a>-->
         </a-form-item>
       </a-form>
     </div>

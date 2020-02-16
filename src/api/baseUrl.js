@@ -19,6 +19,7 @@ const distributeUrl = {
   userController: serverBaseUrl + 'user',
   staffController: serverBaseUrl + 'staff',
   salaryController: serverBaseUrl + 'salary',
+  operateRecordController: serverBaseUrl + 'operateRecord',
 };
 
 export default distributeUrl;

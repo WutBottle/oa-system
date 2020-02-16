@@ -13,6 +13,7 @@ import staffController from "./staffController";
 import salaryController from "./salaryController";
 import outContractCategoryController from "./outContractCategoryController";
 import outProjectCategoryController from "./outProjectCategoryController";
+import operateRecordController from "./operateRecordController";
 
 // 导出接口
 export default {
@@ -28,4 +29,5 @@ export default {
   salaryController: salaryController, // 工资管理
   outContractCategoryController: outContractCategoryController, // 分包类型管理
   outProjectCategoryController: outProjectCategoryController, // 分包项目类型
+  operateRecordController: operateRecordController, // 主页动态
 }

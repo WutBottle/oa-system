@@ -15,6 +15,7 @@ import salaryOperation from "./modules/salaryOperation";
 import outContractCategoryOperation from "./modules/outContractCategoryOperation";
 import outProjectCategoryOperation from "./modules/outProjectCategoryOperation";
 import projectCategoryOperation from "./modules/projectCategoryOperation";
+import operateRecordOperation from "./modules/operateRecordOperation";
 
 Vue.use(Vuex);
 
@@ -33,6 +34,7 @@ const store = new Vuex.Store({
     outContractCategoryOperation, // 分包类型管理
     outProjectCategoryOperation, // 分包项目类型管理
     projectCategoryOperation, // 项目类型管理
+    operateRecordOperation, // 获取动态列表
   },
   getters
 });

@@ -59,14 +59,22 @@
       },
       add(contractId) {
         const panes = this.panes;
-        const activeKey = `newTab${this.newTabIndex++}`;
-        panes.push({
-          title: `合同${contractId}详情`,
-          contractId: contractId,
-          key: activeKey,
-        });
-        this.panes = panes;
-        this.activeKey = activeKey;
+        if (panes.find(item => {
+          return item.title === `合同${contractId}详情`
+        })){
+          this.activeKey = panes[panes.findIndex(item => {
+            return item.contractId === contractId
+          })].key;
+        } else {
+          const activeKey = `newTab${this.newTabIndex++}`;
+          panes.push({
+            title: `合同${contractId}详情`,
+            contractId: contractId,
+            key: activeKey,
+          });
+          this.panes = panes;
+          this.activeKey = activeKey;
+        }
       },
       remove(targetKey) {
         let activeKey = this.activeKey;

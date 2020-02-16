@@ -439,6 +439,7 @@
       },
       // 处理编辑
       handleCashEdit(selectCashData) {
+        this.editForm.resetFields();
         this.editFormData = JSON.parse(JSON.stringify(selectCashData));
         this.editFormData.cashDate = moment(this.editFormData.cashDate);
         this.editVisible = true;
@@ -468,10 +469,14 @@
                 }
               };
               this.addCash(params).then((res) => {
-                this.$message.success(res.data.data);
-                this.addForm.resetFields();
-                this.updateTableData();
-                this.addVisible = false;
+                if (res.data.meta.success) {
+                  this.$message.success(res.data.data);
+                  this.addForm.resetFields();
+                  this.updateTableData();
+                  this.addVisible = false;
+                } else {
+                  this.$message.error(res.data.meta.message);
+                }
               }).catch((error) => {
                 this.$message.error(error);
               })
@@ -502,10 +507,14 @@
                 }
               };
               this.verifyCash(params).then((res) => {
-                this.$message.success(res.data.data);
-                this.editForm.resetFields();
-                this.editVisible = false;
-                this.updateTableData();
+                if (res.data.meta.success) {
+                  this.$message.success(res.data.data);
+                  this.editForm.resetFields();
+                  this.editVisible = false;
+                  this.updateTableData();
+                } else  {
+                  this.$message.error(res.data.meta.message);
+                }
               }).catch((error) => {
                 this.$message.error(error);
               })

@@ -53,7 +53,9 @@
         <a-breadcrumb-item><a href="/main/workplace">首页</a></a-breadcrumb-item>
         <a-breadcrumb-item>分包录入</a-breadcrumb-item>
       </a-breadcrumb>
-      <p class="title">分包录入<OutContractInput/></p>
+      <p class="title">分包录入
+        <OutContractInput/>
+      </p>
     </div>
     <div class="page-content">
       <a-row style="background-color: #fff; padding: 24px;">
@@ -609,10 +611,14 @@
                 }],
               };
               this.addOutContract(params).then((res) => {
-                this.$message.success(res.data.data);
-                this.addForm.resetFields();
-                this.updateTableData();
-                this.addVisible = false;
+                if (res.data.meta.success) {
+                  this.$message.success(res.data.data);
+                  this.addForm.resetFields();
+                  this.updateTableData();
+                  this.addVisible = false;
+                } else {
+                  this.$message.error(res.data.meta.message);
+                }
               }).catch((error) => {
                 this.$message.error(error);
               })
@@ -643,10 +649,14 @@
                 note: values.note
               };
               this.verifyOutContract(params).then((res) => {
-                this.$message.success(res.data.data);
-                this.editForm.resetFields();
-                this.editVisible = false;
-                this.updateTableData();
+                if (res.data.meta.success) {
+                  this.$message.success(res.data.data);
+                  this.editForm.resetFields();
+                  this.editVisible = false;
+                  this.updateTableData();
+                } else {
+                  this.$message.error(res.data.meta.message);
+                }
               }).catch((error) => {
                 this.$message.error(error);
               })

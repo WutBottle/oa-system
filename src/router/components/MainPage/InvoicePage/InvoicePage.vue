@@ -489,6 +489,7 @@
         this.updateTableData();
       },
       handleInvoiceEdit(selectInvoiceData) {
+        this.editForm.resetFields();
         this.editFormData = JSON.parse(JSON.stringify(selectInvoiceData));
         this.editFormData.receiptDate = moment(this.editFormData.receiptDate);
         this.editVisible = true;
@@ -533,10 +534,14 @@
                 }],
               };
               this.addReceipt(params).then((res) => {
-                this.$message.success(res.data.data);
-                this.addForm.resetFields();
-                this.updateTableData();
-                this.addVisible = false;
+                if (res.data.meta.success) {
+                  this.addForm.resetFields();
+                  this.updateTableData();
+                  this.addVisible = false;
+                  this.$message.success(res.data.data);
+                }else {
+                  this.$message.error(res.data.meta.message);
+                }
               }).catch((error) => {
                 this.$message.error(error);
               })
@@ -621,10 +626,14 @@
                 receiptDate: values.receiptDate,
               };
               this.verifyReceipt(params).then((res) => {
-                this.$message.success(res.data.data);
-                this.editForm.resetFields();
-                this.editVisible = false;
-                this.updateTableData();
+                if (res.data.meta.success) {
+                  this.$message.success(res.data.data);
+                  this.editForm.resetFields();
+                  this.editVisible = false;
+                  this.updateTableData();
+                } else {
+                  this.$message.error(res.data.meta.message);
+                }
               }).catch((error) => {
                 this.$message.error(error);
               })

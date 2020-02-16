@@ -102,7 +102,7 @@
             {{username}}，天气冷了要加衣服！
           </div>
           <div>
-            建筑院院长 | CSADI - 某某某项目组 - OA平台
+            建筑院xxx | CSADI - 某某某项目组 - OA平台
           </div>
         </div>
         <div class="extra">
@@ -147,13 +147,13 @@
             <a-card title="动态" :bordered="false">
               <a-list
                       itemLayout="horizontal"
-                      :dataSource="data"
+                      :dataSource="listData"
               >
                 <a-list-item slot="renderItem" slot-scope="item, index">
                   <a-list-item-meta
-                          description="Ant Design, a design language for background applications, is refined by Ant UED Team"
+                          :description="item.message"
                   >
-                    <a slot="title" href="https://vue.ant.design/">{{item.title}}</a>
+                    <a slot="title" href="https://vue.ant.design/">{{item.operateUserName}}<a-divider type="vertical" />{{item.time}}</a>
                     <a-avatar slot="avatar" src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png"/>
                   </a-list-item-meta>
                 </a-list-item>
@@ -176,7 +176,9 @@
 </template>
 
 <script>
-  import {mapState} from 'vuex'
+  import {mapState, mapActions} from 'vuex'
+  import moment from 'moment';
+
   export default {
     name: "WorkPlace",
     computed: {
@@ -186,21 +188,27 @@
     },
     data() {
       return {
-        data: [
-          {
-            title: 'Ant Design Title 1',
-          },
-          {
-            title: 'Ant Design Title 2',
-          },
-          {
-            title: 'Ant Design Title 3',
-          },
-          {
-            title: 'Ant Design Title 4',
-          },
-        ]
+        listData: [],
       }
+    },
+    methods: {
+      ...mapActions({
+        getRecentOperates: 'operateRecordOperation/getRecentOperates',
+      })
+    },
+    mounted() {
+      this.getRecentOperates({
+        pageNum: 1,
+        pageLimit: 6,
+      }).then(res => {
+        this.listData = res.data.data.content.map(item => {
+          return {
+            operateUserName: item.operateUserName,
+            time: moment(item.operateDate).format('YYYY-MM-DD HH:mm:ss'),
+            message: item.message,
+          }
+        });
+      })
     }
   }
 </script>

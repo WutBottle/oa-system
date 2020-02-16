@@ -10,6 +10,7 @@ const state = {
   token: localStorage.getItem(ACCESS_TOKEN) || '',
   role: localStorage.getItem(ROLE) || '',
   username: localStorage.getItem(USERNAME) || '',
+  menuSelect: '',
 };
 
 const mutations = {
@@ -39,6 +40,9 @@ const mutations = {
     localStorage.removeItem(ACCESS_TOKEN);
     localStorage.removeItem(ROLE);
     localStorage.removeItem(USERNAME);
+  },
+  setMenu(stata, data) {
+    state.menuSelect = data;
   },
 };
 

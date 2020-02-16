@@ -34,6 +34,10 @@ const cashController = {
   cashInput(params) {
     return axios.post(`${baseUrl.cashController}/input`, params);
   },
+  // 获取最近几天现金信息
+  getRecentCashes(params) {
+    return axios.post(`${baseUrl.cashController}/getRecentCashes`, params);
+  },
 };
 
 export default cashController;

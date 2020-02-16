@@ -116,6 +116,16 @@ const actions = {
       });
     });
   },
+  getRecentCashes({commit}, params) {
+    return new Promise((resolve, reject) => {
+      api.cashController.getRecentCashes(params).then(res => {
+        resolve(res);
+      }).catch(error => {
+        console.log(error, '获取现金失败');
+        reject(error);
+      });
+    });
+  },
 };
 
 export default {

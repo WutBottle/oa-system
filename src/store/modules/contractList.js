@@ -383,6 +383,28 @@ const actions = {
       });
     });
   },
+  // 获取主页合同信息
+  getIndexProperties({commit}, params) {
+    return new Promise((resolve, reject) => {
+      api.contractController.getIndexProperties(params).then(res => {
+        resolve(res);
+      }).catch(error => {
+        console.log(error, '获取信息失败');
+        reject(error);
+      });
+    });
+  },
+  // 获取最近的项目列表
+  getRecentProjectList({commit}, params) {
+    return new Promise((resolve, reject) => {
+      api.contractController.getRecentProjectList(params).then(res => {
+        resolve(res);
+      }).catch(error => {
+        console.log(error, '获取列表失败');
+        reject(error);
+      });
+    });
+  },
 };
 
 export default {

@@ -66,8 +66,8 @@
 
           .count {
             color: rgba(0, 0, 0, .85);
-            font-size: 24px;
-            line-height: 32px;
+            font-size: 20px;
+            line-height: 26px;
             margin: 0;
           }
         }
@@ -109,20 +109,20 @@
           <a-row>
             <a-col :span="8">
               <div class="info">
-                <div class="title">合同</div>
-                <div class="count">56</div>
+                <div class="title">未完成</div>
+                <div class="count">{{projectUnDone}}</div>
               </div>
             </a-col>
             <a-col :span="8">
               <div class="info">
-                <div class="title">团队排名</div>
-                <div class="count">8/24</div>
+                <div class="title">项目数</div>
+                <div class="count">{{projectNum}}</div>
               </div>
             </a-col>
             <a-col :span="8">
               <div class="info">
-                <div class="title">合同总数</div>
-                <div class="count">2232</div>
+                <div class="title">总收款金额</div>
+                <div class="count">{{projectAllCash}}</div>
               </div>
             </a-col>
           </a-row>
@@ -131,16 +131,14 @@
     </div>
     <div class="page-content">
       <a-row :gutter="20">
-        <a-col :span="16">
+        <a-col :span="14">
           <div class="project-doing">
-            <a-card title="进行中的合同" :bordered="false">
-              <a href="#" slot="extra">全部合同</a>
-              <a-card-grid style="width:33.33%;textAlign:'center'">Content</a-card-grid>
-              <a-card-grid style="width:33.33%;textAlign:'center'">Content</a-card-grid>
-              <a-card-grid style="width:33.33%;textAlign:'center'">Content</a-card-grid>
-              <a-card-grid style="width:33.33%;textAlign:'center'">Content</a-card-grid>
-              <a-card-grid style="width:33.33%;textAlign:'center'">Content</a-card-grid>
-              <a-card-grid style="width:33.33%;textAlign:'center'">Content</a-card-grid>
+            <a-card title="进行中的项目" :bordered="false">
+              <a slot="extra" @click="handleDirectTo">全部项目</a>
+              <a-card-grid style="width:33.33%;textAlign:'center'" v-for="(item, index) in recentData" :key="index">
+                <p>项目名称</p>
+                <div style="height: 60px">{{item.contractName}}</div>
+              </a-card-grid>
             </a-card>
           </div>
           <div class="dynamic-wrapper">
@@ -161,12 +159,10 @@
             </a-card>
           </div>
         </a-col>
-        <a-col :span="8">
-          <div class="chart-wrapper">
-            <a-card title="xx指数" :bordered="false">
-              <p>Card content</p>
-              <p>Card content</p>
-              <p>Card content</p>
+        <a-col :span="10">
+          <div id="chart-wrapper">
+            <a-card title="7天指数" :bordered="false">
+              <div id="myChart" style="width: 100%;height:40vh;"></div>
             </a-card>
           </div>
         </a-col>
@@ -176,7 +172,7 @@
 </template>
 
 <script>
-  import {mapState, mapActions} from 'vuex'
+  import {mapState, mapActions, mapMutations} from 'vuex'
   import moment from 'moment';
 
   export default {
@@ -184,19 +180,74 @@
     computed: {
       ...mapState({
         username: state => state.tokensOperation.username,// 选择合同数
+        menuSelect: state => state.tokensOperation.menuSelect, // 当前menu
       }),
     },
     data() {
       return {
         listData: [],
+        recentData: [],
+        projectUnDone: '',
+        projectNum: '',
+        projectAllCash: '',
+        recentCashes: [],
       }
     },
     methods: {
+      ...mapMutations({
+        setMenu: 'tokensOperation/setMenu',
+      }),
       ...mapActions({
         getRecentOperates: 'operateRecordOperation/getRecentOperates',
-      })
+        getIndexProperties: 'contractList/getIndexProperties',
+        getRecentProjectList: 'contractList/getRecentProjectList',
+        getRecentCashes: 'cashOperation/getRecentCashes'
+      }),
+      handleDirectTo() {
+        this.$router.push('/main/project');
+        this.setMenu('/main/project');
+      },
+      drawBar(){
+        // 基于准备好的dom，初始化echarts实例
+        let myChart = this.$echarts.init(document.getElementById('myChart'));
+        // 绘制图表
+        myChart.setOption({
+          title: { text: '近七天现金收入' },
+          tooltip: {},
+          xAxis: {
+            data: ["day1","day2","day3","day4","day5","day6","day7"]
+          },
+          yAxis: {},
+          dataZoom: [
+            {
+              type: 'inside'
+            }
+          ],
+          series: [{
+            name: '金额(元)',
+            type: 'bar',
+            data: this.recentCashes,
+          }]
+        });
+      },
+      addResizeListener() {
+        let elementResizeDetectorMaker = require("element-resize-detector");
+        let erd = elementResizeDetectorMaker();
+        erd.listenTo(document.getElementById("chart-wrapper"), (element) => {
+          this.$echarts.init(document.getElementById("myChart")).resize()
+        });
+      }
     },
     mounted() {
+      this.getRecentCashes({
+        recentDays: 7,
+      }).then(res => {
+        this.recentCashes = res.data.data.recentCashes;
+        this.drawBar();
+      });
+      this.addResizeListener();
+    },
+    activated() {
       this.getRecentOperates({
         pageNum: 1,
         pageLimit: 6,
@@ -208,7 +259,18 @@
             message: item.message,
           }
         });
-      })
-    }
+      });
+      this.getIndexProperties().then(res => {
+        this.projectUnDone = res.data.data.projectUnDone;
+        this.projectNum = res.data.data.projectNum;
+        this.projectAllCash = res.data.data.projectAllCash;
+      });
+      this.getRecentProjectList({
+        pageNum: 1,
+        pageLimit: 6,
+      }).then(res => {
+        this.recentData = res.data.data.content;
+      });
+    },
   }
 </script>

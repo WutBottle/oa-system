@@ -61,6 +61,14 @@ const contractController = {
   getProjectListByIdLike(params) {
     return axios.post(`${baseUrl.contractController}/getProjectListByIdLike`, params);
   },
+  // 获取主页合同信息
+  getIndexProperties(params) {
+    return axios.post(`${baseUrl.contractController}/getIndexProperties`, params);
+  },
+  // 获取最近的项目列表
+  getRecentProjectList(params) {
+    return axios.post(`${baseUrl.contractController}/getRecentProjectList`, params);
+  },
 };
 
 export default contractController;

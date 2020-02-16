@@ -9,6 +9,9 @@ import 'ant-design-vue/dist/antd.css'
 import './permission';
 import '@babel/polyfill';
 
+import echarts from 'echarts'
+Vue.prototype.$echarts = echarts;
+
 Vue.use(Antd);
 
 Vue.config.productionTip = false;

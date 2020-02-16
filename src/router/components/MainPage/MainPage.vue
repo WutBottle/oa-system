@@ -181,7 +181,7 @@
         <a-menu
                 :openKeys="openKeys"
                 @openChange="onOpenChange"
-                :defaultSelectedKeys="[menuDefault]"
+                :selectedKeys="[menuSelect]"
                 mode="inline"
                 theme="dark"
                 :inlineCollapsed="collapsed"
@@ -261,7 +261,7 @@
 </template>
 
 <script>
-  import {mapState, mapActions} from 'vuex'
+  import {mapState, mapActions, mapMutations} from 'vuex'
 
   export default {
     name: 'MainPage',
@@ -331,7 +331,6 @@
         collapsed: false,
         openKeys: [],
         rootSubmenuKeys: ['数据管理', '系统管理'],
-        menuDefault: '',
         menuList: [
           {
             name: '工作台',
@@ -367,15 +366,19 @@
       }
     },
     created() {
-      this.menuDefault = this.$route.path
+      this.setMenu(this.$route.path);
     },
     computed: {
       ...mapState({
         username: state => state.tokensOperation.username,// 选择合同数
-        role: state => state.tokensOperation.role
+        role: state => state.tokensOperation.role,
+        menuSelect: state => state.tokensOperation.menuSelect, // 当前menu
       }),
     },
     methods: {
+      ...mapMutations({
+        setMenu: 'tokensOperation/setMenu',
+      }),
       ...mapActions({
         logout: 'tokensOperation/logout',
       }),
@@ -384,6 +387,7 @@
       },
       handleSelect(key, keyPath) {
         this.$router.push(key.key);
+        this.setMenu(key.key);
       },
       handleLogout() {
         this.logout().then(() => {

@@ -102,7 +102,7 @@
             {{username}}，天气冷了要加衣服！
           </div>
           <div>
-            建筑院xxx | CSADI - 某某某项目组 - OA平台
+            中南建筑设计院 | CSADI - 第三设计部 - OA平台
           </div>
         </div>
         <div class="extra">
@@ -131,7 +131,7 @@
     </div>
     <div class="page-content">
       <a-row :gutter="20">
-        <a-col :span="14">
+        <a-col :span="12">
           <div class="project-doing">
             <a-card title="进行中的项目" :bordered="false">
               <a slot="extra" @click="handleDirectTo">全部项目</a>
@@ -159,10 +159,10 @@
             </a-card>
           </div>
         </a-col>
-        <a-col :span="10">
+        <a-col :span="12">
           <div id="chart-wrapper">
-            <a-card title="7天指数" :bordered="false">
-              <div id="myChart" style="width: 100%;height:40vh;"></div>
+            <a-card title="近7天现金回款" :bordered="false">
+              <div id="myChart" style="width: 100%;height:50vh;"></div>
             </a-card>
           </div>
         </a-col>
@@ -191,6 +191,7 @@
         projectNum: '',
         projectAllCash: '',
         recentCashes: [],
+        datas: [],
       }
     },
     methods: {
@@ -212,10 +213,9 @@
         let myChart = this.$echarts.init(document.getElementById('myChart'));
         // 绘制图表
         myChart.setOption({
-          title: { text: '近七天现金收入' },
           tooltip: {},
           xAxis: {
-            data: ["day1","day2","day3","day4","day5","day6","day7"]
+            data: this.dates,
           },
           yAxis: {},
           dataZoom: [
@@ -239,12 +239,6 @@
       }
     },
     mounted() {
-      this.getRecentCashes({
-        recentDays: 7,
-      }).then(res => {
-        this.recentCashes = res.data.data.recentCashes;
-        this.drawBar();
-      });
       this.addResizeListener();
     },
     activated() {
@@ -270,6 +264,13 @@
         pageLimit: 6,
       }).then(res => {
         this.recentData = res.data.data.content;
+      });
+      this.getRecentCashes({
+        recentDays: 7,
+      }).then(res => {
+        this.recentCashes = res.data.data.recentCashes;
+        this.dates = res.data.data.dates;
+        this.drawBar();
       });
     },
   }

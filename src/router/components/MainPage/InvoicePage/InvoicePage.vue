@@ -351,6 +351,7 @@
   import {debounce} from 'debounce';
   import moment from 'moment'
   import CashReceiptInput from "../CashReceiptInput/CashReceiptInput";
+  import baseUrl from '@/api/baseUrl'
 
   const formItemLayout = {
     labelCol: {span: 6},
@@ -451,7 +452,7 @@
       ...mapActions({
         getReceiptsByContractId: 'receiptOperation/getReceiptsByContractId',
         getContractIdsByIdLike: 'contractList/getContractIdsByIdLike',
-        uploadContract: 'contractList/uploadContract',
+        receiptUpload: 'receiptOperation/receiptUpload',
         addReceipt: 'receiptOperation/addReceipt',
         verifyReceipt: 'receiptOperation/verifyReceipt',
         deleteReceipt: 'receiptOperation/deleteReceipt'
@@ -496,7 +497,7 @@
       },
       // 查看pdf文件
       handleOpenFile(file) {
-        const router = 'http://172.15.67.120:8081/' + file;
+        const router = baseUrl.serverBaseController + file;
         window.open(router, '_blank');
       },
       // 更新发票列表数据
@@ -565,7 +566,7 @@
             formData.append('multipartFiles', file);
           });
           // 手动上传
-          this.uploadContract(formData).then((data) => {
+          this.receiptUpload(formData).then((data) => {
             this.invoiceFileName = data.data.data;
             this.$message.success('文件已上传');
             this.addSpinning = true;
@@ -596,7 +597,7 @@
             formData.append('multipartFiles', file);
           });
           // 手动上传
-          this.uploadContract(formData).then((data) => {
+          this.receiptUpload(formData).then((data) => {
             this.editInvoiceFileName = data.data.data;
             this.$message.success('文件已上传');
             this.editSpinning = false;

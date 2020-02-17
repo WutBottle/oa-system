@@ -123,6 +123,16 @@ const actions = {
       });
     });
   },
+  receiptUpload({commit}, params) {
+    return new Promise((resolve, reject) => {
+      api.receiptController.receiptUpload(params).then(res => {
+        resolve(res);
+      }).catch(error => {
+        console.log(error, '上传发票信息失败');
+        reject(error);
+      });
+    });
+  },
 };
 
 export default {

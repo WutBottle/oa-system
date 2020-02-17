@@ -217,7 +217,7 @@
             epc: item.epc, // 是否EPC项目
             contractFile: {
               isDownload: false,
-              contractId: item.contractFile ?  item.contractId: '',
+              contractId: item.contractFile ?  item.id: '',
             }, // 合同扫描文件
             sup: item.sup, // 是否是补充文件
           }
@@ -246,7 +246,7 @@
       handleFileDownload(contractFile) {
         contractFile.isDownload = true;
         this.downloadContract({
-          id: contractFile.id,
+          id: contractFile.contractId,
         }).then((data) => {
           if (!data.data) {
             return

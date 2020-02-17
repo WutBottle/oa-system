@@ -90,7 +90,7 @@
               <span slot="outProjectCategory" slot-scope="id">{{outProjectCategoryList[outProjectCategoryList.findIndex((item) => item.outProjectCategoryId === id)].outProjectCategoryName}}</span>
               <template slot="selectIndex" slot-scope="text, record">
                 <span>
-                  <a @click="openOutPaid(record)">查看</a>
+                  <a @click="openOutPaid(record)">查看付款</a>
                 </span>
                 <a-divider type="vertical"/>
                 <a-button v-if="text.selectIndex" type="danger" size="small" @click="handleRemoved(record)">
@@ -219,7 +219,7 @@
             dataIndex: 'note',
           }, {
             title: '分包操作',
-            width: 130,
+            width: 160,
             fixed: 'right',
             key: 'selectIndex',
             scopedSlots: {customRender: 'selectIndex'},

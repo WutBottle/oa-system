@@ -209,11 +209,11 @@
             <a-icon class="icon" @click="toggleCollapsed" :type="collapsed ? 'menu-unfold' : 'menu-fold'"/>
             <div class="user-wrapper">
               <div class="content-box">
-                <span class="action">
-                  <a-badge count="12">
-                    <a-icon type="bell"/>
-                  </a-badge>
-                </span>
+<!--                <span class="action">-->
+<!--                  <a-badge count="12">-->
+<!--                    <a-icon type="bell"/>-->
+<!--                  </a-badge>-->
+<!--                </span>-->
                 <a-dropdown plcement="bottomRight">
                 <span class="action">
                   <span class="avatar">
@@ -222,18 +222,18 @@
                   <span>{{this.username}}</span>
                 </span>
                   <a-menu slot="overlay">
-                    <a-menu-item key="0">
-                      <a @click="() => {this.$router.push('/main/usercenter')}">
-                        <a-icon type="user" style="margin-right: 8px"/>
-                        <span>个人中心</span>
-                      </a>
-                    </a-menu-item>
-                    <a-menu-item key="1">
-                      <a @click="() => {this.$router.push('/main/setting')}">
-                        <a-icon type="setting" style="margin-right: 8px"/>
-                        <span>账户设置</span>
-                      </a>
-                    </a-menu-item>
+<!--                    <a-menu-item key="0">-->
+<!--                      <a @click="() => {this.$router.push('/main/usercenter')}">-->
+<!--                        <a-icon type="user" style="margin-right: 8px"/>-->
+<!--                        <span>个人中心</span>-->
+<!--                      </a>-->
+<!--                    </a-menu-item>-->
+<!--                    <a-menu-item key="1">-->
+<!--                      <a @click="() => {this.$router.push('/main/setting')}">-->
+<!--                        <a-icon type="setting" style="margin-right: 8px"/>-->
+<!--                        <span>账户设置</span>-->
+<!--                      </a>-->
+<!--                    </a-menu-item>-->
                     <a-menu-divider/>
                     <a-menu-item key="3">
                       <a @click="handleLogout">
@@ -352,11 +352,11 @@
             router: "/main/outcontractlist",
             iconType: "layout",
           },
-          {
-            name: '分析中心',
-            router: "/main/analysis",
-            iconType: "pie-chart",
-          },
+          // {
+          //   name: '分析中心',
+          //   router: "/main/analysis",
+          //   iconType: "pie-chart",
+          // },
           {
             name: '职员列表',
             router: "/main/staff",

@@ -7,6 +7,7 @@
 const serverBaseUrl = 'http://172.15.67.120:8081/';
 const distributeUrl = {
   // 用户信息
+  serverBaseController: serverBaseUrl,
   tokensController: serverBaseUrl + 'tokens',
   contractController: serverBaseUrl + 'contract',
   projectCategoryController: serverBaseUrl + 'projectCategory',

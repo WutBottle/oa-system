@@ -95,6 +95,7 @@
   import {mapState, mapActions} from 'vuex';
   import HeaderPage from "../HeaderPage/HeaderPage";
   import {debounce} from 'debounce';
+  import baseUrl from '@/api/baseUrl'
 
   const formItemLayout = {
     labelCol: {span: 6},
@@ -265,7 +266,7 @@
       },
       // 查看发票文件
       handleOpenReceiptFile(file) {
-        const router = 'http://172.15.67.120:8081/' + file;
+        const router = baseUrl.serverBaseController + file;
         window.open(router, '_blank');
       },
       // 控制发票分页

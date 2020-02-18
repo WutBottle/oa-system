@@ -1,5 +1,26 @@
 import UserLayout from 'layouts/UserLayout';
 
+const LoginPage = r => require.ensure([], () => r(require('components/LoginPage/LoginPage')));
+const MainPage = r => require.ensure([], () => r(require('components/MainPage/MainPage')));
+const WorkPlace = r => require.ensure([], () => r(require('components/MainPage/WorkPlace/WorkPlace')));
+const ProjectPage = r => require.ensure([], () => r(require('components/MainPage/ProjectPage/ProjectPage')));
+const ReceiptPage = r => require.ensure([], () => r(require('components/MainPage/ReceiptPage/ReceiptPage')));
+const AnalysisPage = r => require.ensure([], () => r(require('components/MainPage/AnalysisPage/AnalysisPage')));
+const ParameterPage = r => require.ensure([], () => r(require('components/MainPage/ParameterPage/ParameterPage')));
+const UsersPage = r => require.ensure([], () => r(require('components/MainPage/UsersPage/UsersPage')));
+const ContractManager = r => require.ensure([], () => r(require('components/MainPage/ContractManager/ContractManager')));
+const InvoicePage = r => require.ensure([], () => r(require('components/MainPage/InvoicePage/InvoicePage')));
+const CashPage = r => require.ensure([], () => r(require('components/MainPage/CashPage/CashPage')));
+const OutContractPage = r => require.ensure([], () => r(require('components/MainPage/OutContractPage/OutContractPage')));
+const OutContractListPage = r => require.ensure([], () => r(require('components/MainPage/OutContractListPage/OutContractListPage')));
+const OutContractPaidPage = r => require.ensure([], () => r(require('components/MainPage/OutContractPaidPage/OutContractPaidPage')));
+const StaffEntryPage = r => require.ensure([], () => r(require('components/MainPage/StaffEntryPage/StaffEntryPage')));
+const StaffPage = r => require.ensure([], () => r(require('components/MainPage/StaffPage/StaffPage')));
+const SalaryEntryPage = r => require.ensure([], () => r(require('components/MainPage/SalaryEntryPage/SalaryEntryPage')));
+
+
+
+
 /**
  * 基础路由
  * @type { *[] }
@@ -13,88 +34,88 @@ export const constantRouterMap = [
     children: [{
       path: 'login',
       name: 'LoginPage',
-      component: () => import('components/LoginPage/LoginPage'),
+      component: LoginPage,
     }]
   },
   {
     path: '/main',
     name: 'MainPage',
-    component: () => import('components/MainPage/MainPage'),
+    component: MainPage,
     children: [
       {
         path: 'workplace',
         name: 'workplace',
-        component: () => import('components/MainPage/WorkPlace/WorkPlace'),
+        component: WorkPlace,
       },
       {
         path: 'project',
         name: 'project',
-        component: () => import('components/MainPage/ProjectPage/ProjectPage'),
+        component: ProjectPage,
       },
       {
         path: 'receipt',
         name: 'receipt',
-        component: () => import('components/MainPage/ReceiptPage/ReceiptPage'),
+        component: ReceiptPage,
       },
       {
         path: 'analysis',
         name: 'analysis',
-        component: () => import('components/MainPage/AnalysisPage/AnalysisPage'),
+        component: AnalysisPage,
       },
       {
         path: 'parameter',
         name: 'parameter',
-        component: () => import('components/MainPage/ParameterPage/ParameterPage'),
+        component: ParameterPage,
       },
       {
         path: 'users',
         name: 'users',
-        component: () => import('components/MainPage/UsersPage/UsersPage'),
+        component: UsersPage,
       },
       {
         path: 'contractmanager',
-        name: 'ContractManager',
-        component: () => import('components/MainPage/ContractManager/ContractManager'),
+        name: 'contractManager',
+        component: ContractManager,
       },
       {
         path: 'invoice',
         name: 'invoice',
-        component: () => import('components/MainPage/InvoicePage/InvoicePage'),
+        component: InvoicePage,
       },
       {
         path: 'cash',
         name: 'cash',
-        component: () => import('components/MainPage/CashPage/CashPage'),
+        component: CashPage,
       },
       {
         path: 'outsource',
         name: 'outsource',
-        component: () => import('components/MainPage/OutContractPage/OutContractPage'),
+        component: OutContractPage,
       },
       {
         path: 'outcontractlist',
         name: 'outcontractlist',
-        component: () => import('components/MainPage/OutContractListPage/OutContractListPage'),
+        component: OutContractListPage,
       },
       {
         path: 'outcontractpaid',
         name: 'outcontractpaid',
-        component: () => import('components/MainPage/OutContractPaidPage/OutContractPaidPage'),
+        component: OutContractPaidPage,
       },
       {
         path: 'staffentry',
         name: 'staffentry',
-        component: () => import('components/MainPage/StaffEntryPage/StaffEntryPage'),
+        component: StaffEntryPage,
       },
       {
         path: 'staff',
         name: 'staff',
-        component: () => import('components/MainPage/StaffPage/StaffPage'),
+        component: StaffPage,
       },
       {
         path: 'salaryentry',
         name: 'salaryentry',
-        component: () => import('components/MainPage/SalaryEntryPage/SalaryEntryPage'),
+        component: SalaryEntryPage,
       },
     ]
   }

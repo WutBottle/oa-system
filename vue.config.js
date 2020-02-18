@@ -4,6 +4,7 @@ const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPl
 const CompressionWebpackPlugin = require('compression-webpack-plugin');
 const productionGzipExtensions = /\.(js|css|json|txt|html|ico|svg)(\?.*)?$/i;
 const IS_PROD = ["production", "prod"].includes(process.env.NODE_ENV);
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 
 module.exports = {
   publicPath: IS_PROD ? process.env.VUE_APP_PUBLIC_PATH : "/user/login", // 默认'/'，部署应用包时的基本 URL
@@ -69,6 +70,17 @@ module.exports = {
           minRatio: 0.8
         })
       );
+      plugins.push(new UglifyJsPlugin({
+        uglifyOptions: {
+          compress: {
+            drop_debugger: true,
+            drop_console: true,  //生产环境自动删除console
+          },
+          warnings: false,
+        },
+        sourceMap: false,
+        parallel: true,//使用多进程并行运行来提高构建速度。默认并发运行数：os.cpus().length - 1。
+      }));
       config.plugins = [
         ...config.plugins,
         ...plugins

@@ -269,7 +269,7 @@
       if (this.role === 'ROLE_ADMIN') {
         const adminMenu = [
           {
-            name: "数据管理",
+            name: "数据录入",
             iconType: "file-text",
             sideBars: [
               {
@@ -330,7 +330,7 @@
         screenWidth: '',
         collapsed: false,
         openKeys: [],
-        rootSubmenuKeys: ['数据管理', '系统管理'],
+        rootSubmenuKeys: ['数据录入', '系统管理'],
         menuList: [
           {
             name: '工作台',

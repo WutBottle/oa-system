@@ -667,7 +667,6 @@
       handleAddClose() {
         // 关闭添加弹窗后还原数据
         this.addForm.resetFields();
-        this.invoiceFileList = [];
       },
       handleInvoiceDelete(selectInvoiceData) {
         const params = {

@@ -16,6 +16,7 @@ import outContractCategoryOperation from "./modules/outContractCategoryOperation
 import outProjectCategoryOperation from "./modules/outProjectCategoryOperation";
 import projectCategoryOperation from "./modules/projectCategoryOperation";
 import operateRecordOperation from "./modules/operateRecordOperation";
+import memorandumOperation from "./modules/memorandumOperation";
 
 Vue.use(Vuex);
 
@@ -35,6 +36,7 @@ const store = new Vuex.Store({
     outProjectCategoryOperation, // 分包项目类型管理
     projectCategoryOperation, // 项目类型管理
     operateRecordOperation, // 获取动态列表
+    memorandumOperation, // 备忘录管理
   },
   getters
 });

@@ -11,11 +11,14 @@
 
       .detail {
         padding-bottom: 16px;
+
         .left-container {
           display: flex;
           align-items: center;
+
           .avatar {
             margin-right: 16px;
+
             span {
               border-radius: 50%;
               display: block;
@@ -30,6 +33,7 @@
               }
             }
           }
+
           .content {
             color: rgba(0, 0, 0, .45);
 
@@ -45,9 +49,24 @@
         }
       }
     }
+
     .page-content {
       padding: 24px;
 
+      .demo-infinite-container {
+        border: 1px solid #e8e8e8;
+        border-radius: 4px;
+        overflow: auto;
+        padding: 8px 24px;
+        height: 200px;
+      }
+
+      .demo-loading-container {
+        position: absolute;
+        bottom: 40px;
+        width: 100%;
+        text-align: center;
+      }
     }
   }
 </style>
@@ -78,15 +97,15 @@
               </div>
             </div>
           </a-col>
-          <a-col :span="13">
-            <a-affix :style="{ position: 'absolute', top: '-35px'}">
+          <a-col style="position: relative;" :span="13">
+            <div style="position: absolute; top: -38px;">
               <a-radio-group v-model="selectMonth" buttonStyle="solid" size="small" @change="handleMonthChange">
                 <a-radio-button value="1">一个月</a-radio-button>
-                <a-radio-button value="6">半年</a-radio-button>
                 <a-radio-button value="3">三个月</a-radio-button>
+                <a-radio-button value="6">半年</a-radio-button>
                 <a-radio-button value="12">一年</a-radio-button>
               </a-radio-group>
-            </a-affix>
+            </div>
             <a-row style="padding-top: 6px">
               <a-col :span="8">
                 <a-statistic title="签订项目合同总数" :value="indexPropertiesData.projectNum" style="margin-right: 10px"/>
@@ -111,20 +130,95 @@
       </div>
     </div>
     <div class="page-content">
-      <a-row :gutter="20" style="padding-bottom: 20px">
+      <a-row :gutter="16" style="padding-bottom: 16px">
+        <a-col :span="12">
+          <a-card>
+            <a-badge slot="title" status="error" text="未完成待办事项"/>
+            <a slot="extra" @click="() => this.memorandumAddVisible = true">添加</a>
+            <div
+                    class="demo-infinite-container"
+                    v-infinite-scroll="handleUndoneOnLoad"
+                    :infinite-scroll-disabled="undoneBusy"
+                    :infinite-scroll-distance="10"
+            >
+              <a-list :dataSource="memorandumUndoneData" size="small">
+                <a-list-item slot="renderItem" slot-scope="item, index">
+                  <div style="display: flex;align-items: center">
+                    <span style="width: 76px;">
+                      <a-tag v-if="item.remain < 0" color="grey">
+                        已过期
+                      </a-tag>
+                      <a-tag v-else-if="item.remain < 8" color="red">
+                        剩余{{item.remain}}天
+                      </a-tag>
+                      <a-tag v-else color="blue">
+                        剩余{{item.remain}}天
+                      </a-tag>
+                    </span>
+                    <a-divider type="vertical"/>
+                    <span style="flex: 1;">{{item.content}}</span>
+                  </div>
+                  <a-popconfirm slot="actions" title="确定已完成？" @confirm="confirmDone(item)">
+                    <a>完成</a>
+                  </a-popconfirm>
+                  <a slot="actions" @click="handleEditOperation(item)">编辑</a>
+                  <a-popconfirm slot="actions" title="确定删除？" @confirm="confirmDeleteUndone(item)">
+                    <a-icon slot="icon" type="question-circle-o" style="color: red" />
+                    <a>删除</a>
+                  </a-popconfirm>
+                </a-list-item>
+                <div v-if="undoneLoading && !undoneBusy" class="demo-loading-container">
+                  <a-spin/>
+                </div>
+              </a-list>
+            </div>
+          </a-card>
+        </a-col>
+        <a-col :span="12">
+          <a-card>
+            <a-badge slot="title" status="success" text="已完成待办事项"/>
+            <div
+                    class="demo-infinite-container"
+                    v-infinite-scroll="handleDoneOnLoad"
+                    :infinite-scroll-disabled="doneBusy"
+                    :infinite-scroll-distance="10"
+            >
+              <a-list :dataSource="memorandumDoneData" size="small">
+                <a-list-item slot="renderItem" slot-scope="item, index">
+                  <div style="display: flex;align-items: center">
+                    <span style="width: 76px;">
+                      <a-tag color="green">
+                        {{item.finishDate}}
+                      </a-tag>
+                    </span>
+                    <a-divider type="vertical"/>
+                    <span style="flex: 1;">{{item.content}}</span>
+                  </div>
+                  <a-popconfirm slot="actions" title="确定删除？" @confirm="confirmDeleteDone(item)">
+                    <a-icon slot="icon" type="question-circle-o" style="color: red" />
+                    <a>删除</a>
+                  </a-popconfirm>
+                </a-list-item>
+                <div v-if="doneLoading && !doneBusy" class="demo-loading-container">
+                  <a-spin/>
+                </div>
+              </a-list>
+            </div>
+          </a-card>
+        </a-col>
+      </a-row>
+      <a-row :gutter="16" style="padding-bottom: 16px">
         <a-col :span="12">
           <div id="receipt-wrapper">
             <a-card title="近七天发票信息" :bordered="false" :bodyStyle="{width:'100%',height:'45vh'}">
-              <a-empty v-if="receiptLoading"/>
-              <Bar v-else wrapperId="receipt-wrapper" selfId="barReceipt" :barOptions="receiptOptions"/>
+              <Bar wrapperId="receipt-wrapper" ref="receiptBar"/>
             </a-card>
           </div>
         </a-col>
         <a-col :span="12">
           <div id="cash-wrapper">
             <a-card title="近七天现金回款" :bordered="false" :bodyStyle="{width:'100%',height:'45vh'}">
-              <a-empty v-if="barLoading"/>
-              <Bar v-else wrapperId="cash-wrapper" :barOptions="barOptions"/>
+              <Bar wrapperId="cash-wrapper" ref="cashBar"/>
             </a-card>
           </div>
         </a-col>
@@ -153,6 +247,81 @@
         </a-col>
       </a-row>
     </div>
+    <a-modal title="添加备忘事项"
+             v-model="memorandumAddVisible"
+             @ok="handleMemorandumAdd"
+             okText="提交"
+             cancelText="取消"
+             :afterClose="handleMemorandumAddClose"
+             :maskClosable="false">
+      <a-form
+              :form="addForm"
+      >
+        <a-form-item
+                v-bind="formItemLayout"
+                label="备忘事项"
+        >
+          <a-textarea
+                  v-decorator="[
+          'content',
+          {rules: [{required: true, message: '请输入备忘事项!'}]}
+        ]"
+                  :autosize="{ minRows: 2, maxRows: 6 }"
+                  placeholder="请输入备忘事项"
+          />
+        </a-form-item>
+        <a-form-item
+                v-bind="formItemLayout"
+                label="截止日期"
+        >
+          <a-date-picker
+                  v-decorator="['targetDate',  {
+        rules: [{ type: 'object', required: true, message: '请输入截止日期!' }],
+      }]"
+                  show-time
+                  format="YYYY-MM-DD"
+          />
+        </a-form-item>
+      </a-form>
+    </a-modal>
+    <a-modal title="修改备忘事项"
+             v-model="memorandumEditVisible"
+             @ok="handleMemorandumEdit"
+             okText="提交"
+             cancelText="取消"
+             :afterClose="handleMemorandumEditClose"
+             :maskClosable="false">
+      <a-form
+              :form="editForm"
+      >
+        <a-form-item
+                v-bind="formItemLayout"
+                label="备忘事项"
+        >
+          <a-textarea
+                  v-decorator="[
+          'content',
+          {initialValue: this.editFormData.content, rules: [{required: true, message: '请输入备忘事项!'}]}
+        ]"
+                  :autosize="{ minRows: 2, maxRows: 6 }"
+                  placeholder="请输入备忘事项"
+          />
+        </a-form-item>
+        <a-form-item
+                v-bind="formItemLayout"
+                label="截止日期"
+        >
+          <a-date-picker
+                  v-decorator="['targetDate',  {
+        initialValue: this.editFormData.targetDate,
+        rules: [{ type: 'object', required: true, message: '请输入截止日期!' }],
+      }]"
+                  show-time
+                  format="YYYY-MM-DD"
+          />
+        </a-form-item>
+      </a-form>
+    </a-modal>
   </div>
 </template>
 
@@ -161,6 +330,10 @@
   import moment from 'moment';
   import Bar from "../EchartsPage/Bar";
 
+  const formItemLayout = {
+    labelCol: {span: 6},
+    wrapperCol: {span: 14},
+  };
   export default {
     name: "WorkPlace",
     components: {
@@ -174,13 +347,32 @@
     },
     data() {
       return {
+        formItemLayout,
         listData: [],
-        barLoading: true,
-        receiptLoading: true,
         barOptions: {},
-        receiptOptions: {},
         selectMonth: '1',
-        indexPropertiesData:{},
+        indexPropertiesData: {},
+        memorandumAddVisible: false, // 控制添加备忘
+        addForm: this.$form.createForm(this),
+        memorandumEditVisible: false, // 控制修改备注
+        editForm: this.$form.createForm(this),
+        editFormData: {},
+        memorandumUndoneData: [],
+        undoneLoading: false,
+        undoneBusy: false,
+        undonePaginationProps: {
+          pageNum: 1,
+          pageLimit: 5,
+          total: 7,
+        },
+        memorandumDoneData: [],
+        doneLoading: false,
+        doneBusy: false,
+        donePaginationProps: {
+          pageNum: 1,
+          pageLimit: 5,
+          total: 7,
+        }
       }
     },
     activated() {
@@ -195,14 +387,19 @@
         getRecentCashes: 'cashOperation/getRecentCashes',
         getIndexProperties: 'contractList/getIndexProperties',
         getRecentReceipts: 'receiptOperation/getRecentReceipts',
+        addMemorandum: 'memorandumOperation/addMemorandum',
+        getMemorandumListUndone: 'memorandumOperation/getMemorandumListUndone',
+        getMemorandumListDone: 'memorandumOperation/getMemorandumListDone',
+        finishMemorandum: 'memorandumOperation/finishMemorandum',
+        deleteMemorandum: 'memorandumOperation/deleteMemorandum',
+        verifyMemorandum: 'memorandumOperation/verifyMemorandum'
       }),
       updateRecentReceipts() {
-        this.receiptLoading = true;
         this.getRecentReceipts({
           recentDays: 7,
         }).then(res => {
           if (res.data.meta.success) {
-            this.receiptOptions = {
+            this.$refs.receiptBar.drawBar({
               title: {},
               tooltip: {
                 trigger: 'axis',
@@ -228,8 +425,7 @@
                 type: 'bar',
                 data: res.data.data.recentReceipts,
               }],
-            };
-            this.receiptLoading = false;
+            });
           } else {
             this.$message.error(res.data.meta.message);
           }
@@ -250,12 +446,11 @@
         });
       },
       updateRecentCashes() {
-        this.barLoading = true;
         this.getRecentCashes({
           recentDays: 7,
         }).then(res => {
           if (res.data.meta.success) {
-            this.barOptions = {
+            this.$refs.cashBar.drawBar({
               title: {},
               tooltip: {
                 trigger: 'axis',
@@ -281,8 +476,7 @@
                 type: 'bar',
                 data: res.data.data.recentCashes,
               }],
-            };
-            this.barLoading = false;
+            })
           } else {
             this.$message.error(res.data.meta.message);
           }
@@ -297,6 +491,172 @@
       },
       handleMonthChange() {
         this.updateIndexData();
+      },
+      handleMemorandumAdd() {
+        this.addForm.validateFields(
+          (err, values) => {
+            if (!err) {
+              const params = {
+                content: values.content,
+                targetDate: values.targetDate,
+              };
+              this.addMemorandum(params).then((res) => {
+                if (res.data.meta.success) {
+                  this.$message.success(res.data.data);
+                  this.addForm.resetFields();
+                  this.resetUndoneList();
+                  this.handleUndoneOnLoad();
+                  this.memorandumAddVisible = false;
+                } else {
+                  this.$message.error(res.data.meta.message);
+                }
+              }).catch((error) => {
+                this.$message.error(error);
+              })
+            }
+          },
+        );
+      },
+      handleMemorandumEdit() {
+        this.editForm.validateFields(
+          (err, values) => {
+            if (!err) {
+              const params = {
+                memorandumId: this.editFormData.memorandumId,
+                content: values.content,
+                targetDate: values.targetDate,
+              };
+              this.verifyMemorandum(params).then((res) => {
+                if (res.data.meta.success) {
+                  this.$message.success(res.data.data);
+                  this.addForm.resetFields();
+                  this.resetUndoneList();
+                  this.handleUndoneOnLoad();
+                  this.memorandumEditVisible = false;
+                } else {
+                  this.$message.error(res.data.meta.message);
+                }
+              }).catch((error) => {
+                this.$message.error(error);
+              })
+            }
+          },
+        );
+      },
+      handleMemorandumAddClose() {
+        this.addForm.resetFields();
+      },
+      handleMemorandumEditClose() {
+        this.editForm.resetFields();
+      },
+      resetUndoneList() {
+        this.memorandumUndoneData = [];
+        this.undonePaginationProps.pageNum = 1;
+      },
+      resetDoneList() {
+        this.memorandumDoneData = [];
+        this.donePaginationProps.pageNum = 1;
+      },
+      handleUndoneOnLoad() {
+        this.undoneLoading = true;
+        const data = this.memorandumUndoneData;
+        if (data.length === this.undonePaginationProps.total) {
+          this.$message.warning('已加载到底部');
+          this.undoneBusy = true;
+          this.undoneLoading = false;
+          return;
+        }
+        this.getMemorandumListUndone({
+          pageNum: this.undonePaginationProps.pageNum,
+          pageLimit: this.undonePaginationProps.pageLimit,
+        }).then(res => {
+          if (res.data.data.totalPages > this.undonePaginationProps.pageNum) {
+            this.undonePaginationProps.pageNum++;
+          }
+          this.memorandumUndoneData = data.concat(res.data.data.content.map(item => {
+            return {
+              memorandumId: item.memorandumId,
+              targetDate: moment(item.targetDate).format('YYYY-MM-DD'),
+              content: item.content,
+              remain: item.remain,
+            };
+          }));
+          this.undonePaginationProps.total = res.data.data.totalElements;
+          this.undoneLoading = false;
+        });
+      },
+      handleDoneOnLoad() {
+        this.doneLoading = true;
+        const data = this.memorandumDoneData;
+        if (data.length === this.donePaginationProps.total) {
+          this.$message.warning('已加载到底部');
+          this.doneBusy = true;
+          this.doneLoading = false;
+          return;
+        }
+        this.getMemorandumListDone({
+          pageNum: this.donePaginationProps.pageNum,
+          pageLimit: this.donePaginationProps.pageLimit,
+        }).then(res => {
+          if (res.data.data.totalPages > this.donePaginationProps.pageNum) {
+            this.donePaginationProps.pageNum++;
+          }
+          this.memorandumDoneData = data.concat(res.data.data.content.map(item => {
+            return {
+              memorandumId: item.memorandumId,
+              finishDate: moment(item.finishDate).format('YYYY-MM-DD'),
+              content: item.content,
+            };
+          }));
+          this.donePaginationProps.total = res.data.data.totalElements;
+          this.doneLoading = false;
+        });
+      },
+      confirmDone(data) {
+        this.finishMemorandum({
+          memorandumId: data.memorandumId,
+        }).then(res => {
+          if (res.data.meta.success) {
+            this.resetUndoneList();
+            this.handleUndoneOnLoad();
+            this.resetDoneList();
+            this.handleDoneOnLoad();
+          } else {
+            this.$message.error('操作失败')
+          }
+        });
+      },
+      confirmDeleteUndone(data) {
+        this.deleteMemorandum({
+          memorandumId: data.memorandumId,
+        }).then(res => {
+          if (res.data.meta.success) {
+            this.resetUndoneList();
+            this.handleUndoneOnLoad();
+          } else {
+            this.$message.error('删除失败')
+          }
+        });
+      },
+      confirmDeleteDone(data) {
+        this.deleteMemorandum({
+          memorandumId: data.memorandumId,
+        }).then(res => {
+          if (res.data.meta.success) {
+            this.resetDoneList();
+            this.handleDoneOnLoad();
+          } else {
+            this.$message.error('删除失败')
+          }
+        });
+      },
+      handleEditOperation(data) {
+        this.editFormData = Object.assign({
+          memorandumId: data.memorandumId,
+          content: data.content,
+          targetDate: moment(data.targetDate)
+        });
+        this.memorandumEditVisible = true;
       }
     },
   }

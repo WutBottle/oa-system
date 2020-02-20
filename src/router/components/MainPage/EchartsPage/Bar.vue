@@ -16,20 +16,13 @@
       wrapperId: {
         type: String,
       },
-      barOptions: {
-        type: Object,
-        default: () => {},
-      },
-    },
-    mounted() {
-      this.drawBar();
     },
     methods: {
-      drawBar() {
+      drawBar(options) {
         // 基于准备好的dom，初始化echarts实例
         let myChart = this.$echarts.init(this.$refs.barChart);
         // 绘制图表
-        myChart.setOption(this.barOptions);
+        myChart.setOption(options);
         this.addResizeListener();
       },
       addResizeListener() {

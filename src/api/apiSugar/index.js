@@ -14,6 +14,7 @@ import salaryController from "./salaryController";
 import outContractCategoryController from "./outContractCategoryController";
 import outProjectCategoryController from "./outProjectCategoryController";
 import operateRecordController from "./operateRecordController";
+import memorandumController from "./memorandumController";
 
 // 导出接口
 export default {
@@ -30,4 +31,5 @@ export default {
   outContractCategoryController: outContractCategoryController, // 分包类型管理
   outProjectCategoryController: outProjectCategoryController, // 分包项目类型
   operateRecordController: operateRecordController, // 主页动态
+  memorandumController: memorandumController, // 备忘录
 }

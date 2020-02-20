@@ -12,6 +12,9 @@ import '@babel/polyfill';
 import echarts from 'echarts'
 Vue.prototype.$echarts = echarts;
 
+import infiniteScroll from 'vue-infinite-scroll'
+Vue.use(infiniteScroll);
+
 Vue.use(Antd);
 
 Vue.config.productionTip = false;

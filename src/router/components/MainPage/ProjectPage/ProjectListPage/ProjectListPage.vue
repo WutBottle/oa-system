@@ -26,11 +26,6 @@
           </a-button>
           <a-menu slot="overlay">
             <a-menu-item key="0">
-              <a-button type="primary" @click="handleExport">
-                项目导出
-              </a-button>
-            </a-menu-item>
-            <a-menu-item key="1">
               <a-button type="primary" @click="handleCashExport">
                 现金发票
               </a-button>
@@ -57,22 +52,6 @@
           <a-button type="dashed" @click="() => this.popVisible = true">
             选择列表
           </a-button>
-        </a-popover>
-      </a-form-item>
-      <a-form-item>
-        <a-popover title="表单配置" placement="bottom" trigger="click" v-model="settingVisible">
-          <template slot="content">
-            <div style="width: 480px">
-              <a-checkbox-group v-model="selectOptions" @change="onTableHeaderChange">
-                <a-row>
-                  <a-col :span="8" v-for="(item, index) in options" :key="index">
-                    <a-checkbox :value="item">{{item}}</a-checkbox>
-                  </a-col>
-                </a-row>
-              </a-checkbox-group>
-            </div>
-          </template>
-          <a-button type="primary" icon="setting">表头配置</a-button>
         </a-popover>
       </a-form-item>
     </a-form>
@@ -257,12 +236,6 @@
             scopedSlots: {customRender: 'selectIndex'}
           },
         ],
-        settingVisible: false, // 配置表头菜单弹出控制
-        selectOptions: ['合同号','合同名称','设计号','签约状态','项目规模(平方米)','已收款比例','投资额(万元)'],
-        options: ['签约状态','设计号','合同号','发包人合同编号','合同名称','合同节点','合同额(元)','累计现金回款(元)',
-        '剩余合同额(元)','已收款比例','累计开票金额(元)','已开发票未收款金额','实际签约日期','合同归档日期',
-        '项目类别','主设计部门','经营部门','项目经理','项目预算秘书','经营经理','发包方','投资额(万元)','项目规模(平方米)',
-        '地域','地区关键词','建筑一级分类','建筑二级分类','是否EPC项目'],
         popVisible: false, // 需要导出的列表弹窗控制
         selectProjectInfo: [], // 被选择的项目信息
         salaryVisible: false, // 工资弹窗控制
@@ -329,7 +302,6 @@
     methods: {
       ...mapActions({
         getProjectListByIdLike: 'contractList/getProjectListByIdLike',
-        exportContract: 'contractList/exportContract',
         cashExport: 'cashOperation/cashExport',
         getSalaryListByContractId: 'salaryOperation/getSalaryListByContractId',
       }),
@@ -377,27 +349,6 @@
       handleOpen(selectData) {
         this.$emit('handleContractOpen', selectData.contractId)
       },
-      handleExport() {
-        let fileName = '项目.xlsx';
-        this.exportContract({
-          contractIds: this.selectProjectInfo.map((item) => {return item.contractId}),
-          header: this.selectOptions,
-        }).then((data) => {
-          if (!data.data) {
-            return
-          }
-          let url = window.URL.createObjectURL(new Blob([data.data]));
-          let link = document.createElement('a');
-          link.style.display = 'none';
-          link.href = url;
-          link.setAttribute('download', fileName);
-          document.body.appendChild(link);
-          link.click();
-          this.$message.success("导出成功");
-        }).catch((error) => {
-          this.$message.error("导出失败");
-        });
-      },
       handleCashExport() {
         let fileName = '现金发票.xlsx';
         this.cashExport({
@@ -422,10 +373,6 @@
         this.paginationProps.current = pagination.current;
         this.paginationProps.pageSize = pagination.pageSize;
         this.updateTableData();
-      },
-      // 处理表头选择
-      onTableHeaderChange(checkedValues) {
-        this.selectOptions = checkedValues
       },
       // 处理项目选择
       handleSelected(rowData) {

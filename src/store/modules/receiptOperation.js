@@ -6,17 +6,6 @@ import api from '@/api/apiSugar'
 import moment from 'moment'
 
 const state = {
-  paginationProps: {
-    pageSize: 5, // 默认每页显示数量
-    showSizeChanger: true, // 显示可改变每页数量
-    pageSizeOptions: ['5', '10', '15'], // 每页数量选项
-    total: 0,
-    current: 1,
-  },
-  tableData: [],
-  contractId: '',
-  designId: '',
-  contractName: '',
   receiptListData: [], // 发票列表数据
   receiptPaginationProps: {
     pageSize: 5, // 默认每页显示数量
@@ -28,23 +17,6 @@ const state = {
 };
 
 const mutations = {
-  setTableData(state, data) {
-    state.paginationProps.total = data.receipts.totalElements;
-    state.contractId = data.contractId;
-    state.designId = data.designId;
-    state.contractName = data.contractName;
-    state.tableData = data.receipts.content.map((item, index) => {
-      return {
-        key: index,
-        receiptId: item.receiptId,
-        receiptFile: item.receiptFile,
-        receiptAmount: item.receiptAmount,
-        receiptClass: item.receiptClass,
-        receiptDate: moment(item.receiptDate).format('YYYY-MM-DD HH:mm:ss'),
-        note: item.note,
-      }
-    });
-  },
   setReceiptListData(state, data) {
     state.receiptPaginationProps.total = data.totalElements;
     state.receiptListData = data.content.map((item, index) => {
@@ -73,7 +45,6 @@ const actions = {
   getReceiptsByContractId({commit}, params) {
     return new Promise((resolve, reject) => {
       api.receiptController.getReceiptsByContractId(params).then(res => {
-        commit('setTableData', res.data.data);
         resolve(res);
       }).catch(error => {
         console.log(error, '获取发票列表信息失败');

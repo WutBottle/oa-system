@@ -47,6 +47,10 @@
                 <span slot="serial" slot-scope="text, record, index">
                 {{ index + 1 }}
                 </span>
+                <span slot="receipts" slot-scope="tags">
+                  <a-tag v-for="tag in tags" color="blue"
+                         :key="tag.id">{{tag.receiptId}}</a-tag>
+                </span>
               </a-table>
             </a-spin>
           </div>
@@ -217,10 +221,11 @@
             key: 'cashAmount',
             dataIndex: 'cashAmount',
           }, {
-            title: '对应合同节点',
-            width: 200,
-            key: 'nodeName',
-            dataIndex: 'nodeName',
+            title: '对应发票',
+            width: 150,
+            key: 'receipts',
+            dataIndex: 'receipts',
+            scopedSlots: {customRender: 'receipts'},
           },
         ], // 现金回款列表项
       }
@@ -284,7 +289,7 @@
         };
         this.fetching = true;
         this.getContractIdsByIdLike(params).then((res) => {
-          this.contractsData = res.data.data;
+          this.contractsData = res.data.data.contractIds;
           this.fetching = false;
         });
       },

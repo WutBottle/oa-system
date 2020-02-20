@@ -34,8 +34,7 @@ const mutations = {
         cashId: item.cashId,
         cashAmount: item.cashAmount,
         cashDate: moment(item.cashDate).format('YYYY-MM-DD HH:mm:ss'),
-        nodeInfo: item.nodeInfo.nodeId,
-        nodeName: item.nodeInfo.nodeDescription,
+        receipts: item.receipts,
       }
     });
   },

@@ -347,7 +347,7 @@
 </template>
 
 <script>
-  import {mapState, mapActions} from 'vuex';
+  import {mapActions} from 'vuex';
   import {debounce} from 'debounce';
   import moment from 'moment'
   import CashReceiptInput from "../CashReceiptInput/CashReceiptInput";
@@ -437,16 +437,18 @@
         editVisible: false, // 编辑发票窗口控制
         editSpinning: false, // 编辑发票提交按钮
         addSpinning: true, // 控制发票提交按钮
+        paginationProps: {
+          pageSize: 5, // 默认每页显示数量
+          showSizeChanger: true, // 显示可改变每页数量
+          pageSizeOptions: ['5', '10', '15'], // 每页数量选项
+          total: 0,
+          current: 1,
+        },
+        tableData: [],
+        contractId: '',
+        designId: '',
+        contractName: ''
       }
-    },
-    computed: {
-      ...mapState({
-        paginationProps: state => state.receiptOperation.paginationProps,// 分页控制
-        tableData: state => state.receiptOperation.tableData, // 列表数据
-        contractId: state => state.receiptOperation.contractId, // 合同号
-        designId: state => state.receiptOperation.designId, // 设计号
-        contractName: state => state.receiptOperation.contractName, // 合同名称
-      }),
     },
     methods: {
       ...mapActions({
@@ -473,7 +475,7 @@
         this.data = [];
         this.fetching = true;
         this.getContractIdsByIdLike(params).then((res) => {
-          this.contractsData = res.data.data;
+          this.contractsData = res.data.data.contractIds;
           this.fetching = false;
         });
       },
@@ -508,11 +510,27 @@
           pageNum: this.paginationProps.current,
           pageLimit: this.paginationProps.pageSize
         };
-        this.getReceiptsByContractId(params).then((data) => {
-          if (!data.data.data) {
+        this.getReceiptsByContractId(params).then((res) => {
+          if (res.data.data) {
+            this.paginationProps.total = res.data.data.receipts.totalElements;
+            this.contractId = res.data.data.contractId;
+            this.designId = res.data.data.designId;
+            this.contractName = res.data.data.contractName;
+            this.tableData = res.data.data.receipts.content.map((item, index) => {
+              return {
+                key: index,
+                receiptId: item.receiptId,
+                receiptFile: item.receiptFile,
+                receiptAmount: item.receiptAmount,
+                receiptClass: item.receiptClass,
+                receiptDate: moment(item.receiptDate).format('YYYY-MM-DD HH:mm:ss'),
+                note: item.note,
+              }
+            });
+          } else {
             this.current = 0;
             this.contractValue = undefined;
-            this.$message.error(data.data.meta.message);
+            this.$message.error(res.data.meta.message);
           }
           this.tableSpinning = false;
         }).catch((error) => {

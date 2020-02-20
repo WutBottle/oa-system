@@ -53,7 +53,9 @@
         <a-breadcrumb-item><a href="/main/workplace">首页</a></a-breadcrumb-item>
         <a-breadcrumb-item>现金录入</a-breadcrumb-item>
       </a-breadcrumb>
-      <p class="title">现金录入<CashReceiptInput/></p>
+      <p class="title">现金录入
+        <CashReceiptInput/>
+      </p>
     </div>
     <div class="page-content">
       <a-row style="background-color: #fff; padding: 24px;">
@@ -75,7 +77,7 @@
                     :defaultActiveFirstOption="false"
             >
               <a-spin v-if="fetching" slot="notFoundContent" size="small"/>
-              <a-select-option v-for="d in contractsData" :key="d">{{d}}</a-select-option>
+              <a-select-option v-for="(d, index) in contractsData" :key="index">{{d}}</a-select-option>
             </a-select>
           </template>
           <template v-else>
@@ -90,6 +92,10 @@
                   <span slot="serial" slot-scope="text, record, index">
                     {{ index + 1 }}
                   </span>
+                  <span slot="receipts" slot-scope="tags">
+                    <a-tag v-for="tag in tags" color="blue"
+                           :key="tag.id">{{tag.receiptId}}</a-tag>
+                  </span>
                   <span slot="operation" slot-scope="text, record">
                     <a @click="handleCashEdit(record)">修改</a>
                     <a-divider type="vertical"/>
@@ -97,7 +103,6 @@
                       <a>删除</a>
                     </a-popconfirm>
                   </span>
-                  <span slot="nodeInfo" slot-scope="id">{{contractNodesList[contractNodesList.findIndex((item) => item.nodeId === id)].nodeDescription}}</span>
                 </a-table>
               </div>
             </a-spin>
@@ -173,20 +178,19 @@
         </a-form-item>
         <a-form-item
                 v-bind="formItemLayout"
-                label="合同节点"
+                label="选择发票号"
         >
           <a-select
                   v-decorator="[
-          'nodeId',
-          {rules: [{ required: true, message: '请选择合同节点！' }]}
+          'receipts',
+          {rules: [{required: true, message: '请选择发票号!'}]}
         ]"
-                  placeholder="请选择合同节点"
+                  mode="multiple"
+                  placeholder="请选择发票号"
           >
-            <template v-for="item in contractNodesList">
-              <a-select-option :key="item.nodeId">
-                {{item.nodeDescription}}
-              </a-select-option>
-            </template>
+            <a-select-option v-for="item in receiptsList" :key="item.id">
+              {{item.receiptId}}
+            </a-select-option>
           </a-select>
         </a-form-item>
       </a-form>
@@ -248,20 +252,19 @@
         </a-form-item>
         <a-form-item
                 v-bind="formItemLayout"
-                label="合同节点"
+                label="选择发票号"
         >
           <a-select
                   v-decorator="[
-          'nodeId',
-          {initialValue: this.editFormData.nodeInfo, rules: [{ required: true, message: '请选择合同节点！' }]}
+          'receipts',
+          {initialValue: this.editFormData.receipts, rules: [{required: true, message: '请选择发票号!'}]}
         ]"
-                  placeholder="请选择合同节点"
+                  mode="multiple"
+                  placeholder="请选择发票号"
           >
-            <template v-for="item in contractNodesList">
-              <a-select-option :key="item.nodeId">
-                {{item.nodeDescription && item.nodeDescription}}
-              </a-select-option>
-            </template>
+            <a-select-option v-for="item in receiptsList" :key="item.id">
+              {{item.receiptId}}
+            </a-select-option>
           </a-select>
         </a-form-item>
         <a-form-item
@@ -313,9 +316,11 @@
           type: 'addInfo',
         }],
         contractValue: undefined,
+        contractValueId: '',
         contractsData: [], // 获取的合同id列表
+        ids: [],
         fetching: false, // 查询合同号加载控制
-        contractNodesList: [], // 合同节点号列表
+        receiptsList: [], // 发票列表
         addVisible: false,// 新增弹窗控制
         tableSpinning: false, // table数据更新加载控制
         columns: [
@@ -336,11 +341,11 @@
             key: 'cashAmount',
             dataIndex: 'cashAmount',
           }, {
-            title: '对应合同节点',
+            title: '对应发票',
             width: 150,
-            key: 'nodeInfo',
-            dataIndex: 'nodeInfo',
-            scopedSlots: {customRender: 'nodeInfo'},
+            key: 'receipts',
+            dataIndex: 'receipts',
+            scopedSlots: {customRender: 'receipts'},
           }, {
             title: '编辑现金回款',
             key: 'operation',
@@ -351,6 +356,7 @@
         editForm: this.$form.createForm(this),
         editFormData: {}, // 编辑当前表单数据
         editVisible: false, // 编辑现金回款窗口控制
+        selectedReceipts: [],
       }
     },
     computed: {
@@ -366,7 +372,7 @@
     methods: {
       ...mapActions({
         getContractIdsByIdLike: 'contractList/getContractIdsByIdLike',
-        getContractNodesByContractId: 'contractList/getContractNodesByContractId',
+        getReceiptsByContractId: 'receiptOperation/getReceiptsByContractId',
         getCashesByContractId: 'cashOperation/getCashesByContractId',
         addCash: 'cashOperation/addCash',
         deleteCash: 'cashOperation/deleteCash',
@@ -379,12 +385,12 @@
       prev() {
         this.current--
       },
-      // 获取合同节点数据
-      getContractNodes() {
-        this.getContractNodesByContractId({
+      // 获取发票列表
+      getReceiptList() {
+        this.getReceiptsByContractId({
           contractId: this.contractValue
         }).then((res) => {
-          this.contractNodesList = res.data.data;
+          this.receiptsList = res.data.data.receipts;
         }).catch((error) => {
           this.$message.error(error)
         });
@@ -418,18 +424,20 @@
         };
         this.fetching = true;
         this.getContractIdsByIdLike(params).then((res) => {
-          this.contractsData = res && res.data.data;
+          this.contractsData = res && res.data.data.contractIds;
+          this.ids = res && res.data.data.ids;
           this.fetching = false;
         });
       },
       // 选择合同号处理
       handleChange(value) {
         Object.assign(this, {
-          contractValue: value,
+          contractValue: this.contractsData[value],
+          contractValueId: this.ids[value],
           contractsData: [],
           fetching: false,
         });
-        this.getContractNodes();
+        this.getReceiptList();
       },
       // 处理分页信息
       handleTableChange(pagination) {
@@ -442,6 +450,9 @@
         this.editForm.resetFields();
         this.editFormData = JSON.parse(JSON.stringify(selectCashData));
         this.editFormData.cashDate = moment(this.editFormData.cashDate);
+        this.editFormData.receipts = this.editFormData.receipts.map(item => {
+          return item.id;
+        });
         this.editVisible = true;
       },
       // 处理删除
@@ -462,11 +473,16 @@
           (err, values) => {
             if (!err) {
               const params = {
-                cashDate: values.cashDate,
-                cashAmount: values.cashAmount,
-                nodeInfo: {
-                  nodeId: values.nodeId
-                }
+                id: this.contractValueId,
+                cashes: [{
+                  cashDate: values.cashDate,
+                  cashAmount: values.cashAmount,
+                  receipts: values.receipts.map(item => {
+                    return {
+                      id: item,
+                    }
+                  })
+                }],
               };
               this.addCash(params).then((res) => {
                 if (res.data.meta.success) {
@@ -502,9 +518,11 @@
                 cashId: values.cashId,
                 cashDate: values.cashDate,
                 cashAmount: values.cashAmount,
-                nodeInfo: {
-                  nodeId: values.nodeId
-                }
+                receipts: values.receipts.map(item => {
+                  return {
+                    id: item,
+                  }
+                })
               };
               this.verifyCash(params).then((res) => {
                 if (res.data.meta.success) {
@@ -512,7 +530,7 @@
                   this.editForm.resetFields();
                   this.editVisible = false;
                   this.updateTableData();
-                } else  {
+                } else {
                   this.$message.error(res.data.meta.message);
                 }
               }).catch((error) => {

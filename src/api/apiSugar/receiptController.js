@@ -31,6 +31,10 @@ const receiptController = {
   receiptUpload(params) {
     return axios.post(`${baseUrl.receiptController}/upload`, params);
   },
+  // 获取进几天的发票信息
+  getRecentReceipts(params) {
+    return axios.post(`${baseUrl.receiptController}/getRecentReceipts`, params);
+  },
 };
 
 export default receiptController;

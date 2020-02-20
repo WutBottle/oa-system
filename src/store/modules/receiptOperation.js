@@ -133,6 +133,16 @@ const actions = {
       });
     });
   },
+  getRecentReceipts({commit}, params) {
+    return new Promise((resolve, reject) => {
+      api.receiptController.getRecentReceipts(params).then(res => {
+        resolve(res);
+      }).catch(error => {
+        console.log(error, '获取发票信息失败');
+        reject(error);
+      });
+    });
+  },
 };
 
 export default {

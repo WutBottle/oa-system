@@ -10,76 +10,44 @@
       }
 
       .detail {
-        display: flex;
-        width: 100%;
+        padding-bottom: 16px;
+        .left-container {
+          display: flex;
+          align-items: center;
+          .avatar {
+            margin-right: 16px;
+            span {
+              border-radius: 50%;
+              display: block;
+              width: 72px;
+              height: 72px;
+              line-height: 72px;
+              overflow: hidden;
 
-        .avatar {
-          margin: 0 20px 16px 0;
-
-          span {
-            border-radius: 50%;
-            display: block;
-            width: 72px;
-            height: 72px;
-            line-height: 72px;
-            overflow: hidden;
-
-            img {
-              width: 100%;
-              height: 100%;
+              img {
+                width: 100%;
+                height: 100%;
+              }
             }
           }
-        }
-
-        .content {
-          flex: auto;
-          color: rgba(0, 0, 0, .45);
-          line-height: 22px;
-
-          .title {
-            font-size: 20px;
-            line-height: 28px;
-            font-weight: 500;
-            color: rgba(0, 0, 0, .85);
-            margin-bottom: 16px;
-            flex: auto;
-          }
-        }
-
-        .extra {
-          flex: 0 1 auto;
-          margin-left: 88px;
-          min-width: 242px;
-          text-align: left;
-          width: 375px;
-
-          .info {
-            padding: 0 32px 0 0;
-          }
-
-          .title {
+          .content {
             color: rgba(0, 0, 0, .45);
-            font-size: 14px;
-            line-height: 22px;
-            margin-bottom: 4px;
-          }
 
-          .count {
-            color: rgba(0, 0, 0, .85);
-            font-size: 20px;
-            line-height: 26px;
-            margin: 0;
+            .title {
+              font-size: 20px;
+              line-height: 28px;
+              font-weight: 500;
+              color: rgba(0, 0, 0, .85);
+              margin-bottom: 16px;
+              flex: auto;
+            }
           }
         }
       }
     }
-
     .page-content {
       padding: 24px;
 
-      .project-doing {
-        margin-bottom: 24px;
-      }
     }
   }
 </style>
@@ -92,55 +60,77 @@
         <a-breadcrumb-item>工作台</a-breadcrumb-item>
       </a-breadcrumb>
       <div class="detail">
-        <div class="avatar">
-          <span>
-            <img src="@/assets/OA.png" alt="avatar">
-          </span>
-        </div>
-        <div class="content">
-          <div class="title">
-            {{username}}，天气冷了要加衣服！
-          </div>
-          <div>
-            中南建筑设计院 | CSADI - 第三设计部 - OA平台
-          </div>
-        </div>
-        <div class="extra">
-          <a-row>
-            <a-col :span="8">
-              <div class="info">
-                <div class="title">未完成</div>
-                <div class="count">{{projectUnDone}}</div>
+        <a-row>
+          <a-col :span="11">
+            <div class="left-container">
+              <div class="avatar">
+                  <span>
+                    <img src="@/assets/OA.png" alt="avatar">
+                  </span>
               </div>
-            </a-col>
-            <a-col :span="8">
-              <div class="info">
-                <div class="title">项目数</div>
-                <div class="count">{{projectNum}}</div>
+              <div class="content">
+                <div class="title">
+                  {{username}}，武汉只是暂时下线了！
+                </div>
+                <div>
+                  中南建筑设计院 | CSADI - 第三设计部 - OA平台
+                </div>
               </div>
-            </a-col>
-            <a-col :span="8">
-              <div class="info">
-                <div class="title">总收款金额</div>
-                <div class="count">{{projectAllCash}}</div>
-              </div>
-            </a-col>
-          </a-row>
-        </div>
+            </div>
+          </a-col>
+          <a-col :span="13">
+            <a-affix :style="{ position: 'absolute', top: '-35px'}">
+              <a-radio-group v-model="selectMonth" buttonStyle="solid" size="small" @change="handleMonthChange">
+                <a-radio-button value="1">一个月</a-radio-button>
+                <a-radio-button value="6">半年</a-radio-button>
+                <a-radio-button value="3">三个月</a-radio-button>
+                <a-radio-button value="12">一年</a-radio-button>
+              </a-radio-group>
+            </a-affix>
+            <a-row style="padding-top: 6px">
+              <a-col :span="8">
+                <a-statistic title="签订项目合同总数" :value="indexPropertiesData.projectNum" style="margin-right: 10px"/>
+              </a-col>
+              <a-col :span="8">
+                <a-statistic title="现金回款总额" :value="indexPropertiesData.projectAllCash" style="margin-right: 10px">
+                  <template v-slot:suffix>
+                    <span>元</span>
+                  </template>
+                </a-statistic>
+              </a-col>
+              <a-col :span="8">
+                <a-statistic title="已开发票总额" :value="indexPropertiesData.projectAllReceipt" style="margin-right: 10px">
+                  <template v-slot:suffix>
+                    <span>元</span>
+                  </template>
+                </a-statistic>
+              </a-col>
+            </a-row>
+          </a-col>
+        </a-row>
       </div>
     </div>
     <div class="page-content">
-      <a-row :gutter="20">
+      <a-row :gutter="20" style="padding-bottom: 20px">
         <a-col :span="12">
-          <div class="project-doing">
-            <a-card title="进行中的项目" :bordered="false">
-              <a slot="extra" @click="handleDirectTo">全部项目</a>
-              <a-card-grid style="width:33.33%;textAlign:'center'" v-for="(item, index) in recentData" :key="index">
-                <p>项目名称</p>
-                <div style="height: 60px">{{item.contractName}}</div>
-              </a-card-grid>
+          <div id="receipt-wrapper">
+            <a-card title="近七天发票信息" :bordered="false" :bodyStyle="{width:'100%',height:'45vh'}">
+              <a-empty v-if="receiptLoading"/>
+              <Bar v-else wrapperId="receipt-wrapper" selfId="barReceipt" :barOptions="receiptOptions"/>
             </a-card>
           </div>
+        </a-col>
+        <a-col :span="12">
+          <div id="cash-wrapper">
+            <a-card title="近七天现金回款" :bordered="false" :bodyStyle="{width:'100%',height:'45vh'}">
+              <a-empty v-if="barLoading"/>
+              <Bar v-else wrapperId="cash-wrapper" :barOptions="barOptions"/>
+            </a-card>
+          </div>
+        </a-col>
+      </a-row>
+      <a-row>
+        <a-col :span="24">
           <div class="dynamic-wrapper">
             <a-card title="动态" :bordered="false">
               <a-list
@@ -151,18 +141,13 @@
                   <a-list-item-meta
                           :description="item.message"
                   >
-                    <a slot="title" href="https://vue.ant.design/">{{item.operateUserName}}<a-divider type="vertical" />{{item.time}}</a>
+                    <a slot="title" href="https://vue.ant.design/">{{item.operateUserName}}
+                      <a-divider type="vertical"/>
+                      {{item.time}}</a>
                     <a-avatar slot="avatar" src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png"/>
                   </a-list-item-meta>
                 </a-list-item>
               </a-list>
-            </a-card>
-          </div>
-        </a-col>
-        <a-col :span="12">
-          <div id="chart-wrapper">
-            <a-card title="近7天现金回款" :bordered="false">
-              <div id="myChart" style="width: 100%;height:50vh;"></div>
             </a-card>
           </div>
         </a-col>
@@ -172,11 +157,15 @@
 </template>
 
 <script>
-  import {mapState, mapActions, mapMutations} from 'vuex'
+  import {mapState, mapActions} from 'vuex'
   import moment from 'moment';
+  import Bar from "../EchartsPage/Bar";
 
   export default {
     name: "WorkPlace",
+    components: {
+      Bar,
+    },
     computed: {
       ...mapState({
         username: state => state.tokensOperation.username,// 选择合同数
@@ -186,92 +175,129 @@
     data() {
       return {
         listData: [],
-        recentData: [],
-        projectUnDone: '',
-        projectNum: '',
-        projectAllCash: '',
-        recentCashes: [],
-        datas: [],
+        barLoading: true,
+        receiptLoading: true,
+        barOptions: {},
+        receiptOptions: {},
+        selectMonth: '1',
+        indexPropertiesData:{},
       }
-    },
-    methods: {
-      ...mapMutations({
-        setMenu: 'tokensOperation/setMenu',
-      }),
-      ...mapActions({
-        getRecentOperates: 'operateRecordOperation/getRecentOperates',
-        getIndexProperties: 'contractList/getIndexProperties',
-        getRecentProjectList: 'contractList/getRecentProjectList',
-        getRecentCashes: 'cashOperation/getRecentCashes'
-      }),
-      handleDirectTo() {
-        this.$router.push('/main/project');
-        this.setMenu('/main/project');
-      },
-      drawBar(){
-        // 基于准备好的dom，初始化echarts实例
-        let myChart = this.$echarts.init(document.getElementById('myChart'));
-        // 绘制图表
-        myChart.setOption({
-          tooltip: {},
-          xAxis: {
-            data: this.dates,
-          },
-          yAxis: {},
-          dataZoom: [
-            {
-              type: 'inside'
-            }
-          ],
-          series: [{
-            name: '金额(元)',
-            type: 'bar',
-            data: this.recentCashes,
-          }]
-        });
-      },
-      addResizeListener() {
-        let elementResizeDetectorMaker = require("element-resize-detector");
-        let erd = elementResizeDetectorMaker();
-        erd.listenTo(document.getElementById("chart-wrapper"), (element) => {
-          this.$echarts.init(document.getElementById("myChart")).resize()
-        });
-      }
-    },
-    mounted() {
-      this.addResizeListener();
     },
     activated() {
-      this.getRecentOperates({
-        pageNum: 1,
-        pageLimit: 6,
-      }).then(res => {
-        this.listData = res.data.data.content.map(item => {
-          return {
-            operateUserName: item.operateUserName,
-            time: moment(item.operateDate).format('YYYY-MM-DD HH:mm:ss'),
-            message: item.message,
+      this.updateRecentOperates();
+      this.updateRecentCashes();
+      this.updateIndexData();
+      this.updateRecentReceipts();
+    },
+    methods: {
+      ...mapActions({
+        getRecentOperates: 'operateRecordOperation/getRecentOperates',
+        getRecentCashes: 'cashOperation/getRecentCashes',
+        getIndexProperties: 'contractList/getIndexProperties',
+        getRecentReceipts: 'receiptOperation/getRecentReceipts',
+      }),
+      updateRecentReceipts() {
+        this.receiptLoading = true;
+        this.getRecentReceipts({
+          recentDays: 7,
+        }).then(res => {
+          if (res.data.meta.success) {
+            this.receiptOptions = {
+              title: {},
+              tooltip: {
+                trigger: 'axis',
+                axisPointer: {            // 坐标轴指示器，坐标轴触发有效
+                  type: 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+                }
+              },
+              grid: {
+                left: '2%',
+                containLabel: true
+              },
+              xAxis: {
+                data: res.data.data.dates,
+              },
+              yAxis: {},
+              dataZoom: [
+                {
+                  type: 'inside'
+                }
+              ],
+              series: [{
+                name: '金额(元)',
+                type: 'bar',
+                data: res.data.data.recentReceipts,
+              }],
+            };
+            this.receiptLoading = false;
+          } else {
+            this.$message.error(res.data.meta.message);
           }
         });
-      });
-      this.getIndexProperties().then(res => {
-        this.projectUnDone = res.data.data.projectUnDone;
-        this.projectNum = res.data.data.projectNum;
-        this.projectAllCash = res.data.data.projectAllCash;
-      });
-      this.getRecentProjectList({
-        pageNum: 1,
-        pageLimit: 6,
-      }).then(res => {
-        this.recentData = res.data.data.content;
-      });
-      this.getRecentCashes({
-        recentDays: 7,
-      }).then(res => {
-        this.recentCashes = res.data.data.recentCashes;
-        this.dates = res.data.data.dates;
-        this.drawBar();
-      });
+      },
+      updateRecentOperates() {
+        this.getRecentOperates({
+          pageNum: 1,
+          pageLimit: 6,
+        }).then(res => {
+          this.listData = res.data.data.content.map(item => {
+            return {
+              operateUserName: item.operateUserName,
+              time: moment(item.operateDate).format('YYYY-MM-DD HH:mm:ss'),
+              message: item.message,
+            }
+          });
+        });
+      },
+      updateRecentCashes() {
+        this.barLoading = true;
+        this.getRecentCashes({
+          recentDays: 7,
+        }).then(res => {
+          if (res.data.meta.success) {
+            this.barOptions = {
+              title: {},
+              tooltip: {
+                trigger: 'axis',
+                axisPointer: {            // 坐标轴指示器，坐标轴触发有效
+                  type: 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+                }
+              },
+              grid: {
+                left: '2%',
+                containLabel: true
+              },
+              xAxis: {
+                data: res.data.data.dates,
+              },
+              yAxis: {},
+              dataZoom: [
+                {
+                  type: 'inside'
+                }
+              ],
+              series: [{
+                name: '金额(元)',
+                type: 'bar',
+                data: res.data.data.recentCashes,
+              }],
+            };
+            this.barLoading = false;
+          } else {
+            this.$message.error(res.data.meta.message);
+          }
+        });
+      },
+      updateIndexData() {
+        this.getIndexProperties({
+          recentMonths: this.selectMonth
+        }).then(res => {
+          this.indexPropertiesData = res.data.data;
+        })
+      },
+      handleMonthChange() {
+        this.updateIndexData();
+      }
     },
   }
 </script>

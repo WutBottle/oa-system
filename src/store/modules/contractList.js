@@ -405,6 +405,17 @@ const actions = {
       });
     });
   },
+  // 获取项目列表(精确查询)
+  getProjectListAfterFilter({commit}, params) {
+    return new Promise((resolve, reject) => {
+      api.contractController.getProjectListAfterFilter(params).then(res => {
+        resolve(res);
+      }).catch(error => {
+        console.log(error, '获取项目失败');
+        reject(error);
+      });
+    });
+  },
 };
 
 export default {

@@ -133,6 +133,17 @@ const actions = {
       });
     })
   },
+  // 根据项目id导出员工工资
+  exportByProject({commit}, params) {
+    return new Promise((resolve, reject) => {
+      api.salaryController.exportByProject(params).then(res => {
+        resolve(res);
+      }).catch(error => {
+        console.log(error, '导出工资信息失败');
+        reject(error);
+      });
+    })
+  },
 };
 
 export default {

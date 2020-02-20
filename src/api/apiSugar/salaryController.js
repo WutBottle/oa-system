@@ -34,6 +34,12 @@ const salaryController = {
       responseType: 'blob'
     });
   },
+  // 根据项目导出员工工资
+  exportByProject(params) {
+    return axios.post(`${baseUrl.salaryController}/exportByProject`, params, {
+      responseType: 'blob'
+    });
+  },
 };
 
 export default salaryController;

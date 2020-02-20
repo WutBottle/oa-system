@@ -69,6 +69,10 @@ const contractController = {
   getRecentProjectList(params) {
     return axios.post(`${baseUrl.contractController}/getRecentProjectList`, params);
   },
+  // 获取项目列表(精确查询)
+  getProjectListAfterFilter(params) {
+    return axios.post(`${baseUrl.contractController}/getProjectListAfterFilter`, params);
+  },
 };
 
 export default contractController;

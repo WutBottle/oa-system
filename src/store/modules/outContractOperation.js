@@ -52,6 +52,7 @@ const mutations = {
     });
   },
   setListTableData(state, data) {
+
     state.listPaginationProps.total = data.totalElements;
     state.listTableData = data.content.map((item, index) => {
       return {
@@ -71,7 +72,7 @@ const mutations = {
         outContractDate: moment(item.outContract.outContractDate).format('YYYY-MM-DD HH:mm:ss'),
         note: item.outContract.note,
         selectIndex: !!state.selectOutContractInfo.find(value => value.outContractId === item.outContract.outContractId),
-      }
+      };
     });
   },
   handleFinalDelete(state, data) {

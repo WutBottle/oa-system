@@ -17,9 +17,7 @@ const OutContractPaidPage = r => require.ensure([], () => r(require('components/
 const StaffEntryPage = r => require.ensure([], () => r(require('components/MainPage/StaffEntryPage/StaffEntryPage')));
 const StaffPage = r => require.ensure([], () => r(require('components/MainPage/StaffPage/StaffPage')));
 const SalaryEntryPage = r => require.ensure([], () => r(require('components/MainPage/SalaryEntryPage/SalaryEntryPage')));
-
-
-
+const ProjectExportPage = r => require.ensure([], () => r(require('components/MainPage/ProjectExportPage/ProjectExportPage')));
 
 /**
  * 基础路由
@@ -117,6 +115,11 @@ export const constantRouterMap = [
         name: 'salaryentry',
         component: SalaryEntryPage,
       },
+      {
+        path: 'projectexport',
+        name: 'projectexport',
+        component: ProjectExportPage,
+      }
     ]
   }
 ];

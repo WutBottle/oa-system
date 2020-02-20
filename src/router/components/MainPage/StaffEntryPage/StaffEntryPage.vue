@@ -12,7 +12,7 @@
 
 <template>
   <div class="StaffEntryPage">
-    <HeaderPage title="工资录入"/>
+    <HeaderPage title="职员录入"/>
     <div class="page-content">
       <div style="background-color: #fff;padding: 24px 32px">
         <a-row style="margin-bottom: 24px">

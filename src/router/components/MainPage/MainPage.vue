@@ -302,6 +302,10 @@
               }
             ]
           }, {
+            name: '项目导出',
+            iconType: 'export',
+            router: "/main/projectexport",
+          }, {
             name: "系统管理",
             iconType: "cluster",
             sideBars: [

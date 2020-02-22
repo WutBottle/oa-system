@@ -18,7 +18,7 @@ const actions = {
   getOutContractCategoryList({commit}, params) {
     return new Promise((resolve, reject) => {
       api.outContractCategoryController.getOutContractCategoryList(params).then(res => {
-        commit('setOutContractCategoryList', res.data.data);
+        res.data.data && commit('setOutContractCategoryList', res.data.data);
         resolve(res);
       }).catch(error => {
         console.log(error, '获取分包类型失败');

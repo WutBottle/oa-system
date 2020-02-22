@@ -363,7 +363,7 @@
         undonePaginationProps: {
           pageNum: 1,
           pageLimit: 5,
-          total: 7,
+          total: 6,
         },
         memorandumDoneData: [],
         doneLoading: false,
@@ -371,7 +371,7 @@
         donePaginationProps: {
           pageNum: 1,
           pageLimit: 5,
-          total: 7,
+          total: 6,
         }
       }
     },
@@ -551,11 +551,19 @@
       },
       resetUndoneList() {
         this.memorandumUndoneData = [];
-        this.undonePaginationProps.pageNum = 1;
+        this.undonePaginationProps = {
+          pageNum: 1,
+          pageLimit: 5,
+          total: 6,
+        };
       },
       resetDoneList() {
         this.memorandumDoneData = [];
-        this.donePaginationProps.pageNum = 1;
+        this.donePaginationProps = {
+          pageNum: 1,
+          pageLimit: 5,
+          total: 6,
+        };
       },
       handleUndoneOnLoad() {
         this.undoneLoading = true;
@@ -618,8 +626,8 @@
         }).then(res => {
           if (res.data.meta.success) {
             this.resetUndoneList();
-            this.handleUndoneOnLoad();
             this.resetDoneList();
+            this.handleUndoneOnLoad();
             this.handleDoneOnLoad();
           } else {
             this.$message.error('操作失败')

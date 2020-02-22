@@ -51,7 +51,7 @@ const actions = {
   getCashesByContractId({commit}, params) {
     return new Promise((resolve, reject) => {
       api.cashController.getCashesByContractId(params).then(res => {
-        commit('setTableData', res.data.data);
+        res.data.data && commit('setTableData', res.data.data);
         resolve(res);
       }).catch(error => {
         console.log(error, '获取现金回款失败');

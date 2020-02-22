@@ -20,7 +20,7 @@
             <a-form-item
                     label="用户名"
             >
-              <a-input placeholder="请输入用户名" v-model="userName" />
+              <a-input placeholder="请输入用户名" v-model="userName"/>
             </a-form-item>
             <a-form-item>
               <a-button type="primary" @click="handleQuery">
@@ -40,11 +40,22 @@
                   slot="loadMore"
                   :style="{ textAlign: 'center', marginTop: '12px', height: '32px', lineHeight: '32px' }"
           >
-            <a-spin v-if="loadingMore" />
+            <a-spin v-if="loadingMore"/>
             <a-button v-else @click="onLoadMore">查看更多</a-button>
           </div>
           <a-list-item slot="renderItem" slot-scope="item, index">
-            <a-icon slot="actions" type="edit" @click="handleEdit(item)"/>
+            <a-tooltip slot="actions">
+              <template slot="title">
+                权限分配
+              </template>
+              <a-icon type="lock" @click="handlePermission(item)"/>
+            </a-tooltip>
+            <a-tooltip slot="actions">
+              <template slot="title">
+                编辑用户
+              </template>
+              <a-icon type="edit" @click="handleEdit(item)"/>
+            </a-tooltip>
             <a-popconfirm
                     slot="actions"
                     title="确定删除此用户？"
@@ -58,9 +69,11 @@
                     :description="'昵称：' + item.nickname"
             >
               <a slot="title">
-                用户名：{{item.username}}<a-divider type="vertical" />
+                用户名：{{item.username}}
+                <a-divider type="vertical"/>
                 <a-tag v-for="tag in item.roles" :color="tag.id === 1 ? 'green' : 'red'"
-                       :key="tag.nodeId">{{tag.id === 1 ? '普通用户' : '管理员'}}</a-tag>
+                       :key="tag.nodeId">{{tag.id === 1 ? '普通用户' : '管理员'}}
+                </a-tag>
               </a>
               <a-avatar
                       slot="avatar"
@@ -242,12 +255,41 @@
         </a-form-item>
       </a-form>
     </a-drawer>
+    <a-drawer
+            title="分配用户权限"
+            placement="right"
+            width="600"
+            @close="onPermissionClose"
+            :visible="permissionVisible"
+    >
+      <a-row style="margin-bottom: 16px">
+        <PermissionComponent ref="contractPermission" title="合同权限" :defaultCheckedList="defaultCheckedListContract"/>
+      </a-row>
+      <a-row style="margin-bottom: 16px">
+        <PermissionComponent ref="receiptPermission" title="发票权限" :defaultCheckedList="defaultCheckedListReceipt"/>
+      </a-row>
+      <a-row style="margin-bottom: 16px">
+        <PermissionComponent ref="cashPermission" title="现金权限" :defaultCheckedList="defaultCheckedListCash"/>
+      </a-row>
+      <a-row style="margin-bottom: 16px">
+        <PermissionComponent ref="outContractPermission" title="分包权限"
+                             :defaultCheckedList="defaultCheckedListOutContract"/>
+      </a-row>
+      <a-row style="margin-bottom: 24px">
+        <PermissionComponent ref="outPaidPermission" title="分包付款" :defaultCheckedList="defaultCheckedListOutPaid"/>
+      </a-row>
+      <a-row>
+        <a-button type="primary" block @click="handlePermissionSubmit">确定</a-button>
+      </a-row>
+    </a-drawer>
   </div>
 </template>
 
 <script>
   import {mapState, mapActions, mapMutations} from 'vuex'
   import HeaderPage from "../HeaderPage/HeaderPage";
+  import PermissionComponent from "./PermissionComponent/PermissionComponent";
+
   const formItemLayout = {
     labelCol: {span: 6},
     wrapperCol: {span: 14},
@@ -260,6 +302,7 @@
     name: "UsersPage",
     components: {
       HeaderPage,
+      PermissionComponent,
     },
     data() {
       return {
@@ -276,6 +319,12 @@
         editFormData: {}, // 编辑当前表单数据
         editForm: this.$form.createForm(this),
         currentUserId: '', // 当前编辑的用户id
+        permissionVisible: false, // 分配权限页面
+        defaultCheckedListContract: [],
+        defaultCheckedListReceipt: [],
+        defaultCheckedListCash: [],
+        defaultCheckedListOutContract: [],
+        defaultCheckedListOutPaid: [],
       }
     },
     computed: {
@@ -339,7 +388,7 @@
                 }]
               };
               this.register(params).then(res => {
-                if (res.data.meta.success){
+                if (res.data.meta.success) {
                   this.$message.success('添加成功');
                   this.addVisible = false;
                   this.addForm.resetFields();
@@ -373,7 +422,7 @@
       validateToNextPassword(rule, value, callback) {
         const form = this.addForm;
         if (value && this.confirmDirty) {
-          form.validateFields(['confirm'], { force: true });
+          form.validateFields(['confirm'], {force: true});
         }
         callback();
       },
@@ -399,7 +448,7 @@
       },
       handleEdit(selectData) {
         this.editFormData = JSON.parse(JSON.stringify(selectData));
-        this.editFormData.roles = String(this.editFormData.roles[0].id);
+        this.editFormData.roles = this.editFormData.roles[0] && String(this.editFormData.roles[0].id);
         this.currentUserId = selectData.userId;
         this.editVisible = true;
       },
@@ -416,7 +465,7 @@
                 }]
               };
               this.verifyUser(params).then((res) => {
-                if (res.data.meta.success){
+                if (res.data.meta.success) {
                   this.$message.success('修改成功');
                   this.editForm.resetFields();
                   this.updateListData('first');
@@ -431,6 +480,91 @@
             }
           },
         );
+      },
+      handlePermission(selectData) {
+        this.currentUserId = selectData.userId;
+        this.handleDataDecoder(selectData.authorityCode === null ? '0101010101' : selectData.authorityCode);
+        this.permissionVisible = true;
+      },
+      binary(num, Bits) {
+        let resArry = [];
+        let xresArry = [];
+        let i = 0;
+        //除2取余
+        for (; num > 0;) {
+          resArry.push(num % 2);
+          num = parseInt(num / 2);
+          i++;
+        }
+        //倒序排列
+        for (let j = i - 1; j >= 0; j--) {
+          xresArry.push(resArry[j]);
+        }
+        //补0操作
+        if (Bits) {
+          for (let r = xresArry.length; r < Bits; r++) {
+            xresArry.unshift("0");
+          }
+        }
+        return xresArry.join().replace(/,/g, "");
+      },
+      handleDataDecoder(authorityCode) {
+        this.defaultCheckedListContract = this.setDefaultCheckedList(Number(authorityCode.substr(0,2)));
+        this.defaultCheckedListReceipt = this.setDefaultCheckedList(Number(authorityCode.substr(2,2)));
+        this.defaultCheckedListCash = this.setDefaultCheckedList(Number(authorityCode.substr(4,2)));
+        this.defaultCheckedListOutContract = this.setDefaultCheckedList(Number(authorityCode.substr(6,2)));
+        this.defaultCheckedListOutPaid = this.setDefaultCheckedList(Number(authorityCode.substr(8,2)));
+        this.$refs.contractPermission && this.$refs.contractPermission.setCheckedList(this.defaultCheckedListContract);
+        this.$refs.receiptPermission && this.$refs.receiptPermission.setCheckedList(this.defaultCheckedListReceipt);
+        this.$refs.cashPermission && this.$refs.cashPermission.setCheckedList(this.defaultCheckedListCash);
+        this.$refs.outContractPermission && this.$refs.outContractPermission.setCheckedList(this.defaultCheckedListOutContract);
+        this.$refs.outPaidPermission && this.$refs.outPaidPermission.setCheckedList(this.defaultCheckedListOutPaid);
+      },
+      setDefaultCheckedList(partCode) {
+        const options = ['导入', '导出', '新增', '修改', '删除', '查看'];
+        let tempList = [];
+        this.binary(partCode, 6).split("").map((item, index) => {
+          if (item === '1') {
+            tempList.push(options[index])
+          }
+        });
+        return tempList;
+      },
+      onPermissionClose() {
+        this.permissionVisible = false;
+      },
+      handleDataEncoder(checkedList) {
+        const options = ['导入', '导出', '新增', '修改', '删除', '查看'];
+        let tempCode = [0, 0, 0, 0, 0, 0];
+        options.map((item, index) => {
+          tempCode[index] = checkedList.join('').indexOf(options[index]) < 0 ? 0 : 1;
+        });
+        return parseInt(tempCode.join(''), 2) < 10 ? String('0'+ parseInt(tempCode.join(''), 2)):(parseInt(tempCode.join(''), 2));
+      },
+      handlePermissionSubmit() {
+        const block1 = this.handleDataEncoder(this.$refs.contractPermission.checkedList);
+        const block2 = this.handleDataEncoder(this.$refs.receiptPermission.checkedList);
+        const block3 = this.handleDataEncoder(this.$refs.cashPermission.checkedList);
+        const block4 = this.handleDataEncoder(this.$refs.outContractPermission.checkedList);
+        const block5 = this.handleDataEncoder(this.$refs.outPaidPermission.checkedList);
+        const block = block1.toString() + block2.toString() + block3.toString() + block4.toString() + block5.toString();
+
+        const params = {
+          userId: this.currentUserId,
+          authorityCode: block,
+        };
+        this.verifyUser(params).then((res) => {
+          if (res.data.meta.success) {
+            this.$message.success('修改成功');
+            this.editForm.resetFields();
+            this.updateListData('first');
+            this.permissionVisible = false;
+          } else {
+            this.$message.error(res.data.meta.message);
+          }
+        }).catch((error) => {
+          this.$message.error(error);
+        })
       }
     }
   }

@@ -269,6 +269,11 @@
       if (this.role === 'ROLE_ADMIN') {
         const adminMenu = [
           {
+            name: '职员列表',
+            router: "/main/staff",
+            iconType: "team",
+          },
+          {
             name: "数据录入",
             iconType: "file-text",
             sideBars: [
@@ -361,11 +366,6 @@
           //   router: "/main/analysis",
           //   iconType: "pie-chart",
           // },
-          {
-            name: '职员列表',
-            router: "/main/staff",
-            iconType: "team",
-          }
         ]
       }
     },

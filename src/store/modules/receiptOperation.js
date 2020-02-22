@@ -86,7 +86,7 @@ const actions = {
   getReceiptListByIdLike({commit}, params) {
     return new Promise((resolve, reject) => {
       api.receiptController.getReceiptListByIdLike(params).then(res => {
-        commit('setReceiptListData', res.data.data);
+        res.data.data && commit('setReceiptListData', res.data.data);
         resolve(res);
       }).catch(error => {
         console.log(error, '获取发票信息失败');

@@ -18,7 +18,7 @@ const actions = {
   getOutProjectCategoryList({commit}, params) {
     return new Promise((resolve, reject) => {
       api.outProjectCategoryController.getOutProjectCategoryList(params).then(res => {
-        commit('setOutProjectCategoryList', res.data.data);
+        res.data.data && commit('setOutProjectCategoryList', res.data.data);
         resolve(res);
       }).catch(error => {
         console.log(error, '获取分包项目类别失败');

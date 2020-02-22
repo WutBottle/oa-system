@@ -346,7 +346,10 @@
           pageNum: this.listPaginationProps.current,
           pageLimit: this.listPaginationProps.pageSize
         };
-        this.getOutContractListByIdLike(params).then((data) => {
+        this.getOutContractListByIdLike(params).then((res) => {
+          if (!res.data.meta.success) {
+            this.$message.error(res.data.meta.message);
+          }
           this.spinning = false;
         }).catch((error) => {
           this.spinning = false;

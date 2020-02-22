@@ -103,7 +103,7 @@ const actions = {
   getOutContractListByIdLike({commit}, params) {
     return new Promise((resolve, reject) => {
       api.outContractController.getOutContractListByIdLike(params).then(res => {
-        commit('setListTableData', res.data.data);
+        res.data.data && commit('setListTableData', res.data.data);
         resolve(res);
       }).catch(error => {
         console.log(error, '获取外包合同列表失败');
@@ -114,7 +114,7 @@ const actions = {
   getOutContractsByContractId({commit}, params) {
     return new Promise((resolve, reject) => {
       api.outContractController.getOutContractsByContractId(params).then(res => {
-        commit('setTableData', res.data.data);
+        res.data.data && commit('setTableData', res.data.data);
         resolve(res);
       }).catch(error => {
         console.log(error, '获取外包合同列表失败');

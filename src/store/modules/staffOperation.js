@@ -59,8 +59,8 @@ const actions = {
   getStaffListByNameLike({commit}, params) {
     return new Promise((resolve, reject) => {
       api.staffController.getStaffListByNameLike(params).then(res => {
+        res.data.data && commit('setStaffData', res.data.data);
         resolve(res);
-        commit('setStaffData', res.data.data)
       }).catch(error => {
         console.log(error, '获取职员列表失败');
         reject(error);
@@ -72,7 +72,7 @@ const actions = {
     return new Promise((resolve, reject) => {
       api.staffController.getStaffListByNameLike(params).then(res => {
         resolve(res);
-        commit('setTableData', res.data.data)
+        res.data.data && commit('setTableData', res.data.data)
       }).catch(error => {
         console.log(error, '获取职员列表失败');
         reject(error);
@@ -83,8 +83,8 @@ const actions = {
   getStaffListByNameLikeList({commit}, params) {
     return new Promise((resolve, reject) => {
       api.staffController.getStaffListByNameLike(params).then(res => {
-        resolve(res);
         res.data.data && commit('setListData', res.data.data);
+        resolve(res);
       }).catch(error => {
         console.log(error, '获取用户列表失败');
         reject(error);

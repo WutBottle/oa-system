@@ -19,41 +19,6 @@
           查询
         </a-button>
       </a-form-item>
-      <a-form-item>
-        <a-dropdown :trigger="['click']">
-          <a-button icon="down" type="primary">
-            导出
-          </a-button>
-          <a-menu slot="overlay">
-            <a-menu-item key="0">
-              <a-button type="primary" @click="handleCashExport">
-                现金发票
-              </a-button>
-            </a-menu-item>
-          </a-menu>
-        </a-dropdown>
-      </a-form-item>
-      <a-form-item>
-        <a-popover title="项目选择列表" placement="bottom" trigger="click" v-model="popVisible">
-          <template slot="content">
-            <div v-if="!!selectProjectInfo.length" style="width: 350px">
-              <template v-for="(item, index) in selectProjectInfo">
-                <div :key="index">
-                  <span>{{index + 1}}</span>
-                  <a-divider type="vertical"/>
-                  <span>{{item.contractId}}</span>
-                  <a-divider type="vertical"/>
-                  <span>{{item.contractName}}</span>
-                </div>
-              </template>
-            </div>
-            <a-empty v-else/>
-          </template>
-          <a-button type="dashed" @click="() => this.popVisible = true">
-            选择列表
-          </a-button>
-        </a-popover>
-      </a-form-item>
     </a-form>
     <div class="table-wrapper">
       <a-spin :spinning="spinning" tip="Loading...">
@@ -71,12 +36,18 @@
               查看
             </a-button>
             <a-divider type="vertical"/>
-            <a-button v-if="text" type="danger" size="small" @click="handleRemoved(record)">
-              移除
-            </a-button>
-            <a-button v-else type="primary" size="small" @click="handleSelected(record)">
-              选择
-            </a-button>
+            <a-dropdown :trigger="['click']">
+              <a-button icon="down" type="primary" size="small">
+                导出
+              </a-button>
+              <a-menu slot="overlay">
+                <a-menu-item key="0">
+                  <a-button type="primary" size="small" @click="handleCashExport(record)">
+                    现金发票
+                  </a-button>
+                </a-menu-item>
+              </a-menu>
+            </a-dropdown>
           </template>
           <a-progress slot="ratio" slot-scope="text" type="circle" :percent="text*100" :width="60" />
           <a slot="projectSalary" slot-scope="text, record" @click="handleOpenSalary(record)">查看工资</a>
@@ -236,8 +207,6 @@
             scopedSlots: {customRender: 'selectIndex'}
           },
         ],
-        popVisible: false, // 需要导出的列表弹窗控制
-        selectProjectInfo: [], // 被选择的项目信息
         salaryVisible: false, // 工资弹窗控制
         salaryTableSpinning: false,
         salaryColumns: [
@@ -331,7 +300,6 @@
                 isSign: item.isSign,
                 scale: item.scale,
                 ratio: item.ratio && item.ratio.toFixed(4),
-                selectIndex: !!this.selectProjectInfo.find(value => value.contractId === item.contractId),
               }
             });
             this.spinning = false;
@@ -349,10 +317,10 @@
       handleOpen(selectData) {
         this.$emit('handleContractOpen', selectData.contractId)
       },
-      handleCashExport() {
+      handleCashExport(data) {
         let fileName = '现金发票.xlsx';
         this.cashExport({
-          contractIds: this.selectProjectInfo.map((item) => {return item.contractId}),
+          contractIds: [data.contractId],
         }).then((data) => {
           if (!data.data) {
             return
@@ -373,24 +341,6 @@
         this.paginationProps.current = pagination.current;
         this.paginationProps.pageSize = pagination.pageSize;
         this.updateTableData();
-      },
-      // 处理项目选择
-      handleSelected(rowData) {
-        rowData.selectIndex = true;
-        this.selectProjectInfo.push({
-          contractId: rowData.contractId,
-          contractName: rowData.contractName
-        });
-        this.popVisible = true;
-      },
-      removeProjectInfo(id) {
-        this.selectProjectInfo.splice(this.selectProjectInfo.findIndex(item => item.contractId === id), 1);
-      },
-      // 处理项目移除
-      handleRemoved(rowData) {
-        rowData.selectIndex = false;
-        this.removeProjectInfo(rowData.contractId);
-        this.popVisible = true;
       },
       // 更新工资列表数据
       updateSalaryTableData() {

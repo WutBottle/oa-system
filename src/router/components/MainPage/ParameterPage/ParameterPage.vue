@@ -16,22 +16,23 @@
             <div style="margin-bottom: 8px">
               <a-input v-model="newOutContractCategory" size="small" placeholder="请输入分包合同类型"></a-input>
             </div>
-            <a-button type="primary" size="small" @click="handleAddOutContractCategory">添加</a-button>
+            <a-button type="primary" size="small" @click="handleAddCategory(1)">添加</a-button>
           </template>
           <a>新增</a>
         </a-popover>
-        <a-card-grid v-for="item in outContractCategoryList" :key="item.outContractCategoryId" style="width:25%;height: 80px;text-align: left;">
+        <a-card-grid v-for="item in outContractCategoryList" :key="item.categoryId"
+                     style="width:25%;height: 80px;text-align: left;">
           <a-row :gutter="2">
             <a-col span="16">
-              {{item.outContractCategoryName}}
+              {{item.categoryName}}
             </a-col>
             <a-col span="6" style="text-align: right">
               <a-popconfirm
-                      @confirm="handleDeleteOutContractCategory(item.outContractCategoryId)"
+                      @confirm="handleDeleteCategory(item.categoryId, 1)"
                       title="确定删除？"
                       okText="确定"
                       cancelText="取消">
-                <a-icon slot="icon" type="question-circle-o" style="color: red" />
+                <a-icon slot="icon" type="question-circle-o" style="color: red"/>
                 <a>删除</a>
               </a-popconfirm>
             </a-col>
@@ -44,50 +45,110 @@
             <div style="margin-bottom: 8px">
               <a-input v-model="newOutProjectCategory" size="small" placeholder="请输入分包合同类型"></a-input>
             </div>
-            <a-button type="primary" size="small" @click="handleAddOutProjectCategory">添加</a-button>
+            <a-button type="primary" size="small" @click="handleAddCategory(2)">添加</a-button>
           </template>
           <a>新增</a>
         </a-popover>
-        <a-card-grid v-for="item in outProjectCategoryList" :key="item.outProjectCategoryId" style="width:25%;height: 100px;text-align: left;">
+        <a-card-grid v-for="item in outProjectCategoryList" :key="item.categoryId"
+                     style="width:25%;height: 100px;text-align: left;">
           <a-row :gutter="2">
             <a-col span="16">
-              {{item.outProjectCategoryName}}
+              {{item.categoryName}}
             </a-col>
             <a-col span="6" style="text-align: right">
               <a-popconfirm
-                      @confirm="handleDeleteOutProjectCategory(item.outProjectCategoryId)"
+                      @confirm="handleDeleteCategory(item.categoryId, 2)"
                       title="确定删除？"
                       okText="确定"
                       cancelText="取消">
-                <a-icon slot="icon" type="question-circle-o" style="color: red" />
+                <a-icon slot="icon" type="question-circle-o" style="color: red"/>
                 <a>删除</a>
               </a-popconfirm>
             </a-col>
           </a-row>
         </a-card-grid>
       </a-card>
-      <a-card title="项目类型">
+      <a-card title="项目类型" style="margin-bottom: 12px">
         <a-popover slot="extra" title="添加分包类型" trigger="click" v-model="addProjectCategoryVisible">
           <template slot="content">
             <div style="margin-bottom: 8px">
               <a-input v-model="newProjectCategory" size="small" placeholder="请输入分包合同类型"></a-input>
             </div>
-            <a-button type="primary" size="small" @click="handleAddProjectCategory">添加</a-button>
+            <a-button type="primary" size="small" @click="handleAddCategory(3)">添加</a-button>
           </template>
           <a>新增</a>
         </a-popover>
-        <a-card-grid v-for="item in projectCategoryList" :key="item.projectCategoryId" style="width:25%;height: 100px;text-align: left;">
+        <a-card-grid v-for="item in projectCategoryList" :key="item.categoryId"
+                     style="width:25%;height: 100px;text-align: left;">
           <a-row :gutter="2">
             <a-col span="16">
-              {{item.projectCategoryName}}
+              {{item.categoryName}}
             </a-col>
             <a-col span="6" style="text-align: right">
               <a-popconfirm
-                      @confirm="handleDeleteProjectCategory(item.projectCategoryId)"
+                      @confirm="handleDeleteCategory(item.categoryId, 3)"
                       title="确定删除？"
                       okText="确定"
                       cancelText="取消">
-                <a-icon slot="icon" type="question-circle-o" style="color: red" />
+                <a-icon slot="icon" type="question-circle-o" style="color: red"/>
+                <a>删除</a>
+              </a-popconfirm>
+            </a-col>
+          </a-row>
+        </a-card-grid>
+      </a-card>
+      <a-card title="分项类别" style="margin-bottom: 12px">
+        <a-popover slot="extra" title="添加分包类型" trigger="click" v-model="addSubCategoryVisible">
+          <template slot="content">
+            <div style="margin-bottom: 8px">
+              <a-input v-model="newSubCategory" size="small" placeholder="请输入分项类别"></a-input>
+            </div>
+            <a-button type="primary" size="small" @click="handleAddCategory(4)">添加</a-button>
+          </template>
+          <a>新增</a>
+        </a-popover>
+        <a-card-grid v-for="item in subCategoryList" :key="item.categoryId"
+                     style="width:25%;height: 100px;text-align: left;">
+          <a-row :gutter="2">
+            <a-col span="16">
+              {{item.categoryName}}
+            </a-col>
+            <a-col span="6" style="text-align: right">
+              <a-popconfirm
+                      @confirm="handleDeleteCategory(item.categoryId, 4)"
+                      title="确定删除？"
+                      okText="确定"
+                      cancelText="取消">
+                <a-icon slot="icon" type="question-circle-o" style="color: red"/>
+                <a>删除</a>
+              </a-popconfirm>
+            </a-col>
+          </a-row>
+        </a-card-grid>
+      </a-card>
+      <a-card title="组织方式">
+        <a-popover slot="extra" title="添加分包类型" trigger="click" v-model="addOrganizationVisible">
+          <template slot="content">
+            <div style="margin-bottom: 8px">
+              <a-input v-model="newOrganization" size="small" placeholder="请输入组织方式"></a-input>
+            </div>
+            <a-button type="primary" size="small" @click="handleAddCategory(5)">添加</a-button>
+          </template>
+          <a>新增</a>
+        </a-popover>
+        <a-card-grid v-for="item in organizationList" :key="item.categoryId"
+                     style="width:25%;height: 100px;text-align: left;">
+          <a-row :gutter="2">
+            <a-col span="16">
+              {{item.categoryName}}
+            </a-col>
+            <a-col span="6" style="text-align: right">
+              <a-popconfirm
+                      @confirm="handleDeleteCategory(item.categoryId, 5)"
+                      title="确定删除？"
+                      okText="确定"
+                      cancelText="取消">
+                <a-icon slot="icon" type="question-circle-o" style="color: red"/>
                 <a>删除</a>
               </a-popconfirm>
             </a-col>
@@ -99,9 +160,10 @@
 </template>
 
 <script>
-  import {mapState, mapActions} from 'vuex'
+  import {mapActions} from 'vuex'
 
   import HeaderPage from "../HeaderPage/HeaderPage";
+
   export default {
     name: "ParameterPage",
     components: {
@@ -118,121 +180,117 @@
         addProjectCategoryVisible: false,
         newProjectCategory: '',
         projectCategoryList: [],
+        addSubCategoryVisible: false,
+        newSubCategory: '',
+        subCategoryList: [],
+        addOrganizationVisible: false,
+        newOrganization: '',
+        organizationList: [],
       }
     },
     activated() {
-      this.handleUpdateOutContractCategory();
-      this.handleUpdateOutProjectCategory();
-      this.handleUpdateProjectCategory();
+      this.handleUpdateCategory(1);
+      this.handleUpdateCategory(2);
+      this.handleUpdateCategory(3);
     },
     methods: {
       ...mapActions({
-        getOutContractCategoryListByNameLike: 'outContractCategoryOperation/getOutContractCategoryListByNameLike',
-        deleteOutContractCategory: 'outContractCategoryOperation/deleteOutContractCategory',
-        addOutContractCategory: 'outContractCategoryOperation/addOutContractCategory',
-        getOutProjectCategoryList: 'outProjectCategoryOperation/getOutProjectCategoryList',
-        deleteOutProjectCategory: 'outProjectCategoryOperation/deleteOutProjectCategory',
-        addOutProjectCategory: 'outProjectCategoryOperation/addOutProjectCategory',
-        getProjectCategoryListByNameLike: 'projectCategoryOperation/getProjectCategoryListByNameLike',
-        deleteProjectCategory: 'projectCategoryOperation/deleteProjectCategory',
-        addProjectCategory: 'projectCategoryOperation/addProjectCategory',
+        getCategoryListByNameLike: 'categoryOperation/getCategoryListByNameLike',
+        deleteCategory: 'categoryOperation/deleteCategory',
+        addCategory: 'categoryOperation/addCategory',
       }),
-      handleUpdateOutContractCategory() {
-        this.getOutContractCategoryListByNameLike({
-          outContractCategoryName: '',
+      handleUpdateCategory(type) {
+        this.getCategoryListByNameLike({
+          categoryType: type,
+          categoryName: '',
         }).then(res => {
-          this.outContractCategoryList = res.data.data;
+          switch (type) {
+            case 1:
+              this.outContractCategoryList = res && res.data.data;
+              break;
+            case 2:
+              this.outProjectCategoryList = res && res.data.data;
+              break;
+            case 3:
+              this.projectCategoryList = res && res.data.data;
+              break;
+            case 4:
+              this.subCategoryList = res && res.data.data;
+              break;
+            case 5:
+              this.organizationList = res && res.data.data;
+              break;
+            default:
+              break;
+          }
         });
       },
-      handleDeleteOutContractCategory(id) {
-        this.deleteOutContractCategory({
-          outContractCategoryId: id,
+      handleDeleteCategory(id, type) {
+        this.deleteCategory({
+          categoryId: id,
         }).then(res => {
           if (res.data.meta.success) {
-            this.handleUpdateOutContractCategory();
+            this.handleUpdateCategory(type);
             this.$message.success('删除成功')
-          }else {
+          } else {
             this.$message.error(res.data.meta.message)
           }
         })
       },
-      handleAddOutContractCategory() {
+      handleAddCategory(type) {
+        let categoryName = '';
+        switch (type) {
+          case 1:
+            categoryName = this.newOutContractCategory;
+            break;
+          case 2:
+            categoryName = this.newOutProjectCategory;
+            break;
+          case 3:
+            categoryName = this.newProjectCategory;
+            break;
+          case 4:
+            categoryName = this.newSubCategory;
+            break;
+          case 5:
+            categoryName = this.newOrganization;
+            break;
+          default:
+            break;
+        }
         const params = {
-          outContractCategoryName: this.newOutContractCategory,
+          categoryType: type,
+          categoryName: categoryName,
         };
-        this.addOutContractCategory(params).then(res => {
+        this.addCategory(params).then(res => {
           if (res.data.meta.success) {
-            this.handleUpdateOutContractCategory();
-            this.newOutContractCategory = '';
-            this.addOutContractCategoryVisible = false;
+            this.handleUpdateCategory(type);
+            switch (type) {
+              case 1:
+                this.newOutContractCategory = '';
+                this.addOutContractCategoryVisible = false;
+                break;
+              case 2:
+                this.newOutProjectCategory = '';
+                this.addOutProjectCategoryVisible = false;
+                break;
+              case 3:
+                this.newProjectCategory = '';
+                this.addProjectCategoryVisible = false;
+                break;
+              case 4:
+                this.newSubCategory = '';
+                this.addSubCategoryVisible = false;
+                break;
+              case 5:
+                this.newOrganization = '';
+                this.addOrganizationVisible = false;
+                break;
+              default:
+                break;
+            }
             this.$message.success('添加成功')
-          }else {
-            this.$message.error(res.data.meta.message)
-          }
-        })
-      },
-      handleUpdateOutProjectCategory() {
-        this.getOutProjectCategoryList().then(res => {
-          this.outProjectCategoryList = res.data.data;
-        });
-      },
-      handleDeleteOutProjectCategory(id) {
-        this.deleteOutProjectCategory({
-          outProjectCategoryId: id,
-        }).then(res => {
-          if (res.data.meta.success) {
-            this.handleUpdateOutProjectCategory();
-            this.$message.success('删除成功')
-          }else {
-            this.$message.error(res.data.meta.message)
-          }
-        })
-      },
-      handleAddOutProjectCategory() {
-        const params = {
-          outProjectCategoryName: this.newOutProjectCategory,
-        };
-        this.addOutProjectCategory(params).then(res => {
-          if (res.data.meta.success) {
-            this.handleUpdateOutProjectCategory();
-            this.newOutProjectCategory = '';
-            this.addOutProjectCategoryVisible = false;
-            this.$message.success('添加成功')
-          }else {
-            this.$message.error(res.data.meta.message)
-          }
-        })
-      },
-      handleUpdateProjectCategory() {
-        this.getProjectCategoryListByNameLike({
-          projectCategoryName: '',
-        }).then(res => {
-          this.projectCategoryList = res.data.data;
-        });
-      },
-      handleAddProjectCategory() {
-        const params = {
-          projectCategoryName: this.newProjectCategory,
-        };
-        this.addProjectCategory(params).then(res => {
-          if (res.data.meta.success) {
-            this.handleUpdateProjectCategory();
-            this.newProjectCategory = '';
-            this.addProjectCategoryVisible = false;
-            this.$message.success('添加成功')
-          }else {
-            this.$message.error(res.data.meta.message)
-          }
-        })
-      },
-      handleDeleteProjectCategory(id) {
-        this.deleteProjectCategory({
-          projectCategoryId: id,
-        }).then(res => {
-          if (res.data.meta.success) {
-            this.handleUpdateProjectCategory();
-            this.$message.success('删除成功')
-          }else {
+          } else {
             this.$message.error(res.data.meta.message)
           }
         })

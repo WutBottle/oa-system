@@ -88,7 +88,7 @@
               <div class="table-wrapper">
                 <a-table bordered :columns="columns" :dataSource="tableData"
                          :pagination="paginationProps"
-                         @change="handleTableChange" :scroll="{ x:'max-content', y: 450}">
+                         @change="handleTableChange" :scroll="{ x: 1960, y: 450}">
                   <span slot="serial" slot-scope="text, record, index">
                     {{ index + 1 }}
                   </span>
@@ -99,8 +99,8 @@
                       <a>删除</a>
                     </a-popconfirm>
                   </span>
-                  <span slot="outContractCategory" slot-scope="id">{{outContractCategoryList[outContractCategoryList.findIndex((item) => item.outContractCategoryId === id)].outContractCategoryName}}</span>
-                  <span slot="outProjectCategory" slot-scope="id">{{outProjectCategoryList[outProjectCategoryList.findIndex((item) => item.outProjectCategoryId === id)].outProjectCategoryName}}</span>
+                  <span slot="outContractCategory" slot-scope="id">{{outContractCategoryList[outContractCategoryList.findIndex((item) => item.categoryId === id)].categoryName}}</span>
+                  <span slot="outProjectCategory" slot-scope="id">{{outProjectCategoryList[outProjectCategoryList.findIndex((item) => item.categoryId === id)].categoryName}}</span>
                 </a-table>
               </div>
             </a-spin>
@@ -228,8 +228,8 @@
                   placeholder="请选择分包类型"
           >
             <template v-for="option in outContractCategoryList">
-              <a-select-option :key="option.outContractCategoryId">
-                {{option.outContractCategoryName}}
+              <a-select-option :key="option.categoryId">
+                {{option.categoryName}}
               </a-select-option>
             </template>
           </a-select>
@@ -246,8 +246,8 @@
                   placeholder="请选择分包项目类别"
           >
             <template v-for="option in outProjectCategoryList">
-              <a-select-option :key="option.outProjectCategoryId">
-                {{option.outProjectCategoryName}}
+              <a-select-option :key="option.categoryId">
+                {{option.categoryName}}
               </a-select-option>
             </template>
           </a-select>
@@ -345,8 +345,8 @@
                   placeholder="请选择分包类型"
           >
             <template v-for="option in outContractCategoryList">
-              <a-select-option :key="option.outContractCategoryId">
-                {{option.outContractCategoryName}}
+              <a-select-option :key="option.categoryId">
+                {{option.categoryName}}
               </a-select-option>
             </template>
           </a-select>
@@ -363,8 +363,8 @@
                   placeholder="请选择分包项目类别"
           >
             <template v-for="option in outProjectCategoryList">
-              <a-select-option :key="option.outProjectCategoryId">
-                {{option.outProjectCategoryName}}
+              <a-select-option :key="option.categoryId">
+                {{option.categoryName}}
               </a-select-option>
             </template>
           </a-select>
@@ -394,8 +394,8 @@
   import OutContractInput from "../OutContractInput/OutContractInput";
 
   const formItemLayout = {
-    labelCol: {span: 6},
-    wrapperCol: {span: 14},
+    labelCol: {span: 8},
+    wrapperCol: {span: 12},
   };
   const formTailLayout = {
     labelCol: {span: 4},
@@ -504,6 +504,8 @@
         editFormData: {}, // 编辑当前表单数据
         editVisible: false, // 编辑发票窗口控制
         editSpinning: false, // 编辑发票提交按钮
+        outContractCategoryList: [], // 分包类型
+        outProjectCategoryList: [], // 分包项目类型
       }
     },
     computed: {
@@ -513,13 +515,19 @@
         contractId: state => state.outContractOperation.contractId, // 合同号
         designId: state => state.outContractOperation.designId, // 设计号
         contractName: state => state.outContractOperation.contractName, // 合同名称
-        outContractCategoryList: state => state.outContractCategoryOperation.outContractCategoryList, // 外包类型选项
-        outProjectCategoryList: state => state.outProjectCategoryOperation.outProjectCategoryList, // 外包项目类型
       }),
     },
     mounted() {
-      this.getOutContractCategoryList();
-      this.getOutProjectCategoryList();
+      this.getCategoryList({
+        categoryType: 1
+      }).then(res => {
+        this.outContractCategoryList = res && res.data.data;
+      });
+      this.getCategoryList({
+        categoryType: 2
+      }).then(res => {
+        this.outProjectCategoryList = res && res.data.data;
+      });
     },
     methods: {
       ...mapActions({
@@ -527,9 +535,8 @@
         getContractIdsByIdLike: 'contractList/getContractIdsByIdLike',
         addOutContract: 'outContractOperation/addOutContract', // 添加分包合同
         deleteOutContract: 'outContractOperation/deleteOutContract',
-        getOutContractCategoryList: 'outContractCategoryOperation/getOutContractCategoryList', // 获取分包类型
-        getOutProjectCategoryList: 'outProjectCategoryOperation/getOutProjectCategoryList', // 获取分包项目类型
         verifyOutContract: 'outContractOperation/verifyOutContract', // 修改分包合同
+        getCategoryList: 'categoryOperation/getCategoryList', // 获取类型
       }),
       next() {
         this.current++;
@@ -546,7 +553,7 @@
         };
         this.fetching = true;
         this.getContractIdsByIdLike(params).then((res) => {
-          this.contractsData = res.data.data.contractIds;
+          this.contractsData = res && res.data.data.contractIds;
           this.fetching = false;
         });
       },
@@ -602,10 +609,10 @@
                   outPaid: values.outPaid,
                   outContractDate: values.outContractDate,
                   outContractCategory: {
-                    outContractCategoryId: values.outContractCategory,
+                    categoryId: values.outContractCategory,
                   },
                   outProjectCategory: {
-                    outProjectCategoryId: values.outProjectCategory,
+                    categoryId: values.outProjectCategory,
                   },
                   note: values.note
                 }],
@@ -641,10 +648,10 @@
                 outPaid: values.outPaid,
                 outContractDate: values.outContractDate,
                 outContractCategory: {
-                  outContractCategoryId: values.outContractCategory,
+                  categoryId: values.outContractCategory,
                 },
                 outProjectCategory: {
-                  outProjectCategoryId: values.outProjectCategory,
+                  categoryId: values.outProjectCategory,
                 },
                 note: values.note
               };

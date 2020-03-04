@@ -298,6 +298,10 @@
                 router: "/main/outcontractpaid",
               },
               {
+                name: "分项录入",
+                router: "/main/subentry",
+              },
+              {
                 name: "职员录入",
                 router: "/main/staffentry",
               },

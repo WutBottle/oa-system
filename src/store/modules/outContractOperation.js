@@ -44,15 +44,14 @@ const mutations = {
         outPaid: item.outPaid,
         outUnpaid: item.outUnpaid,
         ratio: item.ratio.toFixed(4),
-        outContractCategory: item.outContractCategory.outContractCategoryId,
-        outProjectCategory: item.outProjectCategory.outProjectCategoryId,
+        outContractCategory: item.outContractCategory. categoryId,
+        outProjectCategory: item.outProjectCategory.categoryId,
         outContractDate: moment(item.outContractDate).format('YYYY-MM-DD HH:mm:ss'),
         note: item.note,
       }
     });
   },
   setListTableData(state, data) {
-
     state.listPaginationProps.total = data.totalElements;
     state.listTableData = data.content.map((item, index) => {
       return {
@@ -67,8 +66,8 @@ const mutations = {
         outPaid: item.outContract.outPaid,
         outUnpaid: item.outContract.outUnpaid,
         ratio: item.outContract.ratio.toFixed(4),
-        outContractCategory: item.outContract.outContractCategory.outContractCategoryId,
-        outProjectCategory: item.outContract.outProjectCategory.outProjectCategoryId,
+        outContractCategory: item.outContract.outContractCategory.categoryId,
+        outProjectCategory: item.outContract.outProjectCategory.categoryId,
         outContractDate: moment(item.outContract.outContractDate).format('YYYY-MM-DD HH:mm:ss'),
         note: item.outContract.note,
         selectIndex: !!state.selectOutContractInfo.find(value => value.outContractId === item.outContract.outContractId),

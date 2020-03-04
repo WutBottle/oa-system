@@ -396,8 +396,8 @@
                     placeholder="请选择项目类型"
             >
               <template v-for="item in this.projectCategoryList">
-                <a-select-option :key="item.projectCategoryId" :value="item.projectCategoryId">
-                  {{item.projectCategoryName}}
+                <a-select-option :key="item.categoryId" :value="item.categoryId">
+                  {{item.categoryName}}
                 </a-select-option>
               </template>
             </a-select>
@@ -624,31 +624,35 @@
         ],
         uploadSpinning: false, // 判断是否正在上传文件
         fetching: false, // 控制拉取列表
+        projectCategoryList: [], // 项目类型
       };
     },
     computed: {
       ...mapState({
-        projectCategoryList: state => state.projectCategoryOperation.projectCategoryList,// 项目类型
         staffData: state => state.staffOperation.staffData, // 职员信息
       }),
     },
     mounted() {
-      this.getProjectCategoryList();
+      this.getCategoryList({
+        categoryType: 3
+      }).then(res => {
+        this.projectCategoryList = res && res.data.data;
+      });
     },
     methods: {
       ...mapActions({
         uploadContract: 'contractList/uploadContract',
-        getProjectCategoryList: 'projectCategoryOperation/getProjectCategoryList',
         contractInput: 'contractList/contractInput',
         addContract: 'contractList/addContract',
-        getStaffListByNameLike: 'staffOperation/getStaffListByNameLike'
+        getStaffListByNameLike: 'staffOperation/getStaffListByNameLike',
+        getCategoryList: 'categoryOperation/getCategoryList', // 获取类型
       }),
       check() {
         this.form.validateFields(
           (err, values) => {
             if (!err) {
               let projectCategory = {};
-              projectCategory = this.projectCategoryList[this.projectCategoryList.findIndex((item) => item.projectCategoryId === values.projectCategoryId)];
+              projectCategory = this.projectCategoryList[this.projectCategoryList.findIndex((item) => item.categoryId === values.projectCategoryId)];
               delete values.projectCategoryId;
 
               let contractNodes = values.contractNodes;

@@ -162,8 +162,8 @@
                   placeholder="请选择项目类别"
           >
             <template v-for="item in this.projectCategoryList">
-              <a-select-option :key="item.projectCategoryId" :value="item.projectCategoryId">
-                {{item.projectCategoryName}}
+              <a-select-option :key="item.categoryId" :value="item.categoryId">
+                {{item.categoryName}}
               </a-select-option>
             </template>
           </a-select>
@@ -478,7 +478,7 @@
             if (!err) {
               this.spinning = true;
               let projectCategory = {};
-              projectCategory = this.projectCategoryList[this.projectCategoryList.findIndex((item) => item.projectCategoryId === values.projectCategoryId)];
+              projectCategory = this.projectCategoryList[this.projectCategoryList.findIndex((item) => item.categoryId === values.projectCategoryId)];
               delete values.projectCategoryId;
 
               // let contractNodes = values.contractNodes;

@@ -21,7 +21,8 @@ const distributeUrl = {
   staffController: serverBaseUrl + 'staff',
   salaryController: serverBaseUrl + 'salary',
   operateRecordController: serverBaseUrl + 'operateRecord',
-  memorandumController: serverBaseUrl + 'memorandum'
+  memorandumController: serverBaseUrl + 'memorandum',
+  categoryController: serverBaseUrl + 'category',
 };
 
 export default distributeUrl;

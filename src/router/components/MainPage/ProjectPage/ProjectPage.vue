@@ -47,13 +47,7 @@
         newTabIndex: 0,
       };
     },
-    mounted() {
-      this.getProjectCategoryList();
-    },
     methods: {
-      ...mapActions({
-        getProjectCategoryList: 'projectCategoryOperation/getProjectCategoryList',
-      }),
       onEdit(targetKey, action) {
         this[action](targetKey);
       },

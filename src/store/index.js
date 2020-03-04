@@ -12,11 +12,9 @@ import outPaidOperation from "./modules/outPaidOperation";
 import userOperation from "./modules/userOperation";
 import staffOperation from "./modules/staffOperation";
 import salaryOperation from "./modules/salaryOperation";
-import outContractCategoryOperation from "./modules/outContractCategoryOperation";
-import outProjectCategoryOperation from "./modules/outProjectCategoryOperation";
-import projectCategoryOperation from "./modules/projectCategoryOperation";
 import operateRecordOperation from "./modules/operateRecordOperation";
 import memorandumOperation from "./modules/memorandumOperation";
+import categoryOperation from "./modules/categoryOperation";
 
 Vue.use(Vuex);
 
@@ -32,11 +30,9 @@ const store = new Vuex.Store({
     userOperation, // 用户管理信息
     staffOperation, // 职员信息管理
     salaryOperation, // 工资信息管理
-    outContractCategoryOperation, // 分包类型管理
-    outProjectCategoryOperation, // 分包项目类型管理
-    projectCategoryOperation, // 项目类型管理
     operateRecordOperation, // 获取动态列表
     memorandumOperation, // 备忘录管理
+    categoryOperation, // 类型管理
   },
   getters
 });

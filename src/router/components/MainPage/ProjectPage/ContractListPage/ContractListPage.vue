@@ -132,12 +132,12 @@
         popVisible: false, // 选择列表的弹出
         settingVisible: false, // 配置表头菜单弹出控制
         scrollX: 0,
+        projectCategoryList: [],
       }
     },
     computed: {
       ...mapState({
         role: state => state.tokensOperation.role,
-        projectCategoryList: state => state.projectCategoryOperation.projectCategoryList,// 项目类型
         totalColumns: state => state.contractList.totalColumns, // 表单头部数据
         options: state => state.contractList.options, // 表头总数据
         defaultOptions: state => state.contractList.defaultOptions, // 表头默认数据
@@ -155,6 +155,11 @@
       this.loadSettingOptions();
       this.loadTableColumns(this.defaultOptions);
       this.updateTableData();
+      this.getCategoryList({
+        categoryType: 3
+      }).then(res => {
+        this.projectCategoryList = res && res.data.data;
+      });
     },
     activated() {
       this.updateTableData();
@@ -169,6 +174,7 @@
         downloadContract: 'contractList/downloadContract',
         getContractListByContractId: 'contractList/getContractListByContractId',
         deleteContract: 'contractList/deleteContract',
+        getCategoryList: 'categoryOperation/getCategoryList', // 获取类型
       }),
       setPageInfo(data) {
         this.tableData = data.content.map((item, index) => {
@@ -189,7 +195,7 @@
             invoicedUncollectedAmount: item.receiptNotCash, // 已开发票未收款金额
             actualSigningDate: moment(item.actualDate).format('YYYY-MM-DD HH:mm:ss'), // 实际签约日期
             contractFilingDate: moment(item.contractDate).format('YYYY-MM-DD HH:mm:ss'), // 合同归档日期
-            itemCategory: !item.projectCategory ? '' : item.projectCategory.projectCategoryName, // 项目类别
+            itemCategory: !item.projectCategory ? '' : item.projectCategory.categoryName, // 项目类别
             mainDesignDepartment: item.departmentDesign, // 主设计部门
             managementDepartment: item.departmentRunning, // 经营部门
             projectManager: item.projectManager.staffName, // 项目经理
@@ -294,7 +300,8 @@
           tempNodes.push(item.nodeDescription);
         });
         this.contractEditData.contractNodes = tempNodes;
-        this.contractEditData.itemCategory = this.projectCategoryList[this.projectCategoryList.findIndex((item) => this.contractEditData.itemCategory === item.projectCategoryName)].projectCategoryId;
+        this.contractEditData.itemCategory = this.projectCategoryList[this.projectCategoryList.findIndex((item) => this.contractEditData.itemCategory === item.categoryName)].categoryId;
+        console.log(this.contractEditData);
         this.contractEditData.contractFilingDate = moment(this.contractEditData.contractFilingDate);
         this.contractEditData.actualSigningDate = moment(this.contractEditData.actualSigningDate);
         this.editVisible = true;

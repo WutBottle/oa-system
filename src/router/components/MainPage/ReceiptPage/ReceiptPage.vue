@@ -289,7 +289,7 @@
         };
         this.fetching = true;
         this.getContractIdsByIdLike(params).then((res) => {
-          this.contractsData = res.data.data.contractIds;
+          this.contractsData = res && res.data.data.contractIds;
           this.fetching = false;
         });
       },

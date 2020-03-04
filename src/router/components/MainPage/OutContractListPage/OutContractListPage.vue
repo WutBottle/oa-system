@@ -86,8 +86,8 @@
               <span slot="serial" slot-scope="text, record, index">
                 {{ index + 1 }}
               </span>
-              <span slot="outContractCategory" slot-scope="id">{{outContractCategoryList[outContractCategoryList.findIndex((item) => item.outContractCategoryId === id)].outContractCategoryName}}</span>
-              <span slot="outProjectCategory" slot-scope="id">{{outProjectCategoryList[outProjectCategoryList.findIndex((item) => item.outProjectCategoryId === id)].outProjectCategoryName}}</span>
+              <span slot="outContractCategory" slot-scope="id">{{outContractCategoryList[outContractCategoryList.findIndex((item) => item.categoryId === id)].categoryName}}</span>
+              <span slot="outProjectCategory" slot-scope="id">{{outProjectCategoryList[outProjectCategoryList.findIndex((item) => item.categoryId === id)].categoryName}}</span>
               <template slot="selectIndex" slot-scope="text, record">
                 <span>
                   <a @click="openOutPaid(record)">查看付款</a>
@@ -249,6 +249,8 @@
         outPaidTableSpinning: false, // 分包付款信息加载控制
         popVisible: false,
         firstComing: 0,
+        outContractCategoryList: [],
+        outProjectCategoryList: [],
       }
     },
     computed: {
@@ -256,16 +258,20 @@
         role: state => state.tokensOperation.role, // 角色信息
         listTableData: state => state.outContractOperation.listTableData, // 选中的keys
         listPaginationProps: state => state.outContractOperation.listPaginationProps, // 分页控制
-        outContractCategoryList: state => state.outContractCategoryOperation.outContractCategoryList, // 外包类型选项
-        outProjectCategoryList: state => state.outProjectCategoryOperation.outProjectCategoryList, // 外包项目类型
         outPaidTableData: state => state.outPaidOperation.tableData, // table数据
         outPaidPaginationProps: state => state.outPaidOperation.paginationProps,// 分页控制
         selectOutContractInfo: state => state.outContractOperation.selectOutContractInfo, // 被选择的分包合同
       }),
     },
     mounted() {
-      this.getOutContractCategoryList().then(res => {
-        this.getOutProjectCategoryList().then(res => {
+      this.getCategoryList({
+        categoryType: 1
+      }).then(res => {
+        this.outContractCategoryList = res && res.data.data;
+        this.getCategoryList({
+          categoryType: 2
+        }).then(res => {
+          this.outProjectCategoryList = res && res.data.data;
           this.updateTableData();
         });
       });
@@ -281,11 +287,10 @@
       }),
       ...mapActions({
         getOutContractListByIdLike: 'outContractOperation/getOutContractListByIdLike',
-        getOutContractCategoryList: 'outContractCategoryOperation/getOutContractCategoryList', // 获取分包类型
-        getOutProjectCategoryList: 'outProjectCategoryOperation/getOutProjectCategoryList', // 获取分包项目类型
         getOutPaidsByOutContractId: 'outPaidOperation/getOutPaidsByOutContractId', // 获取分包付款信息
         exportOutContract: 'outContractOperation/exportOutContract', // 导出分包合同
         outPaidExport: 'outPaidOperation/outPaidExport', // 分包回款导出
+        getCategoryList: 'categoryOperation/getCategoryList', // 获取类型
       }),
       // 查询处理
       handleQuery() {

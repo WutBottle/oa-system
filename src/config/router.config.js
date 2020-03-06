@@ -11,7 +11,6 @@ const UsersPage = r => require.ensure([], () => r(require('components/MainPage/U
 const ContractManager = r => require.ensure([], () => r(require('components/MainPage/ContractManager/ContractManager')));
 const InvoicePage = r => require.ensure([], () => r(require('components/MainPage/InvoicePage/InvoicePage')));
 const CashPage = r => require.ensure([], () => r(require('components/MainPage/CashPage/CashPage')));
-const OutContractPage = r => require.ensure([], () => r(require('components/MainPage/OutContractPage/OutContractPage')));
 const OutContractListPage = r => require.ensure([], () => r(require('components/MainPage/OutContractListPage/OutContractListPage')));
 const OutContractPaidPage = r => require.ensure([], () => r(require('components/MainPage/OutContractPaidPage/OutContractPaidPage')));
 const StaffEntryPage = r => require.ensure([], () => r(require('components/MainPage/StaffEntryPage/StaffEntryPage')));
@@ -84,11 +83,6 @@ export const constantRouterMap = [
         path: 'cash',
         name: 'cash',
         component: CashPage,
-      },
-      {
-        path: 'outsource',
-        name: 'outsource',
-        component: OutContractPage,
       },
       {
         path: 'outcontractlist',

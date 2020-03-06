@@ -15,6 +15,7 @@ import salaryOperation from "./modules/salaryOperation";
 import operateRecordOperation from "./modules/operateRecordOperation";
 import memorandumOperation from "./modules/memorandumOperation";
 import categoryOperation from "./modules/categoryOperation";
+import subProjectOperation from "./modules/subProjectOperation";
 
 Vue.use(Vuex);
 
@@ -33,6 +34,7 @@ const store = new Vuex.Store({
     operateRecordOperation, // 获取动态列表
     memorandumOperation, // 备忘录管理
     categoryOperation, // 类型管理
+    subProjectOperation, // 分项管理
   },
   getters
 });

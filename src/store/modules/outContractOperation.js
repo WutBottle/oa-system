@@ -44,8 +44,10 @@ const mutations = {
         outPaid: item.outPaid,
         outUnpaid: item.outUnpaid,
         ratio: item.ratio.toFixed(4),
-        outContractCategory: item.outContractCategory. categoryId,
-        outProjectCategory: item.outProjectCategory.categoryId,
+        outContractCategory: item.outContractCategory.categoryName,
+        outProjectCategory: item.outProjectCategory.categoryName,
+        outContractCategoryId: item.outContractCategory.categoryId,
+        outProjectCategoryId: item.outProjectCategory.categoryId,
         outContractDate: moment(item.outContractDate).format('YYYY-MM-DD HH:mm:ss'),
         note: item.note,
       }
@@ -110,9 +112,9 @@ const actions = {
       });
     });
   },
-  getOutContractsByContractId({commit}, params) {
+  getOutContractListBySubId({commit}, params) {
     return new Promise((resolve, reject) => {
-      api.outContractController.getOutContractsByContractId(params).then(res => {
+      api.subProjectController.getOutContractListBySubId(params).then(res => {
         res.data.data && commit('setTableData', res.data.data);
         resolve(res);
       }).catch(error => {

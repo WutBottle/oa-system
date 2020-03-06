@@ -252,6 +252,17 @@
             </template>
           </a-select>
         </a-form-item>
+        <a-form-item
+                v-bind="formItemLayout"
+                label="备注"
+        >
+          <a-input
+                  v-decorator="[
+          'note',
+        ]"
+                  placeholder="请输入备注"
+          />
+        </a-form-item>
       </a-form>
     </a-modal>
     <a-drawer
@@ -368,6 +379,18 @@
               </a-select-option>
             </template>
           </a-select>
+        </a-form-item>
+        <a-form-item
+                v-bind="formItemLayout"
+                label="备注"
+        >
+          <a-input
+                  v-decorator="[
+          'note',
+          {initialValue: this.editFormData.note}
+        ]"
+                  placeholder="请输入备注"
+          />
         </a-form-item>
         <a-form-item
                 :label-col="formTailLayout.labelCol"
@@ -502,8 +525,8 @@
         addForm: this.$form.createForm(this),
         editForm: this.$form.createForm(this),
         editFormData: {}, // 编辑当前表单数据
-        editVisible: false, // 编辑发票窗口控制
-        editSpinning: false, // 编辑发票提交按钮
+        editVisible: false, // 编辑分包窗口控制
+        editSpinning: false, // 编辑分包提交按钮
         outContractCategoryList: [], // 分包类型
         outProjectCategoryList: [], // 分包项目类型
       }
@@ -574,7 +597,7 @@
         this.editFormData.outContractDate = moment(this.editFormData.outContractDate);
         this.editVisible = true;
       },
-      // 更新发票列表数据
+      // 更新分包列表数据
       updateTableData() {
         this.tableSpinning = true;
         const params = {

@@ -16,6 +16,7 @@ import outProjectCategoryController from "./outProjectCategoryController";
 import operateRecordController from "./operateRecordController";
 import memorandumController from "./memorandumController";
 import categoryController from "./categoryController";
+import subProjectController from "./subProjectController";
 
 // 导出接口
 export default {
@@ -34,4 +35,5 @@ export default {
   operateRecordController: operateRecordController, // 主页动态
   memorandumController: memorandumController, // 备忘录
   categoryController: categoryController, // 类型控制
+  subProjectController: subProjectController, // 分项控制
 }

@@ -73,6 +73,10 @@ const contractController = {
   getProjectListAfterFilter(params) {
     return axios.post(`${baseUrl.contractController}/getProjectListAfterFilter`, params);
   },
+  // 获取设计号列表(模糊查询)
+  getDesignIdsByIdLike(params) {
+    return axios.post(`${baseUrl.contractController}/getDesignIdsByIdLike`, params);
+  },
 };
 
 export default contractController;

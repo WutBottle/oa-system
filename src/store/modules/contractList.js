@@ -361,6 +361,17 @@ const actions = {
       });
     });
   },
+  // 获取设计号列表(模糊查询)
+  getDesignIdsByIdLike({commit}, params) {
+    return new Promise((resolve, reject) => {
+      api.contractController.getDesignIdsByIdLike(params).then(res => {
+        resolve(res);
+      }).catch(error => {
+        console.log(error, '获取失败');
+        reject(error);
+      });
+    });
+  },
   // 根据合同id获取节点列表
   getContractNodesByContractId({commit}, params) {
     return new Promise((resolve, reject) => {

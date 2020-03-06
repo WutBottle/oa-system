@@ -290,15 +290,11 @@
                 router: "/main/cash",
               },
               {
-                name: "分包录入",
-                router: "/main/outsource",
-              },
-              {
                 name: "分包付款录入",
                 router: "/main/outcontractpaid",
               },
               {
-                name: "分项录入",
+                name: "分项分包录入",
                 router: "/main/subentry",
               },
               {

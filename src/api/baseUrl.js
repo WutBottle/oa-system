@@ -23,6 +23,7 @@ const distributeUrl = {
   operateRecordController: serverBaseUrl + 'operateRecord',
   memorandumController: serverBaseUrl + 'memorandum',
   categoryController: serverBaseUrl + 'category',
+  subProjectController: serverBaseUrl + 'subProject',
 };
 
 export default distributeUrl;

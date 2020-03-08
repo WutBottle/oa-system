@@ -427,6 +427,17 @@ const actions = {
       });
     });
   },
+  // 获取项目信息
+  getProjectByContractId({commit}, params) {
+    return new Promise((resolve, reject) => {
+      api.contractController.getProjectByContractId(params).then(res => {
+        resolve(res);
+      }).catch(error => {
+        console.log(error, '获取项目信息失败');
+        reject(error);
+      });
+    });
+  },
 };
 
 export default {

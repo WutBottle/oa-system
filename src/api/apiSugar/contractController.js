@@ -77,6 +77,10 @@ const contractController = {
   getDesignIdsByIdLike(params) {
     return axios.post(`${baseUrl.contractController}/getDesignIdsByIdLike`, params);
   },
+  // 获取项目信息
+  getProjectByContractId(params) {
+    return axios.post(`${baseUrl.contractController}/getProjectByContractId`, params);
+  },
 };
 
 export default contractController;

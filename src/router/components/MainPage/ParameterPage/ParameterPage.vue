@@ -98,7 +98,7 @@
         </a-card-grid>
       </a-card>
       <a-card title="分项类别" style="margin-bottom: 12px">
-        <a-popover slot="extra" title="添加分包类型" trigger="click" v-model="addSubCategoryVisible">
+        <a-popover slot="extra" title="添加分项类别" trigger="click" v-model="addSubCategoryVisible">
           <template slot="content">
             <div style="margin-bottom: 8px">
               <a-input v-model="newSubCategory" size="small" placeholder="请输入分项类别"></a-input>
@@ -127,7 +127,7 @@
         </a-card-grid>
       </a-card>
       <a-card title="组织方式">
-        <a-popover slot="extra" title="添加分包类型" trigger="click" v-model="addOrganizationVisible">
+        <a-popover slot="extra" title="添加组织方式" trigger="click" v-model="addOrganizationVisible">
           <template slot="content">
             <div style="margin-bottom: 8px">
               <a-input v-model="newOrganization" size="small" placeholder="请输入组织方式"></a-input>
@@ -192,6 +192,8 @@
       this.handleUpdateCategory(1);
       this.handleUpdateCategory(2);
       this.handleUpdateCategory(3);
+      this.handleUpdateCategory(4);
+      this.handleUpdateCategory(5);
     },
     methods: {
       ...mapActions({

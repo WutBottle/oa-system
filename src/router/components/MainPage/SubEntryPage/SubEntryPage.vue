@@ -162,6 +162,9 @@
           <a-select
                   v-decorator="[
           'subCategory',
+          {rules: [{
+            required: true, message: '请选择分项类别!'
+          }]}
         ]"
                   placeholder="请选择分项类别"
           >
@@ -267,7 +270,10 @@
           <a-select
                   v-decorator="[
           'subCategory',
-          {initialValue: this.editFormData.subCategoryId ? this.editFormData.subCategoryId : undefined}
+          {initialValue: this.editFormData.subCategoryId ? this.editFormData.subCategoryId : undefined,
+          rules: [{
+            required: true, message: '请选择分项类别!'
+          }]}
         ]"
                   placeholder="请选择分项类别"
           >

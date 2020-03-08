@@ -63,6 +63,22 @@
       background-color: #E2EFDA;
     }
 
+    .bgececec {
+      background-color: #ececec;
+    }
+
+    .bgffe8d9 {
+      background-color: rgba(255, 232, 217, 0.6);
+    }
+
+    .bgcae7ff {
+      background-color: rgba(202, 231, 255, 0.6);
+    }
+
+    .bgffd966 {
+      background-color: rgba(255, 217, 102, 0.6);
+    }
+
     .click-font {
       cursor: pointer;
       text-decoration: underline;
@@ -85,9 +101,9 @@
       <a-col :span="22">
         <a-row>
           <a-col class="b14 br bb cell" :span="4">设计号</a-col>
-          <a-col class="br bb cell" :span="4">2020-95-031</a-col>
+          <a-col class="br bb cell" :span="4">{{formData.designId}}</a-col>
           <a-col class="b14 br bb cell" :span="4">项目名称</a-col>
-          <a-col class="bb cell" :span="12">洋塘红金二期标准厂房规划设计项目</a-col>
+          <a-col class="bb cell" :span="12">{{formData.contractName}}</a-col>
         </a-row>
         <a-row class="cell">
           总建筑面积152954平米，地上148386、地下4568。
@@ -102,31 +118,73 @@
       <a-col :span="22">
         <a-row>
           <a-col class="b14 br bt cell" :span="4">经营负责人</a-col>
-          <a-col class="br bt cell" :span="4">张帆</a-col>
+          <a-col class="br bt cell" :span="4">{{formData.runningManager && formData.runningManager.staffName}}</a-col>
           <a-col class="b14 br bt cell" :span="4">签约状态</a-col>
           <a-col class="br bt cell" :span="4">已签/洽谈/投标</a-col>
-          <a-col class="b14 br bt cell bgFCE4D6 click-font" :span="4">合同总额</a-col>
-          <a-col class="bt cell bgFCE4D6" :span="4">4000000</a-col>
+          <a-col class="b14 br bt cell bgFCE4D6 click-font" :span="4" @click="handleContractOpen">
+            <a-spin :spinning="contractSpinning">
+            合同总额
+            </a-spin>
+          </a-col>
+          <a-col class="bt cell bgFCE4D6" :span="4">{{formData.contractAmount}}</a-col>
         </a-row>
+        <template v-if="contractVisible">
+          <a-row v-for="(item, index) in contractData" :key="item.id">
+            <a-col class="b14 br bt cell bgffe8d9" :span="4">{{index ? ('补充合同' + index) : '主合同'}}</a-col>
+            <a-col class="br bt cell bgffe8d9" :span="4">{{item.contractAmount}}</a-col>
+            <a-col class="b14 br bt cell bgffe8d9" :span="4">签订日期</a-col>
+            <a-col class="br bt cell bgffe8d9" :span="4">{{item.actualDate}}</a-col>
+            <a-col class="b14 br bt cell bgffe8d9" :span="4">归档日期</a-col>
+            <a-col class="bt cell bgffe8d9" :span="4">{{item.contractDate}}</a-col>
+          </a-row>
+        </template>
         <a-row>
-          <a-col class="b14 br bt cell click-font bgBDD7EE" :span="4">累计开票</a-col>
-          <a-col class="br bt cell bgBDD7EE" :span="4">4000000</a-col>
-          <a-col class="b14 br bt cell click-font bgFFD966" :span="4">累计收费</a-col>
-          <a-col class="br bt cell bgFFD966" :span="4">4500000</a-col>
+          <a-col class="b14 br bt cell click-font bgBDD7EE" :span="4" @click="handleReceiptOpen">
+            <a-spin :spinning="receiptSpinning">
+              累计开票
+            </a-spin>
+          </a-col>
+          <a-col class="br bt cell bgBDD7EE" :span="4">{{formData.receiptAmount}}</a-col>
+          <a-col class="b14 br bt cell click-font bgFFD966" :span="4" @click="handleCashOpen">
+            <a-spin :spinning="cashSpinning">
+              累计收费
+            </a-spin>
+          </a-col>
+          <a-col class="br bt cell bgFFD966" :span="4">{{formData.cashAmount}}</a-col>
           <a-col class="b14 br bt cell" :span="4">未收发票</a-col>
-          <a-col class="bt cell" :span="4">4500000</a-col>
+          <a-col class="bt cell" :span="4">{{formData.contractAmount - formData.receiptAmount}}</a-col>
         </a-row>
+        <template v-if="receiptVisible">
+          <a-row v-for="(item, index) in receiptData" :key="item.receiptId">
+            <a-col class="b14 br bt cell bgcae7ff" :span="4">开具发票{{(index +1 )}}</a-col>
+            <a-col class="br bt cell bgcae7ff" :span="4">{{item.receiptAmount}}</a-col>
+            <a-col class="b14 br bt cell bgcae7ff" :span="4">开票日期</a-col>
+            <a-col class="br bt cell bgcae7ff" :span="4">{{item.receiptDate}}</a-col>
+            <a-col class="b14 br bt cell bgcae7ff" :span="4">发票号码</a-col>
+            <a-col class="bt cell bgcae7ff" :span="4">{{item.receiptId}}</a-col>
+          </a-row>
+        </template>
+        <template v-if="cashVisible">
+          <a-row v-for="(item, index) in cashData" :key="item.cashId">
+            <a-col class="b14 br bt cell bgffd966" :span="4">收费{{(index +1 )}}</a-col>
+            <a-col class="br bt cell bgffd966" :span="4">{{item.cashAmount}}</a-col>
+            <a-col class="b14 br bt cell bgffd966" :span="4">到账日期</a-col>
+            <a-col class="br bt cell bgffd966" :span="4">{{item.cashDate}}</a-col>
+            <a-col class="b14 br bt cell" :span="4"></a-col>
+            <a-col class="bt cell" :span="4"></a-col>
+          </a-row>
+        </template>
         <a-row>
           <a-col class="b14 br bt cell" :span="4">应收比例</a-col>
-          <a-col class="br bt cell" :span="4">90%</a-col>
+          <a-col class="br bt cell" :span="4">{{formData.ratio && (100 - formData.ratio.toFixed(4) * 100)}}%</a-col>
           <a-col class="b14 br bt cell" :span="4">应收金额</a-col>
-          <a-col class="br bt cell" :span="4">4000000</a-col>
+          <a-col class="br bt cell" :span="4">{{formData.contractAmount}}</a-col>
           <a-col class="b14 br bt cell" :span="4"></a-col>
           <a-col class="bt cell" :span="4"></a-col>
         </a-row>
         <a-row>
           <a-col class="b14 br bt cell" :span="4">项目经理</a-col>
-          <a-col class="br bt cell" :span="4">黄磊</a-col>
+          <a-col class="br bt cell" :span="4">{{formData.projectManager && formData.projectManager.staffName}}</a-col>
           <a-col class="b14 br bt cell" :span="4">生产阶段</a-col>
           <a-col class="bt cell" :span="12">概念/方案/初设/施工图/后期</a-col>
         </a-row>
@@ -146,12 +204,35 @@
           <a-col class="br bt cell" :span="4">价格（拟）</a-col>
           <a-col class="bt cell" :span="4">备注</a-col>
         </a-row>
+        <template v-for="(item, index) in formData.subProjects" >
+          <a-row :key="item.subProjectId">
+            <a-row>
+              <a-col class="br bt cell click-font" :span="4" @click="handleSubCategoryOpen(item, index)">{{item.subCategory.categoryName}}</a-col>
+              <a-col class="br bt cell" :span="4">{{item.organization ? item.organization.categoryName : '/'}}</a-col>
+              <a-col class="br bt cell" :span="4">{{item.designTeam}}</a-col>
+              <a-col class="br bt cell" :span="4">{{item.designFees}}</a-col>
+              <a-col class="br bt cell" :span="4">{{item.price}}</a-col>
+              <a-col class="bt cell" :span="4">{{item.note}}</a-col>
+            </a-row>
+            <template v-if="categoryIndex[index]">
+              <a-row v-for="data in item.outContracts" :key="data.outContractId">
+                <a-col class="br bt cell bgececec" :span="4">{{item.subCategory.categoryName}}-{{data.outContractName}}</a-col>
+                <a-col class="br bt cell bgececec" :span="4">{{data.outContractAmount}}</a-col>
+                <a-col class="br bt cell bgececec" :span="4">累开发票</a-col>
+                <a-col class="br bt cell bgececec" :span="4">/</a-col>
+                <a-col class="br bt cell bgececec" :span="4">累计付费</a-col>
+                <a-col class="bt cell bgececec" :span="4">{{data.outPaid}}</a-col>
+              </a-row>
+            </template>
+          </a-row>
+
+        </template>
         <a-row>
           <a-col class="br bt cell" :span="4"></a-col>
           <a-col class="br bt cell" :span="4"></a-col>
           <a-col class="br bt cell" :span="4">合计</a-col>
-          <a-col class="br bt cell bgFFF2CC" :span="4"></a-col>
-          <a-col class="br bt cell bgFFF2CC" :span="4"></a-col>
+          <a-col class="br bt cell bgFFF2CC" :span="4">{{totalFees}}</a-col>
+          <a-col class="br bt cell bgFFF2CC" :span="4">{{totalPrice}}</a-col>
           <a-col class="bt cell bgFFF2CC" :span="4"></a-col>
         </a-row>
       </a-col>
@@ -241,7 +322,141 @@
 </template>
 
 <script>
+  import {mapActions} from 'vuex';
+  import moment from 'moment';
   export default {
-    name: "ProjectInfo"
+    name: "ProjectInfo",
+    props: {
+      formData: {
+        type: Object,
+        default: () => {}
+      },
+    },
+    watch: {
+      formData: {
+        handler() {
+          this.categoryIndex = [];
+          this.totalFees = 0;
+          this.totalPrice = 0;
+          this.formData.subProjects && this.formData.subProjects.map((item) => {
+            this.categoryIndex.push(false);
+            this.totalFees += item.designFees;
+            this.totalPrice += item.price;
+          });
+        },
+        immediate: true
+      }
+    },
+    data() {
+      return {
+        categoryIndex: [], // 控制分项展开
+        totalFees: 0, // 分项设计费总计
+        totalPrice: 0, // 分项价格总计
+        contractData: [],
+        contractVisible: false,
+        contractSpinning: false,
+        receiptData: [],
+        receiptVisible: false,
+        receiptSpinning: false,
+        cashData: [],
+        cashVisible: false,
+        cashSpinning: false,
+      }
+    },
+    methods: {
+      ...mapActions({
+        getContractListByContractId: 'contractList/getContractListByContractId',
+        getReceiptsByContractId: 'receiptOperation/getReceiptsByContractId',
+        getCashesByContractId: 'cashOperation/getCashesByContractId',
+      }),
+      handleSubCategoryOpen(item, index) {
+        if (item.outContracts.length) {
+          this.$set(this.categoryIndex, index, !this.categoryIndex[index])
+        } else {
+          this.$message.warning('该分项无分包合同！')
+        }
+      },
+      handleContractOpen() {
+        if (this.contractVisible === true) {
+          this.contractVisible = false;
+        } else {
+          this.contractSpinning = true;
+          const params = {
+            contractId: this.formData.contractId,
+          };
+          this.getContractListByContractId(params).then((res) => {
+            if (res.data.meta.success) {
+              this.contractData = res.data.data.map(item => {
+                return {
+                  contractAmount: item.contractAmount,
+                  contractDate: moment(item.contractDate).format('YYYY-MM-DD'),
+                  actualDate: moment(item.actualDate).format('YYYY-MM-DD'),
+                }
+              });
+              this.contractVisible = true;
+            } else {
+              this.$message.error(res.data.meta.message);
+            }
+            this.contractSpinning = false;
+          }).catch(error => {
+            this.contractSpinning = false;
+          })
+        }
+      },
+      handleReceiptOpen() {
+        if (this.receiptVisible === true) {
+          this.receiptVisible = false;
+        } else {
+          this.receiptSpinning = true;
+          const params = {
+            contractId: this.formData.contractId,
+          };
+          this.getReceiptsByContractId(params).then((res) => {
+            if (res.data.meta.success) {
+              this.receiptData = res.data.data.receipts.map(item => {
+                return {
+                  receiptId: item.receiptId,
+                  receiptDate: moment(item.receiptDate).format('YYYY-MM-DD'),
+                  receiptAmount: item.receiptAmount,
+                }
+              });
+              this.receiptVisible = true;
+            } else {
+              this.$message.error(res.data.meta.message);
+            }
+            this.receiptSpinning = false;
+          }).catch(error => {
+            this.receiptSpinning = false;
+          })
+        }
+      },
+      handleCashOpen() {
+        if (this.cashVisible === true) {
+          this.cashVisible = false;
+        } else {
+          this.cashSpinning = true;
+          const params = {
+            contractId: this.formData.contractId,
+          };
+          this.getCashesByContractId(params).then((res) => {
+            if (res.data.meta.success) {
+              this.cashData = res.data.data.cashes.map(item => {
+                return {
+                  cashId: item.cashId,
+                  cashDate: moment(item.cashDate).format('YYYY-MM-DD'),
+                  cashAmount: item.cashAmount,
+                }
+              });
+              this.cashVisible = true;
+            } else {
+              this.$message.error(res.data.meta.message);
+            }
+            this.cashSpinning = false;
+          }).catch(error => {
+            this.cashSpinning = false;
+          })
+        }
+      },
+    }
   }
 </script>

@@ -49,7 +49,7 @@
               </a-menu>
             </a-dropdown>
           </template>
-          <a-progress slot="ratio" slot-scope="text" type="circle" :percent="text*100" :width="60" />
+          <a-progress slot="ratio" slot-scope="text" type="circle" :percent="text" :width="60" />
           <a slot="projectSalary" slot-scope="text, record" @click="handleOpenSalary(record)">查看工资</a>
         </a-table>
       </a-spin>
@@ -70,12 +70,22 @@
         </a-table>
       </a-spin>
     </a-modal>
+    <a-modal
+            title="项目信息"
+            v-model="projectInfoVisible"
+            width="90vw"
+            @ok="submitForm"
+            okText="确定"
+            cancelText="取消"
+    >
+      <ProjectInfo :formData="projectInfoData"/>
+    </a-modal>
   </div>
 </template>
 
 <script>
-  import {mapState, mapMutations, mapActions} from 'vuex'
-
+  import {mapActions} from 'vuex'
+  import ProjectInfo from "../ProjectInfo/ProjectInfo";
   const statusMap = {
     true: {
       status: 'success',
@@ -88,6 +98,9 @@
   };
   export default {
     name: "ProjectListPage",
+    components: {
+      ProjectInfo,
+    },
     data() {
       return {
         formLayout: 'inline',
@@ -252,6 +265,8 @@
           current: 1,
         },
         contractIdForSalary: '',
+        projectInfoVisible: false,
+        projectInfoData: {},
       }
     },
     filters: {
@@ -273,6 +288,7 @@
         getProjectListByIdLike: 'contractList/getProjectListByIdLike',
         cashExport: 'cashOperation/cashExport',
         getSalaryListByContractId: 'salaryOperation/getSalaryListByContractId',
+        getProjectByContractId: 'contractList/getProjectByContractId',
       }),
       updateTableData() {
         this.spinning = true;
@@ -299,7 +315,7 @@
                 projectInvestment: item.projectInvestment,
                 isSign: item.isSign,
                 scale: item.scale,
-                ratio: item.ratio && item.ratio.toFixed(4),
+                ratio: item.ratio && Number((item.ratio * 100).toFixed(4)),
               }
             });
             this.spinning = false;
@@ -315,7 +331,12 @@
         this.updateTableData();
       },
       handleOpen(selectData) {
-        this.$emit('handleContractOpen', selectData.contractId)
+        this.projectInfoVisible = true;
+        this.getProjectByContractId({
+          contractId: selectData.contractId
+        }).then(res => {
+          this.projectInfoData = res && res.data.data;
+        });
       },
       handleCashExport(data) {
         let fileName = '现金发票.xlsx';
@@ -379,7 +400,10 @@
         this.salaryPaginationProps.current = pagination.current;
         this.salaryPaginationProps.pageSize = pagination.pageSize;
         this.updateSalaryTableData();
-      }
+      },
+      submitForm() {
+
+      },
     }
   }
 </script>

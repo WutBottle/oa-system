@@ -15,16 +15,19 @@
         >
           <a-select
                   v-decorator="[
-          'sign',
+          'isSign',
           {initialValue: String(this.formData.signState), rules: [{ required: true, message: '请选择签约状态！' }]}
         ]"
                   placeholder="请选择签约状态"
           >
-            <a-select-option value="true">
-              已签约
+            <a-select-option value="0">
+              已签
             </a-select-option>
-            <a-select-option value="false">
-              未签约
+            <a-select-option value="1">
+              洽谈
+            </a-select-option>
+            <a-select-option value="2">
+              投标
             </a-select-option>
           </a-select>
         </a-form-item>
@@ -298,20 +301,39 @@
         <a-form-item
                 :label-col="formItemLayout.labelCol"
                 :wrapper-col="formItemLayout.wrapperCol"
-                label="项目规模(平方米)"
+                label="地上面积(平方米)"
         >
           <a-input
                   v-decorator="[
-          'scale',
-          {initialValue: this.formData.projectScale, rules: [{
-            required: true, message: '请输入项目规模！'
+          'aboveGroundArea',
+          {initialValue: this.formData.aboveGroundArea, rules: [{
+            required: true, message: '请输入地上面积！'
           }, {
                 type: 'number',
                 message: '请输入数字',
                 transform:(value)=> {return Number(value)}
           }]}
         ]"
-                  placeholder="请输入项目规模"
+                  placeholder="请输入地上面积"
+          />
+        </a-form-item>
+        <a-form-item
+                :label-col="formItemLayout.labelCol"
+                :wrapper-col="formItemLayout.wrapperCol"
+                label="地下面积(平方米)"
+        >
+          <a-input
+                  v-decorator="[
+          'underGroundArea',
+          {initialValue: this.formData.underGroundArea, rules: [{
+            required: true, message: '请输入地下面积！'
+          }, {
+                type: 'number',
+                message: '请输入数字',
+                transform:(value)=> {return Number(value)}
+          }]}
+        ]"
+                  placeholder="请输入地下面积"
           />
         </a-form-item>
         <a-form-item

@@ -10,6 +10,25 @@
   <div class="ContractListPage">
     <a-form class="form-wrapper" :layout="formLayout">
       <a-form-item
+              label="合同号"
+      >
+        <a-input style="width: 150px" v-model="contractId" placeholder="请输入合同号"/>
+      </a-form-item>
+      <a-form-item
+              :wrapper-col="buttonItemLayout.wrapperCol"
+      >
+        <a-button type="primary" @click="handleQuery">
+          查询
+        </a-button>
+      </a-form-item>
+      <a-form-item
+              :wrapper-col="buttonItemLayout.wrapperCol"
+      >
+        <a-button icon="plus" type="primary" @click="handleAdd">
+          新增
+        </a-button>
+      </a-form-item>
+      <a-form-item
               :wrapper-col="buttonItemLayout.wrapperCol"
       >
         <a-popover title="表单配置" placement="bottom" trigger="click" v-model="settingVisible">
@@ -84,28 +103,26 @@
 
 <script>
   import {mapState, mapMutations, mapActions} from 'vuex'
-  import UpdateContract from "../UpdateContract/UpdateContract";
+  import UpdateContract from "./UpdateContract/UpdateContract";
   import moment from "moment";
   const statusMap = {
-    true: {
+    0: {
       status: 'success',
-      text: '已签约'
+      text: '已签'
     },
-    false: {
+    1: {
+      status: 'processing',
+      text: '洽谈'
+    },
+    2: {
       status: 'error',
-      text: '未签约'
-    }
+      text: '投标'
+    },
   };
   export default {
     name: "ContractListPage",
     components:{
       UpdateContract,
-    },
-    props: {
-      contractId: {
-        type: String,
-        default: '',
-      },
     },
     data() {
       return {
@@ -117,6 +134,7 @@
         buttonItemLayout: {
           wrapperCol: {span: 14, offset: 0}
         },
+        contractId: '',
         paginationProps: {
           pageSize: 5, // 默认每页显示数量
           showSizeChanger: true, // 显示可改变每页数量
@@ -172,17 +190,22 @@
       }),
       ...mapActions({
         downloadContract: 'contractList/downloadContract',
-        getContractListByContractId: 'contractList/getContractListByContractId',
+        getContractListByIdLike: 'contractList/getContractListByIdLike',
         deleteContract: 'contractList/deleteContract',
         getCategoryList: 'categoryOperation/getCategoryList', // 获取类型
       }),
+      // 查询处理
+      handleQuery() {
+        this.paginationProps.current = 1;
+        this.updateTableData();
+      },
       setPageInfo(data) {
         this.tableData = data.content.map((item, index) => {
           return {
             key: index,
             id: item.id,
             contractNum: item.contractId, // 合同号
-            signState: item.sign, // 签约状态
+            signState: item.isSign, // 签约状态
             designNum: item.designId, // 设计号
             employerContractNum: item.ownerId, // 发包人合同编号
             contractName: item.contractName, // 合同名称
@@ -215,7 +238,9 @@
             }, // 项目预算秘书
             contractingParty: item.owner, // 发包方
             investmentAmount: item.investment, // 投资额(万元)
-            projectScale: item.scale, // 项目规模(平方米)
+            projectScale: (item.aboveGroundArea || item.underGroundArea) && ('地上' + item.aboveGroundArea + '+地下' + item.underGroundArea), // 项目规模(平方米)
+            aboveGroundArea: item.aboveGroundArea, // 地上面积(平方米)
+            underGroundArea: item.underGroundArea, // 地下面积(平方米)
             region: item.region ? '省内' : '省外', // 地域
             regionalKeyWords: item.district, // 地区关键词
             class1: item.buildOne, // 建筑一级分类
@@ -236,10 +261,10 @@
           pageNum: this.paginationProps.current,
           pageLimit: this.paginationProps.pageSize
         };
-        this.getContractListByContractId(params).then((data) => {
-          if (data.data.meta.success) {
-            this.paginationProps.total = data.data.data.totalElements;
-            this.setPageInfo(data.data.data);
+        this.getContractListByIdLike(params).then((res) => {
+          if (res.data.meta.success) {
+            this.paginationProps.total = res.data.data.totalElements;
+            this.setPageInfo(res.data.data);
             this.spinning = false;
           } else {
             this.$message.error(data.data.meta.message);
@@ -301,7 +326,6 @@
         });
         this.contractEditData.contractNodes = tempNodes;
         this.contractEditData.itemCategory = this.projectCategoryList[this.projectCategoryList.findIndex((item) => this.contractEditData.itemCategory === item.categoryName)].categoryId;
-        console.log(this.contractEditData);
         this.contractEditData.contractFilingDate = moment(this.contractEditData.contractFilingDate);
         this.contractEditData.actualSigningDate = moment(this.contractEditData.actualSigningDate);
         this.editVisible = true;
@@ -328,7 +352,7 @@
       // 生成表格样式
       loadTableColumns(data) {
         this.columns = [];
-        this.scrollX = 80;
+        this.scrollX = 50;
         this.columns.push(this.totalColumns[29]);
         if (this.role === 'ROLE_ADMIN') {
           this.scrollX += 150;
@@ -340,6 +364,9 @@
         });
         this.columns = this.columns.sort(this.compare('sort'))
       },
+      handleAdd() {
+        this.$emit('showAddModal');
+      }
     }
   }
 </script>

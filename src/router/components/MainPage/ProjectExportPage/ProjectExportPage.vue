@@ -81,7 +81,7 @@
                   选择
                 </a-button>
               </template>
-              <a-progress slot="ratio" slot-scope="text" type="circle" :percent="text*100" :width="60"/>
+              <a-progress slot="ratio" slot-scope="text" type="circle" :percent="text" :width="60"/>
             </a-table>
           </a-spin>
         </div>
@@ -407,7 +407,7 @@
                 projectInvestment: item.projectInvestment,
                 isSign: item.isSign,
                 scale: item.scale,
-                ratio: item.ratio && item.ratio.toFixed(4),
+                ratio: item.ratio && Number((item.ratio * 100).toFixed(4)),
                 selectIndex: !!this.selectProjectInfo.find(value => value.contractId === item.contractId),
               }
             });

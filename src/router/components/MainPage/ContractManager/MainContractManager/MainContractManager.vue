@@ -268,20 +268,39 @@
           <a-form-item
                   :label-col="formItemLayout.labelCol"
                   :wrapper-col="formItemLayout.wrapperCol"
-                  label="项目规模(平方米)"
+                  label="地上面积(平方米)"
           >
             <a-input
                     v-decorator="[
-          'scale',
+          'aboveGroundArea',
           {rules: [{
-            required: true, message: '请输入项目规模！'
+            required: true, message: '请输入地上面积！'
           }, {
                 type: 'number',
                 message: '请输入数字',
                 transform:(value)=> {return Number(value)}
           }]}
         ]"
-                    placeholder="请输入项目规模"
+                    placeholder="请输入地上面积"
+            />
+          </a-form-item>
+          <a-form-item
+                  :label-col="formItemLayout.labelCol"
+                  :wrapper-col="formItemLayout.wrapperCol"
+                  label="地下面积(平方米)"
+          >
+            <a-input
+                    v-decorator="[
+          'underGroundArea',
+          {rules: [{
+            required: true, message: '请输入地下面积！'
+          }, {
+                type: 'number',
+                message: '请输入数字',
+                transform:(value)=> {return Number(value)}
+          }]}
+        ]"
+                    placeholder="请输入地下面积"
             />
           </a-form-item>
           <a-form-item
@@ -330,16 +349,19 @@
           >
             <a-select
                     v-decorator="[
-          'sign',
+          'isSign',
           {rules: [{ required: true, message: '请选择签约状态！' }]}
         ]"
                     placeholder="请选择签约状态"
             >
-              <a-select-option value="true">
-                已签约
+              <a-select-option value="0">
+                已签
               </a-select-option>
-              <a-select-option value="false">
-                未签约
+              <a-select-option value="1">
+                洽谈
+              </a-select-option>
+              <a-select-option value="2">
+                投标
               </a-select-option>
             </a-select>
           </a-form-item>
@@ -435,44 +457,42 @@
     </a-col>
     <a-col :span="9">
       <div class="xls-upload">
-        <a-affix :offsetTop="120">
-          <a-upload-dragger :multiple="false" :fileList="excelFileList" :remove="handleExcelRemove"
-                            :beforeUpload="beforeUploadXls">
-            <p class="ant-upload-drag-icon">
-              <a-icon type="inbox"/>
-            </p>
-            <p class="ant-upload-text">点击或拖拽文件导入</p>
-            <p class="ant-upload-hint">将合同信息的excel文件拖入此处上传录入</p>
-          </a-upload-dragger>
-          <a-list
-                  bordered
-                  size="small"
-                  class="contract-list"
-                  itemLayout="horizontal"
-                  :dataSource="contractsData"
-                  style="margin-top: 8px"
-          >
+        <a-upload-dragger :multiple="false" :fileList="excelFileList" :remove="handleExcelRemove"
+                          :beforeUpload="beforeUploadXls">
+          <p class="ant-upload-drag-icon">
+            <a-icon type="inbox"/>
+          </p>
+          <p class="ant-upload-text">点击或拖拽文件导入</p>
+          <p class="ant-upload-hint">将合同信息的excel文件拖入此处上传录入</p>
+        </a-upload-dragger>
+        <a-list
+                bordered
+                size="small"
+                class="contract-list"
+                itemLayout="horizontal"
+                :dataSource="contractsData"
+                style="margin-top: 8px"
+        >
+          <a-list-item slot="renderItem" slot-scope="item, index">
+            <a-list-item-meta>
+              <a slot="title" @click="showDrawer(index)">合同{{item.contractId}}</a>
+            </a-list-item-meta>
+          </a-list-item>
+        </a-list>
+        <a-drawer
+                title="合同详情"
+                placement="right"
+                :width="720"
+                :closable="false"
+                @close="onClose"
+                :visible="visible"
+        >
+          <a-list :grid="{ gutter: 8, column: 2}" :dataSource="contractData">
             <a-list-item slot="renderItem" slot-scope="item, index">
-              <a-list-item-meta>
-                <a slot="title" @click="showDrawer(index)">合同{{item.contractId}}</a>
-              </a-list-item-meta>
+              <a-card :title="item.title">{{item.value}}</a-card>
             </a-list-item>
           </a-list>
-          <a-drawer
-                  title="合同详情"
-                  placement="right"
-                  :width="720"
-                  :closable="false"
-                  @close="onClose"
-                  :visible="visible"
-          >
-            <a-list :grid="{ gutter: 8, column: 2}" :dataSource="contractData">
-              <a-list-item slot="renderItem" slot-scope="item, index">
-                <a-card :title="item.title">{{item.value}}</a-card>
-              </a-list-item>
-            </a-list>
-          </a-drawer>
-        </a-affix>
+        </a-drawer>
       </div>
     </a-col>
   </a-row>
@@ -484,8 +504,8 @@
   import {debounce} from 'debounce';
 
   const formItemLayout = {
-    labelCol: {span: 6},
-    wrapperCol: {span: 14},
+    labelCol: {span: 8},
+    wrapperCol: {span: 12},
   };
   const formTailLayout = {
     labelCol: {span: 4},
@@ -675,10 +695,16 @@
               values.projectSecretary = {
                 id: values.projectSecretary
               };
-              this.addContract(values).then((data) => {
-                this.$message.success(data.data.data);
+              this.addContract(values).then((res) => {
+                if (res.data.meta.success){
+                  this.$message.success(res.data.data);
+                  this.form.resetFields();
+                  this.$emit('updateContractTableData');
+                } else {
+                  this.$message.error(res.data.meta.message);
+                }
               }).catch((error) => {
-                this.$message.error('添加失败');
+                this.$message.error(error);
               });
             }
           },
@@ -742,7 +768,6 @@
             }
           }).catch((error) => {
             this.$message.error('上传失败');
-            console.log(error);
           });
         } else {
           this.$message.error('只能上传.xls或者.xlsx文件类型');

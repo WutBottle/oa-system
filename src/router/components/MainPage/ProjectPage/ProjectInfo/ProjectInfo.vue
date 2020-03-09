@@ -9,8 +9,8 @@
     border-radius: 6px;
 
     .cell {
-      height: 40px;
-      line-height: 40px;
+      height: 32px;
+      line-height: 32px;
     }
 
     .bb {
@@ -106,7 +106,7 @@
           <a-col class="bb cell" :span="12">{{formData.contractName}}</a-col>
         </a-row>
         <a-row class="cell">
-          总建筑面积152954平米，地上148386、地下4568。
+          总建筑面积{{formData.aboveGroundArea + formData.underGroundArea}}平米，地上{{formData.aboveGroundArea}}、地下{{formData.underGroundArea}}。
         </a-row>
       </a-col>
     </a-row>
@@ -130,7 +130,7 @@
         </a-row>
         <template v-if="contractVisible">
           <a-row v-for="(item, index) in contractData" :key="item.id">
-            <a-col class="b14 br bt cell bgffe8d9" :span="4">{{index ? ('补充合同' + index) : '主合同'}}</a-col>
+            <a-col class="b14 br bt cell bgffe8d9 click-font" :span="4" @click="handleContractPdfOpen(item.contractFile)">{{index ? ('补充合同' + index) : '主合同'}}</a-col>
             <a-col class="br bt cell bgffe8d9" :span="4">{{item.contractAmount}}</a-col>
             <a-col class="b14 br bt cell bgffe8d9" :span="4">签订日期</a-col>
             <a-col class="br bt cell bgffe8d9" :span="4">{{item.actualDate}}</a-col>
@@ -156,7 +156,7 @@
         </a-row>
         <template v-if="receiptVisible">
           <a-row v-for="(item, index) in receiptData" :key="item.receiptId">
-            <a-col class="b14 br bt cell bgcae7ff" :span="4">开具发票{{(index +1 )}}</a-col>
+            <a-col class="b14 br bt cell bgcae7ff click-font" :span="4" @click="handleReceiptPdfOpen(item.receiptFile)">开具发票{{(index +1 )}}</a-col>
             <a-col class="br bt cell bgcae7ff" :span="4">{{item.receiptAmount}}</a-col>
             <a-col class="b14 br bt cell bgcae7ff" :span="4">开票日期</a-col>
             <a-col class="br bt cell bgcae7ff" :span="4">{{item.receiptDate}}</a-col>
@@ -324,6 +324,8 @@
 <script>
   import {mapActions} from 'vuex';
   import moment from 'moment';
+  import baseUrl from '@/api/baseUrl'
+
   export default {
     name: "ProjectInfo",
     props: {
@@ -338,6 +340,9 @@
           this.categoryIndex = [];
           this.totalFees = 0;
           this.totalPrice = 0;
+          this.contractVisible = false;
+          this.receiptVisible = false;
+          this.cashVisible = false;
           this.formData.subProjects && this.formData.subProjects.map((item) => {
             this.categoryIndex.push(false);
             this.totalFees += item.designFees;
@@ -391,8 +396,12 @@
                   contractAmount: item.contractAmount,
                   contractDate: moment(item.contractDate).format('YYYY-MM-DD'),
                   actualDate: moment(item.actualDate).format('YYYY-MM-DD'),
+                  contractFile: item.contractFile,
                 }
               });
+              if (!res.data.data.length) {
+                this.$message.warning('无合同信息！')
+              }
               this.contractVisible = true;
             } else {
               this.$message.error(res.data.meta.message);
@@ -418,8 +427,12 @@
                   receiptId: item.receiptId,
                   receiptDate: moment(item.receiptDate).format('YYYY-MM-DD'),
                   receiptAmount: item.receiptAmount,
+                  receiptFile: item.receiptFile,
                 }
               });
+              if (!res.data.data.receipts.length) {
+                this.$message.warning('无发票信息！')
+              }
               this.receiptVisible = true;
             } else {
               this.$message.error(res.data.meta.message);
@@ -447,6 +460,9 @@
                   cashAmount: item.cashAmount,
                 }
               });
+              if (!res.data.data.cashes.length) {
+                this.$message.warning('无收费信息！')
+              }
               this.cashVisible = true;
             } else {
               this.$message.error(res.data.meta.message);
@@ -455,6 +471,23 @@
           }).catch(error => {
             this.cashSpinning = false;
           })
+        }
+      },
+      handleReceiptPdfOpen(url) {
+        if (url) {
+          const router = baseUrl.serverBaseController + url;
+          window.open(router, '_blank');
+        } else {
+          this.$message.warning('无此发票文件');
+        }
+      },
+      handleContractPdfOpen(url) {
+        console.log(url)
+        if (url) {
+          const router = baseUrl.serverBaseController + url;
+          window.open(router, '_blank');
+        } else {
+          this.$message.warning('无此合同文件');
         }
       },
     }

@@ -87,15 +87,20 @@
   import {mapActions} from 'vuex'
   import ProjectInfo from "../ProjectInfo/ProjectInfo";
   const statusMap = {
-    true: {
+    0: {
       status: 'success',
-      text: '已签约'
+      text: '已签'
     },
-    false: {
+    1: {
+      status: 'processing',
+      text: '洽谈'
+    },
+    2: {
       status: 'error',
-      text: '未签约'
-    }
+      text: '投标'
+    },
   };
+
   export default {
     name: "ProjectListPage",
     components: {
@@ -314,7 +319,10 @@
                 contractRemain: item.contractRemain,
                 projectInvestment: item.projectInvestment,
                 isSign: item.isSign,
-                scale: item.scale,
+                scaleArea: item.scale,
+                aboveGroundArea: item.aboveGroundArea,
+                underGroundArea: item.underGroundArea,
+                scale: (item.aboveGroundArea || item.underGroundArea) && ('地上' + item.aboveGroundArea + '+地下' + item.underGroundArea), // 项目规模(平方米)
                 ratio: item.ratio && Number((item.ratio * 100).toFixed(4)),
               }
             });
@@ -336,6 +344,10 @@
           contractId: selectData.contractId
         }).then(res => {
           this.projectInfoData = res && res.data.data;
+          Object.assign(this.projectInfoData, {
+            aboveGroundArea: selectData.aboveGroundArea,
+            underGroundArea: selectData.underGroundArea
+          });
         });
       },
       handleCashExport(data) {

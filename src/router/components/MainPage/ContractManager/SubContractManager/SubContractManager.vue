@@ -263,20 +263,39 @@
           <a-form-item
                   :label-col="formItemLayout.labelCol"
                   :wrapper-col="formItemLayout.wrapperCol"
-                  label="项目规模(平方米)"
+                  label="地上面积(平方米)"
           >
             <a-input
                     v-decorator="[
-          'scale',
+          'aboveGroundArea',
           {rules: [{
-            required: true, message: '请输入项目规模！'
+            required: true, message: '请输入地上面积！'
           }, {
                 type: 'number',
                 message: '请输入数字',
                 transform:(value)=> {return Number(value)}
           }]}
         ]"
-                    placeholder="请输入项目规模"
+                    placeholder="请输入地上面积"
+            />
+          </a-form-item>
+          <a-form-item
+                  :label-col="formItemLayout.labelCol"
+                  :wrapper-col="formItemLayout.wrapperCol"
+                  label="地下面积(平方米)"
+          >
+            <a-input
+                    v-decorator="[
+          'underGroundArea',
+          {rules: [{
+            required: true, message: '请输入地下面积！'
+          }, {
+                type: 'number',
+                message: '请输入数字',
+                transform:(value)=> {return Number(value)}
+          }]}
+        ]"
+                    placeholder="请输入地下面积"
             />
           </a-form-item>
           <a-form-item
@@ -322,16 +341,19 @@
           >
             <a-select
                     v-decorator="[
-          'sign',
+          'isSign',
           {rules: [{ required: true, message: '请选择签约状态！' }]}
         ]"
                     placeholder="请选择签约状态"
             >
-              <a-select-option value="true">
-                已签约
+              <a-select-option value="0">
+                已签
               </a-select-option>
-              <a-select-option value="false">
-                未签约
+              <a-select-option value="1">
+                洽谈
+              </a-select-option>
+              <a-select-option value="2">
+                投标
               </a-select-option>
             </a-select>
           </a-form-item>
@@ -512,11 +534,13 @@
               values.projectSecretary = {
                 id: values.projectSecretary
               };
-              this.addContract(values).then((data) => {
-                if (data.data.meta.success) {
-                  this.$message.success(data.data.meta.message);
+              this.addContract(values).then((res) => {
+                if (res.data.meta.success) {
+                  this.$message.success(res.data.data);
+                  this.form.resetFields();
+                  this.$emit('updateContractTableData');
                 } else {
-                  this.$message.error(data.data.meta.message);
+                  this.$message.error(res.data.meta.message);
                 }
               }).catch((error) => {
                 this.$message.error('添加失败');

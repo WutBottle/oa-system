@@ -427,17 +427,33 @@
           <a-form-item
                   :label-col="formItemLayout.labelCol"
                   :wrapper-col="formItemLayout.wrapperCol"
-                  label="合同节点"
+                  label="生产阶段"
           >
             <a-select
                     v-decorator="[
-          'contractNodes',
-          {rules: [{ required: true, message: '请输入合同节点！' }]}
+          'productionStageId',
+          {rules: [{ required: true, message: '请选择生产阶段！' }]}
         ]"
-                    mode="tags"
-                    placeholder="请输入合同节点"
+                    placeholder="请选择生产阶段"
             >
+              <template v-for="item in this.productionStageList">
+                <a-select-option :key="item.categoryId" :value="item.categoryId">
+                  {{item.categoryName}}
+                </a-select-option>
+              </template>
             </a-select>
+          </a-form-item>
+          <a-form-item
+                  :label-col="formItemLayout.labelCol"
+                  :wrapper-col="formItemLayout.wrapperCol"
+                  label="备注"
+          >
+            <a-input
+                    v-decorator="[
+          'note',
+        ]"
+                    placeholder="请输入备注"
+            />
           </a-form-item>
           <a-form-item
                   :label-col="formTailLayout.labelCol"
@@ -636,15 +652,11 @@
             title: '项目类型',
             value: '',
           },
-          {
-            key: 'contractNodes',
-            title: '合同节点',
-            value: '',
-          },
         ],
         uploadSpinning: false, // 判断是否正在上传文件
         fetching: false, // 控制拉取列表
         projectCategoryList: [], // 项目类型
+        productionStageList: [], // 生产阶段
       };
     },
     computed: {
@@ -657,6 +669,11 @@
         categoryType: 3
       }).then(res => {
         this.projectCategoryList = res && res.data.data;
+      });
+      this.getCategoryList({
+        categoryType: 6
+      }).then(res => {
+        this.productionStageList = res && res.data.data;
       });
     },
     methods: {
@@ -674,18 +691,12 @@
               let projectCategory = {};
               projectCategory = this.projectCategoryList[this.projectCategoryList.findIndex((item) => item.categoryId === values.projectCategoryId)];
               delete values.projectCategoryId;
-
-              let contractNodes = values.contractNodes;
-              let tempContractNodes = [];
-              delete values.contractNodes;
-              contractNodes.forEach((item) => {
-                tempContractNodes.push({
-                  nodeDescription: item
-                })
-              });
-              values = Object.assign(values, {contractNodes: tempContractNodes});
+              let productionStageCategory = {};
+              productionStageCategory = this.productionStageList[this.productionStageList.findIndex((item) => item.categoryId === values.productionStageId)];
+              delete values.productionStageId;
               values = Object.assign(values, {contractFile: this.fileName});
               values = Object.assign(values, {projectCategory: projectCategory});
+              values = Object.assign(values, {productionStage: productionStageCategory});
               values.projectManager = {
                 id: values.projectManager
               };
@@ -811,13 +822,6 @@
               break;
             case 'projectCategory':
               this.contractData[index].value = this.contractsData[contractIndex][item.key].projectCategoryName
-              break;
-            case 'contractNodes':
-              let temp = '';
-              this.contractsData[contractIndex][item.key].forEach((item) => {
-                temp += item.nodeDescription;
-              });
-              this.contractData[index].value = temp;
               break;
             default:
               this.contractData[index].value = this.contractsData[contractIndex][item.key];

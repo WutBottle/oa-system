@@ -186,7 +186,7 @@
           <a-col class="b14 br bt cell" :span="4">项目经理</a-col>
           <a-col class="br bt cell" :span="4">{{formData.projectManager && formData.projectManager.staffName}}</a-col>
           <a-col class="b14 br bt cell" :span="4">生产阶段</a-col>
-          <a-col class="bt cell" :span="12">概念/方案/初设/施工图/后期</a-col>
+          <a-col class="bt cell" :span="12">{{formData.productionStage ? formData.productionStage.categoryName : '/'}}</a-col>
         </a-row>
       </a-col>
     </a-row>
@@ -205,11 +205,11 @@
           <a-col class="bt cell" :span="4">备注</a-col>
         </a-row>
         <template v-for="(item, index) in formData.subProjects" >
-          <a-row :key="item.subProjectId">
+          <a-row :key="index">
             <a-row>
               <a-col class="br bt cell click-font" :span="4" @click="handleSubCategoryOpen(item, index)">{{item.subCategory.categoryName}}</a-col>
               <a-col class="br bt cell" :span="4">{{item.organization ? item.organization.categoryName : '/'}}</a-col>
-              <a-col class="br bt cell" :span="4">{{item.designTeam}}</a-col>
+              <a-col class="br bt cell" :span="4">{{item.designTeam ? item.designTeam : '/'}}</a-col>
               <a-col class="br bt cell" :span="4">{{item.designFees}}</a-col>
               <a-col class="br bt cell" :span="4">{{item.price}}</a-col>
               <a-col class="bt cell" :span="4">{{item.note}}</a-col>
@@ -314,9 +314,7 @@
     </a-row>
     <a-row class="bb bgE2EFDA" style="text-align: left;padding: 12px;">
       <p>备注：</p>
-      <p>1、此表在主合同签订前，由项目经理填写完毕后交由相关负责人；</p>
-      <p>2、如有其他内协、外包项请在“其他”栏中如实填写；</p>
-      <p>3、建筑、结构、设备、造价等专业设计费按公司默认比例分配。</p>
+      <p>{{formData.note ? formData.note : '暂无'}}</p>
     </a-row>
   </div>
 </template>

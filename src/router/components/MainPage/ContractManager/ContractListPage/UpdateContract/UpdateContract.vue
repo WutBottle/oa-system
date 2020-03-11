@@ -11,32 +11,10 @@
         <a-form-item
                 :label-col="formItemLayout.labelCol"
                 :wrapper-col="formItemLayout.wrapperCol"
-                label="签约状态"
-        >
-          <a-select
-                  v-decorator="[
-          'isSign',
-          {initialValue: String(this.formData.signState), rules: [{ required: true, message: '请选择签约状态！' }]}
-        ]"
-                  placeholder="请选择签约状态"
-          >
-            <a-select-option value="0">
-              已签
-            </a-select-option>
-            <a-select-option value="1">
-              洽谈
-            </a-select-option>
-            <a-select-option value="2">
-              投标
-            </a-select-option>
-          </a-select>
-        </a-form-item>
-        <a-form-item
-                :label-col="formItemLayout.labelCol"
-                :wrapper-col="formItemLayout.wrapperCol"
                 label="设计号"
         >
           <a-input
+                  disabled
                   v-decorator="[
           'designId',
           {initialValue: this.formData.designNum, rules: [{ required: true, message: '请输入设计号！' }]}
@@ -63,14 +41,35 @@
         <a-form-item
                 :label-col="formItemLayout.labelCol"
                 :wrapper-col="formItemLayout.wrapperCol"
+                label="签约状态"
+        >
+          <a-select
+                  v-decorator="[
+          'isSign',
+          {initialValue: String(this.formData.signState)}
+        ]"
+                  placeholder="请选择签约状态"
+          >
+            <a-select-option value="0">
+              已签
+            </a-select-option>
+            <a-select-option value="1">
+              洽谈
+            </a-select-option>
+            <a-select-option value="2">
+              投标
+            </a-select-option>
+          </a-select>
+        </a-form-item>
+        <a-form-item
+                :label-col="formItemLayout.labelCol"
+                :wrapper-col="formItemLayout.wrapperCol"
                 label="发包人合同编号"
         >
           <a-input
                   v-decorator="[
           'ownerId',
-          {initialValue: this.formData.employerContractNum, rules: [{
-            required: true, message: '请输入发包人合同编号！'
-          }]}
+          {initialValue: this.formData.employerContractNum}
         ]"
                   placeholder="请输入发包人合同编号"
           />
@@ -83,7 +82,7 @@
           <a-input
                   v-decorator="[
           'contractName',
-          {initialValue: this.formData.contractName, rules: [{ required: true, message: '请输入合同名称！' }]}
+          {initialValue: this.formData.contractName}
         ]"
                   placeholder="请输入合同名称"
           />
@@ -133,7 +132,6 @@
           <a-date-picker
                   v-decorator="['actualDate',  {
                     initialValue: this.formData.actualSigningDate,
-        rules: [{ type: 'object', required: true, message: '请选择实际签约日期!' }],
       }]"
                   show-time
                   format="YYYY-MM-DD HH:mm:ss"
@@ -146,7 +144,6 @@
           <a-date-picker
                   v-decorator="['contractDate',  {
                     initialValue: this.formData.contractFilingDate,
-        rules: [{ type: 'object', required: true, message: '请选择合同归档日期!' }],
       }]"
                   show-time
                   format="YYYY-MM-DD HH:mm:ss"
@@ -160,11 +157,30 @@
           <a-select
                   v-decorator="[
           'projectCategoryId',
-          {initialValue: this.formData.itemCategory, rules: [{ required: true, message: '请选择项目类别！' }]}
+          {initialValue: this.formData.itemCategory}
         ]"
                   placeholder="请选择项目类别"
           >
             <template v-for="item in this.projectCategoryList">
+              <a-select-option :key="item.categoryId" :value="item.categoryId">
+                {{item.categoryName}}
+              </a-select-option>
+            </template>
+          </a-select>
+        </a-form-item>
+        <a-form-item
+                :label-col="formItemLayout.labelCol"
+                :wrapper-col="formItemLayout.wrapperCol"
+                label="生产阶段"
+        >
+          <a-select
+                  v-decorator="[
+          'productionStageId',
+          {initialValue: this.formData.productionStage}
+        ]"
+                  placeholder="请选择生产阶段"
+          >
+            <template v-for="item in this.productionStageList">
               <a-select-option :key="item.categoryId" :value="item.categoryId">
                 {{item.categoryName}}
               </a-select-option>
@@ -179,7 +195,7 @@
           <a-input
                   v-decorator="[
           'departmentDesign',
-          {initialValue: this.formData.mainDesignDepartment, rules: [{ required: true, message: '请输入主设计部门！' }]}
+          {initialValue: this.formData.mainDesignDepartment}
         ]"
                   placeholder="请输入主设计部门"
           />
@@ -192,7 +208,7 @@
           <a-input
                   v-decorator="[
           'departmentRunning',
-          {initialValue: this.formData.managementDepartment, rules: [{ required: true, message: '请输入经营部门！' }]}
+          {initialValue: this.formData.managementDepartment}
         ]"
                   placeholder="请输入经营部门"
           />
@@ -205,7 +221,7 @@
           <a-select
                   v-decorator="[
           'projectManager',
-          {initialValue: this.formData.projectManagerOptions, rules: [{ required: true, message: '请输入项目经理！' }]}
+          {initialValue: this.formData.projectManagerOptions}
         ]"
                   labelInValue
                   placeholder="请输入项目经理"
@@ -228,7 +244,7 @@
           <a-select
                   v-decorator="[
           'projectSecretary',
-          {initialValue: this.formData.projectSecretaryOptions, rules: [{ required: true, message: '请输入项目预算秘书！' }]}
+          {initialValue: this.formData.projectSecretaryOptions}
         ]"
                   labelInValue
                   placeholder="请输入项目预算秘书"
@@ -251,7 +267,7 @@
           <a-select
                   v-decorator="[
           'runningManager',
-          {initialValue: this.formData.runningManagerOptions, rules: [{ required: true, message: '请输入经营经理！' }]}
+          {initialValue: this.formData.runningManagerOptions}
         ]"
                   labelInValue
                   placeholder="请输入经营经理"
@@ -274,7 +290,7 @@
           <a-input
                   v-decorator="[
           'owner',
-          {initialValue: this.formData.contractingParty, rules: [{ required: true, message: '请输入发包方！' }]}
+          {initialValue: this.formData.contractingParty}
         ]"
                   placeholder="请输入发包方"
           />
@@ -344,7 +360,7 @@
           <a-select
                   v-decorator="[
           'region',
-          {initialValue: String(this.formData.region === '省内'), rules: [{ required: true, message: '请选择地域！' }]}
+          {initialValue: String(this.formData.region === '省内')}
         ]"
                   placeholder="请选择地域"
           >
@@ -364,7 +380,7 @@
           <a-input
                   v-decorator="[
           'district',
-          {initialValue: this.formData.regionalKeyWords, rules: [{ required: true, message: '请输入地区关键词！' }]}
+          {initialValue: this.formData.regionalKeyWords}
         ]"
                   placeholder="请输入地区关键词"
           />
@@ -377,7 +393,7 @@
           <a-input
                   v-decorator="[
           'buildOne',
-          {initialValue: this.formData.class1, rules: [{ required: true, message: '请输入建筑一级分类！' }]}
+          {initialValue: this.formData.class1}
         ]"
                   placeholder="请输入建筑一级分类"
           />
@@ -390,7 +406,7 @@
           <a-input
                   v-decorator="[
           'buildTwo',
-          {initialValue: this.formData.class2, rules: [{ required: true, message: '请输入建筑二级分类！' }]}
+          {initialValue: this.formData.class2}
         ]"
                   placeholder="请输入建筑二级分类"
           />
@@ -403,7 +419,7 @@
           <a-select
                   v-decorator="[
           'epc',
-          {initialValue: String(this.formData.epc), rules: [{ required: true, message: '请选择是否EPC项目！' }]}
+          {initialValue: String(this.formData.epc)}
         ]"
                   placeholder="请选择是否EPC项目"
           >
@@ -415,21 +431,19 @@
             </a-select-option>
           </a-select>
         </a-form-item>
-<!--        <a-form-item-->
-<!--                :label-col="formItemLayout.labelCol"-->
-<!--                :wrapper-col="formItemLayout.wrapperCol"-->
-<!--                label="合同节点"-->
-<!--        >-->
-<!--          <a-select-->
-<!--                  v-decorator="[-->
-<!--          'contractNodes',-->
-<!--          {initialValue: this.formData.contractNodes, rules: [{ required: true, message: '请输入合同节点！' }]}-->
-<!--        ]"-->
-<!--                  mode="tags"-->
-<!--                  placeholder="请输入合同节点"-->
-<!--          >-->
-<!--          </a-select>-->
-<!--        </a-form-item>-->
+        <a-form-item
+                :label-col="formItemLayout.labelCol"
+                :wrapper-col="formItemLayout.wrapperCol"
+                label="备注"
+        >
+          <a-input
+                  v-decorator="[
+          'note',
+          {initialValue: this.formData.note}
+        ]"
+                  placeholder="请输入备注"
+          />
+        </a-form-item>
         <a-form-item
                 :label-col="formTailLayout.labelCol"
                 :wrapper-col="formTailLayout.wrapperCol"
@@ -469,6 +483,10 @@
       projectCategoryList: {
         type: Array,
         default: () => []
+      },
+      productionStageList: {
+        type: Array,
+        default: () => []
       }
     },
     data() {
@@ -502,21 +520,14 @@
               let projectCategory = {};
               projectCategory = this.projectCategoryList[this.projectCategoryList.findIndex((item) => item.categoryId === values.projectCategoryId)];
               delete values.projectCategoryId;
-
-              // let contractNodes = values.contractNodes;
-              // let tempContractNodes = [];
-              // delete values.contractNodes;
-              // contractNodes.forEach((item) => {
-              //   tempContractNodes.push({
-              //     nodeDescription: item
-              //   })
-              // });
-              // values = Object.assign(values, {contractNodes: tempContractNodes});
-
+              let productionStage = {};
+              productionStage = this.productionStageList[this.productionStageList.findIndex((item) => item.categoryId === values.productionStageId)];
+              delete values.productionStageId;
               values = Object.assign(values, {
+                productionStage: productionStage,
                 id: this.formData.id,
                 sup: this.formData.sup,
-                contractFile: this.fileName,
+                contractFile: this.fileName ? this.fileName : this.formData.currentFile,
                 projectCategory: projectCategory
               });
               values.projectManager = {

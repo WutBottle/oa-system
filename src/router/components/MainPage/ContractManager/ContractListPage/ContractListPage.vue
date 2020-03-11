@@ -58,9 +58,8 @@
           <span slot="signState" slot-scope="text">
             <a-badge :status="text | statusTypeFilter" :text="text | statusFilter"/>
           </span>
-          <span slot="contractNodes" slot-scope="tags">
-            <a-tag v-for="tag in tags" color="green"
-                   :key="tag.nodeId">{{tag.nodeDescription}}</a-tag>
+          <span slot="productionStageName" slot-scope="text">
+            <a-tag v-if="text" color="green">{{text}}</a-tag>
           </span>
           <span slot="itemCategory" slot-scope="tag">
             <a-tag v-if="!!tag" color="blue">{{tag}}</a-tag>
@@ -91,12 +90,12 @@
     <a-drawer
             title="修改合同"
             placement="right"
-            width="550"
+            width="600"
             :closable="false"
             @close="onEditClose"
             :visible="editVisible"
     >
-      <UpdateContract @refreshData="afterEditData" :formData="this.contractEditData" :projectCategoryList="this.projectCategoryList"></UpdateContract>
+      <UpdateContract @refreshData="afterEditData" :formData="this.contractEditData" :projectCategoryList="this.projectCategoryList" :productionStageList="this.productionStageList"></UpdateContract>
     </a-drawer>
   </div>
 </template>
@@ -151,6 +150,7 @@
         settingVisible: false, // 配置表头菜单弹出控制
         scrollX: 0,
         projectCategoryList: [],
+        productionStageList: [],
       }
     },
     computed: {
@@ -177,6 +177,11 @@
         categoryType: 3
       }).then(res => {
         this.projectCategoryList = res && res.data.data;
+      });
+      this.getCategoryList({
+        categoryType: 6
+      }).then(res => {
+        this.productionStageList = res && res.data.data;
       });
     },
     activated() {
@@ -209,7 +214,6 @@
             designNum: item.designId, // 设计号
             employerContractNum: item.ownerId, // 发包人合同编号
             contractName: item.contractName, // 合同名称
-            contractNodes: item.contractNodes, // 合同节点
             contractAmount: item.contractAmount, // 合同额(元)
             accumulatedCashReceipts: item.cashAmount, // 累计现金回款(元)
             remainingContractAmount: item.contractRemain, // 剩余合同额(元)
@@ -219,11 +223,13 @@
             actualSigningDate: moment(item.actualDate).format('YYYY-MM-DD HH:mm:ss'), // 实际签约日期
             contractFilingDate: moment(item.contractDate).format('YYYY-MM-DD HH:mm:ss'), // 合同归档日期
             itemCategory: !item.projectCategory ? '' : item.projectCategory.categoryName, // 项目类别
+            productionStage: item.productionStage ? item.productionStage.categoryId : undefined, // 生产阶段
+            productionStageName: item.productionStage ? item.productionStage.categoryName : undefined, // 生产阶段
             mainDesignDepartment: item.departmentDesign, // 主设计部门
             managementDepartment: item.departmentRunning, // 经营部门
-            projectManager: item.projectManager.staffName, // 项目经理
-            runningManager: item.runningManager.staffName, // 经营经理
-            projectSecretary: item.projectSecretary.staffName, // 项目预算秘书
+            projectManager: item.projectManager ? item.projectManager.staffName : undefined, // 项目经理
+            runningManager: item.runningManager ? item.runningManager.staffName : undefined, // 经营经理
+            projectSecretary: item.projectSecretary ? item.projectSecretary.staffName : undefined, // 项目预算秘书
             projectManagerOptions: {
               key: item.projectManager.id,
               label: item.projectManager.staffName
@@ -246,11 +252,13 @@
             class1: item.buildOne, // 建筑一级分类
             class2: item.buildTwo, // 建筑二级分类
             epc: item.epc, // 是否EPC项目
+            currentFile: item.contractFile,
             contractFile: {
               isDownload: false,
               contractId: item.contractFile ?  item.id: '',
             }, // 合同扫描文件
             sup: item.sup, // 是否是补充文件
+            note: item.note, // 备注
           }
         });
       },
@@ -320,11 +328,6 @@
       handleContractEdit(selectContractData) {
         // 初始化输入数据
         this.contractEditData = JSON.parse(JSON.stringify(selectContractData));
-        let tempNodes = [];
-        this.contractEditData.contractNodes.map((item) => {
-          tempNodes.push(item.nodeDescription);
-        });
-        this.contractEditData.contractNodes = tempNodes;
         this.contractEditData.itemCategory = this.projectCategoryList[this.projectCategoryList.findIndex((item) => this.contractEditData.itemCategory === item.categoryName)].categoryId;
         this.contractEditData.contractFilingDate = moment(this.contractEditData.contractFilingDate);
         this.contractEditData.actualSigningDate = moment(this.contractEditData.actualSigningDate);

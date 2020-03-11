@@ -126,17 +126,46 @@
           </a-row>
         </a-card-grid>
       </a-card>
-      <a-card title="组织方式">
-        <a-popover slot="extra" title="添加组织方式" trigger="click" v-model="addOrganizationVisible">
+      <a-card title="组织方式" style="margin-bottom: 12px">
+      <a-popover slot="extra" title="添加组织方式" trigger="click" v-model="addOrganizationVisible">
+        <template slot="content">
+          <div style="margin-bottom: 8px">
+            <a-input v-model="newOrganization" size="small" placeholder="请输入组织方式"></a-input>
+          </div>
+          <a-button type="primary" size="small" @click="handleAddCategory(5)">添加</a-button>
+        </template>
+        <a>新增</a>
+      </a-popover>
+      <a-card-grid v-for="item in organizationList" :key="item.categoryId"
+                   style="width:25%;height: 100px;text-align: left;">
+        <a-row :gutter="2">
+          <a-col span="16">
+            {{item.categoryName}}
+          </a-col>
+          <a-col span="6" style="text-align: right">
+            <a-popconfirm
+                    @confirm="handleDeleteCategory(item.categoryId, 5)"
+                    title="确定删除？"
+                    okText="确定"
+                    cancelText="取消">
+              <a-icon slot="icon" type="question-circle-o" style="color: red"/>
+              <a>删除</a>
+            </a-popconfirm>
+          </a-col>
+        </a-row>
+      </a-card-grid>
+    </a-card>
+      <a-card title="生产阶段">
+        <a-popover slot="extra" title="添加生产阶段" trigger="click" v-model="addProductionStageVisible">
           <template slot="content">
             <div style="margin-bottom: 8px">
-              <a-input v-model="newOrganization" size="small" placeholder="请输入组织方式"></a-input>
+              <a-input v-model="productionStage" size="small" placeholder="请输入生产阶段"></a-input>
             </div>
-            <a-button type="primary" size="small" @click="handleAddCategory(5)">添加</a-button>
+            <a-button type="primary" size="small" @click="handleAddCategory(6)">添加</a-button>
           </template>
           <a>新增</a>
         </a-popover>
-        <a-card-grid v-for="item in organizationList" :key="item.categoryId"
+        <a-card-grid v-for="item in productionStageList" :key="item.categoryId"
                      style="width:25%;height: 100px;text-align: left;">
           <a-row :gutter="2">
             <a-col span="16">
@@ -144,7 +173,7 @@
             </a-col>
             <a-col span="6" style="text-align: right">
               <a-popconfirm
-                      @confirm="handleDeleteCategory(item.categoryId, 5)"
+                      @confirm="handleDeleteCategory(item.categoryId, 6)"
                       title="确定删除？"
                       okText="确定"
                       cancelText="取消">
@@ -186,6 +215,9 @@
         addOrganizationVisible: false,
         newOrganization: '',
         organizationList: [],
+        addProductionStageVisible: false,
+        productionStage: '',
+        productionStageList: [],
       }
     },
     activated() {
@@ -194,6 +226,7 @@
       this.handleUpdateCategory(3);
       this.handleUpdateCategory(4);
       this.handleUpdateCategory(5);
+      this.handleUpdateCategory(6);
     },
     methods: {
       ...mapActions({
@@ -221,6 +254,9 @@
               break;
             case 5:
               this.organizationList = res && res.data.data;
+              break;
+            case 6:
+              this.productionStageList = res && res.data.data;
               break;
             default:
               break;
@@ -257,6 +293,9 @@
           case 5:
             categoryName = this.newOrganization;
             break;
+          case 6:
+            categoryName = this.productionStage;
+            break;
           default:
             break;
         }
@@ -287,6 +326,10 @@
               case 5:
                 this.newOrganization = '';
                 this.addOrganizationVisible = false;
+                break;
+              case 6:
+                this.productionStage = '';
+                this.addProductionStageVisible = false;
                 break;
               default:
                 break;

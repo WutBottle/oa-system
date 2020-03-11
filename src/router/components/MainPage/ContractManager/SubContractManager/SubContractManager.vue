@@ -416,20 +416,6 @@
             </a-select>
           </a-form-item>
           <a-form-item
-                  :label-col="formItemLayout.labelCol"
-                  :wrapper-col="formItemLayout.wrapperCol"
-                  label="合同节点"
-          >
-            <a-select
-                    v-decorator="[
-          'contractNodes',
-        ]"
-                    mode="tags"
-                    placeholder="请输入合同节点"
-            >
-            </a-select>
-          </a-form-item>
-          <a-form-item
                   :label-col="formTailLayout.labelCol"
                   :wrapper-col="formTailLayout.wrapperCol"
           >
@@ -510,17 +496,8 @@
               projectCategory = this.projectCategoryList[this.projectCategoryList.findIndex((item) => item.categoryId === values.projectCategoryId)];
               delete values.projectCategoryId;
 
-              let contractNodes = values.contractNodes;
-              let tempContractNodes = [];
-              delete values.contractNodes;
-              values.contractNodes && contractNodes.forEach((item) => {
-                tempContractNodes.push({
-                  nodeDescription: item
-                })
-              });
               values = Object.assign(values, {
                 contractId: this.contractId,
-                contractNodes: tempContractNodes,
                 contractFile: this.fileName,
                 projectCategory: projectCategory,
                 sup: true,

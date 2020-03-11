@@ -272,6 +272,8 @@
         contractIdForSalary: '',
         projectInfoVisible: false,
         projectInfoData: {},
+        subCategoryList: [], // 分项list
+        tempSubProjects: [],
       }
     },
     filters: {
@@ -284,6 +286,27 @@
     },
     mounted() {
       this.updateTableData();
+      this.getCategoryListByNameLike({
+        categoryType: 4,
+        categoryName: '',
+      }).then(res => {
+        this.subCategoryList = res && res.data.data;
+        this.subCategoryList.map(item => {
+          this.tempSubProjects.push({
+            organization: null,
+            subCategory: {
+              categoryId: item.categoryId,
+              categoryType: item.categoryType,
+              categoryName: item.categoryName,
+            },
+            outContracts: [],
+            designTeam: null,
+            designFees: 0,
+            price: 0,
+            note: null,
+          })
+        });
+      })
     },
     activated() {
       this.updateTableData();
@@ -294,6 +317,7 @@
         cashExport: 'cashOperation/cashExport',
         getSalaryListByContractId: 'salaryOperation/getSalaryListByContractId',
         getProjectByContractId: 'contractList/getProjectByContractId',
+        getCategoryListByNameLike: 'categoryOperation/getCategoryListByNameLike',
       }),
       updateTableData() {
         this.spinning = true;
@@ -348,6 +372,10 @@
             aboveGroundArea: selectData.aboveGroundArea,
             underGroundArea: selectData.underGroundArea
           });
+          this.projectInfoData.subProjects.map(item => {
+            this.tempSubProjects[this.tempSubProjects.findIndex(tempItem => item.subCategory.categoryId === tempItem.subCategory.categoryId)] = item;
+          });
+          this.projectInfoData.subProjects = this.tempSubProjects;
         });
       },
       handleCashExport(data) {

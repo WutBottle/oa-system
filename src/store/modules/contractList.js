@@ -51,12 +51,12 @@ const state = {
       scopedSlots: {customRender: 'contractFile'}
     },
     {
-      title: '合同节点',
+      title: '生产阶段',
       width: 200,
-      key: 'contractNodes',
-      dataIndex: 'contractNodes',
+      key: 'productionStageName',
+      dataIndex: 'productionStageName',
       sort: 7,
-      scopedSlots: {customRender: 'contractNodes'}
+      scopedSlots: {customRender: 'productionStageName'}
     },
     {
       title: '合同额(元)',

@@ -46,6 +46,12 @@
           <a-list-item slot="renderItem" slot-scope="item, index">
             <a-tooltip slot="actions">
               <template slot="title">
+                项目分配
+              </template>
+              <a-icon type="book" @click="handleProject(item)"/>
+            </a-tooltip>
+            <a-tooltip slot="actions">
+              <template slot="title">
                 权限分配
               </template>
               <a-icon type="lock" @click="handlePermission(item)"/>
@@ -71,8 +77,8 @@
               <a slot="title">
                 用户名：{{item.username}}
                 <a-divider type="vertical"/>
-                <a-tag v-for="tag in item.roles" :color="tag.id === 1 ? 'green' : 'red'"
-                       :key="tag.nodeId">{{tag.id === 1 ? '普通用户' : '管理员'}}
+                <a-tag v-for="tag in item.roles" color="green"
+                       :key="tag.id">{{tag.name}}
                 </a-tag>
               </a>
               <a-avatar
@@ -173,12 +179,7 @@
         ]"
                   placeholder="请选择用户权限"
           >
-            <a-select-option value="1">
-              普通用户
-            </a-select-option>
-            <a-select-option value="2">
-              管理员
-            </a-select-option>
+            <a-select-option v-for="d in roleList" :key="d.id">{{d.name}}</a-select-option>
           </a-select>
         </a-form-item>
       </a-form>
@@ -234,12 +235,7 @@
         ]"
                   placeholder="请选择用户权限"
           >
-            <a-select-option value="1">
-              普通用户
-            </a-select-option>
-            <a-select-option value="2">
-              管理员
-            </a-select-option>
+            <a-select-option v-for="d in roleList" :key="d.id">{{d.name}}</a-select-option>
           </a-select>
         </a-form-item>
         <a-form-item
@@ -282,6 +278,46 @@
         <a-button type="primary" block @click="handlePermissionSubmit">确定</a-button>
       </a-row>
     </a-drawer>
+    <a-drawer
+            title="分配项目权限"
+            placement="right"
+            width="500"
+            @close="onProjectClose"
+            :visible="projectVisible"
+    >
+      <a-form>
+        <a-form-item
+                v-bind="formItemLayout"
+                label="选择项目"
+        >
+          <a-select
+                  showSearch
+                  :value="contractValue"
+                  placeholder="搜索合同号"
+                  :showArrow="false"
+                  :filterOption="false"
+                  @search="fetchContracts"
+                  @change="handleChange"
+                  notFoundContent="无搜索结果"
+                  :defaultActiveFirstOption="false"
+          >
+            <a-spin v-if="fetching" slot="notFoundContent" size="small"/>
+            <a-select-option v-for="d in contractsData" :key="d">{{d}}</a-select-option>
+          </a-select>
+        </a-form-item>
+        <a-form-item
+                :label-col="formTailLayout.labelCol"
+                :wrapper-col="formTailLayout.wrapperCol"
+        >
+          <a-button
+                  type="primary"
+                  @click="submitProjectUser"
+          >
+            提交
+          </a-button>
+        </a-form-item>
+      </a-form>
+    </a-drawer>
   </div>
 </template>
 
@@ -289,6 +325,7 @@
   import {mapState, mapActions, mapMutations} from 'vuex'
   import HeaderPage from "../HeaderPage/HeaderPage";
   import PermissionComponent from "./PermissionComponent/PermissionComponent";
+  import {debounce} from 'debounce';
 
   const formItemLayout = {
     labelCol: {span: 6},
@@ -305,6 +342,7 @@
       PermissionComponent,
     },
     data() {
+      this.fetchContracts = debounce(this.fetchContracts, 500);
       return {
         formLayout: 'inline',
         formItemLayout,
@@ -325,6 +363,12 @@
         defaultCheckedListCash: [],
         defaultCheckedListOutContract: [],
         defaultCheckedListOutPaid: [],
+        projectVisible: false,
+        contractValue: undefined,
+        contractId: '',
+        contractsData: [],
+        ids: [],
+        fetching: false,
       }
     },
     computed: {
@@ -332,10 +376,12 @@
         paginationProps: state => state.userOperation.paginationProps, // 分页数据
         showLoadingMore: state => state.userOperation.showLoadingMore, // 控制加载更多按钮
         listData: state => state.userOperation.listData, // list数据
+        roleList: state => state.roleOperation.roleList, // 角色list数据
       }),
     },
     mounted() {
       this.updateListData('first');
+      this.getRoleList();
     },
     methods: {
       ...mapMutations({
@@ -346,7 +392,33 @@
         getUserListByNameLike: 'userOperation/getUserListByNameLike',
         deleteUser: 'userOperation/deleteUser',
         verifyUser: 'userOperation/verifyUser',
+        getRoleList: 'roleOperation/getRoleList',
+        getContractIdsByIdLike: 'contractList/getContractIdsByIdLike',
+        addProjectUser: 'projectUserOperation/addProjectUser'
       }),
+      handleChange(value) {
+        Object.assign(this, {
+          contractValue: value,
+          contractId: this.ids[this.contractsData.findIndex(item => item === value)],
+          ids: [],
+          contractsData: [],
+          fetching: false,
+        });
+      },
+      fetchContracts(value) {
+        const params = {
+          contractId: value,
+          pageNum: 1,
+          pageLimit: 10,
+        };
+        this.data = [];
+        this.fetching = true;
+        this.getContractIdsByIdLike(params).then((res) => {
+          this.contractsData = res && res.data.data.contractIds;
+          this.ids = res && res.data.data.ids;
+          this.fetching = false;
+        });
+      },
       updateListData(type) {
         if (type === 'first') {
           this.loading = true;
@@ -448,7 +520,7 @@
       },
       handleEdit(selectData) {
         this.editFormData = JSON.parse(JSON.stringify(selectData));
-        this.editFormData.roles = this.editFormData.roles[0] && String(this.editFormData.roles[0].id);
+        this.editFormData.roles = this.editFormData.roles[0] && Number(this.editFormData.roles[0].id);
         this.currentUserId = selectData.userId;
         this.editVisible = true;
       },
@@ -533,6 +605,9 @@
       onPermissionClose() {
         this.permissionVisible = false;
       },
+      onProjectClose() {
+        this.projectVisible = false;
+      },
       handleDataEncoder(checkedList) {
         const options = ['导入', '导出', '新增', '修改', '删除', '查看'];
         let tempCode = [0, 0, 0, 0, 0, 0];
@@ -564,6 +639,28 @@
           }
         }).catch((error) => {
           this.$message.error(error);
+        })
+      },
+      handleProject(selectData) {
+        this.currentUserId = selectData.userId;
+        this.projectVisible = true;
+      },
+      submitProjectUser() {
+        const params = {
+          contract: {
+            id: this.contractId,
+          },
+          user: {
+            userId: this.currentUserId,
+          }
+        };
+        this.addProjectUser(params).then(res => {
+          if (res.data.meta.success) {
+            this.$message.success(res.data.data);
+            this.projectVisible = false;
+          } else {
+            this.$message.error(res.data.meta.message)
+          }
         })
       }
     }

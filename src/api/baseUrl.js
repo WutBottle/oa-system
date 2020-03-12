@@ -24,6 +24,8 @@ const distributeUrl = {
   memorandumController: serverBaseUrl + 'memorandum',
   categoryController: serverBaseUrl + 'category',
   subProjectController: serverBaseUrl + 'subProject',
+  roleController: serverBaseUrl + 'role',
+  projectUserController: serverBaseUrl + 'projectUser',
 };
 
 export default distributeUrl;

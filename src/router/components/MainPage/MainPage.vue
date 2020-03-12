@@ -266,7 +266,7 @@
   export default {
     name: 'MainPage',
     mounted() {
-      if (this.role === 'ROLE_ADMIN') {
+      if (this.role === '超级管理员') {
         const adminMenu = [
           {
             name: '职员列表',

@@ -355,12 +355,9 @@
       // 生成表格样式
       loadTableColumns(data) {
         this.columns = [];
-        this.scrollX = 50;
+        this.scrollX = 200;
         this.columns.push(this.totalColumns[29]);
-        if (this.role === 'ROLE_ADMIN') {
-          this.scrollX += 150;
-          this.columns.push(this.totalColumns[30]);
-        }
+        this.columns.push(this.totalColumns[30]);
         data.map(item => {
           this.columns.push(this.totalColumns[item]);
           this.scrollX += this.totalColumns[item].width;

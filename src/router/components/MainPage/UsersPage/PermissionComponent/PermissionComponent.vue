@@ -35,8 +35,14 @@
         checkedList: [],
       }
     },
-    mounted() {
-      this.checkedList = this.defaultCheckedList;
+    watch: {
+      defaultCheckedList: {
+        immediate: true,
+        handler() {
+          this.checkedList = this.defaultCheckedList;
+          this.indeterminate = true;
+        }
+      }
     },
     methods: {
       onChange(checkedList) {

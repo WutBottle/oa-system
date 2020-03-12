@@ -17,6 +17,8 @@ import operateRecordController from "./operateRecordController";
 import memorandumController from "./memorandumController";
 import categoryController from "./categoryController";
 import subProjectController from "./subProjectController";
+import roleController from "./roleController";
+import projectUserController from "./projectUserController";
 
 // 导出接口
 export default {
@@ -36,4 +38,6 @@ export default {
   memorandumController: memorandumController, // 备忘录
   categoryController: categoryController, // 类型控制
   subProjectController: subProjectController, // 分项控制
+  roleController: roleController, // 角色控制
+  projectUserController: projectUserController, // 项目角色分配控制
 }

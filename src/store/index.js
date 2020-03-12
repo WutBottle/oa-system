@@ -16,6 +16,8 @@ import operateRecordOperation from "./modules/operateRecordOperation";
 import memorandumOperation from "./modules/memorandumOperation";
 import categoryOperation from "./modules/categoryOperation";
 import subProjectOperation from "./modules/subProjectOperation";
+import roleOperation from "./modules/roleOperation";
+import projectUserOperation from "./modules/projectUserOperation";
 
 Vue.use(Vuex);
 
@@ -35,6 +37,8 @@ const store = new Vuex.Store({
     memorandumOperation, // 备忘录管理
     categoryOperation, // 类型管理
     subProjectOperation, // 分项管理
+    roleOperation, // 角色管理
+    projectUserOperation, // 项目角色分配控制
   },
   getters
 });

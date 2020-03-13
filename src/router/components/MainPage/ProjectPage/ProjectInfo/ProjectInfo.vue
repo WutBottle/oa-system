@@ -92,7 +92,7 @@
       中南建筑设计院股份有限公司第五营销总监部
     </a-row>
     <a-row class="cell bb b18">
-      设  计  项  目  基  本  情  况  表
+      设 计 项 目 基 本 情 况 表
     </a-row>
     <a-row class="bb" style="display: flex;align-items: stretch;">
       <a-col class="b14 br" :span="2" style="display: flex;align-items: center;justify-content: center">
@@ -106,11 +106,12 @@
           <a-col class="bb cell" :span="12">{{formData.contractName}}</a-col>
         </a-row>
         <a-row class="cell">
-          总建筑面积{{formData.aboveGroundArea + formData.underGroundArea}}平米，地上{{formData.aboveGroundArea}}、地下{{formData.underGroundArea}}。
+          总建筑面积{{formData.aboveGroundArea +
+          formData.underGroundArea}}平米，地上{{formData.aboveGroundArea}}、地下{{formData.underGroundArea}}。
         </a-row>
       </a-col>
     </a-row>
-    <a-divider />
+    <a-divider/>
     <a-row class="bb" style="display: flex;align-items: stretch;">
       <a-col class="b14 br bt" :span="2" style="display: flex;align-items: center;justify-content: center">
         项目经营
@@ -123,14 +124,16 @@
           <a-col class="br bt cell" :span="4">已签/洽谈/投标</a-col>
           <a-col class="b14 br bt cell bgFCE4D6 click-font" :span="4" @click="handleContractOpen">
             <a-spin :spinning="contractSpinning">
-            合同总额
+              合同总额
             </a-spin>
           </a-col>
           <a-col class="bt cell bgFCE4D6" :span="4">{{formData.contractAmount}}</a-col>
         </a-row>
         <template v-if="contractVisible">
           <a-row v-for="(item, index) in contractData" :key="item.id">
-            <a-col class="b14 br bt cell bgffe8d9 click-font" :span="4" @click="handleContractPdfOpen(item.contractFile)">{{index ? ('补充合同' + index) : '主合同'}}</a-col>
+            <a-col class="b14 br bt cell bgffe8d9 click-font" :span="4"
+                   @click="handleContractPdfOpen(item.contractFile)">{{index ? ('补充合同' + index) : '主合同'}}
+            </a-col>
             <a-col class="br bt cell bgffe8d9" :span="4">{{item.contractAmount}}</a-col>
             <a-col class="b14 br bt cell bgffe8d9" :span="4">签订日期</a-col>
             <a-col class="br bt cell bgffe8d9" :span="4">{{item.actualDate}}</a-col>
@@ -156,7 +159,9 @@
         </a-row>
         <template v-if="receiptVisible">
           <a-row v-for="(item, index) in receiptData" :key="item.receiptId">
-            <a-col class="b14 br bt cell bgcae7ff click-font" :span="4" @click="handleReceiptPdfOpen(item.receiptFile)">开具发票{{(index +1 )}}</a-col>
+            <a-col class="b14 br bt cell bgcae7ff click-font" :span="4" @click="handleReceiptPdfOpen(item.receiptFile)">
+              开具发票{{(index +1 )}}
+            </a-col>
             <a-col class="br bt cell bgcae7ff" :span="4">{{item.receiptAmount}}</a-col>
             <a-col class="b14 br bt cell bgcae7ff" :span="4">开票日期</a-col>
             <a-col class="br bt cell bgcae7ff" :span="4">{{item.receiptDate}}</a-col>
@@ -176,7 +181,8 @@
         </template>
         <a-row>
           <a-col class="b14 br bt cell" :span="4">应收比例</a-col>
-          <a-col class="br bt cell" :span="4">{{formData.ratio && (100 - formData.ratio.toFixed(4) * 100)}}%</a-col>
+          <a-col class="br bt cell" :span="4">{{formData.ratio != null && (100 - formData.ratio.toFixed(4) * 100)}}%
+          </a-col>
           <a-col class="b14 br bt cell" :span="4">应收金额</a-col>
           <a-col class="br bt cell" :span="4">{{formData.contractAmount}}</a-col>
           <a-col class="b14 br bt cell" :span="4"></a-col>
@@ -186,11 +192,12 @@
           <a-col class="b14 br bt cell" :span="4">项目经理</a-col>
           <a-col class="br bt cell" :span="4">{{formData.projectManager && formData.projectManager.staffName}}</a-col>
           <a-col class="b14 br bt cell" :span="4">生产阶段</a-col>
-          <a-col class="bt cell" :span="12">{{formData.productionStage ? formData.productionStage.categoryName : '/'}}</a-col>
+          <a-col class="bt cell" :span="12">{{formData.productionStage ? formData.productionStage.categoryName : '/'}}
+          </a-col>
         </a-row>
       </a-col>
     </a-row>
-    <a-divider />
+    <a-divider/>
     <a-row class="bb" style="display: flex;align-items: stretch;">
       <a-col class="b14 br bt" :span="2" style="display: flex;align-items: center;justify-content: center">
         项目生产
@@ -204,10 +211,12 @@
           <a-col class="br bt cell" :span="4">价格（拟）</a-col>
           <a-col class="bt cell" :span="4">备注</a-col>
         </a-row>
-        <template v-for="(item, index) in formData.subProjects" >
+        <template v-for="(item, index) in formData.subProjects">
           <a-row :key="index">
             <a-row>
-              <a-col class="br bt cell click-font" :span="4" @click="handleSubCategoryOpen(item, index)">{{item.subCategory.categoryName}}</a-col>
+              <a-col class="br bt cell click-font" :span="4" @click="handleSubCategoryOpen(item, index)">
+                {{item.subCategory.categoryName}}
+              </a-col>
               <a-col class="br bt cell" :span="4">{{item.organization ? item.organization.categoryName : '/'}}</a-col>
               <a-col class="br bt cell" :span="4">{{item.designTeam ? item.designTeam : '/'}}</a-col>
               <a-col class="br bt cell" :span="4">{{item.designFees}}</a-col>
@@ -216,7 +225,9 @@
             </a-row>
             <template v-if="categoryIndex[index]">
               <a-row v-for="data in item.outContracts" :key="data.outContractId">
-                <a-col class="br bt cell bgececec" :span="4">{{item.subCategory.categoryName}}-{{data.outContractName}}</a-col>
+                <a-col class="br bt cell bgececec" :span="4">
+                  {{item.subCategory.categoryName}}-{{data.outContractName}}
+                </a-col>
                 <a-col class="br bt cell bgececec" :span="4">{{data.outContractAmount}}</a-col>
                 <a-col class="br bt cell bgececec" :span="4">累开发票</a-col>
                 <a-col class="br bt cell bgececec" :span="4">/</a-col>
@@ -238,7 +249,8 @@
       </a-col>
     </a-row>
     <a-row class="bb" style="display: flex;align-items: stretch;">
-      <a-col class="b14 br bt click-font bgDDEBF7" :span="2" style="display: flex;align-items: center;justify-content: center">
+      <a-col class="b14 br bt click-font bgDDEBF7" :span="2"
+             style="display: flex;align-items: center;justify-content: center">
         内部流转
       </a-col>
       <a-col :span="22">
@@ -249,13 +261,13 @@
           <a-row style="margin-top: 50px;">
             <a-col :span="14">
               项目经理（签字）：
-              <a-radio-group defaultValue="true" size="small">
-                <a-radio-button value="true">同意</a-radio-button>
-                <a-radio-button value="false">不同意</a-radio-button>
+              <a-radio-group @change="onRadioChange" name="projectManager" v-model="projectManager.agreeStatus" :disabled="!projectManager.operationStatus" size="small">
+                <a-radio-button :value="true">同意</a-radio-button>
+                <a-radio-button :value="false">不同意</a-radio-button>
               </a-radio-group>
             </a-col>
             <a-col :span="10">
-              日期：
+              日期：{{projectManager.agreeDate}}
             </a-col>
           </a-row>
         </a-row>
@@ -266,13 +278,13 @@
           <a-row style="margin-top: 50px;">
             <a-col :span="14">
               行政专员（签字）：
-              <a-radio-group defaultValue="true" size="small">
-                <a-radio-button value="true">同意</a-radio-button>
-                <a-radio-button value="false">不同意</a-radio-button>
+              <a-radio-group @change="onRadioChange" name="commissioner"  v-model="commissioner.agreeStatus" :disabled="!commissioner.operationStatus" size="small">
+                <a-radio-button :value="true">同意</a-radio-button>
+                <a-radio-button :value="false">不同意</a-radio-button>
               </a-radio-group>
             </a-col>
             <a-col :span="10">
-              日期：
+              日期：{{commissioner.agreeDate}}
             </a-col>
           </a-row>
         </a-row>
@@ -283,13 +295,13 @@
           <a-row style="margin-top: 50px;">
             <a-col :span="14">
               经营负责人（签字）：
-              <a-radio-group defaultValue="true" size="small">
-                <a-radio-button value="true">同意</a-radio-button>
-                <a-radio-button value="false">不同意</a-radio-button>
+              <a-radio-group @change="onRadioChange" name="runningManager"  v-model="runningManager.agreeStatus" :disabled="!runningManager.operationStatus" size="small">
+                <a-radio-button :value="true">同意</a-radio-button>
+                <a-radio-button :value="false">不同意</a-radio-button>
               </a-radio-group>
             </a-col>
             <a-col :span="10">
-              日期：
+              日期：{{runningManager.agreeDate}}
             </a-col>
           </a-row>
         </a-row>
@@ -300,13 +312,13 @@
           <a-row style="margin-top: 50px;">
             <a-col :span="14">
               总监（签字）：
-              <a-radio-group defaultValue="true" size="small">
-                <a-radio-button value="true">同意</a-radio-button>
-                <a-radio-button value="false">不同意</a-radio-button>
+              <a-radio-group @change="onRadioChange" name="chiefInspector" v-model="chiefInspector.agreeStatus" :disabled="!chiefInspector.operationStatus" size="small">
+                <a-radio-button :value="true">同意</a-radio-button>
+                <a-radio-button :value="false">不同意</a-radio-button>
               </a-radio-group>
             </a-col>
             <a-col :span="10">
-              日期：
+              日期：{{chiefInspector.agreeDate}}
             </a-col>
           </a-row>
         </a-row>
@@ -320,7 +332,7 @@
 </template>
 
 <script>
-  import {mapActions} from 'vuex';
+  import {mapState, mapActions} from 'vuex';
   import moment from 'moment';
   import baseUrl from '@/api/baseUrl'
 
@@ -329,7 +341,12 @@
     props: {
       formData: {
         type: Object,
-        default: () => {}
+        default: () => {
+        }
+      },
+      projectUsers: {
+        type: Array,
+        default: () => [],
       },
     },
     watch: {
@@ -348,7 +365,43 @@
           });
         },
         immediate: true
-      }
+      },
+      projectUsers: {
+        handler(value) {
+          value.map((item) => {
+            switch (item.role.name) {
+              case this.projectManager.name:
+                this.projectManager.agreeStatus = item.isAgree;
+                this.projectManager.operationStatus = this.role === this.projectManager.name;
+                this.projectManager.agreeDate = item.agreeDate && moment(item.agreeDate).format('YYYY-MM-DD HH:mm:ss');
+                break;
+              case this.commissioner.name:
+                this.commissioner.agreeStatus = item.isAgree;
+                this.commissioner.operationStatus = this.role === this.commissioner.name;
+                this.commissioner.agreeDate = item.agreeDate && moment(item.agreeDate).format('YYYY-MM-DD HH:mm:ss');
+                break;
+              case this.runningManager.name:
+                this.runningManager.agreeStatus = item.isAgree;
+                this.runningManager.operationStatus = this.role === this.runningManager.name;
+                this.runningManager.agreeDate = item.agreeDate && moment(item.agreeDate).format('YYYY-MM-DD HH:mm:ss');
+                break;
+              case this.chiefInspector.name:
+                this.chiefInspector.agreeStatus = item.isAgree;
+                this.chiefInspector.operationStatus = this.role === this.chiefInspector.name;
+                this.chiefInspector.agreeDate = item.agreeDate && moment(item.agreeDate).format('YYYY-MM-DD HH:mm:ss');
+                break;
+              default:
+              break;
+            }
+          })
+        },
+        immediate: true
+      },
+    },
+    computed: {
+      ...mapState({
+        role: state => state.tokensOperation.role,
+      }),
     },
     data() {
       return {
@@ -364,6 +417,30 @@
         cashData: [],
         cashVisible: false,
         cashSpinning: false,
+        projectManager: {
+          name: '项目经理',
+          operationStatus: false,
+          agreeStatus: null,
+          agreeDate: '',
+        },
+        commissioner: {
+          name: '行政专员',
+          operationStatus: false,
+          agreeStatus: null,
+          agreeDate: '',
+        },
+        runningManager: {
+          name: '经营负责人',
+          operationStatus: false,
+          agreeStatus: null,
+          agreeDate: '',
+        },
+        chiefInspector: {
+          name: '总监',
+          operationStatus: false,
+          agreeStatus: null,
+          agreeDate: '',
+        }
       }
     },
     methods: {
@@ -371,6 +448,7 @@
         getContractListByContractId: 'contractList/getContractListByContractId',
         getReceiptsByContractId: 'receiptOperation/getReceiptsByContractId',
         getCashesByContractId: 'cashOperation/getCashesByContractId',
+        verifyProjectUser: 'projectUserOperation/verifyProjectUser'
       }),
       handleSubCategoryOpen(item, index) {
         if (item.outContracts.length) {
@@ -480,13 +558,38 @@
         }
       },
       handleContractPdfOpen(url) {
-        console.log(url)
         if (url) {
           const router = baseUrl.serverBaseController + url;
           window.open(router, '_blank');
         } else {
           this.$message.warning('无此合同文件');
         }
+      },
+      onRadioChange(e) {
+        const params = {
+          contract: {
+            id: this.formData.id,
+          },
+          agree: e.target.value,
+        };
+        let that = this;
+        this.$confirm({
+          title: (e.target.value ? '同意' : '不同意') + '该项目审批?',
+          onOk() {
+            that.verifyProjectUser(params).then(res => {
+              if (res.data.meta.success) {
+                that.$message.success(res.data.data.success);
+                that[e.target.name].agreeDate = res.data.data.projectUser.agreeDate && moment(res.data.data.projectUser.agreeDate).format('YYYY-MM-DD HH:mm:ss');
+              }else {
+                that.$message.error(res.data.meta.message);
+                that[e.target.name].agreeStatus = !that[e.target.name].agreeStatus;
+              }
+            })
+          },
+          onCancel() {
+            that[e.target.name].agreeStatus = !that[e.target.name].agreeStatus;
+          },
+        });
       },
     }
   }

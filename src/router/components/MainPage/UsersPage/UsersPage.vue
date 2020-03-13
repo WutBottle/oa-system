@@ -281,7 +281,7 @@
     <a-drawer
             title="分配项目权限"
             placement="right"
-            width="500"
+            width="600"
             @close="onProjectClose"
             :visible="projectVisible"
     >
@@ -305,6 +305,30 @@
             <a-select-option v-for="d in contractsData" :key="d">{{d}}</a-select-option>
           </a-select>
         </a-form-item>
+        <div style="height: 500px;overflow: auto;">
+          <a-list itemLayout="horizontal" :dataSource="roleProjectData">
+            <a-list-item slot="renderItem" slot-scope="item, index">
+              <a-popconfirm
+                      slot="actions"
+                      title="确定移除此项目？"
+                      @confirm="roleProjectRemove(item)"
+                      okText="确定"
+                      cancelText="取消"
+              >
+                <a-icon type="delete" :style="{color: 'red'}"/>
+              </a-popconfirm>
+              <a-list-item-meta
+                      :description="item.contractName"
+              >
+                <a slot="title">
+                  合同号：{{item.contractId}}
+                  <a-divider type="vertical"/>
+                  设计号：{{item.designId}}
+                </a>
+              </a-list-item-meta>
+            </a-list-item>
+          </a-list>
+        </div>
         <a-form-item
                 :label-col="formTailLayout.labelCol"
                 :wrapper-col="formTailLayout.wrapperCol"
@@ -313,7 +337,7 @@
                   type="primary"
                   @click="submitProjectUser"
           >
-            提交
+            添加
           </a-button>
         </a-form-item>
       </a-form>
@@ -369,6 +393,7 @@
         contractsData: [],
         ids: [],
         fetching: false,
+        roleProjectData: [],
       }
     },
     computed: {
@@ -394,7 +419,9 @@
         verifyUser: 'userOperation/verifyUser',
         getRoleList: 'roleOperation/getRoleList',
         getContractIdsByIdLike: 'contractList/getContractIdsByIdLike',
-        addProjectUser: 'projectUserOperation/addProjectUser'
+        addProjectUser: 'projectUserOperation/addProjectUser',
+        getProjectByUserId: 'projectUserOperation/getProjectByUserId',
+        deleteProjectUser: 'projectUserOperation/deleteProjectUser'
       }),
       handleChange(value) {
         Object.assign(this, {
@@ -641,8 +668,16 @@
           this.$message.error(error);
         })
       },
+      updateRoleProjectData() {
+        this.getProjectByUserId({
+          userId: this.currentUserId,
+        }).then(res => {
+          this.roleProjectData = res && res.data.data;
+        });
+      },
       handleProject(selectData) {
         this.currentUserId = selectData.userId;
+        this.updateRoleProjectData();
         this.projectVisible = true;
       },
       submitProjectUser() {
@@ -657,11 +692,31 @@
         this.addProjectUser(params).then(res => {
           if (res.data.meta.success) {
             this.$message.success(res.data.data);
-            this.projectVisible = false;
+            this.updateRoleProjectData();
           } else {
             this.$message.error(res.data.meta.message)
           }
         })
+      },
+      roleProjectRemove(data) {
+        const params = {
+          contract: {
+            id: data.id,
+          },
+          user: {
+            userId: this.currentUserId,
+          },
+        };
+        this.deleteProjectUser(params).then(res => {
+          if (res.data.meta.success) {
+            this.$message.success(res.data.data)
+            this.updateRoleProjectData();
+          } else {
+            this.$message.error(res.data.meta.message)
+          }
+        }).catch(error => {
+          this.$message.error(error);
+        });
       }
     }
   }

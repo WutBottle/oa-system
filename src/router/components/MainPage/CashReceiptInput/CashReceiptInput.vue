@@ -45,7 +45,6 @@
           });
           // 手动上传
           this.cashInput(formData).then((data) => {
-            console.log(data.data.data.receipt_results)
             for (let i = 0; i < data.data.data.receipt_results.length; i++) {
               this.$notification.open({
                 message: data.data.data.receipt_results[i],

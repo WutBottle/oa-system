@@ -74,11 +74,9 @@
             title="项目信息"
             v-model="projectInfoVisible"
             width="90vw"
-            @ok="submitForm"
-            okText="确定"
-            cancelText="取消"
+            :footer="null"
     >
-      <ProjectInfo :formData="projectInfoData"/>
+      <ProjectInfo :formData="projectInfoData" :projectUsers="projectUsers"/>
     </a-modal>
   </div>
 </template>
@@ -272,6 +270,7 @@
         contractIdForSalary: '',
         projectInfoVisible: false,
         projectInfoData: {},
+        projectUsers: [],
         subCategoryList: [], // 分项list
         tempSubProjects: [],
       }
@@ -367,7 +366,8 @@
         this.getProjectByContractId({
           contractId: selectData.contractId
         }).then(res => {
-          this.projectInfoData = res && res.data.data;
+          this.projectInfoData = res && res.data.data.contract;
+          this.projectUsers = res && res.data.data.projectUsers;
           Object.assign(this.projectInfoData, {
             aboveGroundArea: selectData.aboveGroundArea,
             underGroundArea: selectData.underGroundArea
@@ -440,9 +440,6 @@
         this.salaryPaginationProps.current = pagination.current;
         this.salaryPaginationProps.pageSize = pagination.pageSize;
         this.updateSalaryTableData();
-      },
-      submitForm() {
-
       },
     }
   }

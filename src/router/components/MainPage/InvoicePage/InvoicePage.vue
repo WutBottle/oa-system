@@ -639,7 +639,7 @@
             if (!err) {
               const params = {
                 receiptId: values.receiptId,
-                receiptFile: this.editInvoiceFileName,
+                receiptFile: this.editFormData.receiptFile ? this.editFormData.receiptFile : this.editInvoiceFileName,
                 receiptAmount: values.receiptAmount,
                 receiptClass: values.receiptClass,
                 receiptDate: values.receiptDate,

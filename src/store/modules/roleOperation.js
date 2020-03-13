@@ -18,7 +18,6 @@ const actions = {
   getRoleList({commit}, params) {
     return new Promise((resolve, reject) => {
       api.roleController.getRoleList(params).then(res => {
-        console.log(res)
         res.data.data && commit('setRoleList', res.data.data);
         resolve(res);
       }).catch(error => {

@@ -11,6 +11,7 @@ const state = {
   },
   listData: [],
   showLoadingMore: true,
+
 };
 
 const mutations = {
@@ -71,6 +72,17 @@ const actions = {
         resolve(res);
       }).catch(error => {
         console.log(error, '修改用户失败');
+        reject(error);
+      });
+    });
+  },
+  // 根据用户角色id获取用户列表
+  getUserListByRoleId({commit}, params) {
+    return new Promise((resolve, reject) => {
+      api.userController.getUserListByRoleId(params).then(res => {
+        resolve(res);
+      }).catch(error => {
+        console.log(error, '获取用户列表失败');
         reject(error);
       });
     });

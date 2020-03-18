@@ -24,6 +24,10 @@ const userController = {
   verifyUser(params) {
     return axios.post(`${baseUrl.userController}/verifyUser`, params);
   },
+  // 根据用户角色id获取用户列表
+  getUserListByRoleId(params) {
+    return axios.post(`${baseUrl.userController}/getUserListByRoleId`, params);
+  },
 };
 
 export default userController;

@@ -19,6 +19,7 @@ import categoryController from "./categoryController";
 import subProjectController from "./subProjectController";
 import roleController from "./roleController";
 import projectUserController from "./projectUserController";
+import projectCirculationController from "./projectCirculationController";
 
 // 导出接口
 export default {
@@ -40,4 +41,5 @@ export default {
   subProjectController: subProjectController, // 分项控制
   roleController: roleController, // 角色控制
   projectUserController: projectUserController, // 项目角色分配控制
+  projectCirculationController: projectCirculationController, // 审核控制
 }

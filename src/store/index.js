@@ -18,6 +18,7 @@ import categoryOperation from "./modules/categoryOperation";
 import subProjectOperation from "./modules/subProjectOperation";
 import roleOperation from "./modules/roleOperation";
 import projectUserOperation from "./modules/projectUserOperation";
+import projectCirculationOperation from "./modules/projectCirculationOperation";
 
 Vue.use(Vuex);
 
@@ -39,6 +40,7 @@ const store = new Vuex.Store({
     subProjectOperation, // 分项管理
     roleOperation, // 角色管理
     projectUserOperation, // 项目角色分配控制
+    projectCirculationOperation, // 审核控制
   },
   getters
 });

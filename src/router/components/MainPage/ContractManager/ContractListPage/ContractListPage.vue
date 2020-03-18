@@ -227,21 +227,10 @@
             productionStageName: item.productionStage ? item.productionStage.categoryName : undefined, // 生产阶段
             mainDesignDepartment: item.departmentDesign, // 主设计部门
             managementDepartment: item.departmentRunning, // 经营部门
-            projectManager: item.projectManager ? item.projectManager.staffName : undefined, // 项目经理
-            runningManager: item.runningManager ? item.runningManager.staffName : undefined, // 经营经理
-            projectSecretary: item.projectSecretary ? item.projectSecretary.staffName : undefined, // 项目预算秘书
-            projectManagerOptions: {
-              key: item.projectManager.id,
-              label: item.projectManager.staffName
-            }, // 项目经理
-            runningManagerOptions: {
-              key: item.runningManager.id,
-              label: item.runningManager.staffName
-            }, // 经营经理
-            projectSecretaryOptions: {
-              key: item.projectSecretary.id,
-              label: item.projectSecretary.staffName
-            }, // 项目预算秘书
+            projectManager: item.projectManager ? item.projectManager.userId : undefined, // 项目经理
+            runningManager: item.runningManager ? item.runningManager.userId : undefined, // 经营经理
+            projectSecretary: item.projectSecretary ? item.projectSecretary.userId : undefined, // 项目预算秘书
+            inspector: item.inspector ? item.inspector.userId : undefined, // 总监
             contractingParty: item.owner, // 发包方
             investmentAmount: item.investment, // 投资额(万元)
             projectScale: (item.aboveGroundArea || item.underGroundArea) && ('地上' + item.aboveGroundArea + '+地下' + item.underGroundArea), // 项目规模(平方米)

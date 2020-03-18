@@ -18,6 +18,8 @@ const StaffPage = r => require.ensure([], () => r(require('components/MainPage/S
 const SalaryEntryPage = r => require.ensure([], () => r(require('components/MainPage/SalaryEntryPage/SalaryEntryPage')));
 const ProjectExportPage = r => require.ensure([], () => r(require('components/MainPage/ProjectExportPage/ProjectExportPage')));
 const SubEntryPage = r => require.ensure([], () => r(require('components/MainPage/SubEntryPage/SubEntryPage')));
+const ApprovalManagement = r => require.ensure([], () => r(require('components/MainPage/ApprovalManagement/ApprovalManagement')));
+
 /**
  * 基础路由
  * @type { *[] }
@@ -118,7 +120,12 @@ export const constantRouterMap = [
         path: 'subentry',
         name: 'subentry',
         component: SubEntryPage,
-      }
+      },
+      {
+        path: 'approvalmanagement',
+        name: 'approvalmanagement',
+        component: ApprovalManagement,
+      },
     ]
   }
 ];

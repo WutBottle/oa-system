@@ -360,6 +360,10 @@
             name: '分包列表',
             router: "/main/outcontractlist",
             iconType: "layout",
+          }, {
+            name: '审批管理',
+            router: "/main/approvalmanagement",
+            iconType: "edit",
           },
           // {
           //   name: '分析中心',

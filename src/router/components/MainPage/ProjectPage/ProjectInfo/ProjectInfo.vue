@@ -119,7 +119,13 @@
       <a-col :span="22">
         <a-row>
           <a-col class="b14 br bt cell" :span="4">经营负责人</a-col>
-          <a-col class="br bt cell" :span="4">{{formData.runningManager && formData.runningManager.staffName}}</a-col>
+          <a-col class="br bt cell" :span="4">
+            {{formData.runningManager && formData.runningManager.username}}
+            <a-divider type="vertical" />
+            <a-tag color="orange">
+              {{formData.runningManager && formData.runningManager.nickname}}
+            </a-tag>
+          </a-col>
           <a-col class="b14 br bt cell" :span="4">签约状态</a-col>
           <a-col class="br bt cell" :span="4">已签/洽谈/投标</a-col>
           <a-col class="b14 br bt cell bgFCE4D6 click-font" :span="4" @click="handleContractOpen">
@@ -190,7 +196,13 @@
         </a-row>
         <a-row>
           <a-col class="b14 br bt cell" :span="4">项目经理</a-col>
-          <a-col class="br bt cell" :span="4">{{formData.projectManager && formData.projectManager.staffName}}</a-col>
+          <a-col class="br bt cell" :span="4">
+            {{formData.projectManager && formData.projectManager.username}}
+            <a-divider type="vertical" />
+            <a-tag color="orange">
+              {{formData.projectManager && formData.projectManager.nickname}}
+            </a-tag>
+          </a-col>
           <a-col class="b14 br bt cell" :span="4">生产阶段</a-col>
           <a-col class="bt cell" :span="12">{{formData.productionStage ? formData.productionStage.categoryName : '/'}}
           </a-col>
@@ -261,10 +273,10 @@
           <a-row style="margin-top: 50px;">
             <a-col :span="14">
               项目经理（签字）：
-              <a-radio-group @change="onRadioChange" name="projectManager" v-model="projectManager.agreeStatus" :disabled="!projectManager.operationStatus" size="small">
-                <a-radio-button :value="true">同意</a-radio-button>
-                <a-radio-button :value="false">不同意</a-radio-button>
-              </a-radio-group>
+              <a-tag v-if="projectManager.agreeStatus === 0">待发起</a-tag>
+              <a-tag v-else-if="projectManager.agreeStatus === 1" color="blue">审批中</a-tag>
+              <a-tag v-else-if="projectManager.agreeStatus === 2" color="green">已通过</a-tag>
+              <a-tag v-else color="red">已驳回</a-tag>
             </a-col>
             <a-col :span="10">
               日期：{{projectManager.agreeDate}}
@@ -278,13 +290,13 @@
           <a-row style="margin-top: 50px;">
             <a-col :span="14">
               行政专员（签字）：
-              <a-radio-group @change="onRadioChange" name="commissioner"  v-model="commissioner.agreeStatus" :disabled="!commissioner.operationStatus" size="small">
-                <a-radio-button :value="true">同意</a-radio-button>
-                <a-radio-button :value="false">不同意</a-radio-button>
-              </a-radio-group>
+              <a-tag v-if="projectSecretary.agreeStatus === 0">待发起</a-tag>
+              <a-tag v-else-if="projectSecretary.agreeStatus === 1" color="blue">审批中</a-tag>
+              <a-tag v-else-if="projectSecretary.agreeStatus === 2" color="green">已通过</a-tag>
+              <a-tag v-else color="red">已驳回</a-tag>
             </a-col>
             <a-col :span="10">
-              日期：{{commissioner.agreeDate}}
+              日期：{{projectSecretary.agreeDate}}
             </a-col>
           </a-row>
         </a-row>
@@ -295,10 +307,10 @@
           <a-row style="margin-top: 50px;">
             <a-col :span="14">
               经营负责人（签字）：
-              <a-radio-group @change="onRadioChange" name="runningManager"  v-model="runningManager.agreeStatus" :disabled="!runningManager.operationStatus" size="small">
-                <a-radio-button :value="true">同意</a-radio-button>
-                <a-radio-button :value="false">不同意</a-radio-button>
-              </a-radio-group>
+              <a-tag v-if="runningManager.agreeStatus === 0">待发起</a-tag>
+              <a-tag v-else-if="runningManager.agreeStatus === 1" color="blue">审批中</a-tag>
+              <a-tag v-else-if="runningManager.agreeStatus === 2" color="green">已通过</a-tag>
+              <a-tag v-else color="red">已驳回</a-tag>
             </a-col>
             <a-col :span="10">
               日期：{{runningManager.agreeDate}}
@@ -312,13 +324,13 @@
           <a-row style="margin-top: 50px;">
             <a-col :span="14">
               总监（签字）：
-              <a-radio-group @change="onRadioChange" name="chiefInspector" v-model="chiefInspector.agreeStatus" :disabled="!chiefInspector.operationStatus" size="small">
-                <a-radio-button :value="true">同意</a-radio-button>
-                <a-radio-button :value="false">不同意</a-radio-button>
-              </a-radio-group>
+              <a-tag v-if="inspector.agreeStatus === 0">待发起</a-tag>
+              <a-tag v-else-if="inspector.agreeStatus === 1" color="blue">审批中</a-tag>
+              <a-tag v-else-if="inspector.agreeStatus === 2" color="green">已通过</a-tag>
+              <a-tag v-else color="red">已驳回</a-tag>
             </a-col>
             <a-col :span="10">
-              日期：{{chiefInspector.agreeDate}}
+              日期：{{inspector.agreeDate}}
             </a-col>
           </a-row>
         </a-row>
@@ -332,7 +344,7 @@
 </template>
 
 <script>
-  import {mapState, mapActions} from 'vuex';
+  import {mapActions} from 'vuex';
   import moment from 'moment';
   import baseUrl from '@/api/baseUrl'
 
@@ -368,40 +380,19 @@
       },
       projectUsers: {
         handler(value) {
-          value.map((item) => {
-            switch (item.role.name) {
-              case this.projectManager.name:
-                this.projectManager.agreeStatus = item.isAgree;
-                this.projectManager.operationStatus = this.role === this.projectManager.name;
-                this.projectManager.agreeDate = item.agreeDate && moment(item.agreeDate).format('YYYY-MM-DD HH:mm:ss');
-                break;
-              case this.commissioner.name:
-                this.commissioner.agreeStatus = item.isAgree;
-                this.commissioner.operationStatus = this.role === this.commissioner.name;
-                this.commissioner.agreeDate = item.agreeDate && moment(item.agreeDate).format('YYYY-MM-DD HH:mm:ss');
-                break;
-              case this.runningManager.name:
-                this.runningManager.agreeStatus = item.isAgree;
-                this.runningManager.operationStatus = this.role === this.runningManager.name;
-                this.runningManager.agreeDate = item.agreeDate && moment(item.agreeDate).format('YYYY-MM-DD HH:mm:ss');
-                break;
-              case this.chiefInspector.name:
-                this.chiefInspector.agreeStatus = item.isAgree;
-                this.chiefInspector.operationStatus = this.role === this.chiefInspector.name;
-                this.chiefInspector.agreeDate = item.agreeDate && moment(item.agreeDate).format('YYYY-MM-DD HH:mm:ss');
-                break;
-              default:
-              break;
-            }
-          })
+          if (value.length) {
+            this.projectManager.agreeStatus = value[0].projectManagerNode.state;
+            this.projectManager.agreeDate = value[0].projectManagerNode.createDate && moment(value[0].projectManagerNode.createDate).format('YYYY-MM-DD HH:mm:ss');
+            this.projectSecretary.agreeStatus = value[0].projectSecretaryNode.state;
+            this.projectSecretary.agreeDate = value[0].projectSecretaryNode.createDate && moment(value[0].projectSecretaryNode.createDate).format('YYYY-MM-DD HH:mm:ss');
+            this.runningManager.agreeStatus = value[0].runningManagerNode.state;
+            this.runningManager.agreeDate = value[0].runningManagerNode.createDate && moment(value[0].runningManagerNode.createDate).format('YYYY-MM-DD HH:mm:ss');
+            this.inspector.agreeStatus = value[0].inspectorNode.state;
+            this.inspector.agreeDate = value[0].inspectorNode.createDate && moment(value[0].inspectorNode.createDate).format('YYYY-MM-DD HH:mm:ss');
+          }
         },
         immediate: true
       },
-    },
-    computed: {
-      ...mapState({
-        role: state => state.tokensOperation.role,
-      }),
     },
     data() {
       return {
@@ -419,25 +410,21 @@
         cashSpinning: false,
         projectManager: {
           name: '项目经理',
-          operationStatus: false,
           agreeStatus: null,
           agreeDate: '',
         },
-        commissioner: {
+        projectSecretary: {
           name: '行政专员',
-          operationStatus: false,
           agreeStatus: null,
           agreeDate: '',
         },
         runningManager: {
           name: '经营负责人',
-          operationStatus: false,
           agreeStatus: null,
           agreeDate: '',
         },
-        chiefInspector: {
+        inspector: {
           name: '总监',
-          operationStatus: false,
           agreeStatus: null,
           agreeDate: '',
         }
@@ -448,7 +435,6 @@
         getContractListByContractId: 'contractList/getContractListByContractId',
         getReceiptsByContractId: 'receiptOperation/getReceiptsByContractId',
         getCashesByContractId: 'cashOperation/getCashesByContractId',
-        verifyProjectUser: 'projectUserOperation/verifyProjectUser'
       }),
       handleSubCategoryOpen(item, index) {
         if (item.outContracts.length) {
@@ -564,32 +550,6 @@
         } else {
           this.$message.warning('无此合同文件');
         }
-      },
-      onRadioChange(e) {
-        const params = {
-          contract: {
-            id: this.formData.id,
-          },
-          agree: e.target.value,
-        };
-        let that = this;
-        this.$confirm({
-          title: (e.target.value ? '同意' : '不同意') + '该项目审批?',
-          onOk() {
-            that.verifyProjectUser(params).then(res => {
-              if (res.data.meta.success) {
-                that.$message.success(res.data.data.success);
-                that[e.target.name].agreeDate = res.data.data.projectUser.agreeDate && moment(res.data.data.projectUser.agreeDate).format('YYYY-MM-DD HH:mm:ss');
-              }else {
-                that.$message.error(res.data.meta.message);
-                that[e.target.name].agreeStatus = !that[e.target.name].agreeStatus;
-              }
-            })
-          },
-          onCancel() {
-            that[e.target.name].agreeStatus = !that[e.target.name].agreeStatus;
-          },
-        });
       },
     }
   }

@@ -317,6 +317,7 @@
         getSalaryListByContractId: 'salaryOperation/getSalaryListByContractId',
         getProjectByContractId: 'contractList/getProjectByContractId',
         getCategoryListByNameLike: 'categoryOperation/getCategoryListByNameLike',
+        getHistoryByContractId: 'projectCirculationOperation/getHistoryByContractId',
       }),
       updateTableData() {
         this.spinning = true;
@@ -331,6 +332,7 @@
             this.tableData = data.data.data.content.map((item, index) => {
               return {
                 key: index,
+                id: item.id,
                 receiptAmount: item.receiptAmount,
                 receiptNotCash: item.receiptNotCash,
                 receiptRemain: item.receiptRemain,
@@ -363,11 +365,15 @@
       },
       handleOpen(selectData) {
         this.projectInfoVisible = true;
+        this.getHistoryByContractId({
+          id: selectData.id,
+        }).then(res => {
+          this.projectUsers = res && res.data.data;
+        });
         this.getProjectByContractId({
           contractId: selectData.contractId
         }).then(res => {
           this.projectInfoData = res && res.data.data.contract;
-          this.projectUsers = res && res.data.data.projectUsers;
           Object.assign(this.projectInfoData, {
             aboveGroundArea: selectData.aboveGroundArea,
             underGroundArea: selectData.underGroundArea

@@ -221,65 +221,56 @@
           <a-select
                   v-decorator="[
           'projectManager',
-          {initialValue: this.formData.projectManagerOptions}
+          {initialValue: this.formData.projectManager}
         ]"
-                  labelInValue
-                  placeholder="请输入项目经理"
-                  showSearch
-                  :showArrow="false"
-                  :filterOption="false"
-                  @search="fetchStaffData"
-                  notFoundContent="无该人员数据"
-                  :defaultActiveFirstOption="false"
+                  placeholder="请选择项目经理"
           >
-            <a-spin v-if="fetching" slot="notFoundContent" size="small"/>
-            <a-select-option v-for="d in staffData" :key="d.id">{{d.staffName}}<a-divider type="vertical" /><a-tag color="orange">{{d.staffCode}}</a-tag></a-select-option>
+            <a-select-option v-for="d in projectManagerList" :key="d.userId">{{d.username}}<a-divider type="vertical" /><a-tag color="orange">{{d.nickname}}</a-tag></a-select-option>
           </a-select>
         </a-form-item>
         <a-form-item
                 :label-col="formItemLayout.labelCol"
                 :wrapper-col="formItemLayout.wrapperCol"
-                label="项目预算秘书"
+                label="行政专员"
         >
           <a-select
                   v-decorator="[
           'projectSecretary',
-          {initialValue: this.formData.projectSecretaryOptions}
+          {initialValue: this.formData.projectSecretary}
         ]"
-                  labelInValue
-                  placeholder="请输入项目预算秘书"
-                  showSearch
-                  :showArrow="false"
-                  :filterOption="false"
-                  @search="fetchStaffData"
-                  notFoundContent="无该人员数据"
-                  :defaultActiveFirstOption="false"
+                  placeholder="请选择项目经理"
           >
-            <a-spin v-if="fetching" slot="notFoundContent" size="small"/>
-            <a-select-option v-for="d in staffData" :key="d.id">{{d.staffName}}<a-divider type="vertical" /><a-tag color="orange">{{d.staffCode}}</a-tag></a-select-option>
+            <a-select-option v-for="d in projectSecretaryList" :key="d.userId">{{d.username}}<a-divider type="vertical" /><a-tag color="orange">{{d.nickname}}</a-tag></a-select-option>
           </a-select>
         </a-form-item>
         <a-form-item
                 :label-col="formItemLayout.labelCol"
                 :wrapper-col="formItemLayout.wrapperCol"
-                label="经营经理"
+                label="经营负责人"
         >
           <a-select
                   v-decorator="[
           'runningManager',
-          {initialValue: this.formData.runningManagerOptions}
+          {initialValue: this.formData.runningManager}
         ]"
-                  labelInValue
-                  placeholder="请输入经营经理"
-                  showSearch
-                  :showArrow="false"
-                  :filterOption="false"
-                  @search="fetchStaffData"
-                  notFoundContent="无该人员数据"
-                  :defaultActiveFirstOption="false"
+                  placeholder="请选择经营负责人"
           >
-            <a-spin v-if="fetching" slot="notFoundContent" size="small"/>
-            <a-select-option v-for="d in staffData" :key="d.id">{{d.staffName}}<a-divider type="vertical" /><a-tag color="orange">{{d.staffCode}}</a-tag></a-select-option>
+            <a-select-option v-for="d in runningManagerList" :key="d.userId">{{d.username}}<a-divider type="vertical" /><a-tag color="orange">{{d.nickname}}</a-tag></a-select-option>
+          </a-select>
+        </a-form-item>
+        <a-form-item
+                :label-col="formItemLayout.labelCol"
+                :wrapper-col="formItemLayout.wrapperCol"
+                label="总监"
+        >
+          <a-select
+                  v-decorator="[
+          'inspector',
+          {initialValue: this.formData.inspector}
+        ]"
+                  placeholder="请选择经营负责人"
+          >
+            <a-select-option v-for="d in inspectorList" :key="d.userId">{{d.username}}<a-divider type="vertical" /><a-tag color="orange">{{d.nickname}}</a-tag></a-select-option>
           </a-select>
         </a-form-item>
         <a-form-item
@@ -463,7 +454,6 @@
 
 <script>
   import {mapState, mapActions} from 'vuex'
-  import {debounce} from 'debounce';
 
   const formItemLayout = {
     labelCol: {span: 6},
@@ -490,7 +480,6 @@
       }
     },
     data() {
-      this.fetchStaffData = debounce(this.fetchStaffData, 500);
       return {
         formItemLayout,
         formTailLayout,
@@ -499,6 +488,10 @@
         form: this.$form.createForm(this),
         pdfFileList: [],
         fetching: false, // 控制拉取列表
+        projectManagerList: [], // 项目经理列表
+        projectSecretaryList: [], // 行政专员列表
+        inspectorList: [], // 总监列表
+        runningManagerList: [], // 经营负责人列表
       }
     },
     computed: {
@@ -506,11 +499,33 @@
         staffData: state => state.staffOperation.staffData, // 职员信息
       }),
     },
+    mounted() {
+      this.getUserListByRoleId({
+        roleId: 5, // 项目经理
+      }).then(res => {
+        this.projectManagerList = res.data.data;
+      });
+      this.getUserListByRoleId({
+        roleId: 4, // 行政专员
+      }).then(res => {
+        this.projectSecretaryList = res.data.data;
+      });
+      this.getUserListByRoleId({
+        roleId: 2, // 总监
+      }).then(res => {
+        this.inspectorList = res.data.data;
+      });
+      this.getUserListByRoleId({
+        roleId: 3, // 经营负责人
+      }).then(res => {
+        this.runningManagerList = res.data.data;
+      });
+    },
     methods: {
       ...mapActions({
         uploadContract: 'contractList/uploadContract',
         verifyContract: 'contractList/verifyContract',
-        getStaffListByNameLike: 'staffOperation/getStaffListByNameLike'
+        getUserListByRoleId: 'userOperation/getUserListByRoleId', // 获取不同角色列表
       }),
       check() {
         this.form.validateFields(
@@ -531,13 +546,16 @@
                 projectCategory: projectCategory
               });
               values.projectManager = {
-                id: values.projectManager.key
+                userId: values.projectManager
               };
               values.runningManager = {
-                id: values.runningManager.key
+                userId: values.runningManager
               };
               values.projectSecretary = {
-                id: values.projectSecretary.key
+                userId: values.projectSecretary
+              };
+              values.inspector = {
+                userId: values.inspector
               };
               this.verifyContract(values).then((data) => {
                 if (data.data.meta.success) {
@@ -586,17 +604,6 @@
           this.handlePdfRemove(file);
         }
         return false;
-      },
-      fetchStaffData(value) {
-        const params = {
-          staffName: value,
-          pageNum: 1,
-          pageLimit: 10,
-        };
-        this.fetching = true;
-        this.getStaffListByNameLike(params).then((res) => {
-          this.fetching = false;
-        });
       },
     },
   }

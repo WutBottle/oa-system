@@ -3,14 +3,15 @@
 * 登录处理
 */
 import api from '@/api/apiSugar'
-import {ACCESS_TOKEN, ROLE, USERNAME} from '@/store/mutation-types'
+import {ACCESS_TOKEN, ROLE, USERNAME, AUTHORITY} from '@/store/mutation-types'
 
 const state = {
   status: '',
   token: localStorage.getItem(ACCESS_TOKEN) || '',
   role: localStorage.getItem(ROLE) || '',
   username: localStorage.getItem(USERNAME) || '',
-  authority: {},
+  authority: JSON.parse(localStorage.getItem(AUTHORITY)) || {},
+  menuSelect: '',
 };
 
 const mutations = {
@@ -23,6 +24,8 @@ const mutations = {
     localStorage.setItem(ACCESS_TOKEN, user.token);
     localStorage.setItem(ROLE, user.role);
     localStorage.setItem(USERNAME, user.username);
+    localStorage.setItem(AUTHORITY, JSON.stringify(user.authority));
+    state.token = user.token;
     state.role = user.role;
     state.username = user.username;
     state.authority = user.authority;

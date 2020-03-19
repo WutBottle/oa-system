@@ -67,6 +67,34 @@
           <span slot="epc" slot-scope="text">
             <a-icon :style="{color: text ? 'green' : 'red'}" :type="text ? 'check' : 'close'"/>
           </span>
+          <span slot="projectManagerNode" slot-scope="text">
+            {{text.username}}
+            <a-divider type="vertical" />
+            <a-tag color="orange">
+              {{text.nickname}}
+            </a-tag>
+          </span>
+          <span slot="projectSecretaryNode" slot-scope="text">
+            {{text.username}}
+            <a-divider type="vertical" />
+            <a-tag color="orange">
+              {{text.nickname}}
+            </a-tag>
+          </span>
+          <span slot="runningManagerNode" slot-scope="text">
+            {{text.username}}
+            <a-divider type="vertical" />
+            <a-tag color="orange">
+              {{text.nickname}}
+            </a-tag>
+          </span>
+          <span slot="inspectorNode" slot-scope="text">
+            {{text.username}}
+            <a-divider type="vertical" />
+            <a-tag color="orange">
+              {{text.nickname}}
+            </a-tag>
+          </span>
           <span slot="contractFile" slot-scope="text">
             <a-button :disabled="!text.contractId" type="primary" icon="download" :loading="text.isDownload" @click="handleFileDownload(text)">
               下载文件
@@ -231,6 +259,22 @@
             runningManager: item.runningManager ? item.runningManager.userId : undefined, // 经营经理
             projectSecretary: item.projectSecretary ? item.projectSecretary.userId : undefined, // 项目预算秘书
             inspector: item.inspector ? item.inspector.userId : undefined, // 总监
+            projectManagerNode: {
+              username: item.projectManager ? item.projectManager.username : undefined,
+              nickname: item.projectManager ? item.projectManager.nickname : undefined,
+            }, // 项目经理
+            runningManagerNode: {
+              username: item.runningManager ? item.runningManager.username : undefined,
+              nickname: item.runningManager ? item.runningManager.nickname : undefined,
+            }, // 经营经理
+            projectSecretaryNode: {
+              username: item.projectSecretary ? item.projectSecretary.username : undefined,
+              nickname: item.projectSecretary ? item.projectSecretary.nickname : undefined,
+            }, // 项目预算秘书
+            inspectorNode: {
+              username: item.inspector ? item.inspector.username : undefined,
+              nickname: item.inspector ? item.inspector.nickname : undefined,
+            }, // 总监
             contractingParty: item.owner, // 发包方
             investmentAmount: item.investment, // 投资额(万元)
             projectScale: (item.aboveGroundArea || item.underGroundArea) && ('地上' + item.aboveGroundArea + '+地下' + item.underGroundArea), // 项目规模(平方米)
@@ -310,9 +354,7 @@
           this.handleFinalDelete();
           this.$message.success('删除成功');
           this.updateTableData();
-        }).catch((error) => {
-          this.$message.error(error)
-        });
+        })
       },
       handleContractEdit(selectContractData) {
         // 初始化输入数据
@@ -345,8 +387,8 @@
       loadTableColumns(data) {
         this.columns = [];
         this.scrollX = 200;
-        this.columns.push(this.totalColumns[29]);
         this.columns.push(this.totalColumns[30]);
+        this.columns.push(this.totalColumns[31]);
         data.map(item => {
           this.columns.push(this.totalColumns[item]);
           this.scrollX += this.totalColumns[item].width;

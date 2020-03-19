@@ -42,7 +42,6 @@ const errorHandle = (status, otherStatus) => {
       break;
     // 403 token过期
     case 403:
-      console.log(otherStatus)
       Vue.prototype.$message.error('权限不足，无法访问');
       break;
     // 404请求不存在
@@ -57,6 +56,7 @@ const errorHandle = (status, otherStatus) => {
       break;
     default:
       console.log(otherStatus);
+      break;
   }
 };
 

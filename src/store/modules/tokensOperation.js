@@ -10,7 +10,7 @@ const state = {
   token: localStorage.getItem(ACCESS_TOKEN) || '',
   role: localStorage.getItem(ROLE) || '',
   username: localStorage.getItem(USERNAME) || '',
-  menuSelect: '',
+  authority: {},
 };
 
 const mutations = {
@@ -25,6 +25,7 @@ const mutations = {
     localStorage.setItem(USERNAME, user.username);
     state.role = user.role;
     state.username = user.username;
+    state.authority = user.authority;
   },
   authError(state) {
     state.status = 'error';

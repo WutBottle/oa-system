@@ -391,9 +391,7 @@
           contractId: this.contractValue
         }).then((res) => {
           this.receiptsList = res.data.data.receipts;
-        }).catch((error) => {
-          this.$message.error(error)
-        });
+        })
       },
       // 更新列表数据
       updateTableData() {
@@ -463,8 +461,6 @@
         this.deleteCash(params).then((res) => {
           this.updateTableData();
           this.$message.success(res.data.data)
-        }).catch((error) => {
-          this.$message.error(error);
         })
       },
       // 添加现金发票信息
@@ -533,8 +529,6 @@
                 } else {
                   this.$message.error(res.data.meta.message);
                 }
-              }).catch((error) => {
-                this.$message.error(error);
               })
             }
           },

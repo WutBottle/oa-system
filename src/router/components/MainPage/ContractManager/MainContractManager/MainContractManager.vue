@@ -733,9 +733,7 @@
                 } else {
                   this.$message.error(res.data.meta.message);
                 }
-              }).catch((error) => {
-                this.$message.error(error);
-              });
+              })
             }
           },
         );

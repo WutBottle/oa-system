@@ -266,66 +266,8 @@
   export default {
     name: 'MainPage',
     mounted() {
-      if (this.role === '超级管理员') {
-        const adminMenu = [
-          {
-            name: '职员列表',
-            router: "/main/staff",
-            iconType: "team",
-          },
-          {
-            name: "数据录入",
-            iconType: "file-text",
-            sideBars: [
-              {
-                name: "合同录入",
-                router: "/main/contractmanager",
-              },
-              {
-                name: "发票录入",
-                router: "/main/invoice",
-              },
-              {
-                name: "现金录入",
-                router: "/main/cash",
-              },
-              {
-                name: "分包付款录入",
-                router: "/main/outcontractpaid",
-              },
-              {
-                name: "分项分包录入",
-                router: "/main/subentry",
-              },
-              {
-                name: "职员录入",
-                router: "/main/staffentry",
-              },
-              {
-                name: "工资录入",
-                router: "/main/salaryentry",
-              }
-            ]
-          }, {
-            name: '项目导出',
-            iconType: 'export',
-            router: "/main/projectexport",
-          }, {
-            name: "系统管理",
-            iconType: "cluster",
-            sideBars: [
-              {
-                name: "参数配置",
-                router: "/main/parameter",
-              },
-              {
-                name: "用户管理",
-                router: "/main/users",
-              }
-            ]
-          }];
-        this.menuList = this.menuList.concat(adminMenu);
-      }
+      this.generateMenuList();
+
       this.screenWidth = document.body.clientWidth;
       window.onresize = () => {
         return (() => {
@@ -340,8 +282,30 @@
         collapsed: false,
         openKeys: [],
         rootSubmenuKeys: ['数据录入', '系统管理'],
-        menuList: [
-          {
+        menuList: [],
+      }
+    },
+    created() {
+      this.setMenu(this.$route.path);
+    },
+    computed: {
+      ...mapState({
+        username: state => state.tokensOperation.username,// 选择合同数
+        role: state => state.tokensOperation.role,
+        menuSelect: state => state.tokensOperation.menuSelect, // 当前menu
+        authority: state => state.tokensOperation.authority, // 录入菜单权限
+      }),
+    },
+    methods: {
+      ...mapMutations({
+        setMenu: 'tokensOperation/setMenu',
+      }),
+      ...mapActions({
+        logout: 'tokensOperation/logout',
+      }),
+      generateMenuList() {
+        let commonMenuList =
+          [{
             name: '工作台',
             router: "/main/workplace",
             iconType: "desktop",
@@ -365,31 +329,106 @@
             router: "/main/approvalmanagement",
             iconType: "edit",
           },
-          // {
-          //   name: '分析中心',
-          //   router: "/main/analysis",
-          //   iconType: "pie-chart",
-          // },
+          {
+            name: '职员列表',
+            router: "/main/staff",
+            iconType: "team",
+          }];
+        let inputMenuList =
+          {
+          name: "数据录入",
+          iconType: "file-text",
+          sideBars: [
+          {
+            name: "合同录入",
+            router: "/main/contractmanager",
+          },
+          {
+            name: "发票录入",
+            router: "/main/invoice",
+          },
+          {
+            name: "现金录入",
+            router: "/main/cash",
+          },
+          {
+            name: "分包付款录入",
+            router: "/main/outcontractpaid",
+          },
+          {
+            name: "分项分包录入",
+            router: "/main/subentry",
+          },
+          {
+            name: "职员录入",
+            router: "/main/staffentry",
+          },
+          {
+            name: "工资录入",
+            router: "/main/salaryentry",
+          }
         ]
-      }
-    },
-    created() {
-      this.setMenu(this.$route.path);
-    },
-    computed: {
-      ...mapState({
-        username: state => state.tokensOperation.username,// 选择合同数
-        role: state => state.tokensOperation.role,
-        menuSelect: state => state.tokensOperation.menuSelect, // 当前menu
-      }),
-    },
-    methods: {
-      ...mapMutations({
-        setMenu: 'tokensOperation/setMenu',
-      }),
-      ...mapActions({
-        logout: 'tokensOperation/logout',
-      }),
+        };
+        for (let key in this.authority) {
+          if (!(this.authority[key].length > 1 && this.authority[key].includes('query'))) {
+            switch (key) {
+              case 'OutPaid':
+                inputMenuList.sideBars.splice(inputMenuList.sideBars.findIndex(item => item.name === '分包付款录入'), 1);
+                break;
+              case 'Receipt':
+                inputMenuList.sideBars.splice(inputMenuList.sideBars.findIndex(item => item.name === '发票录入'), 1);
+                break;
+              case 'OutContract':
+                inputMenuList.sideBars.splice(inputMenuList.sideBars.findIndex(item => item.name === '分项分包录入'), 1);
+                break;
+              case 'Cash':
+                inputMenuList.sideBars.splice(inputMenuList.sideBars.findIndex(item => item.name === '现金录入'), 1);
+                break;
+              case 'Contract':
+                inputMenuList.sideBars.splice(inputMenuList.sideBars.findIndex(item => item.name === '合同录入'), 1);
+                break;
+            }
+          }
+        }
+        // 如果不含分包列表查询则去掉
+        if(!this.authority.OutContract.includes('query')) {
+          commonMenuList.splice(commonMenuList.findIndex(item => item.name === '分包列表'), 1);
+        }
+        // 现金发票同时没权限才去掉
+        if (!(this.authority.Cash.includes('query') || this.authority.Receipt.includes('query'))) {
+          commonMenuList.splice(commonMenuList.findIndex(item => item.name === '现金发票'), 1);
+        }
+        this.menuList = this.menuList.concat(commonMenuList);
+        if (this.role != '超级管理员') {
+          inputMenuList.sideBars.splice(inputMenuList.sideBars.findIndex(item => item.name === '职员录入'), 1);
+          inputMenuList.sideBars.splice(inputMenuList.sideBars.findIndex(item => item.name === '工资录入'), 1);
+          if (inputMenuList.sideBars.length) {
+            this.menuList = this.menuList.concat(inputMenuList);
+          }
+        } else {
+          const adminMenu = [
+            {
+              name: '项目导出',
+              iconType: 'export',
+              router: "/main/projectexport",
+            }, {
+              name: "系统管理",
+              iconType: "cluster",
+              sideBars: [
+                {
+                  name: "参数配置",
+                  router: "/main/parameter",
+                },
+                {
+                  name: "用户管理",
+                  router: "/main/users",
+                }
+              ]
+            }];
+          this.menuList = this.menuList.concat(inputMenuList);
+          this.menuList = this.menuList.concat(adminMenu);
+        }
+      },
       toggleCollapsed() {
         this.collapsed = !this.collapsed
       },
@@ -401,9 +440,7 @@
         this.logout().then(() => {
           this.$message.success('已退出');
           this.$router.push('/user/login');
-        }).catch((error) => {
-          this.$message.error(error);
-        });
+        })
       },
       onOpenChange(openKeys) {
         const latestOpenKey = openKeys.find(key => this.openKeys.indexOf(key) === -1);

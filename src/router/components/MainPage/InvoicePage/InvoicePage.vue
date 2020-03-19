@@ -533,9 +533,7 @@
             this.$message.error(res.data.meta.message);
           }
           this.tableSpinning = false;
-        }).catch((error) => {
-          this.$message.error(error);
-        });
+        })
       },
       // 添加发票信息
       submitForm() {
@@ -653,8 +651,6 @@
                 } else {
                   this.$message.error(res.data.meta.message);
                 }
-              }).catch((error) => {
-                this.$message.error(error);
               })
             }
           },

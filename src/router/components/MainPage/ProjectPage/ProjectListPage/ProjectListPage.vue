@@ -24,7 +24,7 @@
       <a-spin :spinning="spinning" tip="Loading...">
         <a-table bordered :columns="columns" :dataSource="tableData"
                  :pagination="paginationProps"
-                 @change="handleTableChange" :scroll="{ x: 2280, y: 550}">
+                 @change="handleTableChange" :scroll="{ x: 2760, y: 550}">
           <span slot="serial" slot-scope="text, record, index">
             {{ index + 1 }}
           </span>
@@ -215,6 +215,30 @@
             scopedSlots: {customRender: 'projectSalary'}
           },
           {
+            title: '项目经理',
+            width: 120,
+            key: 'projectManager',
+            dataIndex: 'projectManager',
+          },
+          {
+            title: '行政专员',
+            width: 120,
+            key: 'projectSecretary',
+            dataIndex: 'projectSecretary',
+          },
+          {
+            title: '总监',
+            width: 120,
+            key: 'inspector',
+            dataIndex: 'inspector',
+          },
+          {
+            title: '经营负责人',
+            width: 120,
+            key: 'runningManager',
+            dataIndex: 'runningManager',
+          },
+          {
             width: 180,
             title: '项目操作',
             fixed: 'right',
@@ -333,6 +357,10 @@
               return {
                 key: index,
                 id: item.id,
+                projectManager: item.projectManager,
+                projectSecretary: item.projectSecretary,
+                inspector: item.inspector,
+                runningManager: item.runningManager,
                 receiptAmount: item.receiptAmount,
                 receiptNotCash: item.receiptNotCash,
                 receiptRemain: item.receiptRemain,

@@ -76,8 +76,8 @@
               <div slot="title">
                 <span>{{item.name}}</span>
                 <a-divider type="vertical" />
-                <a-tooltip :title="item.datetime && item.datetime.format('YYYY-MM-DD HH:mm:ss')">
-                  <span>{{item.datetime && item.datetime.fromNow()}}</span>
+                <a-tooltip :title="isNaN(item.datetime) ? '暂无时间' : item.datetime.format('YYYY-MM-DD HH:mm:ss')">
+                  <span>{{isNaN(item.datetime) ? '暂无时间' : item.datetime.fromNow()}}</span>
                 </a-tooltip>
                 <a-divider v-if="(index + 1)%4 === 1" type="vertical" />
                 <a-tag v-if="(index + 1)%4 === 1" color="blue">第{{item.auditIndex + 1}}轮审批</a-tag>
@@ -290,6 +290,7 @@
             })
           });
         }
+        this.updateTableData();
         })
       },
       openDetail(selectData) {

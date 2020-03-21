@@ -84,7 +84,7 @@
             <div class="left-container">
               <div class="avatar">
                   <span>
-                    <img src="@/assets/OA.png" alt="avatar">
+                    <img :src="avatarSetting[role]" alt="avatar">
                   </span>
               </div>
               <div class="content">
@@ -238,7 +238,6 @@
                     <a slot="title" href="https://vue.ant.design/">{{item.operateUserName}}
                       <a-divider type="vertical"/>
                       {{item.time}}</a>
-                    <a-avatar slot="avatar" src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png"/>
                   </a-list-item-meta>
                 </a-list-item>
               </a-list>
@@ -343,6 +342,7 @@
       ...mapState({
         username: state => state.tokensOperation.username,// 选择合同数
         menuSelect: state => state.tokensOperation.menuSelect, // 当前menu
+        role: state => state.tokensOperation.role, // 角色
       }),
     },
     data() {
@@ -372,7 +372,15 @@
           pageNum: 1,
           pageLimit: 5,
           total: 6,
-        }
+        },
+        avatarSetting: {
+          总监: require('@/assets/总监.png'),
+          超级管理员: require('@/assets/超级管理员.png'),
+          普通用户: require('@/assets/普通用户.png'),
+          行政专员: require('@/assets/行政专员.png'),
+          经营负责人: require('@/assets/经营负责人.png'),
+          项目经理: require('@/assets/项目经理.png'),
+        },
       }
     },
     activated() {

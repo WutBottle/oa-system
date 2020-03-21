@@ -89,7 +89,7 @@
             <a-upload
                     v-decorator="[
           'uploadFile',
-          {valuePropName: 'uploadFile', rules: [{ required: true, message: '请上传合同文件！' }]}]"
+          {valuePropName: 'uploadFile'}]"
                     :fileList="pdfFileList"
                     :beforeUpload="beforeUpload"
                     :remove="handlePdfRemove"
@@ -167,69 +167,6 @@
         ]"
                     placeholder="请输入经营部门"
             />
-          </a-form-item>
-          <a-form-item
-                  :label-col="formItemLayout.labelCol"
-                  :wrapper-col="formItemLayout.wrapperCol"
-                  label="经营经理"
-          >
-            <a-select
-                    v-decorator="[
-          'runningManager',
-        ]"
-                    placeholder="请输入经营经理"
-                    showSearch
-                    :showArrow="false"
-                    :filterOption="false"
-                    @search="fetchStaffData"
-                    notFoundContent="无该人员数据"
-                    :defaultActiveFirstOption="false"
-            >
-              <a-spin v-if="fetching" slot="notFoundContent" size="small"/>
-              <a-select-option v-for="d in staffData" :key="d.id">{{d.staffName}}<a-divider type="vertical" /><a-tag color="orange">{{d.staffCode}}</a-tag></a-select-option>
-            </a-select>
-          </a-form-item>
-          <a-form-item
-                  :label-col="formItemLayout.labelCol"
-                  :wrapper-col="formItemLayout.wrapperCol"
-                  label="项目经理"
-          >
-            <a-select
-                    v-decorator="[
-          'projectManager',
-        ]"
-                    placeholder="请输入项目经理"
-                    showSearch
-                    :showArrow="false"
-                    :filterOption="false"
-                    @search="fetchStaffData"
-                    notFoundContent="无该人员数据"
-                    :defaultActiveFirstOption="false"
-            >
-              <a-spin v-if="fetching" slot="notFoundContent" size="small"/>
-              <a-select-option v-for="d in staffData" :key="d.id">{{d.staffName}}<a-divider type="vertical" /><a-tag color="orange">{{d.staffCode}}</a-tag></a-select-option>
-            </a-select>
-          </a-form-item>
-          <a-form-item
-                  :label-col="formItemLayout.labelCol"
-                  :wrapper-col="formItemLayout.wrapperCol"
-                  label="项目预算秘书"
-          >
-            <a-select
-                    v-decorator="[
-          'projectSecretary',
-        ]"
-                    placeholder="请输入项目预算秘书"
-                    showSearch
-                    :showArrow="false"
-                    :filterOption="false"
-                    @search="fetchStaffData"
-                    notFoundContent="无该人员数据"
-                    :defaultActiveFirstOption="false"
-            >
-              <a-spin v-if="fetching" slot="notFoundContent" size="small"/>
-              <a-select-option v-for="d in staffData" :key="d.id">{{d.staffName}}<a-divider type="vertical" /><a-tag color="orange">{{d.staffCode}}</a-tag></a-select-option>
-            </a-select>
           </a-form-item>
           <a-form-item
                   :label-col="formItemLayout.labelCol"
@@ -502,15 +439,6 @@
                 projectCategory: projectCategory,
                 sup: true,
               });
-              values.projectManager = {
-                id: values.projectManager
-              };
-              values.runningManager = {
-                id: values.runningManager
-              };
-              values.projectSecretary = {
-                id: values.projectSecretary
-              };
               this.addContract(values).then((res) => {
                 if (res.data.meta.success) {
                   this.$message.success(res.data.data);

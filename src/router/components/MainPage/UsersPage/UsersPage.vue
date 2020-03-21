@@ -239,6 +239,18 @@
           </a-select>
         </a-form-item>
         <a-form-item
+                v-bind="formItemLayout"
+                label="新的密码"
+        >
+          <a-input
+                  v-decorator="[
+          'password',
+        ]"
+                  type="password"
+                  placeholder="未修改密码可不填"
+          />
+        </a-form-item>
+        <a-form-item
                 :label-col="formTailLayout.labelCol"
                 :wrapper-col="formTailLayout.wrapperCol"
         >
@@ -543,11 +555,13 @@
           userId: data.userId
         };
         this.deleteUser(params).then(res => {
-          this.$message.success(res.data.data);
-          this.updateListData('first')
-        }).catch(error => {
-          this.$message.error(error);
-        });
+          if(res.data.meta.success){
+            this.$message.success(res.data.data);
+            this.updateListData('first')
+          } else {
+            this.$message.error(res.data.meta.message);
+          }
+        })
       },
       // 关闭修改弹窗
       onEditClose() {
@@ -563,7 +577,7 @@
         this.editForm.validateFields(
           (err, values) => {
             if (!err) {
-              const params = {
+              let params = {
                 userId: this.currentUserId,
                 username: values.userName,
                 nickname: values.nickName,
@@ -571,6 +585,11 @@
                   id: values.roles
                 }]
               };
+              if (values.password) {
+                Object.assign(params, {
+                  password: values.password
+                })
+              }
               this.verifyUser(params).then((res) => {
                 if (res.data.meta.success) {
                   this.$message.success('修改成功');

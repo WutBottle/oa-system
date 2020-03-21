@@ -217,6 +217,7 @@
                 :label-col="formItemLayout.labelCol"
                 :wrapper-col="formItemLayout.wrapperCol"
                 label="项目经理"
+                v-if="!this.formData.sup"
         >
           <a-select
                   v-decorator="[
@@ -232,6 +233,7 @@
                 :label-col="formItemLayout.labelCol"
                 :wrapper-col="formItemLayout.wrapperCol"
                 label="行政专员"
+                v-if="!this.formData.sup"
         >
           <a-select
                   v-decorator="[
@@ -247,6 +249,7 @@
                 :label-col="formItemLayout.labelCol"
                 :wrapper-col="formItemLayout.wrapperCol"
                 label="经营负责人"
+                v-if="!this.formData.sup"
         >
           <a-select
                   v-decorator="[
@@ -262,6 +265,7 @@
                 :label-col="formItemLayout.labelCol"
                 :wrapper-col="formItemLayout.wrapperCol"
                 label="总监"
+                v-if="!this.formData.sup"
         >
           <a-select
                   v-decorator="[
@@ -545,7 +549,7 @@
                 contractFile: this.fileName ? this.fileName : this.formData.currentFile,
                 projectCategory: projectCategory
               });
-              values.projectManager = {
+              values.projectManager && {
                 userId: values.projectManager
               };
               values.runningManager = {

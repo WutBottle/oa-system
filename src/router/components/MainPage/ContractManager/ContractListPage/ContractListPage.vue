@@ -54,6 +54,9 @@
                  @change="handleTableChange" :scroll="{ x: scrollX, y: 550}">
           <span slot="serial" slot-scope="text, record, index">
             {{ index + 1 }}
+            <a-divider type="vertical" />
+            <a-tag v-if="!record.sup" color="green">主合同</a-tag>
+            <a-tag v-else color="blue">补充</a-tag>
           </span>
           <span slot="signState" slot-scope="text">
             <a-badge :status="text | statusTypeFilter" :text="text | statusFilter"/>
@@ -104,12 +107,17 @@
             <a @click="handleContractEdit(record)">修改</a>
             <a-divider type="vertical" />
             <a-popconfirm
-                    title="确定要删除？"
                     @confirm="handleDelete(record)"
                     okText="确定"
                     cancelText="取消"
             >
-                <a>删除</a>
+              <div slot="title">
+                确定要删除
+                <span v-if="!record.sup" style="color: #ff0000;">主合同</span>
+                <span v-else style="color: #00aaff;">补充合同</span>
+                ？
+              </div>
+              <a>删除</a>
             </a-popconfirm>
           </template>
         </a-table>
@@ -386,7 +394,7 @@
       // 生成表格样式
       loadTableColumns(data) {
         this.columns = [];
-        this.scrollX = 200;
+        this.scrollX = 260;
         this.columns.push(this.totalColumns[30]);
         this.columns.push(this.totalColumns[31]);
         data.map(item => {

@@ -228,7 +228,7 @@ const state = {
     },
     {
       title: '序号',
-      width: 70,
+      width: 130,
       fixed: 'left',
       dataIndex: 'serial',
       key: 'serial',

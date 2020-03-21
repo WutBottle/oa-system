@@ -217,7 +217,7 @@
                 <a-dropdown plcement="bottomRight">
                 <span class="action">
                   <span class="avatar">
-                    <img src="@/assets/OA.png" alt="avatar">
+                    <img :src="avatarSetting[role]" alt="avatar">
                   </span>
                   <span>{{this.username}}</span>
                 </span>
@@ -283,6 +283,14 @@
         openKeys: [],
         rootSubmenuKeys: ['数据录入', '系统管理'],
         menuList: [],
+        avatarSetting: {
+          总监: require('@/assets/总监.png'),
+          超级管理员: require('@/assets/超级管理员.png'),
+          普通用户: require('@/assets/普通用户.png'),
+          行政专员: require('@/assets/行政专员.png'),
+          经营负责人: require('@/assets/经营负责人.png'),
+          项目经理: require('@/assets/项目经理.png'),
+        },
       }
     },
     created() {
@@ -336,35 +344,35 @@
           }];
         let inputMenuList =
           {
-          name: "数据录入",
+          name: "数据管理",
           iconType: "file-text",
           sideBars: [
           {
-            name: "合同录入",
+            name: "合同管理",
             router: "/main/contractmanager",
           },
           {
-            name: "发票录入",
+            name: "发票管理",
             router: "/main/invoice",
           },
           {
-            name: "现金录入",
+            name: "现金管理",
             router: "/main/cash",
           },
           {
-            name: "分包付款录入",
+            name: "分包付款管理",
             router: "/main/outcontractpaid",
           },
           {
-            name: "分项分包录入",
+            name: "分项分包管理",
             router: "/main/subentry",
           },
           {
-            name: "职员录入",
+            name: "职员管理",
             router: "/main/staffentry",
           },
           {
-            name: "工资录入",
+            name: "工资管理",
             router: "/main/salaryentry",
           }
         ]
@@ -373,19 +381,19 @@
           if (!(this.authority[key].length > 1 && this.authority[key].includes('query'))) {
             switch (key) {
               case 'OutPaid':
-                inputMenuList.sideBars.splice(inputMenuList.sideBars.findIndex(item => item.name === '分包付款录入'), 1);
+                inputMenuList.sideBars.splice(inputMenuList.sideBars.findIndex(item => item.name === '分包付款管理'), 1);
                 break;
               case 'Receipt':
-                inputMenuList.sideBars.splice(inputMenuList.sideBars.findIndex(item => item.name === '发票录入'), 1);
+                inputMenuList.sideBars.splice(inputMenuList.sideBars.findIndex(item => item.name === '发票管理'), 1);
                 break;
               case 'OutContract':
-                inputMenuList.sideBars.splice(inputMenuList.sideBars.findIndex(item => item.name === '分项分包录入'), 1);
+                inputMenuList.sideBars.splice(inputMenuList.sideBars.findIndex(item => item.name === '分项分包管理'), 1);
                 break;
               case 'Cash':
-                inputMenuList.sideBars.splice(inputMenuList.sideBars.findIndex(item => item.name === '现金录入'), 1);
+                inputMenuList.sideBars.splice(inputMenuList.sideBars.findIndex(item => item.name === '现金管理'), 1);
                 break;
               case 'Contract':
-                inputMenuList.sideBars.splice(inputMenuList.sideBars.findIndex(item => item.name === '合同录入'), 1);
+                inputMenuList.sideBars.splice(inputMenuList.sideBars.findIndex(item => item.name === '合同管理'), 1);
                 break;
             }
           }
@@ -400,8 +408,8 @@
         }
         this.menuList = this.menuList.concat(commonMenuList);
         if (this.role != '超级管理员') {
-          inputMenuList.sideBars.splice(inputMenuList.sideBars.findIndex(item => item.name === '职员录入'), 1);
-          inputMenuList.sideBars.splice(inputMenuList.sideBars.findIndex(item => item.name === '工资录入'), 1);
+          inputMenuList.sideBars.splice(inputMenuList.sideBars.findIndex(item => item.name === '职员管理'), 1);
+          inputMenuList.sideBars.splice(inputMenuList.sideBars.findIndex(item => item.name === '工资管理'), 1);
           if (inputMenuList.sideBars.length) {
             this.menuList = this.menuList.concat(inputMenuList);
           }

@@ -8,7 +8,7 @@
 
 <template>
   <div class="ContractManager">
-    <HeaderPage title="合同录入"/>
+    <HeaderPage title="合同管理"/>
     <div class="page-content">
       <div style="background-color: #fff;padding: 24px 24px;">
         <ContractListPage @showAddModal="showAddModal" ref="contractListDom"/>

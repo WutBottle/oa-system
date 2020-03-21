@@ -30,7 +30,7 @@
 
 <template>
   <div class="SalaryEntryPage">
-    <HeaderPage title="工资录入"/>
+    <HeaderPage title="工资管理"/>
     <div class="page-content">
       <a-row style="background-color: #fff; padding: 24px;">
         <a-steps :current="current">

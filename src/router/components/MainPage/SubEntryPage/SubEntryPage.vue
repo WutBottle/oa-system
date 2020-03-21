@@ -30,7 +30,7 @@
 
 <template>
   <div class="SubEntryPage">
-    <HeaderPage title="分项分包录入"/>
+    <HeaderPage title="分项分包管理"/>
     <div class="page-content">
       <a-row style="background-color: #fff; padding: 24px;">
         <a-steps :current="current">

@@ -51,9 +51,9 @@
     <div class="page-header">
       <a-breadcrumb class="bread">
         <a-breadcrumb-item><a href="/main/workplace">首页</a></a-breadcrumb-item>
-        <a-breadcrumb-item>发票录入</a-breadcrumb-item>
+        <a-breadcrumb-item>发票管理</a-breadcrumb-item>
       </a-breadcrumb>
-      <p class="title">发票录入<CashReceiptInput/></p>
+      <p class="title">发票管理<CashReceiptInput/></p>
     </div>
     <div class="page-content">
       <a-row style="background-color: #fff; padding: 24px;">

@@ -75,7 +75,7 @@ const actions = {
   deleteReceipt({commit}, params) {
     return new Promise((resolve, reject) => {
       api.receiptController.deleteReceipt(params).then(res => {
-        commit('handleFinalDelete', params);
+        res.data.data && commit('handleFinalDelete', params);
         resolve(res);
       }).catch(error => {
         console.log(error, '删除发票信息失败');

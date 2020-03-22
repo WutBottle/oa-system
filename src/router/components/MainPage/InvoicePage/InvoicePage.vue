@@ -666,10 +666,12 @@
           receiptIds: [selectInvoiceData.receiptId]
         };
         this.deleteReceipt(params).then((res) => {
-          this.updateTableData();
-          this.$message.success(res.data.data)
-        }).catch((error) => {
-          this.$message.error(error);
+          if(res.data.meta.success){
+            this.updateTableData();
+            this.$message.success(res.data.data)
+          }else {
+            this.$message.error(res.data.meta.message)
+          }
         })
       }
     },

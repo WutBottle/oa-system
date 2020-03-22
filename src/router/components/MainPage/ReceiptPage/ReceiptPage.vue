@@ -15,6 +15,41 @@
     <HeaderPage title="现金发票"/>
     <div class="page-content">
       <a-tabs @change="callback" style="background-color: #fff; padding: 10px 20px 40px 20px">
+        <a-tab-pane tab="发票列表" key="receipt">
+          <a-form class="form-wrapper" :layout="formLayout">
+            <a-form-item
+                    label="发票号"
+                    :label-col="formItemLayout.labelCol"
+                    :wrapper-col="formItemLayout.wrapperCol"
+            >
+              <a-input v-model="receiptId" placeholder="请输入发票号"/>
+            </a-form-item>
+            <a-form-item
+                    :wrapper-col="buttonItemLayout.wrapperCol"
+            >
+              <a-button type="primary" @click="handleReceiptQuery">
+                查询
+              </a-button>
+            </a-form-item>
+          </a-form>
+          <div class="table-wrapper">
+            <a-spin :spinning="receiptSpinning" tip="Loading...">
+              <a-table bordered :columns="receiptColumns" :dataSource="receiptListData"
+                       :pagination="receiptPaginationProps"
+                       @change="handleReceiptTableChange" :scroll="{ x: 'max-content', y: 500}">
+              <span slot="receiptFile" slot-scope="text">
+                <a-button :disabled="!text" type="primary" icon="eye"
+                          @click="handleOpenReceiptFile(text)">
+                  查看文件
+                </a-button>
+              </span>
+                <span slot="serial" slot-scope="text, record, index">
+              {{ index + 1 }}
+              </span>
+              </a-table>
+            </a-spin>
+          </div>
+        </a-tab-pane>
         <a-tab-pane tab="现金列表" key="cash">
           <a-form class="form-wrapper" :layout="formLayout">
             <a-form-item
@@ -51,41 +86,6 @@
                   <a-tag v-for="tag in tags" color="blue"
                          :key="tag.id">{{tag.receiptId}}</a-tag>
                 </span>
-              </a-table>
-            </a-spin>
-          </div>
-        </a-tab-pane>
-        <a-tab-pane tab="发票列表" key="receipt">
-          <a-form class="form-wrapper" :layout="formLayout">
-            <a-form-item
-                    label="发票号"
-                    :label-col="formItemLayout.labelCol"
-                    :wrapper-col="formItemLayout.wrapperCol"
-            >
-              <a-input v-model="receiptId" placeholder="请输入发票号"/>
-            </a-form-item>
-            <a-form-item
-                    :wrapper-col="buttonItemLayout.wrapperCol"
-            >
-              <a-button type="primary" @click="handleReceiptQuery">
-                查询
-              </a-button>
-            </a-form-item>
-          </a-form>
-          <div class="table-wrapper">
-            <a-spin :spinning="receiptSpinning" tip="Loading...">
-              <a-table bordered :columns="receiptColumns" :dataSource="receiptListData"
-                       :pagination="receiptPaginationProps"
-                       @change="handleReceiptTableChange" :scroll="{ x: 'max-content', y: 500}">
-              <span slot="receiptFile" slot-scope="text">
-                <a-button :disabled="!text" type="primary" icon="eye"
-                          @click="handleOpenReceiptFile(text)">
-                  查看文件
-                </a-button>
-              </span>
-              <span slot="serial" slot-scope="text, record, index">
-              {{ index + 1 }}
-              </span>
               </a-table>
             </a-spin>
           </div>
@@ -238,6 +238,9 @@
         cashListTableData: state => state.cashOperation.cashListTableData,// 现金回款table数据
       }),
     },
+    activated() {
+      this.updateTableData();
+    },
     methods: {
       ...mapActions({
         getReceiptListByIdLike: 'receiptOperation/getReceiptListByIdLike',
@@ -260,8 +263,7 @@
         })
       },
       callback(key) {
-        if (key === 'cash') {
-        } else {
+        if (key === 'receipt') {
           this.updateTableData();
         }
       },

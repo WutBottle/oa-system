@@ -549,16 +549,16 @@
                 contractFile: this.fileName ? this.fileName : this.formData.currentFile,
                 projectCategory: projectCategory
               });
-              values.projectManager && {
+              values.projectManager = values.projectManager && {
                 userId: values.projectManager
               };
-              values.runningManager = {
+              values.runningManager = values.runningManager && {
                 userId: values.runningManager
               };
-              values.projectSecretary = {
+              values.projectSecretary = values.projectSecretary && {
                 userId: values.projectSecretary
               };
-              values.inspector = {
+              values.inspector = values.inspector && {
                 userId: values.inspector
               };
               this.verifyContract(values).then((data) => {

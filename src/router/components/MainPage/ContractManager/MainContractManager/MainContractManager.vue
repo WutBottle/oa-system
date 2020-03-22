@@ -175,8 +175,8 @@
             <a-select
                     v-decorator="[
           'projectManager',
-          {rules: [{ required: true, message: '请选择项目经理！' }]}
         ]"
+                    :allowClear="true"
                     placeholder="请选择项目经理"
             >
               <a-select-option v-for="d in projectManagerList" :key="d.userId">{{d.username}}<a-divider type="vertical" /><a-tag color="orange">{{d.nickname}}</a-tag></a-select-option>
@@ -190,8 +190,8 @@
             <a-select
                     v-decorator="[
           'projectSecretary',
-          {rules: [{ required: true, message: '请选择行政专员！' }]}
         ]"
+                    :allowClear="true"
                     placeholder="请选择行政专员"
             >
               <a-select-option v-for="d in projectSecretaryList" :key="d.userId">{{d.username}}<a-divider type="vertical" /><a-tag color="orange">{{d.nickname}}</a-tag></a-select-option>
@@ -207,6 +207,7 @@
           'runningManager',
           {rules: [{ required: true, message: '请选择经营负责人！' }]}
         ]"
+                    :allowClear="true"
                     placeholder="请选择经营负责人"
             >
               <a-select-option v-for="d in runningManagerList" :key="d.userId">{{d.username}}<a-divider type="vertical" /><a-tag color="orange">{{d.nickname}}</a-tag></a-select-option>
@@ -220,8 +221,8 @@
             <a-select
                     v-decorator="[
           'inspector',
-          {rules: [{ required: true, message: '请选择总监！' }]}
         ]"
+                    :allowClear="true"
                     placeholder="请选择总监"
             >
               <a-select-option v-for="d in inspectorList" :key="d.userId">{{d.username}}<a-divider type="vertical" /><a-tag color="orange">{{d.nickname}}</a-tag></a-select-option>
@@ -713,16 +714,16 @@
               values = Object.assign(values, {contractFile: this.fileName});
               values = Object.assign(values, {projectCategory: projectCategory});
               values = Object.assign(values, {productionStage: productionStageCategory});
-              values.projectManager = {
+              values.projectManager = values.projectManager && {
                 userId: values.projectManager
               };
-              values.runningManager = {
+              values.runningManager = values.runningManager && {
                 userId: values.runningManager
               };
-              values.projectSecretary = {
+              values.projectSecretary = values.projectSecretary && {
                 userId: values.projectSecretary
               };
-              values.inspector = {
+              values.inspector = values.inspector && {
                 userId: values.inspector
               };
               this.addContract(values).then((res) => {

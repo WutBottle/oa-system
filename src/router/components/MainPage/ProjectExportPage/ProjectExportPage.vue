@@ -66,21 +66,14 @@
           <a-spin :spinning="spinning" tip="Loading...">
             <a-table bordered :columns="columns" :dataSource="tableData"
                      :pagination="paginationProps"
-                     @change="handleTableChange" :scroll="{ x: 2100, y: 550}">
-          <span slot="serial" slot-scope="text, record, index">
-            {{ index + 1 }}
-          </span>
-              <span slot="isSign" slot-scope="text">
-            <a-badge :status="text | statusTypeFilter" :text="text | statusFilter"/>
-          </span>
-              <template slot="selectIndex" slot-scope="text, record">
-                <a-button v-if="text" type="danger" size="small" @click="handleRemoved(record)">
-                  移除
-                </a-button>
-                <a-button v-else type="primary" size="small" @click="handleSelected(record)">
-                  选择
-                </a-button>
-              </template>
+                     :rowSelection="{selectedRowKeys: selectedRowKeys, onSelect: onSelect, onSelectAll: onSelectAll, onChange: onSelectChange}"
+                     @change="handleTableChange" :scroll="{ x: 2070, y: 550}">
+              <span slot="serial" slot-scope="text, record, index">
+                {{ index + 1 }}
+              </span>
+                  <span slot="isSign" slot-scope="text">
+                <a-badge :status="text | statusTypeFilter" :text="text | statusFilter"/>
+              </span>
               <a-progress slot="ratio" slot-scope="text" type="circle" :percent="text" :width="60"/>
             </a-table>
           </a-spin>
@@ -310,15 +303,8 @@
             key: 'projectInvestment',
             dataIndex: 'projectInvestment',
           },
-          {
-            width: 100,
-            title: '项目操作',
-            fixed: 'right',
-            key: 'selectIndex',
-            dataIndex: 'selectIndex',
-            scopedSlots: {customRender: 'selectIndex'}
-          },
         ],
+        selectedRowKeys: [],
       }
     },
     filters: {
@@ -416,6 +402,12 @@
                 selectIndex: !!this.selectProjectInfo.find(value => value.contractId === item.contractId),
               }
             });
+            this.selectedRowKeys = [];
+            this.tableData.map((item, index) => {
+              if (item.selectIndex) {
+                this.selectedRowKeys.push(index);
+              }
+            });
             this.spinning = false;
           } else {
             this.$message.error(data.data.meta.message);
@@ -453,6 +445,25 @@
           contractName: rowData.contractName
         });
         this.popVisible = true;
+      },
+      onSelect(record, selected, selectedRows) {
+        if (record.selectIndex) {
+          this.handleRemoved(record);
+        } else {
+          this.handleSelected(record);
+        }
+      },
+      onSelectChange(selectedRowKeys) {
+        this.selectedRowKeys = selectedRowKeys;
+      },
+      onSelectAll(selected, selectedRows, changeRows) {
+        changeRows.map(item => {
+          if (item.selectIndex) {
+            this.handleRemoved(item);
+          } else {
+            this.handleSelected(item);
+          }
+        });
       },
     }
   }

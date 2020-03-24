@@ -88,7 +88,7 @@
               <div class="table-wrapper">
                 <a-table bordered :columns="columns" :dataSource="tableData"
                          :pagination="paginationProps"
-                         @change="handleTableChange" :scroll="{ x:'max-content', y: 450}">
+                         @change="handleTableChange" :scroll="{ y: 450 }">
                   <span slot="serial" slot-scope="text, record, index">
                     {{ index + 1 }}
                   </span>
@@ -174,12 +174,28 @@
         </a-form-item>
         <a-form-item
                 v-bind="formItemLayout"
+                label="选择发票号"
+        >
+          <a-select
+                  v-decorator="[
+          'receipts',
+          {rules: [{required: true, message: '请选择发票号!'}]}
+        ]"
+                  mode="multiple"
+                  placeholder="请选择发票号"
+          >
+            <a-select-option v-for="item in receiptsList" :key="item.id">
+              {{item.receiptId}}
+            </a-select-option>
+          </a-select>
+        </a-form-item>
+        <a-form-item
+                v-bind="formItemLayout"
                 label="备注"
         >
           <a-input
                   v-decorator="[
           'paidNote',
-          {rules: [{required: true, message: '请输入备注!'}]}
         ]"
                   placeholder="请输入备注"
           />
@@ -243,12 +259,29 @@
         </a-form-item>
         <a-form-item
                 v-bind="formItemLayout"
+                label="选择发票号"
+        >
+          <a-select
+                  v-decorator="[
+          'receipts',
+          {initialValue: this.editFormData.receipts, rules: [{required: true, message: '请选择发票号!'}]}
+        ]"
+                  mode="multiple"
+                  placeholder="请选择发票号"
+          >
+            <a-select-option v-for="item in receiptsList" :key="item.id">
+              {{item.receiptId}}
+            </a-select-option>
+          </a-select>
+        </a-form-item>
+        <a-form-item
+                v-bind="formItemLayout"
                 label="备注"
         >
           <a-input
                   v-decorator="[
           'paidNote',
-          {initialValue: this.editFormData.paidNote, rules: [{required: true, message: '请输入备注!'}]}
+          {initialValue: this.editFormData.paidNote}
         ]"
                   placeholder="请输入备注"
           />
@@ -312,31 +345,32 @@
         columns: [
           {
             title: '序号',
-            width: 70,
+            width: '10%',
             dataIndex: 'serial',
             key: 'serial',
             scopedSlots: {customRender: 'serial'}
           },
           {
             title: '付费时间',
-            width: 200,
+            width: '30%',
             key: 'paidDate',
             dataIndex: 'paidDate',
           },
           {
             title: '付费金额(元)',
-            width: 150,
+            width: '20%',
             key: 'paidAmount',
             dataIndex: 'paidAmount',
           },
           {
             title: '备注',
-            width: 150,
+            width: '20%',
             key: 'paidNote',
             dataIndex: 'paidNote',
           },
           {
             title: '编辑分包付款',
+            width: '20%',
             key: 'operation',
             scopedSlots: {customRender: 'operation'},
           }
@@ -346,6 +380,7 @@
         editFormData: {}, // 编辑当前表单数据
         editVisible: false, // 编辑发票窗口控制
         editSpinning: false, // 编辑发票提交按钮
+        receiptsList: [], // 发票列表
       }
     },
     computed: {
@@ -367,7 +402,8 @@
         getOutPaidsByOutContractId: 'outPaidOperation/getOutPaidsByOutContractId',
         deleteOutPaid: 'outPaidOperation/deleteOutPaid',
         addOutPaid: 'outPaidOperation/addOutPaid',
-        verifyOutPaid: 'outPaidOperation/verifyOutPaid'
+        verifyOutPaid: 'outPaidOperation/verifyOutPaid',
+        getReceiptsByOutContractId: 'receiptOperation/getReceiptsByOutContractId',
       }),
       next() {
         this.current++;
@@ -388,12 +424,21 @@
           this.fetching = false;
         });
       },
+      // 获取发票列表
+      getReceiptList() {
+        this.getReceiptsByOutContractId({
+          outContractId: this.outContractValue
+        }).then((res) => {
+          this.receiptsList = res.data.data.receipts;
+        })
+      },
       handleChange(value) {
         Object.assign(this, {
           outContractValue: value,
           outContractsData: [],
           fetching: false,
-        })
+        });
+        this.getReceiptList();
       },
       // 更新分包付款列表数据
       updateTableData() {
@@ -423,6 +468,9 @@
       handleOutPaidEdit(selectOutPaidData) {
         this.editFormData = JSON.parse(JSON.stringify(selectOutPaidData));
         this.editFormData.paidDate = moment(this.editFormData.paidDate);
+        this.editFormData.receipts = this.editFormData.receipts.map(item => {
+          return item.id;
+        });
         this.editVisible = true;
       },
       handleOutPaidDelete(selectOutPaidData) {
@@ -450,6 +498,11 @@
                   paidDate: values.paidDate,
                   paidAmount: values.paidAmount,
                   paidNote: values.paidNote,
+                  receipts: values.receipts.map(item => {
+                    return {
+                      id: item,
+                    }
+                  })
                 }],
               };
               this.addOutPaid(params).then((res) => {
@@ -479,7 +532,12 @@
                 outPaidId: values.outPaidId,
                 paidDate: values.paidDate,
                 paidAmount: values.paidAmount,
-                paidNote: values.paidNote
+                paidNote: values.paidNote,
+                receipts: values.receipts.map(item => {
+                  return {
+                    id: item,
+                  }
+                })
               };
               this.verifyOutPaid(params).then((res) => {
                 if (res.data.meta.success){

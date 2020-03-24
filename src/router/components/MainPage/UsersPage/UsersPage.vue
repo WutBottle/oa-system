@@ -46,12 +46,6 @@
           <a-list-item slot="renderItem" slot-scope="item, index">
             <a-tooltip slot="actions">
               <template slot="title">
-                项目分配
-              </template>
-              <a-icon type="book" @click="handleProject(item)"/>
-            </a-tooltip>
-            <a-tooltip slot="actions">
-              <template slot="title">
                 权限分配
               </template>
               <a-icon type="lock" @click="handlePermission(item)"/>
@@ -266,93 +260,37 @@
     <a-drawer
             title="分配用户权限"
             placement="right"
-            width="600"
+            width="615"
             @close="onPermissionClose"
             :visible="permissionVisible"
     >
       <a-row style="margin-bottom: 16px">
-        <PermissionComponent ref="contractPermission" title="合同权限" :defaultCheckedList="defaultCheckedListContract"/>
+        <PermissionComponent ref="contractPermission" title="合同管理权限" :defaultCheckedList="defaultCheckedListContract"/>
       </a-row>
       <a-row style="margin-bottom: 16px">
-        <PermissionComponent ref="receiptPermission" title="发票权限" :defaultCheckedList="defaultCheckedListReceipt"/>
+        <PermissionComponent ref="subProjectPermission" title="分项分包权限" :defaultCheckedList="defaultCheckedListSupProject"/>
       </a-row>
       <a-row style="margin-bottom: 16px">
-        <PermissionComponent ref="cashPermission" title="现金权限" :defaultCheckedList="defaultCheckedListCash"/>
+        <PermissionComponent ref="receiptPermission" title="合同发票权限" :defaultCheckedList="defaultCheckedListReceipt"/>
       </a-row>
       <a-row style="margin-bottom: 16px">
-        <PermissionComponent ref="outContractPermission" title="分包权限"
-                             :defaultCheckedList="defaultCheckedListOutContract"/>
+        <PermissionComponent ref="cashPermission" title="合同现金权限" :defaultCheckedList="defaultCheckedListCash"/>
+      </a-row>
+      <a-row style="margin-bottom: 16px">
+        <PermissionComponent ref="outReceiptPermission" title="分包发票权限" :defaultCheckedList="defaultCheckedListOutReceipt"/>
       </a-row>
       <a-row style="margin-bottom: 24px">
-        <PermissionComponent ref="outPaidPermission" title="分包付款" :defaultCheckedList="defaultCheckedListOutPaid"/>
+        <PermissionComponent ref="outPaidPermission" title="分包付款权限" :defaultCheckedList="defaultCheckedListOutPaid"/>
+      </a-row>
+      <a-row style="margin-bottom: 24px">
+        <PermissionComponent ref="staffPermission" title="职员管理权限" :defaultCheckedList="defaultCheckedListStaff"/>
+      </a-row>
+      <a-row style="margin-bottom: 24px">
+        <PermissionComponent ref="salaryPermission" title="工资管理权限" :defaultCheckedList="defaultCheckedListSalary"/>
       </a-row>
       <a-row>
         <a-button type="primary" block @click="handlePermissionSubmit">确定</a-button>
       </a-row>
-    </a-drawer>
-    <a-drawer
-            title="分配项目权限"
-            placement="right"
-            width="600"
-            @close="onProjectClose"
-            :visible="projectVisible"
-    >
-      <a-form>
-        <a-form-item
-                v-bind="formItemLayout"
-                label="选择项目"
-        >
-          <a-select
-                  showSearch
-                  :value="contractValue"
-                  placeholder="搜索合同号"
-                  :showArrow="false"
-                  :filterOption="false"
-                  @search="fetchContracts"
-                  @change="handleChange"
-                  notFoundContent="无搜索结果"
-                  :defaultActiveFirstOption="false"
-          >
-            <a-spin v-if="fetching" slot="notFoundContent" size="small"/>
-            <a-select-option v-for="d in contractsData" :key="d">{{d}}</a-select-option>
-          </a-select>
-        </a-form-item>
-        <div style="height: 500px;overflow: auto;">
-          <a-list itemLayout="horizontal" :dataSource="roleProjectData">
-            <a-list-item slot="renderItem" slot-scope="item, index">
-              <a-popconfirm
-                      slot="actions"
-                      title="确定移除此项目？"
-                      @confirm="roleProjectRemove(item)"
-                      okText="确定"
-                      cancelText="取消"
-              >
-                <a-icon type="delete" :style="{color: 'red'}"/>
-              </a-popconfirm>
-              <a-list-item-meta
-                      :description="item.contractName"
-              >
-                <a slot="title">
-                  合同号：{{item.contractId}}
-                  <a-divider type="vertical"/>
-                  设计号：{{item.designId}}
-                </a>
-              </a-list-item-meta>
-            </a-list-item>
-          </a-list>
-        </div>
-        <a-form-item
-                :label-col="formTailLayout.labelCol"
-                :wrapper-col="formTailLayout.wrapperCol"
-        >
-          <a-button
-                  type="primary"
-                  @click="submitProjectUser"
-          >
-            添加
-          </a-button>
-        </a-form-item>
-      </a-form>
     </a-drawer>
   </div>
 </template>
@@ -361,7 +299,6 @@
   import {mapState, mapActions, mapMutations} from 'vuex'
   import HeaderPage from "../HeaderPage/HeaderPage";
   import PermissionComponent from "./PermissionComponent/PermissionComponent";
-  import {debounce} from 'debounce';
 
   const formItemLayout = {
     labelCol: {span: 6},
@@ -378,7 +315,6 @@
       PermissionComponent,
     },
     data() {
-      this.fetchContracts = debounce(this.fetchContracts, 500);
       return {
         formLayout: 'inline',
         formItemLayout,
@@ -394,18 +330,14 @@
         editForm: this.$form.createForm(this),
         currentUserId: '', // 当前编辑的用户id
         permissionVisible: false, // 分配权限页面
-        defaultCheckedListContract: [],
-        defaultCheckedListReceipt: [],
-        defaultCheckedListCash: [],
-        defaultCheckedListOutContract: [],
-        defaultCheckedListOutPaid: [],
-        projectVisible: false,
-        contractValue: undefined,
-        contractId: '',
-        contractsData: [],
-        ids: [],
-        fetching: false,
-        roleProjectData: [],
+        defaultCheckedListContract: [], // 合同默认权限
+        defaultCheckedListSupProject: [], // 分项默认权限
+        defaultCheckedListReceipt: [], // 合同发票默认权限
+        defaultCheckedListCash: [], // 合同现金默认权限
+        defaultCheckedListOutReceipt: [], // 分包发票默认权限
+        defaultCheckedListOutPaid: [], // 分包付款默认权限
+        defaultCheckedListStaff: [], // 职员管理默认权限
+        defaultCheckedListSalary: [], // 工资管理默认权限
         avatarSetting: {
           总监: require('@/assets/总监.png'),
           超级管理员: require('@/assets/超级管理员.png'),
@@ -438,34 +370,7 @@
         deleteUser: 'userOperation/deleteUser',
         verifyUser: 'userOperation/verifyUser',
         getRoleList: 'roleOperation/getRoleList',
-        getContractIdsByIdLike: 'contractList/getContractIdsByIdLike',
-        addProjectUser: 'projectUserOperation/addProjectUser',
-        getProjectByUserId: 'projectUserOperation/getProjectByUserId',
-        deleteProjectUser: 'projectUserOperation/deleteProjectUser'
       }),
-      handleChange(value) {
-        Object.assign(this, {
-          contractValue: value,
-          contractId: this.ids[this.contractsData.findIndex(item => item === value)],
-          ids: [],
-          contractsData: [],
-          fetching: false,
-        });
-      },
-      fetchContracts(value) {
-        const params = {
-          contractId: value,
-          pageNum: 1,
-          pageLimit: 10,
-        };
-        this.data = [];
-        this.fetching = true;
-        this.getContractIdsByIdLike(params).then((res) => {
-          this.contractsData = res && res.data.data.contractIds;
-          this.ids = res && res.data.data.ids;
-          this.fetching = false;
-        });
-      },
       updateListData(type) {
         if (type === 'first') {
           this.loading = true;
@@ -609,7 +514,7 @@
       },
       handlePermission(selectData) {
         this.currentUserId = selectData.userId;
-        this.handleDataDecoder(selectData.authorityCode === null ? '0101010101' : selectData.authorityCode);
+        this.handleDataDecoder(selectData.authorityCode === null ? '0101010101010101' : selectData.authorityCode);
         this.permissionVisible = true;
       },
       binary(num, Bits) {
@@ -636,15 +541,22 @@
       },
       handleDataDecoder(authorityCode) {
         this.defaultCheckedListContract = this.setDefaultCheckedList(Number(authorityCode.substr(0,2)));
-        this.defaultCheckedListReceipt = this.setDefaultCheckedList(Number(authorityCode.substr(2,2)));
-        this.defaultCheckedListCash = this.setDefaultCheckedList(Number(authorityCode.substr(4,2)));
-        this.defaultCheckedListOutContract = this.setDefaultCheckedList(Number(authorityCode.substr(6,2)));
-        this.defaultCheckedListOutPaid = this.setDefaultCheckedList(Number(authorityCode.substr(8,2)));
+        this.defaultCheckedListSupProject = this.setDefaultCheckedList(Number(authorityCode.substr(2,2)));
+        this.defaultCheckedListReceipt = this.setDefaultCheckedList(Number(authorityCode.substr(4,2)));
+        this.defaultCheckedListCash = this.setDefaultCheckedList(Number(authorityCode.substr(6,2)));
+        this.defaultCheckedListOutReceipt = this.setDefaultCheckedList(Number(authorityCode.substr(8,2)));
+        this.defaultCheckedListOutPaid = this.setDefaultCheckedList(Number(authorityCode.substr(10,2)));
+        this.defaultCheckedListStaff = this.setDefaultCheckedList(Number(authorityCode.substr(12,2)));
+        this.defaultCheckedListSalary = this.setDefaultCheckedList(Number(authorityCode.substr(14,2)));
+
         this.$refs.contractPermission && this.$refs.contractPermission.setCheckedList(this.defaultCheckedListContract);
+        this.$refs.subProjectPermission && this.$refs.subProjectPermission.setCheckedList(this.defaultCheckedListSupProject);
         this.$refs.receiptPermission && this.$refs.receiptPermission.setCheckedList(this.defaultCheckedListReceipt);
         this.$refs.cashPermission && this.$refs.cashPermission.setCheckedList(this.defaultCheckedListCash);
-        this.$refs.outContractPermission && this.$refs.outContractPermission.setCheckedList(this.defaultCheckedListOutContract);
+        this.$refs.outReceiptPermission && this.$refs.outReceiptPermission.setCheckedList(this.defaultCheckedListOutReceipt);
         this.$refs.outPaidPermission && this.$refs.outPaidPermission.setCheckedList(this.defaultCheckedListOutPaid);
+        this.$refs.staffPermission && this.$refs.staffPermission.setCheckedList(this.defaultCheckedListStaff);
+        this.$refs.salaryPermission && this.$refs.salaryPermission.setCheckedList(this.defaultCheckedListSalary);
       },
       setDefaultCheckedList(partCode) {
         const options = ['导入', '导出', '新增', '修改', '删除', '查看'];
@@ -659,9 +571,6 @@
       onPermissionClose() {
         this.permissionVisible = false;
       },
-      onProjectClose() {
-        this.projectVisible = false;
-      },
       handleDataEncoder(checkedList) {
         const options = ['导入', '导出', '新增', '修改', '删除', '查看'];
         let tempCode = [0, 0, 0, 0, 0, 0];
@@ -672,12 +581,16 @@
       },
       handlePermissionSubmit() {
         const block1 = this.handleDataEncoder(this.$refs.contractPermission.checkedList);
-        const block2 = this.handleDataEncoder(this.$refs.receiptPermission.checkedList);
-        const block3 = this.handleDataEncoder(this.$refs.cashPermission.checkedList);
-        const block4 = this.handleDataEncoder(this.$refs.outContractPermission.checkedList);
-        const block5 = this.handleDataEncoder(this.$refs.outPaidPermission.checkedList);
-        const block = block1.toString() + block2.toString() + block3.toString() + block4.toString() + block5.toString();
+        const block2 = this.handleDataEncoder(this.$refs.subProjectPermission.checkedList);
+        const block3 = this.handleDataEncoder(this.$refs.receiptPermission.checkedList);
+        const block4 = this.handleDataEncoder(this.$refs.cashPermission.checkedList);
+        const block5 = this.handleDataEncoder(this.$refs.outReceiptPermission.checkedList);
+        const block6 = this.handleDataEncoder(this.$refs.outPaidPermission.checkedList);
+        const block7 = this.handleDataEncoder(this.$refs.staffPermission.checkedList);
+        const block8 = this.handleDataEncoder(this.$refs.salaryPermission.checkedList);
 
+        const block = block1.toString() + block2.toString() + block3.toString() + block4.toString() +
+          block5.toString() + block6.toString() + block7.toString() + block8.toString();
         const params = {
           userId: this.currentUserId,
           authorityCode: block,
@@ -695,56 +608,6 @@
           this.$message.error(error);
         })
       },
-      updateRoleProjectData() {
-        this.getProjectByUserId({
-          userId: this.currentUserId,
-        }).then(res => {
-          this.roleProjectData = res && res.data.data;
-        });
-      },
-      handleProject(selectData) {
-        this.currentUserId = selectData.userId;
-        this.updateRoleProjectData();
-        this.projectVisible = true;
-      },
-      submitProjectUser() {
-        const params = {
-          contract: {
-            id: this.contractId,
-          },
-          user: {
-            userId: this.currentUserId,
-          }
-        };
-        this.addProjectUser(params).then(res => {
-          if (res.data.meta.success) {
-            this.$message.success(res.data.data);
-            this.updateRoleProjectData();
-          } else {
-            this.$message.error(res.data.meta.message)
-          }
-        })
-      },
-      roleProjectRemove(data) {
-        const params = {
-          contract: {
-            id: data.id,
-          },
-          user: {
-            userId: this.currentUserId,
-          },
-        };
-        this.deleteProjectUser(params).then(res => {
-          if (res.data.meta.success) {
-            this.$message.success(res.data.data)
-            this.updateRoleProjectData();
-          } else {
-            this.$message.error(res.data.meta.message)
-          }
-        }).catch(error => {
-          this.$message.error(error);
-        });
-      }
     }
   }
 </script>

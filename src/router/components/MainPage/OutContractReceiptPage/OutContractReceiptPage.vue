@@ -1,23 +1,5 @@
 <style lang="scss" scoped>
-  .InvoicePage {
-    .page-header {
-      background: #fff;
-      padding: 16px 32px 0;
-      border-bottom: 1px solid #e8e8e8;
-
-      .bread {
-        margin-bottom: 16px;
-      }
-
-      .title {
-        font-size: 20px;
-        line-height: 28px;
-        font-weight: 500;
-        color: rgba(0, 0, 0, .85);
-        margin-bottom: 16px;
-      }
-    }
-
+  .OutContractReceiptPage {
     .page-content {
       padding: 30px;
 
@@ -47,41 +29,35 @@
 </style>
 
 <template>
-  <div class="InvoicePage">
-    <div class="page-header">
-      <a-breadcrumb class="bread">
-        <a-breadcrumb-item><a href="/main/workplace">首页</a></a-breadcrumb-item>
-        <a-breadcrumb-item>合同发票管理</a-breadcrumb-item>
-      </a-breadcrumb>
-      <p class="title">合同发票管理<CashReceiptInput/></p>
-    </div>
+  <div class="OutContractReceiptPage">
+    <HeaderPage title="分包发票管理"/>
     <div class="page-content">
       <a-row style="background-color: #fff; padding: 24px;">
         <a-steps :current="current">
           <a-step v-for="item in steps" :key="item.title" :title="item.title"/>
         </a-steps>
         <div class="steps-content">
-          <template v-if="steps[current].type === 'searchContract'">
+          <template v-if="steps[current].type === 'searchOutContract'">
             <a-select
                     showSearch
-                    :value="contractValue"
-                    placeholder="搜索合同号"
+                    :value="outContractValue"
+                    placeholder="搜索分包合同号"
                     :showArrow="false"
                     style="width: 300px"
                     :filterOption="false"
-                    @search="fetchContracts"
+                    @search="fetchOutContracts"
                     @change="handleChange"
                     notFoundContent="无搜索结果"
                     :defaultActiveFirstOption="false"
             >
               <a-spin v-if="fetching" slot="notFoundContent" size="small"/>
-              <a-select-option v-for="d in contractsData" :key="d">{{d}}</a-select-option>
+              <a-select-option v-for="d in outContractsData" :key="d">{{d}}</a-select-option>
             </a-select>
           </template>
           <template v-else>
             <a-spin :spinning="tableSpinning">
               <div class="header-wrapper">
-                <h3>合同号：{{this.contractId}}——合同名称：{{this.contractName}}——设计号：{{this.designId}}</h3>
+                <h3>分包合同号：{{this.outContractId}}——分包名称：{{this.outContractName}}——分包单位：{{this.outCompanyName}}</h3>
               </div>
               <div class="table-wrapper">
                 <a-table bordered :columns="columns" :dataSource="tableData"
@@ -111,7 +87,7 @@
         </div>
         <div class="steps-action">
           <a-button
-                  :disabled="this.contractValue === undefined"
+                  :disabled="this.outContractValue === undefined"
                   v-if="current < steps.length - 1"
                   type="primary" @click="next"
           >
@@ -347,11 +323,11 @@
 </template>
 
 <script>
+  import HeaderPage from "../HeaderPage/HeaderPage";
+  import baseUrl from '@/api/baseUrl'
   import {mapActions} from 'vuex';
   import {debounce} from 'debounce';
-  import moment from 'moment'
-  import CashReceiptInput from "../CashReceiptInput/CashReceiptInput";
-  import baseUrl from '@/api/baseUrl'
+  import moment from 'moment';
 
   const formItemLayout = {
     labelCol: {span: 6},
@@ -361,25 +337,28 @@
     labelCol: {span: 4},
     wrapperCol: {span: 8, offset: 6},
   };
-
   export default {
-    name: "InvoicePage",
+    name: "OutContractReceiptPage",
     components: {
-      CashReceiptInput,
+      HeaderPage,
     },
     data() {
       this.fetchContracts = debounce(this.fetchContracts, 500);
       return {
         current: 0,
         steps: [{
-          title: '选择合同号',
-          type: 'searchContract',
+          title: '选择分包合同号',
+          type: 'searchOutContract',
         }, {
           title: '添加发票信息',
           type: 'addInfo',
         }],
-        contractValue: undefined,
-        contractsData: [],
+        formItemLayout,
+        formTailLayout,
+        addForm: this.$form.createForm(this),
+        editForm: this.$form.createForm(this),
+        outContractValue: undefined,
+        outContractsData: [],
         fetching: false,
         formLayout: 'inline',
         tableSpinning: false,
@@ -424,19 +403,6 @@
             key: 'operation',
             scopedSlots: {customRender: 'operation'},
           }],
-        addVisible: false, // 弹出框控制
-        formItemLayout,
-        formTailLayout,
-        addForm: this.$form.createForm(this),
-        editForm: this.$form.createForm(this),
-        editFormData: {}, // 编辑当前表单数据
-        invoiceFileList: [], // 发票文件
-        editInvoiceFileList: [], // 编辑发票文件
-        invoiceFileName: '', // 发票文件名称
-        editInvoiceFileName: '', // 编辑发票文件名称
-        editVisible: false, // 编辑发票窗口控制
-        editSpinning: false, // 编辑发票提交按钮
-        addSpinning: true, // 控制发票提交按钮
         paginationProps: {
           pageSize: 5, // 默认每页显示数量
           showSizeChanger: true, // 显示可改变每页数量
@@ -445,19 +411,28 @@
           current: 1,
         },
         tableData: [],
-        contractId: '',
-        designId: '',
-        contractName: ''
+        outContractId: '',
+        outContractName: '',
+        outCompanyName: '',
+        addVisible: false,
+        addSpinning: true,
+        invoiceFileList: [], // 发票文件
+        invoiceFileName: '', // 发票文件名称
+        editVisible: false,
+        editFormData: {}, // 编辑当前表单数据
+        editSpinning: false, // 编辑发票提交按钮
+        editInvoiceFileList: [], // 编辑发票文件
+
       }
     },
     methods: {
       ...mapActions({
-        getReceiptsByContractId: 'receiptOperation/getReceiptsByContractId',
-        getContractIdsByIdLike: 'contractList/getContractIdsByIdLike',
+        getOutContractIdsByIdLike: 'outContractOperation/getOutContractIdsByIdLike',
+        getReceiptsByOutContractId: 'receiptOperation/getReceiptsByOutContractId',
+        deleteOutReceipt: 'receiptOperation/deleteOutReceipt',
         receiptUpload: 'receiptOperation/receiptUpload',
-        addReceipt: 'receiptOperation/addReceipt',
-        verifyReceipt: 'receiptOperation/verifyReceipt',
-        deleteReceipt: 'receiptOperation/deleteReceipt'
+        addOutReceipt: 'receiptOperation/addOutReceipt',
+        verifyOutReceipt: 'receiptOperation/verifyOutReceipt'
       }),
       next() {
         this.current++;
@@ -466,24 +441,58 @@
       prev() {
         this.current--
       },
-      fetchContracts(value) {
+      fetchOutContracts(value) {
         const params = {
-          contractId: value,
+          outContractId: value,
           pageNum: 1,
           pageLimit: 10,
         };
         this.data = [];
         this.fetching = true;
-        this.getContractIdsByIdLike(params).then((res) => {
-          this.contractsData = res && res.data.data.contractIds;
+        this.getOutContractIdsByIdLike(params).then((res) => {
+          this.outContractsData = res && res.data.data;
           this.fetching = false;
         });
       },
       handleChange(value) {
         Object.assign(this, {
-          contractValue: value,
-          contractsData: [],
+          outContractValue: value,
+          outContractsData: [],
           fetching: false,
+        })
+      },
+      // 更新发票列表数据
+      updateTableData() {
+        this.tableSpinning = true;
+        const params = {
+          outContractId: this.outContractValue,
+          pageNum: this.paginationProps.current,
+          pageLimit: this.paginationProps.pageSize
+        };
+        this.getReceiptsByOutContractId(params).then((res) => {
+          if (res.data.data) {
+            this.paginationProps.total = res.data.data.receipts.totalElements;
+            this.outContractId = res.data.data.outContractId;
+            this.outContractName = res.data.data.outContractName;
+            this.outCompanyName = res.data.data.outCompanyName;
+            this.tableData = res.data.data.receipts.content.map((item, index) => {
+              return {
+                key: index,
+                id: item.id,
+                receiptId: item.receiptId,
+                receiptFile: item.receiptFile,
+                receiptAmount: item.receiptAmount,
+                receiptClass: item.receiptClass,
+                receiptDate: moment(item.receiptDate).format('YYYY-MM-DD HH:mm:ss'),
+                note: item.note,
+              }
+            });
+          } else {
+            this.current = 0;
+            this.outContractValue = undefined;
+            this.$message.error(res.data.meta.message);
+          }
+          this.tableSpinning = false;
         })
       },
       handleTableChange(pagination) {
@@ -499,43 +508,35 @@
         this.editFormData.receiptDate = moment(this.editFormData.receiptDate);
         this.editVisible = true;
       },
+      handleFinalDelete(data) {
+        const finalPage = Math.ceil(this.paginationProps.total / this.paginationProps.pageSize);
+        if (this.tableData.length === data.receiptIds.length && this.paginationProps.current != 1 && this.paginationProps.current === finalPage) {
+          this.paginationProps.current--;
+        }
+      },
+      handleInvoiceDelete(selectInvoiceData) {
+        const params = {
+          receiptIds: [selectInvoiceData.receiptId]
+        };
+        this.deleteOutReceipt(params).then((res) => {
+          if(res.data.meta.success){
+            this.handleFinalDelete(params);
+            this.updateTableData();
+            this.$message.success(res.data.data)
+          }else {
+            this.$message.error(res.data.meta.message)
+          }
+        })
+      },
       // 查看pdf文件
       handleOpenFile(file) {
         const router = baseUrl.serverBaseController + file;
         window.open(router, '_blank');
       },
-      // 更新发票列表数据
-      updateTableData() {
-        this.tableSpinning = true;
-        const params = {
-          contractId: this.contractValue,
-          pageNum: this.paginationProps.current,
-          pageLimit: this.paginationProps.pageSize
-        };
-        this.getReceiptsByContractId(params).then((res) => {
-          if (res.data.data) {
-            this.paginationProps.total = res.data.data.receipts.totalElements;
-            this.contractId = res.data.data.contractId;
-            this.designId = res.data.data.designId;
-            this.contractName = res.data.data.contractName;
-            this.tableData = res.data.data.receipts.content.map((item, index) => {
-              return {
-                key: index,
-                receiptId: item.receiptId,
-                receiptFile: item.receiptFile,
-                receiptAmount: item.receiptAmount,
-                receiptClass: item.receiptClass,
-                receiptDate: moment(item.receiptDate).format('YYYY-MM-DD HH:mm:ss'),
-                note: item.note,
-              }
-            });
-          } else {
-            this.current = 0;
-            this.contractValue = undefined;
-            this.$message.error(res.data.meta.message);
-          }
-          this.tableSpinning = false;
-        })
+      handleAddClose() {
+        // 关闭添加弹窗后还原数据
+        this.addForm.resetFields();
+        this.invoiceFileList = [];
       },
       // 添加发票信息
       submitForm() {
@@ -543,7 +544,7 @@
           (err, values) => {
             if (!err) {
               const params = {
-                contractId: this.contractId,
+                outContractId: this.outContractId,
                 receipts: [{
                   receiptId: values.receiptId,
                   receiptFile: this.invoiceFileName,
@@ -552,7 +553,7 @@
                   receiptDate: values.receiptDate,
                 }],
               };
-              this.addReceipt(params).then((res) => {
+              this.addOutReceipt(params).then((res) => {
                 if (res.data.meta.success) {
                   this.addForm.resetFields();
                   this.updateTableData();
@@ -567,12 +568,6 @@
             }
           },
         );
-      },
-      handleInvoiceRemove(file) {
-        const index = this.invoiceFileList.indexOf(file);
-        const newFileList = this.invoiceFileList.slice();
-        newFileList.splice(index, 1);
-        this.invoiceFileList = newFileList;
       },
       beforeInvoiceUpload(file) {
         this.addSpinning = false;
@@ -598,6 +593,15 @@
           this.addSpinning = true;
         }
         return false;
+      },
+      handleInvoiceRemove(file) {
+        const index = this.invoiceFileList.indexOf(file);
+        const newFileList = this.invoiceFileList.slice();
+        newFileList.splice(index, 1);
+        this.invoiceFileList = newFileList;
+      },
+      onEditClose() {
+        this.editVisible = false;
       },
       handleEditInvoiceRemove(file) {
         const index = this.editInvoiceFileList.indexOf(file);
@@ -630,21 +634,19 @@
         }
         return false;
       },
-      onEditClose() {
-        this.editVisible = false;
-      },
       submitEditForm() {
         this.editForm.validateFields(
           (err, values) => {
             if (!err) {
               const params = {
+                id: this.editFormData.id,
                 receiptId: values.receiptId,
                 receiptFile: this.editInvoiceFileName ? this.editInvoiceFileName : this.editFormData.receiptFile,
                 receiptAmount: values.receiptAmount,
                 receiptClass: values.receiptClass,
                 receiptDate: values.receiptDate,
               };
-              this.verifyReceipt(params).then((res) => {
+              this.verifyOutReceipt(params).then((res) => {
                 if (res.data.meta.success) {
                   this.$message.success(res.data.data);
                   this.editForm.resetFields();
@@ -658,32 +660,6 @@
           },
         );
       },
-      handleAddClose() {
-        // 关闭添加弹窗后还原数据
-        this.addForm.resetFields();
-        this.invoiceFileList = [];
-      },
-      handleFinalDelete(data) {
-        const finalPage = Math.ceil(this.paginationProps.total / this.paginationProps.pageSize);
-        if (this.tableData.length === data.receiptIds.length && this.paginationProps.current != 1 && this.paginationProps.current === finalPage) {
-          this.paginationProps.current--;
-        }
-      },
-      handleInvoiceDelete(selectInvoiceData) {
-        const params = {
-          receiptIds: [selectInvoiceData.receiptId]
-        };
-        this.deleteReceipt(params).then((res) => {
-          if(res.data.meta.success){
-            this.handleFinalDelete(params);
-            this.updateTableData();
-            this.$message.success(res.data.data)
-          }else {
-            this.$message.error(res.data.meta.message)
-          }
-        })
-      }
-    },
+    }
   }
 </script>
-

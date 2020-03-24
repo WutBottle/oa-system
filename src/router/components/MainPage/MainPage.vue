@@ -352,20 +352,24 @@
             router: "/main/contractmanager",
           },
           {
-            name: "发票管理",
+            name: "合同发票管理",
             router: "/main/invoice",
           },
           {
-            name: "现金管理",
+            name: "合同现金管理",
             router: "/main/cash",
-          },
-          {
-            name: "分包付款管理",
-            router: "/main/outcontractpaid",
           },
           {
             name: "分项分包管理",
             router: "/main/subentry",
+          },
+          {
+            name: "分包发票管理",
+            router: "/main/outcontractreceipt",
+          },
+          {
+            name: "分包付款管理",
+            router: "/main/outcontractpaid",
           },
           {
             name: "职员管理",
@@ -384,22 +388,31 @@
                 inputMenuList.sideBars.splice(inputMenuList.sideBars.findIndex(item => item.name === '分包付款管理'), 1);
                 break;
               case 'Receipt':
-                inputMenuList.sideBars.splice(inputMenuList.sideBars.findIndex(item => item.name === '发票管理'), 1);
+                inputMenuList.sideBars.splice(inputMenuList.sideBars.findIndex(item => item.name === '合同发票管理'), 1);
                 break;
-              case 'OutContract':
+              case 'SubProject':
                 inputMenuList.sideBars.splice(inputMenuList.sideBars.findIndex(item => item.name === '分项分包管理'), 1);
                 break;
               case 'Cash':
-                inputMenuList.sideBars.splice(inputMenuList.sideBars.findIndex(item => item.name === '现金管理'), 1);
+                inputMenuList.sideBars.splice(inputMenuList.sideBars.findIndex(item => item.name === '合同现金管理'), 1);
                 break;
               case 'Contract':
                 inputMenuList.sideBars.splice(inputMenuList.sideBars.findIndex(item => item.name === '合同管理'), 1);
                 break;
+              case 'Salary':
+                inputMenuList.sideBars.splice(inputMenuList.sideBars.findIndex(item => item.name === '工资管理'), 1);
+                break;
+              case 'Staff':
+                inputMenuList.sideBars.splice(inputMenuList.sideBars.findIndex(item => item.name === '职员管理'), 1);
+                break;
+              case 'OutReceipt':
+                inputMenuList.sideBars.splice(inputMenuList.sideBars.findIndex(item => item.name === '分包发票管理'), 1);
+                break;
             }
           }
         }
-        // 如果不含分包列表查询则去掉
-        if(!this.authority.OutContract.includes('query')) {
+        // 如果不含分项列表查询则去掉
+        if(!this.authority.SubProject.includes('query')) {
           commonMenuList.splice(commonMenuList.findIndex(item => item.name === '分包列表'), 1);
         }
         // 现金发票同时没权限才去掉
@@ -407,13 +420,8 @@
           commonMenuList.splice(commonMenuList.findIndex(item => item.name === '现金发票'), 1);
         }
         this.menuList = this.menuList.concat(commonMenuList);
-        if (this.role != '超级管理员') {
-          inputMenuList.sideBars.splice(inputMenuList.sideBars.findIndex(item => item.name === '职员管理'), 1);
-          inputMenuList.sideBars.splice(inputMenuList.sideBars.findIndex(item => item.name === '工资管理'), 1);
-          if (inputMenuList.sideBars.length) {
-            this.menuList = this.menuList.concat(inputMenuList);
-          }
-        } else {
+        this.menuList = this.menuList.concat(inputMenuList);
+        if (this.role === '超级管理员') {
           const adminMenu = [
             {
               name: '项目导出',
@@ -433,7 +441,6 @@
                 }
               ]
             }];
-          this.menuList = this.menuList.concat(inputMenuList);
           this.menuList = this.menuList.concat(adminMenu);
         }
       },

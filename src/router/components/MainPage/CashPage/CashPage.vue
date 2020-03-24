@@ -51,9 +51,9 @@
     <div class="page-header">
       <a-breadcrumb class="bread">
         <a-breadcrumb-item><a href="/main/workplace">首页</a></a-breadcrumb-item>
-        <a-breadcrumb-item>现金管理</a-breadcrumb-item>
+        <a-breadcrumb-item>合同现金管理</a-breadcrumb-item>
       </a-breadcrumb>
-      <p class="title">现金管理
+      <p class="title">合同现金管理
         <CashReceiptInput/>
       </p>
     </div>

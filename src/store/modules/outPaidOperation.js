@@ -41,6 +41,7 @@ const mutations = {
         paidAmount: item.paidAmount,
         paidDate: moment(item.paidDate).format('YYYY-MM-DD HH:mm:ss'),
         paidNote: item.paidNote,
+        receipts: item.receipts,
       }
     });
   },

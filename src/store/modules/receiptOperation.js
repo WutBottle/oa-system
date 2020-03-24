@@ -33,12 +33,6 @@ const mutations = {
       }
     });
   },
-  handleFinalDelete(state, data) {
-    const finalPage = Math.ceil(state.paginationProps.total / state.paginationProps.pageSize);
-    if (state.tableData.length === data.receiptIds.length && state.paginationProps.current != 1 && state.paginationProps.current === finalPage) {
-      state.paginationProps.current--;
-    }
-  }
 };
 
 const actions = {
@@ -75,7 +69,6 @@ const actions = {
   deleteReceipt({commit}, params) {
     return new Promise((resolve, reject) => {
       api.receiptController.deleteReceipt(params).then(res => {
-        res.data.data && commit('handleFinalDelete', params);
         resolve(res);
       }).catch(error => {
         console.log(error, '删除发票信息失败');
@@ -110,6 +103,46 @@ const actions = {
         resolve(res);
       }).catch(error => {
         console.log(error, '获取发票信息失败');
+        reject(error);
+      });
+    });
+  },
+  getReceiptsByOutContractId({commit}, params) {
+    return new Promise((resolve, reject) => {
+      api.receiptController.getReceiptsByOutContractId(params).then(res => {
+        resolve(res);
+      }).catch(error => {
+        console.log(error, '获取分包发票信息失败');
+        reject(error);
+      });
+    });
+  },
+  addOutReceipt({commit}, params) {
+    return new Promise((resolve, reject) => {
+      api.receiptController.addOutReceipt(params).then(res => {
+        resolve(res);
+      }).catch(error => {
+        console.log(error, '添加分包发票信息失败');
+        reject(error);
+      });
+    });
+  },
+  verifyOutReceipt({commit}, params) {
+    return new Promise((resolve, reject) => {
+      api.receiptController.verifyOutReceipt(params).then(res => {
+        resolve(res);
+      }).catch(error => {
+        console.log(error, '修改分包发票信息失败');
+        reject(error);
+      });
+    });
+  },
+  deleteOutReceipt({commit}, params) {
+    return new Promise((resolve, reject) => {
+      api.receiptController.deleteOutReceipt(params).then(res => {
+        resolve(res);
+      }).catch(error => {
+        console.log(error, '删除分包发票信息失败');
         reject(error);
       });
     });

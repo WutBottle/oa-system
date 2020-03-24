@@ -35,6 +35,22 @@ const receiptController = {
   getRecentReceipts(params) {
     return axios.post(`${baseUrl.receiptController}/getRecentReceipts`, params);
   },
+  // 根据分包合同号获取发票列表
+  getReceiptsByOutContractId(params) {
+    return axios.post(`${baseUrl.receiptController}/getReceiptsByOutContractId`, params);
+  },
+  // 添加分包发票
+  addOutReceipt(params) {
+    return axios.post(`${baseUrl.receiptController}/addOutReceipt`, params);
+  },
+  // 修改分包发票
+  verifyOutReceipt(params) {
+    return axios.post(`${baseUrl.receiptController}/verifyOutReceipt`, params);
+  },
+  // 删除分包发票
+  deleteOutReceipt(params) {
+    return axios.post(`${baseUrl.receiptController}/deleteOutReceipt`, params);
+  },
 };
 
 export default receiptController;

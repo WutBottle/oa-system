@@ -120,8 +120,6 @@
         <a-row>
           <a-col class="b14 br bt cell" :span="4">经营负责人</a-col>
           <a-col class="br bt cell" :span="4">
-            {{formData.runningManager && formData.runningManager.username}}
-            <a-divider type="vertical" />
             <a-tag color="orange">
               {{formData.runningManager && formData.runningManager.nickname}}
             </a-tag>
@@ -197,8 +195,6 @@
         <a-row>
           <a-col class="b14 br bt cell" :span="4">项目经理</a-col>
           <a-col class="br bt cell" :span="4">
-            {{formData.projectManager && formData.projectManager.username}}
-            <a-divider type="vertical" />
             <a-tag color="orange">
               {{formData.projectManager && formData.projectManager.nickname}}
             </a-tag>
@@ -242,7 +238,7 @@
                 </a-col>
                 <a-col class="br bt cell bgececec" :span="4">{{data.outContractAmount}}</a-col>
                 <a-col class="br bt cell bgececec" :span="4">累开发票</a-col>
-                <a-col class="br bt cell bgececec" :span="4">/</a-col>
+                <a-col class="br bt cell bgececec" :span="4">{{data.receiptAmounts}}</a-col>
                 <a-col class="br bt cell bgececec" :span="4">累计付费</a-col>
                 <a-col class="bt cell bgececec" :span="4">{{data.outPaid}}</a-col>
               </a-row>

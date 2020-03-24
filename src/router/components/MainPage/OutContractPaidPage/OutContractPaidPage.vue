@@ -88,9 +88,13 @@
               <div class="table-wrapper">
                 <a-table bordered :columns="columns" :dataSource="tableData"
                          :pagination="paginationProps"
-                         @change="handleTableChange" :scroll="{ y: 450 }">
+                         @change="handleTableChange" :scroll="{ x: 900, y: 450 }">
                   <span slot="serial" slot-scope="text, record, index">
                     {{ index + 1 }}
+                  </span>
+                  <span slot="receipts" slot-scope="tags">
+                    <a-tag v-for="tag in tags" color="blue"
+                           :key="tag.id">{{tag.receiptId}}</a-tag>
                   </span>
                   <span slot="operation" slot-scope="text, record">
                     <a @click="handleOutPaidEdit(record)">修改</a>
@@ -345,32 +349,41 @@
         columns: [
           {
             title: '序号',
-            width: '10%',
+            width: 70,
+            fixed: 'left',
             dataIndex: 'serial',
             key: 'serial',
             scopedSlots: {customRender: 'serial'}
           },
           {
             title: '付费时间',
-            width: '30%',
+            width: 200,
             key: 'paidDate',
             dataIndex: 'paidDate',
           },
           {
             title: '付费金额(元)',
-            width: '20%',
+            width: 150,
             key: 'paidAmount',
             dataIndex: 'paidAmount',
           },
           {
+            title: '对应发票',
+            width: 200,
+            key: 'receipts',
+            dataIndex: 'receipts',
+            scopedSlots: {customRender: 'receipts'},
+          },
+          {
             title: '备注',
-            width: '20%',
+            width: 150,
             key: 'paidNote',
             dataIndex: 'paidNote',
           },
           {
             title: '编辑分包付款',
-            width: '20%',
+            width: 130,
+            fixed: 'right',
             key: 'operation',
             scopedSlots: {customRender: 'operation'},
           }

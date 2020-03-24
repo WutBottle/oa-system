@@ -53,6 +53,11 @@
                     分包回款导出
                   </a-button>
                 </a-menu-item>
+                <a-menu-item key="2">
+                  <a-button type="primary" @click="handleReceiptExport">
+                    分包发票导出
+                  </a-button>
+                </a-menu-item>
               </a-menu>
             </a-dropdown>
           </a-form-item>
@@ -82,7 +87,7 @@
           <a-spin :spinning="spinning" tip="Loading...">
             <a-table bordered :columns="columns" :dataSource="listTableData"
                      :pagination="listPaginationProps"
-                     @change="handleTableChange" :scroll="{ x: 2200, y: 500}">
+                     @change="handleTableChange" :scroll="{ x: 2260, y: 500}">
               <span slot="serial" slot-scope="text, record, index">
                 {{ index + 1 }}
               </span>
@@ -299,43 +304,55 @@
       },
       // 导出处理
       handleExport() {
-        this.exportOutContract({
-          outContractIds: this.selectOutContractInfo.map((item) => {return item.outContractId}),
-        }).then((data) => {
-          if (!data.data) {
-            return
-          }
-          let url = window.URL.createObjectURL(new Blob([data.data]));
-          let link = document.createElement('a');
-          link.style.display = 'none';
-          link.href = url;
-          link.setAttribute('download', 'outContractsExport.xlsx');
-          document.body.appendChild(link);
-          link.click();
-          this.$message.success("导出成功");
-        }).catch((error) => {
-          this.$message.error("导出失败");
-        });
+        if (this.selectOutContractInfo.length) {
+          this.exportOutContract({
+            outContractIds: this.selectOutContractInfo.map((item) => {return item.outContractId}),
+          }).then((data) => {
+            if (!data.data) {
+              return
+            }
+            let url = window.URL.createObjectURL(new Blob([data.data]));
+            let link = document.createElement('a');
+            link.style.display = 'none';
+            link.href = url;
+            link.setAttribute('download', 'outContractsExport.xlsx');
+            document.body.appendChild(link);
+            link.click();
+            this.$message.success("导出成功");
+          }).catch((error) => {
+            this.$message.error("导出失败");
+          });
+        } else {
+          this.$message.warning('您的选择列表为空！');
+        }
       },
       // 分包回款导出
       handlePaidExport() {
-        this.outPaidExport({
-          outContractIds: this.selectOutContractInfo.map((item) => {return item.outContractId}),
-        }).then((data) => {
-          if (!data.data) {
-            return
-          }
-          let url = window.URL.createObjectURL(new Blob([data.data]));
-          let link = document.createElement('a');
-          link.style.display = 'none';
-          link.href = url;
-          link.setAttribute('download', 'outPaidExport.xlsx');
-          document.body.appendChild(link);
-          link.click();
-          this.$message.success("导出成功");
-        }).catch((error) => {
-          this.$message.error("导出失败");
-        });
+        if (this.selectOutContractInfo.length) {
+          this.outPaidExport({
+            outContractIds: this.selectOutContractInfo.map((item) => {return item.outContractId}),
+          }).then((data) => {
+            if (!data.data) {
+              return
+            }
+            let url = window.URL.createObjectURL(new Blob([data.data]));
+            let link = document.createElement('a');
+            link.style.display = 'none';
+            link.href = url;
+            link.setAttribute('download', 'outPaidExport.xlsx');
+            document.body.appendChild(link);
+            link.click();
+            this.$message.success("导出成功");
+          }).catch((error) => {
+            this.$message.error("导出失败");
+          });
+        } else {
+         this.$message.warning('您的选择列表为空！');
+        }
+      },
+      // 分包发票导出
+      handleReceiptExport() {
+
       },
       // 选择每页个数
       handleTableChange(pagination) {

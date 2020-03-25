@@ -50,12 +50,7 @@
                 </a-menu-item>
                 <a-menu-item key="1">
                   <a-button type="primary" @click="handlePaidExport">
-                    分包回款导出
-                  </a-button>
-                </a-menu-item>
-                <a-menu-item key="2">
-                  <a-button type="primary" @click="handleReceiptExport">
-                    分包发票导出
+                    分包回款发票导出
                   </a-button>
                 </a-menu-item>
               </a-menu>
@@ -91,8 +86,12 @@
               <span slot="serial" slot-scope="text, record, index">
                 {{ index + 1 }}
               </span>
-              <span slot="outContractCategory" slot-scope="id">{{outContractCategoryList[outContractCategoryList.findIndex((item) => item.categoryId === id)].categoryName}}</span>
-              <span slot="outProjectCategory" slot-scope="id">{{outProjectCategoryList[outProjectCategoryList.findIndex((item) => item.categoryId === id)].categoryName}}</span>
+              <a-tag slot="outContractCategory" slot-scope="text" color="blue">
+                {{text}}
+              </a-tag>
+              <a-tag slot="outProjectCategory" slot-scope="text" color="blue">
+                {{text}}
+              </a-tag>
               <template slot="selectIndex" slot-scope="text, record">
                 <span>
                   <a @click="openOutPaid(record)">查看付款</a>
@@ -254,8 +253,6 @@
         outPaidTableSpinning: false, // 分包付款信息加载控制
         popVisible: false,
         firstComing: 0,
-        outContractCategoryList: [],
-        outProjectCategoryList: [],
       }
     },
     computed: {
@@ -269,17 +266,7 @@
       }),
     },
     mounted() {
-      this.getCategoryList({
-        categoryType: 1
-      }).then(res => {
-        this.outContractCategoryList = res && res.data.data;
-        this.getCategoryList({
-          categoryType: 2
-        }).then(res => {
-          this.outProjectCategoryList = res && res.data.data;
-          this.updateTableData();
-        });
-      });
+      this.updateTableData();
     },
     activated() {
       this.firstComing != 0 && this.updateTableData();
@@ -295,7 +282,6 @@
         getOutPaidsByOutContractId: 'outPaidOperation/getOutPaidsByOutContractId', // 获取分包付款信息
         exportOutContract: 'outContractOperation/exportOutContract', // 导出分包合同
         outPaidExport: 'outPaidOperation/outPaidExport', // 分包回款导出
-        getCategoryList: 'categoryOperation/getCategoryList', // 获取类型
       }),
       // 查询处理
       handleQuery() {
@@ -326,7 +312,7 @@
           this.$message.warning('您的选择列表为空！');
         }
       },
-      // 分包回款导出
+      // 分包回款发票导出
       handlePaidExport() {
         if (this.selectOutContractInfo.length) {
           this.outPaidExport({
@@ -349,10 +335,6 @@
         } else {
          this.$message.warning('您的选择列表为空！');
         }
-      },
-      // 分包发票导出
-      handleReceiptExport() {
-
       },
       // 选择每页个数
       handleTableChange(pagination) {

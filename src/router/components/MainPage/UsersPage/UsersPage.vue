@@ -66,7 +66,7 @@
               <a-icon type="delete" :style="{color: 'red'}"/>
             </a-popconfirm>
             <a-list-item-meta
-                    :description="'昵称：' + item.nickname"
+                    :description="'真实姓名：' + item.nickname"
             >
               <a slot="title">
                 用户名：{{item.username}}
@@ -150,16 +150,16 @@
         </a-form-item>
         <a-form-item
                 v-bind="formItemLayout"
-                label="昵称"
+                label="真实姓名"
         >
           <a-input
                   v-decorator="[
           'nickName',
           {rules: [{
-            required: true, message: '请输入昵称!'
+            required: true, message: '请输入真实姓名!'
           }]}
         ]"
-                  placeholder="请输入昵称"
+                  placeholder="请输入真实姓名"
           />
         </a-form-item>
         <a-form-item
@@ -206,16 +206,16 @@
         </a-form-item>
         <a-form-item
                 v-bind="formItemLayout"
-                label="昵称"
+                label="真实姓名"
         >
           <a-input
                   v-decorator="[
           'nickName',
           {initialValue: this.editFormData.nickname, rules: [{
-            required: true, message: '请输入昵称!'
+            required: true, message: '请输入真实姓名!'
           }]}
         ]"
-                  placeholder="请输入昵称"
+                  placeholder="请输入真实姓名"
           />
         </a-form-item>
         <a-form-item

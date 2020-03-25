@@ -15,6 +15,5 @@ Vue.use(Router);
 /* 一级二级路由配置示例 */
 export default new Router({
   mode: 'history',
-  base: '/',
   routes: constantRouterMap
 })

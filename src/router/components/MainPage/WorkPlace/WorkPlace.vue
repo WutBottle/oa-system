@@ -223,7 +223,7 @@
           </div>
         </a-col>
       </a-row>
-      <a-row>
+      <a-row v-if="role === '超级管理员'">
         <a-col :span="24">
           <div class="dynamic-wrapper">
             <a-card title="动态" :bordered="false">

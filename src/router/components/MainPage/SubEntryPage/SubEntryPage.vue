@@ -223,20 +223,13 @@
         </a-form-item>
         <a-form-item
                 v-bind="formItemLayout"
-                label="价格(元)"
+                label="拟定价格(元)"
         >
           <a-input
                   v-decorator="[
           'price',
-          {rules: [{
-            required: true, message: '请输入价格!'
-          }, {
-                type: 'number',
-                message: '请输入数字',
-                transform:(value)=> {return Number(value)}
-          }]}
         ]"
-                  placeholder="请输入价格"
+                  placeholder="请输入拟定价格"
           />
         </a-form-item>
         <a-form-item
@@ -334,20 +327,14 @@
         </a-form-item>
         <a-form-item
                 v-bind="formItemLayout"
-                label="价格(元)"
+                label="拟定价格(元)"
         >
           <a-input
                   v-decorator="[
           'price',
-          {initialValue: this.editFormData.price, rules: [{
-            required: true, message: '请输入价格!'
-          }, {
-                type: 'number',
-                message: '请输入数字',
-                transform:(value)=> {return Number(value)}
-          }]}
+          {initialValue: this.editFormData.price}
         ]"
-                  placeholder="请输入价格"
+                  placeholder="请输入拟定价格"
           />
         </a-form-item>
         <a-form-item
@@ -735,7 +722,7 @@
             key: 'designFees',
             dataIndex: 'designFees',
           }, {
-            title: '价格',
+            title: '拟定价格',
             width: 200,
             key: 'price',
             dataIndex: 'price',

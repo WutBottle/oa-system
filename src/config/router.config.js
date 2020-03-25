@@ -27,6 +27,10 @@ const OutContractReceipt = r => require.ensure([], () => r(require('components/M
  */
 export const constantRouterMap = [
   {
+    path: '/',
+    redirect: '/user/login',
+  },
+  {
     path: '/user',
     redirect: '/user/login',
     hidden: true,

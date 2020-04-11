@@ -38,6 +38,10 @@ const cashController = {
   getRecentCashes(params) {
     return axios.post(`${baseUrl.cashController}/getRecentCashes`, params);
   },
+  // 根据合同号合同名称获取现金回款
+  getCashesByIdLike(params) {
+    return axios.post(`${baseUrl.cashController}/getCashesByIdLike`, params);
+  },
 };
 
 export default cashController;

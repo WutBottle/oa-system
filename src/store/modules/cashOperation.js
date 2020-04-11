@@ -17,6 +17,7 @@ const state = {
   contractId: '',
   designId: '',
   contractName: '',
+  selectCashInfo: [],
 };
 
 const mutations = {
@@ -35,6 +36,22 @@ const mutations = {
         cashAmount: item.cashAmount,
         cashDate: moment(item.cashDate).format('YYYY-MM-DD HH:mm:ss'),
         receipts: item.receipts,
+      }
+    });
+  },
+  setTableData2(state, data) {
+    state.cashListPaginationProps.total = data.totalElements;
+    state.cashListTableData = data.content.map((item, index) => {
+      return {
+        key: index,
+        contractId: item.contractId,
+        designId: item.designId,
+        contractName: item.contractName,
+        cashId: item.cash.cashId,
+        cashAmount: item.cash.cashAmount,
+        cashDate: moment(item.cash.cashDate).format('YYYY-MM-DD HH:mm:ss'),
+        receipts: item.cash.receipts,
+        selectIndex: !!state.selectCashInfo.find(value => value.cashId === item.cash.cashId),
       }
     });
   },
@@ -123,6 +140,19 @@ const actions = {
         resolve(res);
       }).catch(error => {
         console.log(error, '获取现金失败');
+        reject(error);
+      });
+    });
+  },
+  getCashesByIdLike({commit}, params) {
+    return new Promise((resolve, reject) => {
+      api.cashController.getCashesByIdLike(params).then(res => {
+        if (params.hasOwnProperty('pageNum') && params.hasOwnProperty('pageLimit')) {
+          res.data.data && commit('setTableData2', res.data.data);
+        }
+        resolve(res);
+      }).catch(error => {
+        console.log(error, '获取现金回款失败');
         reject(error);
       });
     });

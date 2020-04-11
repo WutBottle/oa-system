@@ -18,11 +18,11 @@
         <a-tab-pane tab="发票列表" key="receipt">
           <a-form class="form-wrapper" :layout="formLayout">
             <a-form-item
-                    label="发票号"
+                    label="查询关键词"
                     :label-col="formItemLayout.labelCol"
                     :wrapper-col="formItemLayout.wrapperCol"
             >
-              <a-input v-model="receiptId" placeholder="请输入发票号"/>
+              <a-input v-model="receiptId" placeholder="发票号、合同号、合同名称"/>
             </a-form-item>
             <a-form-item
                     :wrapper-col="buttonItemLayout.wrapperCol"
@@ -31,11 +31,38 @@
                 查询
               </a-button>
             </a-form-item>
+            <a-form-item>
+              <a-popover title="发票选择列表" placement="bottom" trigger="click" v-model="popReceiptVisible">
+                <template slot="content">
+                  <div v-if="!!selectReceiptInfo.length" style="width: 350px">
+                    <template v-for="(item, index) in selectReceiptInfo">
+                      <div :key="index">
+                        <span>{{index + 1}}</span>
+                        <a-divider type="vertical"/>
+                        <span>{{item.receiptId}}</span>
+                        <a-divider type="vertical"/>
+                        <span>{{item.receiptAmount}}元</span>
+                      </div>
+                    </template>
+                  </div>
+                  <a-empty v-else/>
+                </template>
+                <a-button type="dashed" @click="() => this.popReceiptVisible = true">
+                  选择列表
+                </a-button>
+              </a-popover>
+            </a-form-item>
+            <a-form-item>
+              <a-button type="primary">
+                导出
+              </a-button>
+            </a-form-item>
           </a-form>
           <div class="table-wrapper">
             <a-spin :spinning="receiptSpinning" tip="Loading...">
               <a-table bordered :columns="receiptColumns" :dataSource="receiptListData"
                        :pagination="receiptPaginationProps"
+                       :rowSelection="{selectedRowKeys: selectedReceiptRowKeys, onSelect: onReceiptSelect, onSelectAll: onReceiptSelectAll, onChange: onReceiptSelectChange}"
                        @change="handleReceiptTableChange" :scroll="{ x: 'max-content', y: 500}">
               <span slot="receiptFile" slot-scope="text">
                 <a-button :disabled="!text" type="primary" icon="eye"
@@ -53,31 +80,51 @@
         <a-tab-pane tab="现金列表" key="cash">
           <a-form class="form-wrapper" :layout="formLayout">
             <a-form-item
-                    label="合同号"
+                    label="查询关键词"
                     :label-col="formItemLayout.labelCol"
                     :wrapper-col="formItemLayout.wrapperCol"
             >
-              <a-select
-                      showSearch
-                      :value="cashContractId"
-                      placeholder="搜索合同号"
-                      :showArrow="false"
-                      style="width: 160px"
-                      :filterOption="false"
-                      @search="fetchCashContract"
-                      @change="handleCashContractChange"
-                      notFoundContent="无搜索结果"
-                      :defaultActiveFirstOption="false"
-              >
-                <a-spin v-if="fetching" slot="notFoundContent" size="small"/>
-                <a-select-option v-for="d in contractsData" :key="d">{{d}}</a-select-option>
-              </a-select>
+              <a-input v-model="cashContractId" placeholder="合同号、合同名称"/>
+            </a-form-item>
+            <a-form-item
+                    :wrapper-col="buttonItemLayout.wrapperCol"
+            >
+              <a-button type="primary" @click="updateCashTableData">
+                查询
+              </a-button>
+            </a-form-item>
+            <a-form-item>
+              <a-popover title="现金选择列表" placement="bottom" trigger="click" v-model="popCashVisible">
+                <template slot="content">
+                  <div v-if="!!selectCashInfo.length" style="width: 350px">
+                    <template v-for="(item, index) in selectCashInfo">
+                      <div :key="index">
+                        <span>{{index + 1}}</span>
+                        <a-divider type="vertical"/>
+                        <span>{{item.cashDate}}</span>
+                        <a-divider type="vertical"/>
+                        <span>{{item.cashAmount}}元</span>
+                      </div>
+                    </template>
+                  </div>
+                  <a-empty v-else/>
+                </template>
+                <a-button type="dashed" @click="() => this.popCashVisible = true">
+                  选择列表
+                </a-button>
+              </a-popover>
+            </a-form-item>
+            <a-form-item>
+              <a-button type="primary">
+                导出
+              </a-button>
             </a-form-item>
           </a-form>
           <div class="table-wrapper">
             <a-spin :spinning="cashSpinning" tip="Loading...">
               <a-table bordered :columns="cashColumns" :dataSource="cashListTableData"
                        :pagination="cashListPaginationProps"
+                       :rowSelection="{selectedRowKeys: selectedCashRowKeys, onSelect: onCashSelect, onSelectAll: onCashSelectAll, onChange: onCashSelectChange}"
                        @change="handleCashTableChange" :scroll="{ x: 'max-content', y: 500}">
                 <span slot="serial" slot-scope="text, record, index">
                 {{ index + 1 }}
@@ -98,11 +145,10 @@
 <script>
   import {mapState, mapActions} from 'vuex';
   import HeaderPage from "../HeaderPage/HeaderPage";
-  import {debounce} from 'debounce';
   import baseUrl from '@/api/baseUrl'
 
   const formItemLayout = {
-    labelCol: {span: 6},
+    labelCol: {span: 8},
     wrapperCol: {span: 16},
   };
   const formTailLayout = {
@@ -118,7 +164,6 @@
       HeaderPage,
     },
     data() {
-      this.fetchCashContract = debounce(this.fetchCashContract, 500);
       return {
         formItemLayout,
         formTailLayout,
@@ -185,8 +230,6 @@
           },
         ], // 发票列表项
         cashContractId: '',// 现金回款查询合同号
-        contractsData: [], // 获取的合同id列表
-        fetching: false, // 查询合同号加载控制
         cashSpinning: false, // 现金回款加载控制
         cashColumns: [
           {
@@ -228,14 +271,20 @@
             scopedSlots: {customRender: 'receipts'},
           },
         ], // 现金回款列表项
+        popReceiptVisible: false,
+        selectedReceiptRowKeys: [],
+        popCashVisible: false,
+        selectedCashRowKeys: [],
       }
     },
     computed: {
       ...mapState({
         receiptListData: state => state.receiptOperation.receiptListData,// 发票list数据
         receiptPaginationProps: state => state.receiptOperation.receiptPaginationProps,// 发票list分页数据
+        selectReceiptInfo: state => state.receiptOperation.selectReceiptInfo, // 选中的发票信息
         cashListPaginationProps: state => state.cashOperation.cashListPaginationProps,// 现金列表分页数据
         cashListTableData: state => state.cashOperation.cashListTableData,// 现金回款table数据
+        selectCashInfo: state => state.cashOperation.selectCashInfo,
       }),
     },
     activated() {
@@ -244,8 +293,7 @@
     methods: {
       ...mapActions({
         getReceiptListByIdLike: 'receiptOperation/getReceiptListByIdLike',
-        getContractIdsByIdLike: 'contractList/getContractIdsByIdLike',
-        getCashesByContractId: 'cashOperation/getCashesByContractId',
+        getCashesByIdLike: 'cashOperation/getCashesByIdLike',
       }),
       // 获取发票信息列表
       updateTableData() {
@@ -256,15 +304,24 @@
           pageLimit: this.receiptPaginationProps.pageSize
         };
         this.getReceiptListByIdLike(params).then((res) => {
-          this.receiptSpinning = false;
-        }).catch((error) => {
-          this.$message.error(error);
+          if (res.data.meta.success){
+            this.selectedReceiptRowKeys = [];
+            this.receiptListData.map((item, index) => {
+              if (item.selectIndex) {
+                this.selectedReceiptRowKeys.push(index);
+              }
+            });
+          }else {
+            this.$message.error(res.data.meta.message);
+          }
           this.receiptSpinning = false;
         })
       },
       callback(key) {
         if (key === 'receipt') {
           this.updateTableData();
+        } else {
+          this.updateCashTableData();
         }
       },
       // 发票查询
@@ -282,28 +339,6 @@
         this.receiptPaginationProps.pageSize = pagination.pageSize;
         this.updateTableData();
       },
-      // 合同模糊查询
-      fetchCashContract(value) {
-        const params = {
-          contractId: value,
-          pageNum: 1,
-          pageLimit: 10,
-        };
-        this.fetching = true;
-        this.getContractIdsByIdLike(params).then((res) => {
-          this.contractsData = res && res.data.data.contractIds;
-          this.fetching = false;
-        });
-      },
-      // 选择合同号处理
-      handleCashContractChange(value) {
-        Object.assign(this, {
-          cashContractId: value,
-          contractsData: [],
-          fetching: false,
-        });
-        this.updateCashTableData();
-      },
       // 控制现金回款列表分页
       handleCashTableChange(pagination) {
         this.cashListPaginationProps.current = pagination.current;
@@ -318,11 +353,94 @@
           pageNum: this.cashListPaginationProps.current,
           pageLimit: this.cashListPaginationProps.pageSize
         };
-        this.getCashesByContractId(params).then((data) => {
+        this.getCashesByIdLike(params).then((res) => {
+          if (res.data.meta.success) {
+            this.selectedCashRowKeys = [];
+            this.cashListTableData.map((item, index) => {
+              if (item.selectIndex) {
+                this.selectedCashRowKeys.push(index);
+              }
+            });
+          }else {
+            this.$message.error(res.data.meta.message);
+          }
           this.cashSpinning = false;
-        }).catch((error) => {
-          this.$message.error(error);
-          this.cashSpinning = false;
+        })
+      },
+      removeReceiptInfo(id) {
+        this.selectReceiptInfo.splice(this.selectReceiptInfo.findIndex(item => item.id === id), 1);
+      },
+      // 处理发票移除
+      handleReceiptRemoved(rowData) {
+        rowData.selectIndex = false;
+        this.removeReceiptInfo(rowData.id);
+        this.popReceiptVisible = true;
+      },
+      // 处理发票选择
+      handleReceiptSelected(rowData) {
+        rowData.selectIndex = true;
+        this.selectReceiptInfo.push({
+          id: rowData.id,
+          receiptId: rowData.receiptId,
+          receiptAmount: rowData.receiptAmount
+        });
+        this.popReceiptVisible = true;
+      },
+      onReceiptSelect(record, selected, selectedRows) {
+        if (record.selectIndex) {
+          this.handleReceiptRemoved(record);
+        } else {
+          this.handleReceiptSelected(record);
+        }
+      },
+      onReceiptSelectChange(selectedRowKeys) {
+        this.selectedReceiptRowKeys = selectedRowKeys;
+      },
+      onReceiptSelectAll(selected, selectedRows, changeRows) {
+        changeRows.map(item => {
+          if (item.selectIndex) {
+            this.handleReceiptRemoved(item);
+          } else {
+            this.handleReceiptSelected(item);
+          }
+        });
+      },
+      removeCashInfo(id) {
+        this.selectCashInfo.splice(this.selectCashInfo.findIndex(item => item.cashId === id), 1);
+      },
+      // 处理发票移除
+      handleCashRemoved(rowData) {
+        rowData.selectIndex = false;
+        this.removeCashInfo(rowData.cashId);
+        this.popCashVisible = true;
+      },
+      // 处理发票选择
+      handleCashSelected(rowData) {
+        rowData.selectIndex = true;
+        this.selectCashInfo.push({
+          cashId: rowData.cashId,
+          cashAmount: rowData.cashAmount,
+          cashDate: rowData.cashDate,
+        });
+        this.popCashVisible = true;
+      },
+      onCashSelect(record, selected, selectedRows) {
+        if (record.selectIndex) {
+          this.handleCashRemoved(record);
+        } else {
+          this.handleCashSelected(record);
+        }
+      },
+      onCashSelectChange(selectedRowKeys) {
+        this.selectedCashRowKeys = selectedRowKeys;
+      },
+      onCashSelectAll(selected, selectedRows, changeRows) {
+        changeRows.map(item => {
+          if (item.selectIndex) {
+            this.handleCashRemoved(item);
+          } else {
+            this.handleCashSelected(item);
+          }
         });
       },
     }

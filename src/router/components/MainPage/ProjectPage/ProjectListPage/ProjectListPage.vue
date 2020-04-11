@@ -10,9 +10,9 @@
   <div class="ProjectListPage">
     <a-form class="form-wrapper" :layout="formLayout">
       <a-form-item
-              label="项目合同号"
+              label="查询关键词"
       >
-        <a-input style="width: 140px" v-model="contractId" placeholder="请输入合同号"/>
+        <a-input style="width: 200px" v-model="contractId" placeholder="合同号、合同名称"/>
       </a-form-item>
       <a-form-item>
         <a-button type="primary" @click="handleQuery">

@@ -24,9 +24,9 @@
       <div class="content-wrapper">
         <a-form class="form-wrapper" :layout="formLayout">
           <a-form-item
-                  label="外包合同号"
+                  label="查询关键词"
           >
-            <a-input style="width: 150px" v-model="outContractId" placeholder="请输入外包合同号"/>
+            <a-input style="width: 200px" v-model="outContractId" placeholder="外包合同号、外包名称"/>
           </a-form-item>
           <a-form-item
                   :wrapper-col="buttonItemLayout.wrapperCol"

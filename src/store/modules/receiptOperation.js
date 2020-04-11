@@ -14,6 +14,7 @@ const state = {
     total: 0,
     current: 1,
   },
+  selectReceiptInfo: [],
 };
 
 const mutations = {
@@ -25,11 +26,13 @@ const mutations = {
         contractId: item.contractId,
         designId: item.designId,
         contractName: item.contractName,
+        id: item.receipt.id,
         receiptId: item.receipt.receiptId,
         receiptFile: item.receipt.receiptFile,
         receiptAmount: item.receipt.receiptAmount,
         receiptClass: item.receipt.receiptClass ? '增值税专用发票' : '增值税普通发票',
         receiptDate: moment(item.receipt.receiptDate).format('YYYY-MM-DD HH:mm:ss'),
+        selectIndex: !!state.selectReceiptInfo.find(value => value.id === item.receipt.id),
       }
     });
   },

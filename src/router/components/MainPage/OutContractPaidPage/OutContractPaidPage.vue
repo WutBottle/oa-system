@@ -67,7 +67,7 @@
             <a-select
                     showSearch
                     :value="outContractValue"
-                    placeholder="搜索分包合同号"
+                    placeholder="搜索分包合同号、分包合同名称"
                     :showArrow="false"
                     style="width: 300px"
                     :filterOption="false"
@@ -77,7 +77,11 @@
                     :defaultActiveFirstOption="false"
             >
               <a-spin v-if="fetching" slot="notFoundContent" size="small"/>
-              <a-select-option v-for="d in outContractsData" :key="d">{{d}}</a-select-option>
+              <a-select-option v-for="d in outContractsData" :key="d.outContractId">
+                {{d.outContractId}}
+                <a-divider type="vertical" />
+                {{d.outContractName}}
+              </a-select-option>
             </a-select>
           </template>
           <template v-else>
@@ -336,7 +340,7 @@
         formTailLayout,
         current: 0,
         steps: [{
-          title: '选择分包合同号',
+          title: '选择分包合同',
           type: 'searchOutContract',
         }, {
           title: '添加分包付款信息',
@@ -434,7 +438,7 @@
         };
         this.fetching = true;
         this.getOutContractIdsByIdLike(params).then((res) => {
-          this.outContractsData = res.data.data;
+          this.outContractsData = res && res.data.data.content;
           this.fetching = false;
         });
       },
@@ -449,7 +453,6 @@
       handleChange(value) {
         Object.assign(this, {
           outContractValue: value,
-          outContractsData: [],
           fetching: false,
         });
         this.getReceiptList();

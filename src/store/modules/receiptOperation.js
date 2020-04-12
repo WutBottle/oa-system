@@ -82,7 +82,7 @@ const actions = {
   getReceiptListByIdLike({commit}, params) {
     return new Promise((resolve, reject) => {
       api.receiptController.getReceiptListByIdLike(params).then(res => {
-        res.data.data && commit('setReceiptListData', res.data.data);
+        res && commit('setReceiptListData', res.data.data);
         resolve(res);
       }).catch(error => {
         console.log(error, '获取发票信息失败');
@@ -146,6 +146,17 @@ const actions = {
         resolve(res);
       }).catch(error => {
         console.log(error, '删除分包发票信息失败');
+        reject(error);
+      });
+    });
+  },
+  // 发票导出
+  receiptExport({commit}, params) {
+    return new Promise((resolve, reject) => {
+      api.receiptController.receiptExport(params).then(res => {
+        resolve(res);
+      }).catch(error => {
+        console.log(error, '发票导出失败');
         reject(error);
       });
     });

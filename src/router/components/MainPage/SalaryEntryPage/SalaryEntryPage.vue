@@ -41,7 +41,7 @@
             <a-select
                     showSearch
                     :value="contractValue"
-                    placeholder="搜索合同号"
+                    placeholder="搜索合同号、合同名称"
                     :showArrow="false"
                     style="width: 300px"
                     :filterOption="false"
@@ -51,7 +51,11 @@
                     :defaultActiveFirstOption="false"
             >
               <a-spin v-if="fetching" slot="notFoundContent" size="small"/>
-              <a-select-option v-for="d in contractsData" :key="d">{{d}}</a-select-option>
+              <a-select-option v-for="d in contractsData" :key="d.contractId">
+                {{d.contractId}}
+                <a-divider type="vertical" />
+                {{d.contractName}}
+              </a-select-option>
             </a-select>
           </template>
           <template v-else>
@@ -233,7 +237,7 @@
         formTailLayout,
         current: 0,
         steps: [{
-          title: '选择合同号',
+          title: '选择合同',
           type: 'searchContract',
         }, {
           title: '添加人员工资',
@@ -343,14 +347,13 @@
         this.data = [];
         this.fetching = true;
         this.getContractIdsByIdLike(params).then((res) => {
-          this.contractsData = res && res.data.data.contractIds;
+          this.contractsData = res && res.data.data.content;
           this.fetching = false;
         });
       },
       handleChange(value) {
         Object.assign(this, {
           contractValue: value,
-          contractsData: [],
           fetching: false,
         })
       },

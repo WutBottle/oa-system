@@ -51,6 +51,12 @@ const receiptController = {
   deleteOutReceipt(params) {
     return axios.post(`${baseUrl.receiptController}/deleteOutReceipt`, params);
   },
+  // 发票导出
+  receiptExport(params) {
+    return axios.post(`${baseUrl.receiptController}/export`, params, {
+      responseType: 'blob'
+    });
+  },
 };
 
 export default receiptController;

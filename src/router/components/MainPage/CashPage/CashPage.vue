@@ -68,7 +68,7 @@
             <a-select
                     showSearch
                     :value="contractValue"
-                    placeholder="搜索合同号"
+                    placeholder="搜索合同号、合同名称"
                     :showArrow="false"
                     style="width: 300px"
                     :filterOption="false"
@@ -78,7 +78,11 @@
                     :defaultActiveFirstOption="false"
             >
               <a-spin v-if="fetching" slot="notFoundContent" size="small"/>
-              <a-select-option v-for="(d, index) in contractsData" :key="index">{{d}}</a-select-option>
+              <a-select-option v-for="d in contractsData" :key="d.contractId">
+                {{d.contractId}}
+                <a-divider type="vertical" />
+                {{d.contractName}}
+              </a-select-option>
             </a-select>
           </template>
           <template v-else>
@@ -310,7 +314,7 @@
         formTailLayout,
         current: 0,
         steps: [{
-          title: '选择合同号',
+          title: '选择合同',
           type: 'searchContract',
         }, {
           title: '添加现金回款信息',
@@ -319,7 +323,6 @@
         contractValue: undefined,
         contractValueId: '',
         contractsData: [], // 获取的合同id列表
-        ids: [],
         fetching: false, // 查询合同号加载控制
         receiptsList: [], // 发票列表
         addVisible: false,// 新增弹窗控制
@@ -423,17 +426,15 @@
         };
         this.fetching = true;
         this.getContractIdsByIdLike(params).then((res) => {
-          this.contractsData = res && res.data.data.contractIds;
-          this.ids = res && res.data.data.ids;
+          this.contractsData = res && res.data.data.content;
           this.fetching = false;
         });
       },
       // 选择合同号处理
       handleChange(value) {
         Object.assign(this, {
-          contractValue: this.contractsData[value],
-          contractValueId: this.ids[value],
-          contractsData: [],
+          contractValue: value,
+          contractValueId: this.contractsData[this.contractsData.findIndex(item => item.contractId === value)].id,
           fetching: false,
         });
         this.getReceiptList();

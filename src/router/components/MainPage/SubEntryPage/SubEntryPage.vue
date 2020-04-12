@@ -40,8 +40,8 @@
           <template v-if="steps[current].type === 'searchContract'">
             <a-select
                     showSearch
-                    :value="designValue"
-                    placeholder="搜索设计号"
+                    :value="contractValue"
+                    placeholder="搜索合同号、合同名称"
                     :showArrow="false"
                     style="width: 300px"
                     :filterOption="false"
@@ -51,7 +51,11 @@
                     :defaultActiveFirstOption="false"
             >
               <a-spin v-if="fetching" slot="notFoundContent" size="small"/>
-              <a-select-option v-for="d in designIds" :key="d">{{d}}</a-select-option>
+              <a-select-option v-for="d in contractsData" :key="d.contractId">
+                {{d.contractId}}
+                <a-divider type="vertical" />
+                {{d.contractName}}
+              </a-select-option>
             </a-select>
           </template>
           <template v-if="steps[current].type === 'addSub'">
@@ -108,7 +112,7 @@
         </div>
         <div class="steps-action">
           <a-button
-                  :disabled="this.designValue === undefined"
+                  :disabled="this.contractValue === undefined"
                   v-if="current < steps.length - 2"
                   type="primary"
                   @click="next"
@@ -671,7 +675,7 @@
         formTailLayout,
         current: 0,
         steps: [{
-          title: '选择设计号',
+          title: '选择合同',
           type: 'searchContract',
         }, {
           title: '添加分项信息',
@@ -681,9 +685,7 @@
           type: 'handleAddOutContract',
         }],
         contractValue: undefined,
-        designValue: undefined,
-        contractIds: [],
-        designIds: [],
+        contractsData: [],
         fetching: false,
         tableSpinning: false,
         outContractTableSpinning: false,
@@ -865,7 +867,7 @@
     },
     methods: {
       ...mapActions({
-        getDesignIdsByIdLike: 'contractList/getDesignIdsByIdLike',
+        getContractIdsByIdLike: 'contractList/getContractIdsByIdLike',
         getCategoryList: 'categoryOperation/getCategoryList',
         addSubProject: 'subProjectOperation/addSubProject',
         deleteSubProject: 'subProjectOperation/deleteSubProject',
@@ -885,23 +887,19 @@
       },
       fetchOutContract(value) {
         const params = {
-          designId: value,
+          contractId: value,
           pageNum: 1,
           pageLimit: 10,
         };
         this.fetching = true;
-        this.getDesignIdsByIdLike(params).then((res) => {
-          this.contractIds = res && res.data.data.contractIds
-          this.designIds = res && res.data.data.designIds;
+        this.getContractIdsByIdLike(params).then((res) => {
+          this.contractsData = res && res.data.data.content;
           this.fetching = false;
         });
       },
       handleChange(value) {
         Object.assign(this, {
-          contractValue: this.contractIds[this.designIds.findIndex(item => item === value)],
-          designValue: value,
-          contractIds: [],
-          designIds: [],
+          contractValue: value,
           fetching: false,
         })
       },

@@ -53,7 +53,7 @@
               </a-popover>
             </a-form-item>
             <a-form-item>
-              <a-button type="primary">
+              <a-button type="primary" @click="handleReceiptExport">
                 导出
               </a-button>
             </a-form-item>
@@ -115,7 +115,7 @@
               </a-popover>
             </a-form-item>
             <a-form-item>
-              <a-button type="primary">
+              <a-button type="primary" @click="handleCashExport">
                 导出
               </a-button>
             </a-form-item>
@@ -294,6 +294,8 @@
       ...mapActions({
         getReceiptListByIdLike: 'receiptOperation/getReceiptListByIdLike',
         getCashesByIdLike: 'cashOperation/getCashesByIdLike',
+        receiptExport: 'receiptOperation/receiptExport',
+        cashExport: 'cashOperation/cashExport',
       }),
       // 获取发票信息列表
       updateTableData() {
@@ -443,6 +445,46 @@
           }
         });
       },
+      handleReceiptExport() {
+        let fileName = '发票导出.xlsx';
+        this.receiptExport({
+          receiptIds: this.selectReceiptInfo.map((item) => {return item.id.toString()}),
+        }).then((data) => {
+          if (!data.data) {
+            return
+          }
+          let url = window.URL.createObjectURL(new Blob([data.data]));
+          let link = document.createElement('a');
+          link.style.display = 'none';
+          link.href = url;
+          link.setAttribute('download', fileName);
+          document.body.appendChild(link);
+          link.click();
+          this.$message.success("导出成功");
+        }).catch((error) => {
+          this.$message.error("导出失败");
+        });
+      },
+      handleCashExport() {
+        let fileName = '现金导出.xlsx';
+        this.cashExport({
+          cashIds: this.selectCashInfo.map((item) => {return item.cashId.toString()}),
+        }).then((data) => {
+          if (!data.data) {
+            return
+          }
+          let url = window.URL.createObjectURL(new Blob([data.data]));
+          let link = document.createElement('a');
+          link.style.display = 'none';
+          link.href = url;
+          link.setAttribute('download', fileName);
+          document.body.appendChild(link);
+          link.click();
+          this.$message.success("导出成功");
+        }).catch((error) => {
+          this.$message.error("导出失败");
+        });
+      }
     }
   }
 </script>

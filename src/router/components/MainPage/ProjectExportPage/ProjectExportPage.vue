@@ -41,23 +41,9 @@
             </a-popover>
           </a-form-item>
           <a-form-item>
-            <a-dropdown :trigger="['click']">
-              <a-button icon="down" type="primary">
-                导出
-              </a-button>
-              <a-menu slot="overlay">
-                <a-menu-item key="0">
-                  <a-button type="primary" @click="handleExport">
-                    项目导出
-                  </a-button>
-                </a-menu-item>
-                <a-menu-item key="1">
-                  <a-button type="primary" @click="handleCashReceiptExport">
-                    项目现金发票导出
-                  </a-button>
-                </a-menu-item>
-              </a-menu>
-            </a-dropdown>
+            <a-button type="primary" @click="handleExport">
+              导出
+            </a-button>
           </a-form-item>
           <a-form-item>
             <a-popover title="表单配置" placement="bottom" trigger="click" v-model="settingVisible">
@@ -336,7 +322,6 @@
       ...mapActions({
         getProjectListAfterFilter: 'contractList/getProjectListAfterFilter',
         exportContract: 'contractList/exportContract',
-        cashExport: 'cashOperation/cashExport'
       }),
       onDataChange(date) {
         this.queryDate = date;
@@ -354,27 +339,6 @@
         this.exportContract({
           contractIds: this.selectProjectInfo.map((item) => {return item.contractId}),
           header: this.selectOptions,
-        }).then((data) => {
-          if (!data.data) {
-            return
-          }
-          let url = window.URL.createObjectURL(new Blob([data.data]));
-          let link = document.createElement('a');
-          link.style.display = 'none';
-          link.href = url;
-          link.setAttribute('download', fileName);
-          document.body.appendChild(link);
-          link.click();
-          this.$message.success("导出成功");
-        }).catch((error) => {
-          this.$message.error("导出失败");
-        });
-      },
-      // 项目现金发票导出
-      handleCashReceiptExport() {
-        let fileName = '项目现金发票.xlsx';
-        this.cashExport({
-          contractIds: this.selectProjectInfo.map((item) => {return item.contractId}),
         }).then((data) => {
           if (!data.data) {
             return

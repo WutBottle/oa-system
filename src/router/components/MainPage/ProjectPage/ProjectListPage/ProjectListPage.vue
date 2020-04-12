@@ -24,7 +24,7 @@
       <a-spin :spinning="spinning" tip="Loading...">
         <a-table bordered :columns="columns" :dataSource="tableData"
                  :pagination="paginationProps"
-                 @change="handleTableChange" :scroll="{ x: 2760, y: 550}">
+                 @change="handleTableChange" :scroll="{ x: 2680, y: 550}">
           <span slot="serial" slot-scope="text, record, index">
             {{ index + 1 }}
           </span>
@@ -35,19 +35,6 @@
             <a-button type="primary" size="small" @click="handleOpen(record)">
               查看
             </a-button>
-            <a-divider type="vertical"/>
-            <a-dropdown :trigger="['click']">
-              <a-button icon="down" type="primary" size="small">
-                导出
-              </a-button>
-              <a-menu slot="overlay">
-                <a-menu-item key="0">
-                  <a-button type="primary" size="small" @click="handleCashExport(record)">
-                    现金发票
-                  </a-button>
-                </a-menu-item>
-              </a-menu>
-            </a-dropdown>
           </template>
           <a-progress slot="ratio" slot-scope="text" type="circle" :percent="text" :width="60" />
           <a slot="projectSalary" slot-scope="text, record" @click="handleOpenSalary(record)">查看工资</a>
@@ -239,7 +226,7 @@
             dataIndex: 'runningManager',
           },
           {
-            width: 180,
+            width: 100,
             title: '项目操作',
             fixed: 'right',
             key: 'selectIndex',
@@ -337,7 +324,6 @@
     methods: {
       ...mapActions({
         getProjectListByIdLike: 'contractList/getProjectListByIdLike',
-        cashExport: 'cashOperation/cashExport',
         getSalaryListByContractId: 'salaryOperation/getSalaryListByContractId',
         getProjectByContractId: 'contractList/getProjectByContractId',
         getCategoryListByNameLike: 'categoryOperation/getCategoryListByNameLike',
@@ -410,26 +396,6 @@
             this.tempSubProjects[this.tempSubProjects.findIndex(tempItem => item.subCategory.categoryId === tempItem.subCategory.categoryId)] = item;
           });
           this.projectInfoData.subProjects = this.tempSubProjects;
-        });
-      },
-      handleCashExport(data) {
-        let fileName = '现金发票.xlsx';
-        this.cashExport({
-          contractIds: [data.contractId],
-        }).then((data) => {
-          if (!data.data) {
-            return
-          }
-          let url = window.URL.createObjectURL(new Blob([data.data]));
-          let link = document.createElement('a');
-          link.style.display = 'none';
-          link.href = url;
-          link.setAttribute('download', fileName);
-          document.body.appendChild(link);
-          link.click();
-          this.$message.success("导出成功");
-        }).catch((error) => {
-          this.$message.error("导出失败");
         });
       },
       handleTableChange(pagination) {

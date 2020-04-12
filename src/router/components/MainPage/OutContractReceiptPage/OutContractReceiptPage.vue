@@ -41,7 +41,7 @@
             <a-select
                     showSearch
                     :value="outContractValue"
-                    placeholder="搜索分包合同号"
+                    placeholder="搜索分包合同号、分包合同名称"
                     :showArrow="false"
                     style="width: 300px"
                     :filterOption="false"
@@ -51,7 +51,11 @@
                     :defaultActiveFirstOption="false"
             >
               <a-spin v-if="fetching" slot="notFoundContent" size="small"/>
-              <a-select-option v-for="d in outContractsData" :key="d">{{d}}</a-select-option>
+              <a-select-option v-for="d in outContractsData" :key="d.outContractId">
+                {{d.outContractId}}
+                <a-divider type="vertical" />
+                {{d.outContractName}}
+              </a-select-option>
             </a-select>
           </template>
           <template v-else>
@@ -62,7 +66,7 @@
               <div class="table-wrapper">
                 <a-table bordered :columns="columns" :dataSource="tableData"
                          :pagination="paginationProps"
-                         @change="handleTableChange" :scroll="{ x: 950, y: 450}">
+                         @change="handleTableChange" :scroll="{ x: 1270, y: 450}">
                   <span slot="serial" slot-scope="text, record, index">
                   {{ index + 1 }}
                   </span>
@@ -347,7 +351,7 @@
       return {
         current: 0,
         steps: [{
-          title: '选择分包合同号',
+          title: '选择分包合同',
           type: 'searchOutContract',
         }, {
           title: '添加发票信息',
@@ -366,40 +370,42 @@
           {
             title: '序号',
             width: 70,
+            fixed: 'left',
             dataIndex: 'serial',
             key: 'serial',
             scopedSlots: {customRender: 'serial'}
           },
           {
             title: '发票号',
-            width: 100,
+            width: 150,
             key: 'receiptId',
             dataIndex: 'receiptId',
           }, {
             title: '开票日期',
-            width: 100,
+            width: 200,
             key: 'receiptDate',
             dataIndex: 'receiptDate',
           }, {
             title: '发票金额(元)',
-            width: 100,
+            width: 250,
             key: 'receiptAmount',
             dataIndex: 'receiptAmount',
           }, {
             title: '发票类型',
-            width: 100,
+            width: 200,
             key: 'receiptClass',
             dataIndex: 'receiptClass',
             scopedSlots: {customRender: 'receiptClass'}
           }, {
             title: '发票文件',
-            width: 150,
+            width: 200,
             key: 'receiptFile',
             dataIndex: 'receiptFile',
             scopedSlots: {customRender: 'receiptFile'}
           }, {
             title: '编辑发票',
-            width: 120,
+            width: 200,
+            fixed: 'right',
             key: 'operation',
             scopedSlots: {customRender: 'operation'},
           }],
@@ -450,14 +456,13 @@
         this.data = [];
         this.fetching = true;
         this.getOutContractIdsByIdLike(params).then((res) => {
-          this.outContractsData = res && res.data.data;
+          this.outContractsData = res && res.data.data.content;
           this.fetching = false;
         });
       },
       handleChange(value) {
         Object.assign(this, {
           outContractValue: value,
-          outContractsData: [],
           fetching: false,
         })
       },

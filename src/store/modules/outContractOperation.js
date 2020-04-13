@@ -9,7 +9,7 @@ const state = {
   paginationProps: {
     pageSize: 5, // 默认每页显示数量
     showSizeChanger: true, // 显示可改变每页数量
-    pageSizeOptions: ['1', '10', '15'], // 每页数量选项
+    pageSizeOptions: ['5', '10', '15'], // 每页数量选项
     total: 0,
     current: 1,
   },
@@ -19,9 +19,9 @@ const state = {
   contractName: '',
   listTableData: [], // 外包合同列表数据
   listPaginationProps: {
-    pageSize: 10, // 默认每页显示数量
+    pageSize: 5, // 默认每页显示数量
     showSizeChanger: true, // 显示可改变每页数量
-    pageSizeOptions: ['10', '15', '20'], // 每页数量选项
+    pageSizeOptions: ['5', '10', '15'], // 每页数量选项
     total: 0,
     current: 1,
   },
@@ -104,7 +104,7 @@ const actions = {
   getOutContractListByIdLike({commit}, params) {
     return new Promise((resolve, reject) => {
       api.outContractController.getOutContractListByIdLike(params).then(res => {
-        res.data.data && commit('setListTableData', res.data.data);
+        res && commit('setListTableData', res.data.data);
         resolve(res);
       }).catch(error => {
         console.log(error, '获取外包合同列表失败');

@@ -27,9 +27,14 @@
             <a-form-item
                     :wrapper-col="buttonItemLayout.wrapperCol"
             >
-              <a-button type="primary" @click="handleReceiptQuery">
+              <a-button type="primary" @click="updateTableData">
                 查询
               </a-button>
+            </a-form-item>
+            <a-form-item
+                    :wrapper-col="buttonItemLayout.wrapperCol"
+            >
+              <a-button type="primary" icon="search" @click="() => this.queryReceiptVisible=true">精确查询</a-button>
             </a-form-item>
             <a-form-item>
               <a-popover title="发票选择列表" placement="bottom" trigger="click" v-model="popReceiptVisible">
@@ -93,6 +98,11 @@
                 查询
               </a-button>
             </a-form-item>
+            <a-form-item
+                    :wrapper-col="buttonItemLayout.wrapperCol"
+            >
+              <a-button type="primary" icon="search" @click="() => this.queryCashVisible=true">精确查询</a-button>
+            </a-form-item>
             <a-form-item>
               <a-popover title="现金选择列表" placement="bottom" trigger="click" v-model="popCashVisible">
                 <template slot="content">
@@ -139,6 +149,93 @@
         </a-tab-pane>
       </a-tabs>
     </div>
+    <a-drawer
+            title="筛选条件"
+            placement="right"
+            :closable="false"
+            @close="() => this.queryReceiptVisible = false"
+            :visible="queryReceiptVisible"
+            width="400"
+    >
+      <a-form formLayout="horizontal">
+        <a-form-item
+                :label-col="formItemLayout.labelCol"
+                :wrapper-col="formItemLayout.wrapperCol"
+                label="时间范围"
+        >
+          <a-range-picker style="width: 220px;" @change="onReceiptDateChange"/>
+        </a-form-item>
+        <a-form-item
+                :label-col="formItemLayout.labelCol"
+                :wrapper-col="formItemLayout.wrapperCol"
+                label="金额范围"
+        >
+          <a-input-number :min="0" :max="Infinity" v-model="receiptLowerBound"
+                          @blur="onChange('receiptLowerBound','receiptUpperBound')"/>
+          ~
+          <a-input-number :min="0" :max="Infinity" v-model="receiptUpperBound"
+                          @blur="onChange('receiptLowerBound','receiptUpperBound')"/>
+        </a-form-item>
+        <a-form-item
+                :label-col="formItemLayout.labelCol"
+                :wrapper-col="formItemLayout.wrapperCol"
+                label="发票类型"
+        >
+          <a-select
+                  :allowClear="true"
+                  @change="handleReceiptTypeChange"
+                  placeholder="请选择发票类型"
+          >
+            <a-select-option value="true">
+              增值税专用发票
+            </a-select-option>
+            <a-select-option value="false">
+              增值税普通发票
+            </a-select-option>
+          </a-select>
+        </a-form-item>
+        <a-form-item :label-col="formTailLayout.labelCol" :wrapper-col="formTailLayout.wrapperCol">
+          <a-button type="primary" @click="updateTableData">
+            查找
+          </a-button>
+        </a-form-item>
+      </a-form>
+    </a-drawer>
+    <a-drawer
+            title="筛选条件"
+            placement="right"
+            :closable="false"
+            @close="() => this.queryCashVisible = false"
+            :visible="queryCashVisible"
+            width="400"
+    >
+      <a-form formLayout="horizontal">
+        <a-form-item
+                :label-col="formItemLayout.labelCol"
+                :wrapper-col="formItemLayout.wrapperCol"
+                label="时间范围"
+        >
+          <a-range-picker style="width: 220px;" @change="onCashDateChange"/>
+        </a-form-item>
+        <a-form-item
+                :label-col="formItemLayout.labelCol"
+                :wrapper-col="formItemLayout.wrapperCol"
+                label="金额范围"
+        >
+          <a-input-number :min="0" :max="Infinity" v-model="cashLowerBound"
+                          @blur="onChange('cashLowerBound','cashUpperBound')"/>
+          ~
+          <a-input-number :min="0" :max="Infinity" v-model="cashUpperBound"
+                          @blur="onChange('cashLowerBound','cashUpperBound')"/>
+        </a-form-item>
+        <a-form-item :label-col="formTailLayout.labelCol" :wrapper-col="formTailLayout.wrapperCol">
+          <a-button type="primary" @click="updateCashTableData">
+            查找
+          </a-button>
+        </a-form-item>
+      </a-form>
+    </a-drawer>
+
   </div>
 </template>
 
@@ -146,6 +243,7 @@
   import {mapState, mapActions} from 'vuex';
   import HeaderPage from "../HeaderPage/HeaderPage";
   import baseUrl from '@/api/baseUrl'
+  import moment from "moment";
 
   const formItemLayout = {
     labelCol: {span: 8},
@@ -153,7 +251,7 @@
   };
   const formTailLayout = {
     labelCol: {span: 4},
-    wrapperCol: {span: 8, offset: 6},
+    wrapperCol: {span: 8, offset: 8},
   };
   const buttonItemLayout = {
     wrapperCol: {span: 14, offset: 0}
@@ -275,6 +373,15 @@
         selectedReceiptRowKeys: [],
         popCashVisible: false,
         selectedCashRowKeys: [],
+        queryReceiptVisible: false,
+        queryReceiptDate: [], // 精确查询发票时间范围
+        receiptLowerBound: null, // 发票金额上限
+        receiptUpperBound: null, // 发票金额下限
+        receiptClass: null, // 发票类型
+        queryCashVisible: false,
+        queryCashDate: [], // 精确查询现金时间范围
+        cashLowerBound: null, // 发票金额上限
+        cashUpperBound: null, // 发票金额下限
       }
     },
     computed: {
@@ -300,8 +407,19 @@
       // 获取发票信息列表
       updateTableData() {
         this.receiptSpinning = true;
+        let actualDate;
+
+        if (this.queryReceiptDate.length) {
+          actualDate = [moment(this.queryReceiptDate[0]).format('YYYY-MM-DD'), moment(this.queryReceiptDate[1]).format('YYYY-MM-DD')]
+        } else {
+          actualDate = ['', '']
+        }
+
         const params = {
           receiptId: this.receiptId,
+          actualDate: actualDate,
+          receiptAmount: [this.receiptLowerBound ? String(this.receiptLowerBound) : '', this.receiptUpperBound ? String(this.receiptUpperBound) : ''],
+          receiptClass: this.receiptClass,
           pageNum: this.receiptPaginationProps.current,
           pageLimit: this.receiptPaginationProps.pageSize
         };
@@ -313,6 +431,7 @@
                 this.selectedReceiptRowKeys.push(index);
               }
             });
+            this.queryReceiptVisible = false;
           }else {
             this.$message.error(res.data.meta.message);
           }
@@ -325,10 +444,6 @@
         } else {
           this.updateCashTableData();
         }
-      },
-      // 发票查询
-      handleReceiptQuery() {
-        this.updateTableData();
       },
       // 查看发票文件
       handleOpenReceiptFile(file) {
@@ -350,8 +465,18 @@
       // 现金回款列表数据更新
       updateCashTableData() {
         this.cashSpinning = true;
+
+        let actualDate;
+        if (this.queryCashDate.length) {
+          actualDate = [moment(this.queryCashDate[0]).format('YYYY-MM-DD'), moment(this.queryCashDate[1]).format('YYYY-MM-DD')]
+        } else {
+          actualDate = ['', '']
+        }
+
         const params = {
           contractId: this.cashContractId,
+          actualDate: actualDate,
+          cashAmount: [this.cashLowerBound ? String(this.cashLowerBound) : '', this.cashUpperBound ? String(this.cashUpperBound) : ''],
           pageNum: this.cashListPaginationProps.current,
           pageLimit: this.cashListPaginationProps.pageSize
         };
@@ -363,6 +488,7 @@
                 this.selectedCashRowKeys.push(index);
               }
             });
+            this.queryCashVisible = false;
           }else {
             this.$message.error(res.data.meta.message);
           }
@@ -484,7 +610,23 @@
         }).catch((error) => {
           this.$message.error("导出失败");
         });
-      }
+      },
+      onChange(lowerBound, upperBound) {
+        if (this[lowerBound] && this[upperBound] && this[upperBound] < this[lowerBound]) {
+          let temp = this[lowerBound];
+          this[lowerBound] = this[upperBound];
+          this[upperBound] = temp;
+        }
+      },
+      onReceiptDateChange(date) {
+        this.queryReceiptDate = date;
+      },
+      handleReceiptTypeChange(value) {
+        this.receiptClass = value;
+      },
+      onCashDateChange(date) {
+        this.queryCashDate = date;
+      },
     }
   }
 </script>

@@ -26,7 +26,7 @@
           <a-form-item
                   label="查询关键词"
           >
-            <a-input style="width: 200px" v-model="outContractId" placeholder="外包合同号、外包名称"/>
+            <a-input style="width: 200px" v-model="outContractId" placeholder="分包合同号、分包名称"/>
           </a-form-item>
           <a-form-item
                   :wrapper-col="buttonItemLayout.wrapperCol"
@@ -34,6 +34,9 @@
             <a-button type="primary" @click="handleQuery">
               查询
             </a-button>
+          </a-form-item>
+          <a-form-item>
+            <a-button type="primary" icon="search" @click="handleAccurateQuery">精确查询</a-button>
           </a-form-item>
           <a-form-item
                   :wrapper-col="buttonItemLayout.wrapperCol"
@@ -122,14 +125,127 @@
         </a-table>
       </a-spin>
     </a-modal>
+    <a-drawer
+            title="筛选条件"
+            placement="right"
+            :closable="false"
+            @close="() => this.queryVisible = false"
+            :visible="queryVisible"
+            width="400"
+    >
+      <a-form formLayout="horizontal">
+        <a-form-item
+                :label-col="formItemLayout.labelCol"
+                :wrapper-col="formItemLayout.wrapperCol"
+                label="合同金额"
+        >
+          <a-input-number :min="0" :max="Infinity" v-model="outContractAmountLowerBound"
+                          @blur="onChange('outContractAmountLowerBound','outContractAmountUpperBound')"/>
+          ~
+          <a-input-number :min="0" :max="Infinity" v-model="outContractAmountUpperBound"
+                          @blur="onChange('outContractAmountLowerBound','outContractAmountUpperBound')"/>
+        </a-form-item>
+        <a-form-item
+                :label-col="formItemLayout.labelCol"
+                :wrapper-col="formItemLayout.wrapperCol"
+                label="已付款金额"
+        >
+          <a-input-number :min="0" :max="Infinity" v-model="outPaidLowerBound"
+                          @blur="onChange('outPaidLowerBound','outPaidUpperBound')"/>
+          ~
+          <a-input-number :min="0" :max="Infinity" v-model="outPaidUpperBound"
+                          @blur="onChange('outPaidLowerBound','outPaidUpperBound')"/>
+        </a-form-item>
+        <a-form-item
+                :label-col="formItemLayout.labelCol"
+                :wrapper-col="formItemLayout.wrapperCol"
+                label="未付款金额"
+        >
+          <a-input-number :min="0" :max="Infinity" v-model="outUnpaidLowerBound"
+                          @blur="onChange('outUnpaidLowerBound','outUnpaidUpperBound')"/>
+          ~
+          <a-input-number :min="0" :max="Infinity" v-model="outUnpaidUpperBound"
+                          @blur="onChange('outUnpaidLowerBound','outUnpaidUpperBound')"/>
+        </a-form-item>
+        <a-form-item
+                :label-col="formItemLayout.labelCol"
+                :wrapper-col="formItemLayout.wrapperCol"
+                label="收款比例">
+          <a-input-number :min="0" :max="100" v-model="ratioLowerBound"
+                          :formatter="value => `${value}%`"
+                          :parser="value => value.replace('%', '')"
+                          @blur="onChange('ratioLowerBound','ratioUpperBound')"/>
+          ~
+          <a-input-number :min="0" :max="100" v-model="ratioUpperBound"
+                          :formatter="value => `${value}%`"
+                          :parser="value => value.replace('%', '')"
+                          @blur="onChange('ratioLowerBound','ratioUpperBound')"/>
+        </a-form-item>
+        <a-form-item
+                :label-col="formItemLayout.labelCol"
+                :wrapper-col="formItemLayout.wrapperCol"
+                label="日期范围"
+        >
+          <a-range-picker style="width: 220px;" @change="onDataChange"/>
+        </a-form-item>
+        <a-form-item
+                :label-col="formItemLayout.labelCol"
+                :wrapper-col="formItemLayout.wrapperCol"
+                label="分包类型"
+        >
+          <a-select
+                  :allowClear="true"
+                  @change="handleOutContractCategoryChange"
+                  placeholder="请选择分包类型"
+          >
+            <template v-for="option in outContractCategoryList">
+              <a-select-option :value="option.categoryId" :key="option.categoryId">
+                {{option.categoryName}}
+              </a-select-option>
+            </template>
+          </a-select>
+        </a-form-item>
+        <a-form-item
+                :label-col="formItemLayout.labelCol"
+                :wrapper-col="formItemLayout.wrapperCol"
+                label="分包项目类型"
+        >
+          <a-select
+                  :allowClear="true"
+                  @change="handleOutProjectCategoryChange"
+                  placeholder="请选择分包项目类型"
+          >
+            <template v-for="option in outProjectCategoryList">
+              <a-select-option :value="option.categoryId" :key="option.categoryId">
+                {{option.categoryName}}
+              </a-select-option>
+            </template>
+          </a-select>
+        </a-form-item>
+        <a-form-item :label-col="formTailLayout.labelCol" :wrapper-col="formTailLayout.wrapperCol">
+          <a-button type="primary" @click="handleQuery">
+            查找
+          </a-button>
+        </a-form-item>
+      </a-form>
+    </a-drawer>
   </div>
 </template>
 
 <script>
   import {mapState, mapMutations, mapActions} from 'vuex'
   import HeaderPage from "../HeaderPage/HeaderPage";
+  import moment from "moment";
 
   const formLayout = 'inline';
+  const formItemLayout = {
+    labelCol: {span: 6},
+    wrapperCol: {span: 16},
+  };
+  const formTailLayout = {
+    labelCol: {span: 4},
+    wrapperCol: {span: 8, offset: 6},
+  };
   const buttonItemLayout = {
     wrapperCol: {span: 14, offset: 0}
   };
@@ -142,6 +258,8 @@
       return {
         formLayout,
         buttonItemLayout,
+        formItemLayout,
+        formTailLayout,
         outContractId: '', // 模糊查询的外包合同号
         outContractIds: [], // 选择的外包合同id
         spinning: false, // table数据拉取加载
@@ -253,6 +371,20 @@
         outPaidTableSpinning: false, // 分包付款信息加载控制
         popVisible: false,
         firstComing: 0,
+        queryVisible: false,
+        outContractAmountLowerBound: null,
+        outContractAmountUpperBound: null,
+        outPaidLowerBound: null,
+        outPaidUpperBound: null,
+        outUnpaidLowerBound: null,
+        outUnpaidUpperBound: null,
+        ratioLowerBound: null,
+        ratioUpperBound: null,
+        queryDate: [],
+        outContractCategoryList: [], // 分包类型
+        outProjectCategoryList: [], // 分包项目类型
+        outContractCategoryId: null,
+        outProjectCategoryId: null  ,
       }
     },
     computed: {
@@ -282,11 +414,13 @@
         getOutPaidsByOutContractId: 'outPaidOperation/getOutPaidsByOutContractId', // 获取分包付款信息
         exportOutContract: 'outContractOperation/exportOutContract', // 导出分包合同
         outPaidExport: 'outPaidOperation/outPaidExport', // 分包回款导出
+        getCategoryListByNameLike: 'categoryOperation/getCategoryListByNameLike', // 获取类型
       }),
       // 查询处理
       handleQuery() {
         this.listPaginationProps.current = 1;
         this.updateTableData();
+        this.queryVisible = false;
       },
       // 导出处理
       handleExport() {
@@ -345,8 +479,21 @@
       // 更新列表数据
       updateTableData() {
         this.spinning = true;
+        let actualDate;
+        if (this.queryDate.length) {
+          actualDate = [moment(this.queryDate[0]).format('YYYY-MM-DD'), moment(this.queryDate[1]).format('YYYY-MM-DD')]
+        } else {
+          actualDate = ['', '']
+        }
         const params = {
           outContractId: this.outContractId,
+          actualDate: actualDate,
+          outContractAmount: [this.outContractAmountLowerBound ? String(this.outContractAmountLowerBound) : '', this.outContractAmountUpperBound ? String(this.outContractAmountUpperBound) : ''],
+          outPaid: [this.outPaidLowerBound ? String(this.outPaidLowerBound) : '', this.outPaidUpperBound ? String(this.outPaidUpperBound) : ''],
+          outUnpaid: [this.outUnpaidLowerBound ? String(this.outUnpaidLowerBound) : '', this.outUnpaidUpperBound ? String(this.outUnpaidUpperBound) : ''],
+          ratio: [this.ratioLowerBound ? String(this.ratioLowerBound/100) : '', this.ratioUpperBound ? String(this.ratioUpperBound/100) : ''],
+          outContractCategoryId: this.outContractCategoryId,
+          outProjectCategoryId: this.outProjectCategoryId,
           pageNum: this.listPaginationProps.current,
           pageLimit: this.listPaginationProps.pageSize
         };
@@ -400,6 +547,37 @@
         rowData.selectIndex = false;
         this.removeOutContractInfo(rowData.outContractId);
         this.popVisible = true;
+      },
+      handleAccurateQuery() {
+        this.getCategoryListByNameLike({
+          categoryType: 1,
+          categoryName: '',
+        }).then(res => {
+          this.outContractCategoryList = res && res.data.data;
+        });
+        this.getCategoryListByNameLike({
+          categoryType: 2,
+          categoryName: '',
+        }).then(res => {
+          this.outProjectCategoryList = res && res.data.data;
+        });
+        this.queryVisible = true;
+      },
+      onChange(lowerBound, upperBound) {
+        if (this[lowerBound] && this[upperBound] && this[upperBound] < this[lowerBound]) {
+          let temp = this[lowerBound];
+          this[lowerBound] = this[upperBound];
+          this[upperBound] = temp;
+        }
+      },
+      onDataChange(date) {
+        this.queryDate = date;
+      },
+      handleOutContractCategoryChange(value) {
+        this.outContractCategoryId = value;
+      },
+      handleOutProjectCategoryChange(value) {
+        this.outProjectCategoryId = value;
       },
     }
   }

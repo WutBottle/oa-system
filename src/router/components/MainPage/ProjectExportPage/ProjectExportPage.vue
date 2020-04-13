@@ -99,7 +99,7 @@
         <a-form-item
                 :label-col="formItemLayout.labelCol"
                 :wrapper-col="formItemLayout.wrapperCol"
-                label="年份范围"
+                label="时间范围"
         >
           <a-range-picker style="width: 220px;" @change="onDataChange"/>
         </a-form-item>

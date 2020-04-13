@@ -148,7 +148,7 @@ const actions = {
     return new Promise((resolve, reject) => {
       api.cashController.getCashesByIdLike(params).then(res => {
         if (params.hasOwnProperty('pageNum') && params.hasOwnProperty('pageLimit')) {
-          res.data.data && commit('setTableData2', res.data.data);
+          res && commit('setTableData2', res.data.data);
         }
         resolve(res);
       }).catch(error => {

@@ -67,7 +67,7 @@
             <a-table bordered :columns="columns" :dataSource="tableData"
                      :pagination="paginationProps"
                      :rowSelection="{selectedRowKeys: selectedRowKeys, onSelect: onSelect, onSelectAll: onSelectAll, onChange: onSelectChange}"
-                     @change="handleTableChange" :scroll="{ x: 2070, y: 550}">
+                     @change="handleTableChange" :scroll="{ x: 2150, y: 550}">
               <span slot="serial" slot-scope="text, record, index">
                 {{ index + 1 }}
               </span>
@@ -299,7 +299,7 @@
         paginationProps: {
           pageSize: 5, // 默认每页显示数量
           showSizeChanger: true, // 显示可改变每页数量
-          pageSizeOptions: ['5', '15', '20'], // 每页数量选项
+          pageSizeOptions: ['5', '15', '20', '40'], // 每页数量选项
           total: 0,
           current: 1,
         },
@@ -340,58 +340,68 @@
           },
           {
             title: '项目规模(平方米)',
-            width: 150,
+            width: 170,
             key: 'scale',
             dataIndex: 'scale',
+            sorter: (a, b) => a.scale - b.scale,
           },
           {
             title: '收款比例',
-            width: 100,
+            width: 120,
             key: 'ratio',
             dataIndex: 'ratio',
-            scopedSlots: {customRender: 'ratio'}
+            scopedSlots: {customRender: 'ratio'},
+            sorter: (a, b) => a.ratio - b.ratio,
           },
           {
             title: '累计开票金额(元)',
-            width: 150,
+            width: 170,
             key: 'receiptAmount',
             dataIndex: 'receiptAmount',
+            sorter: (a, b) => a.receiptAmount - b.receiptAmount,
           },
           {
             title: '已开发票未收款金额(元)',
             width: 210,
             key: 'receiptNotCash',
             dataIndex: 'receiptNotCash',
+            sorter: (a, b) => a.receiptNotCash - b.receiptNotCash,
           },
           {
             title: '剩余发票额(元)',
             width: 150,
             key: 'receiptRemain',
             dataIndex: 'receiptRemain',
+            sorter: (a, b) => a.receiptRemain - b.receiptRemain,
+
           },
           {
             title: '项目总金额(元)',
             width: 150,
             key: 'projectAmount',
             dataIndex: 'projectAmount',
+            sorter: (a, b) => a.projectAmount - b.projectAmount,
           },
           {
             title: '累计现金回款(元)',
-            width: 150,
+            width: 170,
             key: 'cashAmount',
             dataIndex: 'cashAmount',
+            sorter: (a, b) => a.cashAmount - b.cashAmount,
           },
           {
             title: '剩余合同额(元)',
             width: 150,
             key: 'contractRemain',
             dataIndex: 'contractRemain',
+            sorter: (a, b) => a.contractRemain - b.contractRemain,
           },
           {
             title: '项目总投资额(元)',
             width: 150,
             key: 'projectInvestment',
             dataIndex: 'projectInvestment',
+            sorter: (a, b) => a.projectInvestment - b.projectInvestment,
           },
         ],
         selectedRowKeys: [],

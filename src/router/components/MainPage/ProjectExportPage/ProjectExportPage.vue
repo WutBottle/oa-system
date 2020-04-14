@@ -84,9 +84,9 @@
             title="筛选条件"
             placement="right"
             :closable="false"
-            @close="onClose"
+            @close="() => this.queryVisible = false"
             :visible="queryVisible"
-            width="400"
+            width="500"
     >
       <a-form formLayout="horizontal">
         <a-form-item
@@ -99,9 +99,23 @@
         <a-form-item
                 :label-col="formItemLayout.labelCol"
                 :wrapper-col="formItemLayout.wrapperCol"
-                label="时间范围"
+                label="签约状态"
         >
-          <a-range-picker style="width: 220px;" @change="onDataChange"/>
+          <a-select
+                  :allowClear="true"
+                  v-model="isSign"
+                  placeholder="请选择发票类型"
+          >
+            <a-select-option :value="0">
+              已签
+            </a-select-option>
+            <a-select-option :value="1">
+              洽谈
+            </a-select-option>
+            <a-select-option :value="2">
+              投标
+            </a-select-option>
+          </a-select>
         </a-form-item>
         <a-form-item
                 :label-col="formItemLayout.labelCol"
@@ -117,18 +131,7 @@
         <a-form-item
                 :label-col="formItemLayout.labelCol"
                 :wrapper-col="formItemLayout.wrapperCol"
-                label="总额范围"
-        >
-          <a-input-number :min="0" :max="Infinity" v-model="totalLowerBound"
-                          @blur="onChange('totalLowerBound','totalUpperBound')"/>
-          ~
-          <a-input-number :min="0" :max="Infinity" v-model="totalUpperBound"
-                          @blur="onChange('totalLowerBound','totalUpperBound')"/>
-        </a-form-item>
-        <a-form-item
-                :label-col="formItemLayout.labelCol"
-                :wrapper-col="formItemLayout.wrapperCol"
-                label="比例范围">
+                label="收款比例">
           <a-input-number :min="0" :max="100" v-model="ratioLowerBound"
                           :formatter="value => `${value}%`"
                           :parser="value => value.replace('%', '')"
@@ -139,9 +142,85 @@
                           :parser="value => value.replace('%', '')"
                           @blur="onChange('ratioLowerBound','ratioUpperBound')"/>
         </a-form-item>
+        <a-form-item
+                :label-col="formItemLayout.labelCol"
+                :wrapper-col="formItemLayout.wrapperCol"
+                label="累开发票金额"
+        >
+          <a-input-number :min="0" :max="Infinity" v-model="receiptAmountLowerBound"
+                          @blur="onChange('receiptAmountLowerBound','receiptAmountUpperBound')"/>
+          ~
+          <a-input-number :min="0" :max="Infinity" v-model="receiptAmountUpperBound"
+                          @blur="onChange('receiptAmountLowerBound','receiptAmountUpperBound')"/>
+        </a-form-item>
+        <a-form-item
+                :label-col="formItemLayout.labelCol"
+                :wrapper-col="formItemLayout.wrapperCol"
+                label="剩余发票额"
+        >
+          <a-input-number :min="0" :max="Infinity" v-model="receiptRemainLowerBound"
+                          @blur="onChange('receiptRemainLowerBound','receiptRemainUpperBound')"/>
+          ~
+          <a-input-number :min="0" :max="Infinity" v-model="receiptRemainUpperBound"
+                          @blur="onChange('receiptRemainLowerBound','receiptRemainUpperBound')"/>
+        </a-form-item>
+        <a-form-item
+                :label-col="formItemLayout.labelCol"
+                :wrapper-col="formItemLayout.wrapperCol"
+                label="项目总额"
+        >
+          <a-input-number :min="0" :max="Infinity" v-model="totalLowerBound"
+                          @blur="onChange('totalLowerBound','totalUpperBound')"/>
+          ~
+          <a-input-number :min="0" :max="Infinity" v-model="totalUpperBound"
+                          @blur="onChange('totalLowerBound','totalUpperBound')"/>
+        </a-form-item>
+        <a-form-item
+                :label-col="formItemLayout.labelCol"
+                :wrapper-col="formItemLayout.wrapperCol"
+                label="累计现金回款"
+        >
+          <a-input-number :min="0" :max="Infinity" v-model="cashAmountLowerBound"
+                          @blur="onChange('cashAmountLowerBound','cashAmountUpperBound')"/>
+          ~
+          <a-input-number :min="0" :max="Infinity" v-model="cashAmountUpperBound"
+                          @blur="onChange('cashAmountLowerBound','cashAmountUpperBound')"/>
+        </a-form-item>
+        <a-form-item
+                :label-col="formItemLayout.labelCol"
+                :wrapper-col="formItemLayout.wrapperCol"
+                label="剩余合同额"
+        >
+          <a-input-number :min="0" :max="Infinity" v-model="contractRemainLowerBound"
+                          @blur="onChange('contractRemainLowerBound','contractRemainUpperBound')"/>
+          ~
+          <a-input-number :min="0" :max="Infinity" v-model="contractRemainUpperBound"
+                          @blur="onChange('contractRemainLowerBound','contractRemainUpperBound')"/>
+        </a-form-item>
+        <a-form-item
+                :label-col="formItemLayout.labelCol"
+                :wrapper-col="formItemLayout.wrapperCol"
+                label="项目投资总额"
+        >
+          <a-input-number :min="0" :max="Infinity" v-model="projectInvestmentLowerBound"
+                          @blur="onChange('projectInvestmentLowerBound','projectInvestmentUpperBound')"/>
+          ~
+          <a-input-number :min="0" :max="Infinity" v-model="projectInvestmentUpperBound"
+                          @blur="onChange('projectInvestmentLowerBound','projectInvestmentUpperBound')"/>
+        </a-form-item>
+        <a-form-item
+                :label-col="formItemLayout.labelCol"
+                :wrapper-col="formItemLayout.wrapperCol"
+                label="时间范围"
+        >
+          <a-range-picker style="width: 220px;" v-model="queryDate"/>
+        </a-form-item>
         <a-form-item :label-col="formTailLayout.labelCol" :wrapper-col="formTailLayout.wrapperCol">
           <a-button type="primary" @click="handleQuery">
             查找
+          </a-button>
+          <a-button style="margin-left: 16px" @click="handleReset">
+            重置
           </a-button>
         </a-form-item>
       </a-form>
@@ -190,12 +269,23 @@
         queryVisible: false,
         queryContractId: undefined,
         queryDate: [],
+        isSign: undefined,
         scaleUpperBound: null,
         scaleLowerBound: null,
         totalLowerBound: null,
         totalUpperBound: null,
         ratioLowerBound: null,
         ratioUpperBound: null,
+        receiptAmountLowerBound: null,
+        receiptAmountUpperBound: null,
+        receiptRemainLowerBound: null,
+        receiptRemainUpperBound: null,
+        cashAmountLowerBound: null,
+        cashAmountUpperBound: null,
+        contractRemainLowerBound: null,
+        contractRemainUpperBound: null,
+        projectInvestmentLowerBound: null,
+        projectInvestmentUpperBound: null,
         popVisible: false,
         selectProjectInfo: [],
         settingVisible: false,
@@ -323,9 +413,6 @@
         getProjectListAfterFilter: 'contractList/getProjectListAfterFilter',
         exportContract: 'contractList/exportContract',
       }),
-      onDataChange(date) {
-        this.queryDate = date;
-      },
       onChange(lowerBound, upperBound) {
         if (this[lowerBound] && this[upperBound] && this[upperBound] < this[lowerBound]) {
           let temp = this[lowerBound];
@@ -375,6 +462,12 @@
         const params = {
           contractId: contractId,
           actualDate: actualDate,
+          isSign: this.isSign,
+          cashAmount: [this.cashAmountLowerBound ? String(this.cashAmountLowerBound) : '', this.cashAmountUpperBound ? String(this.cashAmountUpperBound) : ''],
+          contractRemain: [this.contractRemainLowerBound ? String(this.contractRemainLowerBound) : '', this.contractRemainUpperBound ? String(this.contractRemainUpperBound) : ''],
+          projectInvestment: [this.projectInvestmentLowerBound ? String(this.projectInvestmentLowerBound) : '', this.projectInvestmentUpperBound ? String(this.projectInvestmentUpperBound) : ''],
+          receiptRemain: [this.receiptRemainLowerBound ? String(this.receiptRemainLowerBound) : '', this.receiptRemainUpperBound ? String(this.receiptRemainUpperBound) : ''],
+          receiptAmount: [this.receiptAmountLowerBound ? String(this.receiptAmountLowerBound) : '', this.receiptAmountUpperBound ? String(this.receiptAmountUpperBound) : ''],
           projectAmount: [this.totalLowerBound ? String(this.totalLowerBound) : '', this.totalUpperBound ? String(this.totalUpperBound) : ''],
           ratio: [this.ratioLowerBound ? String(this.ratioLowerBound/100) : '', this.ratioUpperBound ? String(this.ratioUpperBound/100) : ''],
           scale: [this.scaleLowerBound ? String(this.scaleLowerBound) : '', this.scaleUpperBound ? String(this.scaleUpperBound) : ''],
@@ -423,10 +516,8 @@
         this.paginationProps.pageSize = pagination.pageSize;
         this.updateTableData();
       },
-      onClose() {
-        this.queryVisible = false;
-      },
       handleQuery() {
+        this.paginationProps.current = 1;
         this.updateTableData();
       },
       removeProjectInfo(id) {
@@ -466,6 +557,29 @@
           }
         });
       },
+      handleReset() {
+        Object.assign(this, {
+          queryContractId: undefined,
+          queryDate: [],
+          isSign: undefined,
+          scaleUpperBound: null,
+          scaleLowerBound: null,
+          totalLowerBound: null,
+          totalUpperBound: null,
+          ratioLowerBound: null,
+          ratioUpperBound: null,
+          receiptAmountLowerBound: null,
+          receiptAmountUpperBound: null,
+          receiptRemainLowerBound: null,
+          receiptRemainUpperBound: null,
+          cashAmountLowerBound: null,
+          cashAmountUpperBound: null,
+          contractRemainLowerBound: null,
+          contractRemainUpperBound: null,
+          projectInvestmentLowerBound: null,
+          projectInvestmentUpperBound: null,
+        })
+      }
     }
   }
 </script>

@@ -216,6 +216,7 @@
         });
       },
       handleQuery() {
+        this.paginationProps.current = 1;
         this.updateTableData();
       },
       handleTableChange(pagination) {

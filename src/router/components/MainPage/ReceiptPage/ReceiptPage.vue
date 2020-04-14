@@ -19,15 +19,13 @@
           <a-form class="form-wrapper" :layout="formLayout">
             <a-form-item
                     label="查询关键词"
-                    :label-col="formItemLayout.labelCol"
-                    :wrapper-col="formItemLayout.wrapperCol"
             >
               <a-input v-model="receiptId" placeholder="发票号、合同号、合同名称"/>
             </a-form-item>
             <a-form-item
                     :wrapper-col="buttonItemLayout.wrapperCol"
             >
-              <a-button type="primary" @click="updateTableData">
+              <a-button type="primary" @click="handleReceiptQuery(true)">
                 查询
               </a-button>
             </a-form-item>
@@ -86,15 +84,13 @@
           <a-form class="form-wrapper" :layout="formLayout">
             <a-form-item
                     label="查询关键词"
-                    :label-col="formItemLayout.labelCol"
-                    :wrapper-col="formItemLayout.wrapperCol"
             >
               <a-input v-model="cashContractId" placeholder="合同号、合同名称"/>
             </a-form-item>
             <a-form-item
                     :wrapper-col="buttonItemLayout.wrapperCol"
             >
-              <a-button type="primary" @click="updateCashTableData">
+              <a-button type="primary" @click="handleCashQuery(true)">
                 查询
               </a-button>
             </a-form-item>
@@ -163,7 +159,7 @@
                 :wrapper-col="formItemLayout.wrapperCol"
                 label="时间范围"
         >
-          <a-range-picker style="width: 220px;" @change="onReceiptDateChange"/>
+          <a-range-picker style="width: 220px;" v-model="queryReceiptDate"/>
         </a-form-item>
         <a-form-item
                 :label-col="formItemLayout.labelCol"
@@ -183,7 +179,7 @@
         >
           <a-select
                   :allowClear="true"
-                  @change="handleReceiptTypeChange"
+                  v-model="receiptClass"
                   placeholder="请选择发票类型"
           >
             <a-select-option value="true">
@@ -195,7 +191,7 @@
           </a-select>
         </a-form-item>
         <a-form-item :label-col="formTailLayout.labelCol" :wrapper-col="formTailLayout.wrapperCol">
-          <a-button type="primary" @click="updateTableData">
+          <a-button type="primary" @click="handleReceiptQuery(false)">
             查找
           </a-button>
         </a-form-item>
@@ -215,7 +211,7 @@
                 :wrapper-col="formItemLayout.wrapperCol"
                 label="时间范围"
         >
-          <a-range-picker style="width: 220px;" @change="onCashDateChange"/>
+          <a-range-picker style="width: 220px;" v-model="queryCashDate"/>
         </a-form-item>
         <a-form-item
                 :label-col="formItemLayout.labelCol"
@@ -229,7 +225,7 @@
                           @blur="onChange('cashLowerBound','cashUpperBound')"/>
         </a-form-item>
         <a-form-item :label-col="formTailLayout.labelCol" :wrapper-col="formTailLayout.wrapperCol">
-          <a-button type="primary" @click="updateCashTableData">
+          <a-button type="primary" @click="handleCashQuery(false)">
             查找
           </a-button>
         </a-form-item>
@@ -246,12 +242,12 @@
   import moment from "moment";
 
   const formItemLayout = {
-    labelCol: {span: 8},
-    wrapperCol: {span: 16},
+    labelCol: {span: 6},
+    wrapperCol: {span: 18},
   };
   const formTailLayout = {
     labelCol: {span: 4},
-    wrapperCol: {span: 8, offset: 8},
+    wrapperCol: {span: 8, offset: 6},
   };
   const buttonItemLayout = {
     wrapperCol: {span: 14, offset: 0}
@@ -377,7 +373,7 @@
         queryReceiptDate: [], // 精确查询发票时间范围
         receiptLowerBound: null, // 发票金额上限
         receiptUpperBound: null, // 发票金额下限
-        receiptClass: null, // 发票类型
+        receiptClass: undefined, // 发票类型
         queryCashVisible: false,
         queryCashDate: [], // 精确查询现金时间范围
         cashLowerBound: null, // 发票金额上限
@@ -404,6 +400,21 @@
         receiptExport: 'receiptOperation/receiptExport',
         cashExport: 'cashOperation/cashExport',
       }),
+      handleReceiptReset() {
+        Object.assign(this, {
+          queryReceiptDate: [], // 精确查询发票时间范围
+          receiptLowerBound: null, // 发票金额上限
+          receiptUpperBound: null, // 发票金额下限
+          receiptClass: undefined, // 发票类型
+        })
+      },
+      handleReceiptQuery(isReset) {
+        if (isReset) {
+          this.handleReceiptReset();
+        }
+        this.receiptPaginationProps.current = 1;
+        this.updateTableData();
+      },
       // 获取发票信息列表
       updateTableData() {
         this.receiptSpinning = true;
@@ -424,7 +435,7 @@
           pageLimit: this.receiptPaginationProps.pageSize
         };
         this.getReceiptListByIdLike(params).then((res) => {
-          if (res.data.meta.success){
+          if (res && res.data.meta.success){
             this.selectedReceiptRowKeys = [];
             this.receiptListData.map((item, index) => {
               if (item.selectIndex) {
@@ -433,7 +444,7 @@
             });
             this.queryReceiptVisible = false;
           }else {
-            this.$message.error(res.data.meta.message);
+            this.$message.error("服务器错误");
           }
           this.receiptSpinning = false;
         })
@@ -462,6 +473,20 @@
         this.cashListPaginationProps.pageSize = pagination.pageSize;
         this.updateCashTableData();
       },
+      handleCashReset() {
+        Object.assign(this, {
+          queryCashDate: [], // 精确查询现金时间范围
+          cashLowerBound: null, // 发票金额上限
+          cashUpperBound: null, // 发票金额下限
+        })
+      },
+      handleCashQuery(isReset) {
+        if (isReset) {
+          this.handleCashReset();
+        }
+        this.cashListPaginationProps.current = 1;
+        this.updateCashTableData();
+      },
       // 现金回款列表数据更新
       updateCashTableData() {
         this.cashSpinning = true;
@@ -481,7 +506,7 @@
           pageLimit: this.cashListPaginationProps.pageSize
         };
         this.getCashesByIdLike(params).then((res) => {
-          if (res.data.meta.success) {
+          if (res && res.data.meta.success) {
             this.selectedCashRowKeys = [];
             this.cashListTableData.map((item, index) => {
               if (item.selectIndex) {
@@ -490,7 +515,7 @@
             });
             this.queryCashVisible = false;
           }else {
-            this.$message.error(res.data.meta.message);
+            this.$message.error("服务器错误");
           }
           this.cashSpinning = false;
         })
@@ -617,15 +642,6 @@
           this[lowerBound] = this[upperBound];
           this[upperBound] = temp;
         }
-      },
-      onReceiptDateChange(date) {
-        this.queryReceiptDate = date;
-      },
-      handleReceiptTypeChange(value) {
-        this.receiptClass = value;
-      },
-      onCashDateChange(date) {
-        this.queryCashDate = date;
       },
     }
   }

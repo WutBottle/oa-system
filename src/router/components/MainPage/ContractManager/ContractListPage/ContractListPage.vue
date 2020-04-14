@@ -10,9 +10,9 @@
   <div class="ContractListPage">
     <a-form class="form-wrapper" :layout="formLayout">
       <a-form-item
-              label="合同号"
+              label="查询关键词"
       >
-        <a-input style="width: 150px" v-model="contractId" placeholder="请输入合同号"/>
+        <a-input style="width: 150px" v-model="contractId" placeholder="合同号、合同名称"/>
       </a-form-item>
       <a-form-item
               :wrapper-col="buttonItemLayout.wrapperCol"
@@ -91,6 +91,7 @@
               {{text.nickname}}
             </a-tag>
           </span>
+          <a-progress slot="receivedProportion" slot-scope="text" type="circle" :percent="text" :width="60"/>
           <span slot="inspectorNode" slot-scope="text">
             {{text.username}}
             <a-divider type="vertical" />
@@ -163,11 +164,15 @@
       return {
         formLayout: 'inline',
         formItemLayout: {
-          labelCol: {span: 5},
-          wrapperCol: {span: 19}
+          labelCol: {span: 7},
+          wrapperCol: {span: 17}
         },
         buttonItemLayout: {
           wrapperCol: {span: 14, offset: 0}
+        },
+        formTailLayout: {
+          labelCol: {span: 4},
+          wrapperCol: {span: 8, offset: 7},
         },
         contractId: '',
         paginationProps: {
@@ -253,7 +258,7 @@
             contractAmount: item.contractAmount, // 合同额(元)
             accumulatedCashReceipts: item.cashAmount, // 累计现金回款(元)
             remainingContractAmount: item.contractRemain, // 剩余合同额(元)
-            receivedProportion: item.ratio, // 已收款比例
+            receivedProportion: item.ratio && Number((item.ratio * 100).toFixed(4)), // 已收款比例
             cumulativeInvoicedAmount: item.receiptAmount, // 累计开票金额(元)
             invoicedUncollectedAmount: item.receiptNotCash, // 已开发票未收款金额
             actualSigningDate: moment(item.actualDate).format('YYYY-MM-DD HH:mm:ss'), // 实际签约日期
@@ -405,7 +410,14 @@
       },
       handleAdd() {
         this.$emit('showAddModal');
-      }
+      },
+      onChange(lowerBound, upperBound) {
+        if (this[lowerBound] && this[upperBound] && this[upperBound] < this[lowerBound]) {
+          let temp = this[lowerBound];
+          this[lowerBound] = this[upperBound];
+          this[upperBound] = temp;
+        }
+      },
     }
   }
 </script>

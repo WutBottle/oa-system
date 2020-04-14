@@ -85,6 +85,7 @@ const state = {
       width: 130,
       key: 'receivedProportion',
       dataIndex: 'receivedProportion',
+      scopedSlots: {customRender: 'receivedProportion'},
       sort: 11,
     },
     {

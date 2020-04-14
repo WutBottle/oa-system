@@ -31,7 +31,7 @@
           <a-form-item
                   :wrapper-col="buttonItemLayout.wrapperCol"
           >
-            <a-button type="primary" @click="handleQuery">
+            <a-button type="primary" @click="handleQuery(true)">
               查询
             </a-button>
           </a-form-item>
@@ -85,7 +85,8 @@
           <a-spin :spinning="spinning" tip="Loading...">
             <a-table bordered :columns="columns" :dataSource="listTableData"
                      :pagination="listPaginationProps"
-                     @change="handleTableChange" :scroll="{ x: 2260, y: 500}">
+                     :rowSelection="{selectedRowKeys: selectedRowKeys, onSelect: onSelect, onSelectAll: onSelectAll, onChange: onSelectChange}"
+                     @change="handleTableChange" :scroll="{ x: 2300, y: 500}">
               <span slot="serial" slot-scope="text, record, index">
                 {{ index + 1 }}
               </span>
@@ -96,15 +97,8 @@
                 {{text}}
               </a-tag>
               <template slot="selectIndex" slot-scope="text, record">
-                <span>
-                  <a @click="openOutPaid(record)">查看付款</a>
-                </span>
-                <a-divider type="vertical"/>
-                <a-button v-if="text.selectIndex" type="danger" size="small" @click="handleRemoved(record)">
-                  移除
-                </a-button>
-                <a-button v-else type="primary" size="small" @click="handleSelected(record)">
-                  选择
+                <a-button type="primary" size="small" @click="openOutPaid(record)">
+                  查看付款
                 </a-button>
               </template>
             </a-table>
@@ -131,7 +125,7 @@
             :closable="false"
             @close="() => this.queryVisible = false"
             :visible="queryVisible"
-            width="400"
+            width="500"
     >
       <a-form formLayout="horizontal">
         <a-form-item
@@ -186,7 +180,7 @@
                 :wrapper-col="formItemLayout.wrapperCol"
                 label="日期范围"
         >
-          <a-range-picker style="width: 220px;" @change="onDataChange"/>
+          <a-range-picker style="width: 220px;" v-model="queryDate"/>
         </a-form-item>
         <a-form-item
                 :label-col="formItemLayout.labelCol"
@@ -195,7 +189,7 @@
         >
           <a-select
                   :allowClear="true"
-                  @change="handleOutContractCategoryChange"
+                  v-model="outContractCategoryId"
                   placeholder="请选择分包类型"
           >
             <template v-for="option in outContractCategoryList">
@@ -212,7 +206,7 @@
         >
           <a-select
                   :allowClear="true"
-                  @change="handleOutProjectCategoryChange"
+                  v-model="outProjectCategoryId"
                   placeholder="请选择分包项目类型"
           >
             <template v-for="option in outProjectCategoryList">
@@ -223,8 +217,11 @@
           </a-select>
         </a-form-item>
         <a-form-item :label-col="formTailLayout.labelCol" :wrapper-col="formTailLayout.wrapperCol">
-          <a-button type="primary" @click="handleQuery">
+          <a-button type="primary" @click="handleQuery(false)">
             查找
+          </a-button>
+          <a-button style="margin-left: 16px" @click="handleReset">
+            重置
           </a-button>
         </a-form-item>
       </a-form>
@@ -261,7 +258,6 @@
         formItemLayout,
         formTailLayout,
         outContractId: '', // 模糊查询的外包合同号
-        outContractIds: [], // 选择的外包合同id
         spinning: false, // table数据拉取加载
         columns: [
           {
@@ -273,13 +269,13 @@
             scopedSlots: {customRender: 'serial'}
           }, {
             title: '分包合同号',
-            width: 130,
+            width: 150,
             fixed: 'left',
             key: 'outContractId',
             dataIndex: 'outContractId',
           }, {
             title: '分包合同名称',
-            width: 150,
+            width: 160,
             key: 'outContractName',
             dataIndex: 'outContractName',
           }, {
@@ -294,7 +290,7 @@
             dataIndex: 'designId',
           }, {
             title: '合同名称',
-            width: 150,
+            width: 200,
             key: 'contractName',
             dataIndex: 'contractName',
           }, {
@@ -341,7 +337,7 @@
             dataIndex: 'note',
           }, {
             title: '分包操作',
-            width: 160,
+            width: 120,
             fixed: 'right',
             key: 'selectIndex',
             scopedSlots: {customRender: 'selectIndex'},
@@ -381,10 +377,11 @@
         ratioLowerBound: null,
         ratioUpperBound: null,
         queryDate: [],
+        outContractCategoryId: undefined,
+        outProjectCategoryId: undefined,
         outContractCategoryList: [], // 分包类型
         outProjectCategoryList: [], // 分包项目类型
-        outContractCategoryId: null,
-        outProjectCategoryId: null  ,
+        selectedRowKeys: [],
       }
     },
     computed: {
@@ -416,11 +413,28 @@
         outPaidExport: 'outPaidOperation/outPaidExport', // 分包回款导出
         getCategoryListByNameLike: 'categoryOperation/getCategoryListByNameLike', // 获取类型
       }),
+      handleReset() {
+        Object.assign(this, {
+          outContractAmountLowerBound: null,
+          outContractAmountUpperBound: null,
+          outPaidLowerBound: null,
+          outPaidUpperBound: null,
+          outUnpaidLowerBound: null,
+          outUnpaidUpperBound: null,
+          ratioLowerBound: null,
+          ratioUpperBound: null,
+          queryDate: [],
+          outContractCategoryId: undefined,
+          outProjectCategoryId: undefined,
+        })
+      },
       // 查询处理
-      handleQuery() {
+      handleQuery(isReset) {
+        if (isReset) {
+          this.handleReset();
+        }
         this.listPaginationProps.current = 1;
         this.updateTableData();
-        this.queryVisible = false;
       },
       // 导出处理
       handleExport() {
@@ -435,7 +449,7 @@
             let link = document.createElement('a');
             link.style.display = 'none';
             link.href = url;
-            link.setAttribute('download', 'outContractsExport.xlsx');
+            link.setAttribute('download', '分包导出列表.xlsx');
             document.body.appendChild(link);
             link.click();
             this.$message.success("导出成功");
@@ -459,7 +473,7 @@
             let link = document.createElement('a');
             link.style.display = 'none';
             link.href = url;
-            link.setAttribute('download', 'outPaidExport.xlsx');
+            link.setAttribute('download', '分包回款导出列表.xlsx');
             document.body.appendChild(link);
             link.click();
             this.$message.success("导出成功");
@@ -501,6 +515,13 @@
           if (!res.data.meta.success) {
             this.$message.error(res.data.meta.message);
           }
+          this.selectedRowKeys = [];
+          this.listTableData.map((item, index) => {
+            if (item.selectIndex) {
+              this.selectedRowKeys.push(index);
+            }
+          });
+          this.queryVisible = false;
           this.spinning = false;
         }).catch((error) => {
           this.spinning = false;
@@ -548,6 +569,25 @@
         this.removeOutContractInfo(rowData.outContractId);
         this.popVisible = true;
       },
+      onSelect(record, selected, selectedRows) {
+        if (record.selectIndex) {
+          this.handleRemoved(record);
+        } else {
+          this.handleSelected(record);
+        }
+      },
+      onSelectChange(selectedRowKeys) {
+        this.selectedRowKeys = selectedRowKeys;
+      },
+      onSelectAll(selected, selectedRows, changeRows) {
+        changeRows.map(item => {
+          if (item.selectIndex) {
+            this.handleRemoved(item);
+          } else {
+            this.handleSelected(item);
+          }
+        });
+      },
       handleAccurateQuery() {
         this.getCategoryListByNameLike({
           categoryType: 1,
@@ -569,15 +609,6 @@
           this[lowerBound] = this[upperBound];
           this[upperBound] = temp;
         }
-      },
-      onDataChange(date) {
-        this.queryDate = date;
-      },
-      handleOutContractCategoryChange(value) {
-        this.outContractCategoryId = value;
-      },
-      handleOutProjectCategoryChange(value) {
-        this.outProjectCategoryId = value;
       },
     }
   }

@@ -72,6 +72,7 @@ const state = {
       key: 'accumulatedCashReceipts',
       sort: 9,
       dataIndex: 'accumulatedCashReceipts',
+      sorter: (a, b) => a.accumulatedCashReceipts - b.accumulatedCashReceipts,
     },
     {
       title: '剩余合同额(元)',
@@ -79,6 +80,7 @@ const state = {
       key: 'remainingContractAmount',
       dataIndex: 'remainingContractAmount',
       sort: 10,
+      sorter: (a, b) => a.remainingContractAmount - b.remainingContractAmount,
     },
     {
       title: '已收款比例',
@@ -87,6 +89,7 @@ const state = {
       dataIndex: 'receivedProportion',
       scopedSlots: {customRender: 'receivedProportion'},
       sort: 11,
+      sorter: (a, b) => a.receivedProportion - b.receivedProportion,
     },
     {
       title: '累计开票金额(元)',
@@ -94,6 +97,7 @@ const state = {
       key: 'cumulativeInvoicedAmount',
       dataIndex: 'cumulativeInvoicedAmount',
       sort: 12,
+      sorter: (a, b) => a.cumulativeInvoicedAmount - b.cumulativeInvoicedAmount,
     },
     {
       title: '已开发票未收款金额',
@@ -101,6 +105,7 @@ const state = {
       key: 'invoicedUncollectedAmount',
       dataIndex: 'invoicedUncollectedAmount',
       sort: 13,
+      sorter: (a, b) => a.invoicedUncollectedAmount - b.invoicedUncollectedAmount,
     },
     {
       title: '实际签约日期',
@@ -108,6 +113,7 @@ const state = {
       key: 'actualSigningDate',
       dataIndex: 'actualSigningDate',
       sort: 14,
+      sorter: (a, b) => new Date(a.actualSigningDate) - new Date(b.actualSigningDate),
     },
     {
       title: '合同归档日期',
@@ -115,6 +121,7 @@ const state = {
       key: 'contractFilingDate',
       dataIndex: 'contractFilingDate',
       sort: 15,
+      sorter: (a, b) => new Date(a.contractFilingDate) - new Date(b.contractFilingDate),
     },
     {
       title: '项目类别',
@@ -183,6 +190,7 @@ const state = {
       key: 'investmentAmount',
       dataIndex: 'investmentAmount',
       sort: 24,
+      sorter: (a, b) => a.investmentAmount - b.investmentAmount,
     },
     {
       title: '项目规模(平方米)',

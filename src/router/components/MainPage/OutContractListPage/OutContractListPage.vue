@@ -86,7 +86,7 @@
             <a-table bordered :columns="columns" :dataSource="listTableData"
                      :pagination="listPaginationProps"
                      :rowSelection="{selectedRowKeys: selectedRowKeys, onSelect: onSelect, onSelectAll: onSelectAll, onChange: onSelectChange}"
-                     @change="handleTableChange" :scroll="{ x: 2300, y: 500}">
+                     @change="handleTableChange" :scroll="{ x: 2380, y: 500}">
               <span slot="serial" slot-scope="text, record, index">
                 {{ index + 1 }}
               </span>
@@ -295,29 +295,34 @@
             dataIndex: 'contractName',
           }, {
             title: '分包合同金额(元)',
-            width: 150,
+            width: 170,
             key: 'outContractAmount',
             dataIndex: 'outContractAmount',
+            sorter: (a, b) => a.outContractAmount - b.outContractAmount,
           }, {
             title: '已付费金额(元)',
             width: 150,
             key: 'outPaid',
             dataIndex: 'outPaid',
+            sorter: (a, b) => a.outPaid - b.outPaid,
           }, {
             title: '未付费金额(元)',
             width: 150,
             key: 'outUnpaid',
             dataIndex: 'outUnpaid',
+            sorter: (a, b) => a.outUnpaid - b.outUnpaid,
           }, {
             title: '已付费比例',
             width: 150,
             key: 'ratio',
             dataIndex: 'ratio',
+            sorter: (a, b) => a.ratio - b.ratio,
           }, {
             title: '实际归档日期',
             width: 200,
             key: 'outContractDate',
             dataIndex: 'outContractDate',
+            sorter: (a, b) => new Date(a.outContractDate) - new Date(b.outContractDate),
           }, {
             title: '分包类型',
             width: 150,

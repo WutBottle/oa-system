@@ -443,6 +443,7 @@
       },
       // 导出处理
       handleExport() {
+        let fileName = '分包导出列表.xlsx';
         if (this.selectOutContractInfo.length) {
           this.exportOutContract({
             outContractIds: this.selectOutContractInfo.map((item) => {return item.outContractId}),
@@ -450,13 +451,17 @@
             if (!data.data) {
               return
             }
-            let url = window.URL.createObjectURL(new Blob([data.data]));
-            let link = document.createElement('a');
-            link.style.display = 'none';
-            link.href = url;
-            link.setAttribute('download', '分包导出列表.xlsx');
-            document.body.appendChild(link);
-            link.click();
+            if ('msSaveOrOpenBlob' in navigator){ // IE下导出
+              window.navigator.msSaveOrOpenBlob(new Blob([data.data]), fileName);//设置导出的文件名
+            } else {
+              let url = window.URL.createObjectURL(new Blob([data.data]));
+              let link = document.createElement('a');
+              link.style.display = 'none';
+              link.href = url;
+              link.setAttribute('download', fileName);
+              document.body.appendChild(link);
+              link.click();
+            }
             this.$message.success("导出成功");
           }).catch((error) => {
             this.$message.error("导出失败");
@@ -467,6 +472,7 @@
       },
       // 分包回款发票导出
       handlePaidExport() {
+        let fileName = '分包回款导出列表.xlsx';
         if (this.selectOutContractInfo.length) {
           this.outPaidExport({
             outContractIds: this.selectOutContractInfo.map((item) => {return item.outContractId}),
@@ -474,13 +480,17 @@
             if (!data.data) {
               return
             }
-            let url = window.URL.createObjectURL(new Blob([data.data]));
-            let link = document.createElement('a');
-            link.style.display = 'none';
-            link.href = url;
-            link.setAttribute('download', '分包回款导出列表.xlsx');
-            document.body.appendChild(link);
-            link.click();
+            if ('msSaveOrOpenBlob' in navigator){ // IE下导出
+              window.navigator.msSaveOrOpenBlob(new Blob([data.data]), fileName);//设置导出的文件名
+            } else {
+              let url = window.URL.createObjectURL(new Blob([data.data]));
+              let link = document.createElement('a');
+              link.style.display = 'none';
+              link.href = url;
+              link.setAttribute('download', fileName);
+              document.body.appendChild(link);
+              link.click();
+            }
             this.$message.success("导出成功");
           }).catch((error) => {
             this.$message.error("导出失败");

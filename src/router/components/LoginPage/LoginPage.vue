@@ -6,6 +6,7 @@
 
     .header-wrapper {
       display: flex;
+      display: -ms-flexbox; /* 兼容IE */
       align-items: center;
       justify-content: center;
       position: absolute;

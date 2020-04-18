@@ -14,6 +14,7 @@
 
         .left-container {
           display: flex;
+          display: -ms-flexbox; /* 兼容IE */
           align-items: center;
 
           .avatar {
@@ -44,6 +45,7 @@
               color: rgba(0, 0, 0, .85);
               margin-bottom: 16px;
               flex: auto;
+              -ms-flex: auto; /* 兼容IE */
             }
           }
         }
@@ -108,17 +110,17 @@
             </div>
             <a-row style="padding-top: 6px">
               <a-col :span="8">
-                <a-statistic title="签订项目合同总数" :value="indexPropertiesData.projectNum" style="margin-right: 10px"/>
+                <a-statistic title="签订项目合同总数" :value="indexPropertiesData && indexPropertiesData.projectNum" style="margin-right: 10px"/>
               </a-col>
               <a-col :span="8">
-                <a-statistic title="现金回款总额" :value="indexPropertiesData.projectAllCash" style="margin-right: 10px">
+                <a-statistic title="现金回款总额" :value="indexPropertiesData && indexPropertiesData.projectAllCash" style="margin-right: 10px">
                   <template v-slot:suffix>
                     <span>元</span>
                   </template>
                 </a-statistic>
               </a-col>
               <a-col :span="8">
-                <a-statistic title="已开发票总额" :value="indexPropertiesData.projectAllReceipt" style="margin-right: 10px">
+                <a-statistic title="已开发票总额" :value="indexPropertiesData && indexPropertiesData.projectAllReceipt" style="margin-right: 10px">
                   <template v-slot:suffix>
                     <span>元</span>
                   </template>
@@ -143,7 +145,7 @@
             >
               <a-list :dataSource="memorandumUndoneData" size="small">
                 <a-list-item slot="renderItem" slot-scope="item, index">
-                  <div style="display: flex;align-items: center">
+                  <div style="display: flex;display: -ms-flexbox;align-items: center">
                     <span style="width: 76px;">
                       <a-tag v-if="item.remain < 0" color="grey">
                         已过期
@@ -156,7 +158,7 @@
                       </a-tag>
                     </span>
                     <a-divider type="vertical"/>
-                    <span style="flex: 1;">{{item.content}}</span>
+                    <span style="flex: 1;-ms-flex: 1;">{{item.content}}</span>
                   </div>
                   <a-popconfirm slot="actions" title="确定已完成？" @confirm="confirmDone(item)">
                     <a>完成</a>
@@ -185,14 +187,14 @@
             >
               <a-list :dataSource="memorandumDoneData" size="small">
                 <a-list-item slot="renderItem" slot-scope="item, index">
-                  <div style="display: flex;align-items: center">
+                  <div style="display: flex;display: -ms-flexbox;align-items: center">
                     <span style="width: 76px;">
                       <a-tag color="green">
                         {{item.finishDate}}
                       </a-tag>
                     </span>
                     <a-divider type="vertical"/>
-                    <span style="flex: 1;">{{item.content}}</span>
+                    <span style="flex: 1;-ms-flex: 1;">{{item.content}}</span>
                   </div>
                   <a-popconfirm slot="actions" title="确定删除？" @confirm="confirmDeleteDone(item)">
                     <a-icon slot="icon" type="question-circle-o" style="color: red" />
@@ -406,7 +408,7 @@
         this.getRecentReceipts({
           recentDays: 7,
         }).then(res => {
-          if (res.data.meta.success) {
+          if (res && res.data.meta.success) {
             this.$refs.receiptBar.drawBar({
               title: {},
               tooltip: {
@@ -435,7 +437,7 @@
               }],
             });
           } else {
-            this.$message.error(res.data.meta.message);
+            this.$message.error('网络错误');
           }
         });
       },
@@ -444,7 +446,7 @@
           pageNum: 1,
           pageLimit: 6,
         }).then(res => {
-          this.listData = res.data.data.content.map(item => {
+          this.listData = res && res.data.data.content.map(item => {
             return {
               operateUserName: item.operateUserName,
               time: moment(item.operateDate).format('YYYY-MM-DD HH:mm:ss'),
@@ -457,7 +459,7 @@
         this.getRecentCashes({
           recentDays: 7,
         }).then(res => {
-          if (res.data.meta.success) {
+          if (res && res.data.meta.success) {
             this.$refs.cashBar.drawBar({
               title: {},
               tooltip: {
@@ -486,7 +488,7 @@
               }],
             })
           } else {
-            this.$message.error(res.data.meta.message);
+            this.$message.error('网络错误');
           }
         });
       },
@@ -494,7 +496,7 @@
         this.getIndexProperties({
           recentMonths: this.selectMonth
         }).then(res => {
-          this.indexPropertiesData = res.data.data;
+          this.indexPropertiesData = res && res.data.data;
         })
       },
       handleMonthChange() {
@@ -509,7 +511,7 @@
                 targetDate: values.targetDate,
               };
               this.addMemorandum(params).then((res) => {
-                if (res.data.meta.success) {
+                if (res && res.data.meta.success) {
                   this.$message.success(res.data.data);
                   this.addForm.resetFields();
                   this.resetUndoneList();
@@ -535,7 +537,7 @@
                 targetDate: values.targetDate,
               };
               this.verifyMemorandum(params).then((res) => {
-                if (res.data.meta.success) {
+                if (res && res.data.meta.success) {
                   this.$message.success(res.data.data);
                   this.addForm.resetFields();
                   this.resetUndoneList();
@@ -586,7 +588,7 @@
           pageNum: this.undonePaginationProps.pageNum,
           pageLimit: this.undonePaginationProps.pageLimit,
         }).then(res => {
-          if (res.data.data.totalPages > this.undonePaginationProps.pageNum) {
+          if (res && res.data.data.totalPages > this.undonePaginationProps.pageNum) {
             this.undonePaginationProps.pageNum++;
           }
           this.memorandumUndoneData = data.concat(res.data.data.content.map(item => {

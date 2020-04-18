@@ -1,3 +1,6 @@
+// 解决ie兼容问题
+import '@babel/polyfill';
+
 import Vue from 'vue'
 import App from './App.vue'
 import store from './store'
@@ -7,9 +10,9 @@ import Antd from 'ant-design-vue'
 import 'ant-design-vue/dist/antd.css'
 
 import './permission';
-import '@babel/polyfill';
 
-import echarts from 'echarts'
+
+import echarts from 'echarts';
 Vue.prototype.$echarts = echarts;
 
 import infiniteScroll from 'vue-infinite-scroll'

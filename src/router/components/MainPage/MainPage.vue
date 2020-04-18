@@ -2,8 +2,10 @@
   .MainPage {
     height: auto;
     overflow-x: hidden;
-    display: -webkit-box;
     flex-flow: row;
+    display: -webkit-box;
+    display: -moz-box;
+    display: -ms-flexbox;
 
     .dark {
       background: #001529;
@@ -18,6 +20,7 @@
 
     .left-side, .left-side-collapsed {
       flex: 0 0 256px;
+      -ms-flex: 0 0 256px; /* 兼容IE */
       max-width: 256px;
       min-width: 256px;
       width: 256px;
@@ -60,6 +63,7 @@
 
     .left-side-collapsed {
       flex: 0 0 80px;
+      -ms-flex: 0 0 80px; /* 兼容IE */
       max-width: 80px;
       min-width: 80px;
       width: 80px;
@@ -67,7 +71,9 @@
 
     .right-side {
       display: flex;
+      display: -ms-flexbox; /* 兼容IE */
       flex: 1;
+      -ms-flex: 1; /* 兼容IE */
       padding-left: 0;
       min-height: 100vh;
       background: #f0f2f5;

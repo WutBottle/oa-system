@@ -321,7 +321,7 @@
             this.setPageInfo(res.data.data);
             this.spinning = false;
           } else {
-            this.$message.error(data.data.meta.message);
+            this.$message.error(res.data.meta.message);
             this.spinning = false;
           }
         }).catch((error) => {

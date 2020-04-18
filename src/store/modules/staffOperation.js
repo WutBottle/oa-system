@@ -11,47 +11,12 @@ const state = {
     pageSize: 6, // 默认每页显示数量
     current: 1,
   },
-  listData: [],
-  tablePaginationProps: {
-    pageSize: 5, // 默认每页显示数量
-    showSizeChanger: true, // 显示可改变每页数量
-    pageSizeOptions: ['5', '15', '20', '40', '100'], // 每页数量选项
-    total: 0,
-    current: 1,
-  },
-  tableData: [],
-  showLoadingMore: true,
 };
 
 const mutations = {
   setStaffData(state, data){
     state.staffData = data.content;
   },
-  setListData(state, data) {
-    if (state.paginationProps.current === data.totalPages){
-      state.showLoadingMore = false;
-    } else {
-      state.showLoadingMore = true;
-    }
-    state.listData = state.listData.concat(data.content);
-  },
-  setTableData(state, data) {
-    state.tablePaginationProps.total = data.totalElements;
-    state.tableData = data.content.map((item, index) => {
-      return {
-        key: index,
-        id: item.id,
-        staffCode: item.staffCode,
-        staffNote: item.staffNote,
-        staffName: item.staffName,
-      }
-    });
-  },
-  resetListData(state) {
-    state.listData = [];
-    state.showLoadingMore = false;
-    state.paginationProps.current = 1;
-  }
 };
 
 const actions = {
@@ -72,21 +37,8 @@ const actions = {
     return new Promise((resolve, reject) => {
       api.staffController.getStaffListByNameLike(params).then(res => {
         resolve(res);
-        res.data.data && commit('setTableData', res.data.data)
       }).catch(error => {
         console.log(error, '获取职员列表失败');
-        reject(error);
-      });
-    });
-  },
-  // 获取职员列表(list展示)
-  getStaffListByNameLikeList({commit}, params) {
-    return new Promise((resolve, reject) => {
-      api.staffController.getStaffListByNameLike(params).then(res => {
-        res.data.data && commit('setListData', res.data.data);
-        resolve(res);
-      }).catch(error => {
-        console.log(error, '获取用户列表失败');
         reject(error);
       });
     });

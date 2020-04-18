@@ -10,7 +10,23 @@
   <div class="ParameterPage">
     <HeaderPage title="参数配置"/>
     <div class="page-content">
-      <a-card title="分包类型" style="margin-bottom: 12px">
+      <a-row style="margin-bottom: 12px;background-color: #ffffff;padding: 12px;">
+        <span style="font-size: 14px;margin-right: 12px;">请选择需要配置的参数:</span>
+        <a-select defaultValue="分包类型" style="width: 200px" @change="handleChange">
+          <a-select-option value="分包类型">分包类型</a-select-option>
+          <a-select-option value="分包项目类型">分包项目类型</a-select-option>
+          <a-select-option value="项目类型">项目类型</a-select-option>
+          <a-select-option value="分项类别">分项类别</a-select-option>
+          <a-select-option value="组织方式">组织方式</a-select-option>
+          <a-select-option value="生产阶段">生产阶段</a-select-option>
+          <a-select-option value="部门">部门</a-select-option>
+          <a-select-option value="人员类别">人员类别</a-select-option>
+          <a-select-option value="岗位">岗位</a-select-option>
+          <a-select-option value="职务">职务</a-select-option>
+          <a-select-option value="职级">职级</a-select-option>
+        </a-select>
+      </a-row>
+      <a-card v-show="currentMode === '分包类型'" title="分包类型" style="margin-bottom: 12px">
         <a-popover slot="extra" title="添加分包类型" trigger="click" v-model="addOutContractCategoryVisible">
           <template slot="content">
             <div style="margin-bottom: 8px">
@@ -39,7 +55,7 @@
           </a-row>
         </a-card-grid>
       </a-card>
-      <a-card title="分包项目类型" style="margin-bottom: 12px">
+      <a-card v-show="currentMode === '分包项目类型'" title="分包项目类型" style="margin-bottom: 12px">
         <a-popover slot="extra" title="添加分包类型" trigger="click" v-model="addOutProjectCategoryVisible">
           <template slot="content">
             <div style="margin-bottom: 8px">
@@ -68,7 +84,7 @@
           </a-row>
         </a-card-grid>
       </a-card>
-      <a-card title="项目类型" style="margin-bottom: 12px">
+      <a-card v-show="currentMode === '项目类型'" title="项目类型" style="margin-bottom: 12px">
         <a-popover slot="extra" title="添加分包类型" trigger="click" v-model="addProjectCategoryVisible">
           <template slot="content">
             <div style="margin-bottom: 8px">
@@ -97,7 +113,7 @@
           </a-row>
         </a-card-grid>
       </a-card>
-      <a-card title="分项类别" style="margin-bottom: 12px">
+      <a-card v-show="currentMode === '分项类别'" title="分项类别" style="margin-bottom: 12px">
         <a-popover slot="extra" title="添加分项类别" trigger="click" v-model="addSubCategoryVisible">
           <template slot="content">
             <div style="margin-bottom: 8px">
@@ -126,7 +142,7 @@
           </a-row>
         </a-card-grid>
       </a-card>
-      <a-card title="组织方式" style="margin-bottom: 12px">
+      <a-card v-show="currentMode === '组织方式'" title="组织方式" style="margin-bottom: 12px">
       <a-popover slot="extra" title="添加组织方式" trigger="click" v-model="addOrganizationVisible">
         <template slot="content">
           <div style="margin-bottom: 8px">
@@ -155,7 +171,7 @@
         </a-row>
       </a-card-grid>
     </a-card>
-      <a-card title="生产阶段">
+      <a-card v-show="currentMode === '生产阶段'" title="生产阶段" style="margin-bottom: 12px">
         <a-popover slot="extra" title="添加生产阶段" trigger="click" v-model="addProductionStageVisible">
           <template slot="content">
             <div style="margin-bottom: 8px">
@@ -184,6 +200,151 @@
           </a-row>
         </a-card-grid>
       </a-card>
+      <a-card v-show="currentMode === '部门'" title="部门" style="margin-bottom: 12px">
+        <a-popover slot="extra" title="添加部门" trigger="click" v-model="addDepartmentVisible">
+          <template slot="content">
+            <div style="margin-bottom: 8px">
+              <a-input v-model="department" size="small" placeholder="请输入部门"></a-input>
+            </div>
+            <a-button type="primary" size="small" @click="handleAddCategory(7)">添加</a-button>
+          </template>
+          <a>新增</a>
+        </a-popover>
+        <a-card-grid v-for="item in departmentList" :key="item.categoryId"
+                     style="width:25%;height: 100px;text-align: left;">
+          <a-row :gutter="2">
+            <a-col span="16">
+              {{item.categoryName}}
+            </a-col>
+            <a-col span="6" style="text-align: right">
+              <a-popconfirm
+                      @confirm="handleDeleteCategory(item.categoryId, 7)"
+                      title="确定删除？"
+                      okText="确定"
+                      cancelText="取消">
+                <a-icon slot="icon" type="question-circle-o" style="color: red"/>
+                <a>删除</a>
+              </a-popconfirm>
+            </a-col>
+          </a-row>
+        </a-card-grid>
+      </a-card>
+      <a-card v-show="currentMode === '人员类别'" title="人员类别" style="margin-bottom: 12px">
+        <a-popover slot="extra" title="添加人员类别" trigger="click" v-model="addClassificationVisible">
+          <template slot="content">
+            <div style="margin-bottom: 8px">
+              <a-input v-model="classification" size="small" placeholder="请输入人员类别"></a-input>
+            </div>
+            <a-button type="primary" size="small" @click="handleAddCategory(8)">添加</a-button>
+          </template>
+          <a>新增</a>
+        </a-popover>
+        <a-card-grid v-for="item in classificationList" :key="item.categoryId"
+                     style="width:25%;height: 100px;text-align: left;">
+          <a-row :gutter="2">
+            <a-col span="16">
+              {{item.categoryName}}
+            </a-col>
+            <a-col span="6" style="text-align: right">
+              <a-popconfirm
+                      @confirm="handleDeleteCategory(item.categoryId, 8)"
+                      title="确定删除？"
+                      okText="确定"
+                      cancelText="取消">
+                <a-icon slot="icon" type="question-circle-o" style="color: red"/>
+                <a>删除</a>
+              </a-popconfirm>
+            </a-col>
+          </a-row>
+        </a-card-grid>
+      </a-card>
+      <a-card v-show="currentMode === '岗位'" title="岗位" style="margin-bottom: 12px">
+        <a-popover slot="extra" title="添加岗位" trigger="click" v-model="addJobVisible">
+          <template slot="content">
+            <div style="margin-bottom: 8px">
+              <a-input v-model="job" size="small" placeholder="请输入岗位"></a-input>
+            </div>
+            <a-button type="primary" size="small" @click="handleAddCategory(11)">添加</a-button>
+          </template>
+          <a>新增</a>
+        </a-popover>
+        <a-card-grid v-for="item in jobList" :key="item.categoryId"
+                     style="width:25%;height: 100px;text-align: left;">
+          <a-row :gutter="2">
+            <a-col span="16">
+              {{item.categoryName}}
+            </a-col>
+            <a-col span="6" style="text-align: right">
+              <a-popconfirm
+                      @confirm="handleDeleteCategory(item.categoryId, 11)"
+                      title="确定删除？"
+                      okText="确定"
+                      cancelText="取消">
+                <a-icon slot="icon" type="question-circle-o" style="color: red"/>
+                <a>删除</a>
+              </a-popconfirm>
+            </a-col>
+          </a-row>
+        </a-card-grid>
+      </a-card>
+      <a-card v-show="currentMode === '职务'" title="职务" style="margin-bottom: 12px">
+        <a-popover slot="extra" title="添加职务" trigger="click" v-model="addDutyVisible">
+          <template slot="content">
+            <div style="margin-bottom: 8px">
+              <a-input v-model="duty" size="small" placeholder="请输入职务"></a-input>
+            </div>
+            <a-button type="primary" size="small" @click="handleAddCategory(10)">添加</a-button>
+          </template>
+          <a>新增</a>
+        </a-popover>
+        <a-card-grid v-for="item in dutyList" :key="item.categoryId"
+                     style="width:25%;height: 100px;text-align: left;">
+          <a-row :gutter="2">
+            <a-col span="16">
+              {{item.categoryName}}
+            </a-col>
+            <a-col span="6" style="text-align: right">
+              <a-popconfirm
+                      @confirm="handleDeleteCategory(item.categoryId, 10)"
+                      title="确定删除？"
+                      okText="确定"
+                      cancelText="取消">
+                <a-icon slot="icon" type="question-circle-o" style="color: red"/>
+                <a>删除</a>
+              </a-popconfirm>
+            </a-col>
+          </a-row>
+        </a-card-grid>
+      </a-card>
+      <a-card v-show="currentMode === '职级'" title="职级" >
+        <a-popover slot="extra" title="添加职级" trigger="click" v-model="addRankVisible">
+          <template slot="content">
+            <div style="margin-bottom: 8px">
+              <a-input v-model="rank" size="small" placeholder="请输入职级"></a-input>
+            </div>
+            <a-button type="primary" size="small" @click="handleAddCategory(9)">添加</a-button>
+          </template>
+          <a>新增</a>
+        </a-popover>
+        <a-card-grid v-for="item in rankList" :key="item.categoryId"
+                     style="width:25%;height: 100px;text-align: left;">
+          <a-row :gutter="2">
+            <a-col span="16">
+              {{item.categoryName}}
+            </a-col>
+            <a-col span="6" style="text-align: right">
+              <a-popconfirm
+                      @confirm="handleDeleteCategory(item.categoryId, 9)"
+                      title="确定删除？"
+                      okText="确定"
+                      cancelText="取消">
+                <a-icon slot="icon" type="question-circle-o" style="color: red"/>
+                <a>删除</a>
+              </a-popconfirm>
+            </a-col>
+          </a-row>
+        </a-card-grid>
+      </a-card>
     </div>
   </div>
 </template>
@@ -200,6 +361,7 @@
     },
     data() {
       return {
+        currentMode: '分包类型',
         addOutContractCategoryVisible: false,
         newOutContractCategory: '',
         outContractCategoryList: [],
@@ -218,6 +380,21 @@
         addProductionStageVisible: false,
         productionStage: '',
         productionStageList: [],
+        addDepartmentVisible: false,
+        department: '',
+        departmentList: [],
+        addClassificationVisible: false,
+        classification: '',
+        classificationList: [],
+        addRankVisible: false,
+        rank: '',
+        rankList: [],
+        addDutyVisible: false,
+        duty: '',
+        dutyList: [],
+        addJobVisible: false,
+        job: '',
+        jobList: [],
       }
     },
     activated() {
@@ -227,6 +404,11 @@
       this.handleUpdateCategory(4);
       this.handleUpdateCategory(5);
       this.handleUpdateCategory(6);
+      this.handleUpdateCategory(7);
+      this.handleUpdateCategory(8);
+      this.handleUpdateCategory(9);
+      this.handleUpdateCategory(10);
+      this.handleUpdateCategory(11);
     },
     methods: {
       ...mapActions({
@@ -257,6 +439,21 @@
               break;
             case 6:
               this.productionStageList = res && res.data.data;
+              break;
+            case 7:
+              this.departmentList = res && res.data.data;
+              break;
+            case 8:
+              this.classificationList = res && res.data.data;
+              break;
+            case 9:
+              this.rankList = res && res.data.data;
+              break;
+            case 10:
+              this.dutyList = res && res.data.data;
+              break;
+            case 11:
+              this.jobList = res && res.data.data;
               break;
             default:
               break;
@@ -296,6 +493,21 @@
           case 6:
             categoryName = this.productionStage;
             break;
+          case 7:
+            categoryName = this.department;
+            break;
+          case 8:
+            categoryName = this.classification;
+            break;
+          case 9:
+            categoryName = this.rank;
+            break;
+          case 10:
+            categoryName = this.duty;
+            break;
+          case 11:
+            categoryName = this.job;
+            break;
           default:
             break;
         }
@@ -331,6 +543,26 @@
                 this.productionStage = '';
                 this.addProductionStageVisible = false;
                 break;
+              case 7:
+                this.department = '';
+                this.addDepartmentVisible = false;
+                break;
+              case 8:
+                this.classification = '';
+                this.addClassificationVisible = false;
+                break;
+              case 9:
+                this.rank = '';
+                this.addRankVisible = false;
+                break;
+              case 10:
+                this.duty = '';
+                this.addDutyVisible = false;
+                break;
+              case 11:
+                this.job = '';
+                this.addJobVisible = false;
+                break;
               default:
                 break;
             }
@@ -340,6 +572,9 @@
           }
         })
       },
+      handleChange(value) {
+        this.currentMode = value;
+      }
     }
   }
 </script>

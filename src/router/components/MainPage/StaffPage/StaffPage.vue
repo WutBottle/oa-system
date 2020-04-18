@@ -1,7 +1,7 @@
 <style lang="scss" scoped>
   .StaffPage {
     .page-content {
-      padding: 30px;
+      padding: 24px;
 
       .form-wrapper {
         margin-bottom: 18px;
@@ -17,9 +17,9 @@
       <a-row style="background-color: #fff; padding: 24px;">
         <a-form class="form-wrapper" :layout="formLayout">
           <a-form-item
-                  label="职员名称"
+                  label="查询关键词"
           >
-            <a-input v-model="staffName" placeholder="请输入职员名称"/>
+            <a-input v-model="staffName" placeholder="姓名、工号"/>
           </a-form-item>
           <a-form-item>
             <a-button type="primary" @click="handleQuery">
@@ -31,7 +31,10 @@
           <a-spin :spinning="spinning" tip="Loading...">
             <a-table bordered :columns="staffColumns" :dataSource="staffTableData"
                      :pagination="staffPaginationProps"
-                     @change="handleStaffTableChange" :scroll="{ y: 500}">
+                     @change="handleStaffTableChange" :scroll="{ x: 3050, y: 500}">
+               <span slot="serial" slot-scope="text, record, index">
+                {{ index + 1 }}
+              </span>
               <span slot="operation" slot-scope="text, record">
                     <a @click="openSalary(record)">查看</a>
               </span>
@@ -63,6 +66,7 @@
 <script>
   import {mapState, mapActions} from 'vuex'
   import HeaderPage from "../HeaderPage/HeaderPage";
+  import moment from 'moment';
 
   const formLayout = 'inline';
   export default {
@@ -72,8 +76,6 @@
     },
     computed: {
       ...mapState({
-        staffTableData: state => state.staffOperation.tableData, // 职员信息数据
-        staffPaginationProps: state => state.staffOperation.tablePaginationProps, // 职员信息table的分页
         salaryTableData: state => state.salaryOperation.tableData, // 工资信息数据
         salaryPaginationProps: state => state.salaryOperation.paginationProps, // 工资信息table分页
       }),
@@ -83,34 +85,140 @@
         formLayout,
         staffName: '', // 搜索的职员名称
         spinning: false,
+        staffTableData: [],
+        staffPaginationProps: {
+          pageSize: 5, // 默认每页显示数量
+          showSizeChanger: true, // 显示可改变每页数量
+          pageSizeOptions: ['5', '15', '20', '40', '100'], // 每页数量选项
+          total: 0,
+          current: 1,
+        },
         staffColumns: [
           {
-            title: '员工号',
-            width: '20%',
-            key: 'staffCode',
+            title: '序号',
+            width: 70,
+            fixed: 'left',
+            dataIndex: 'serial',
+            key: 'serial',
+            scopedSlots: {customRender: 'serial'}
+          },  {
+            title: '工号',
+            width: 100,
+            fixed: 'left',
             dataIndex: 'staffCode',
-          },
-          {
-            title: '职员名称',
-            width: '20%',
-            key: 'staffName',
+            key: 'staffCode',
+          }, {
+            title: '姓名',
+            width: 100,
+            fixed: 'left',
             dataIndex: 'staffName',
-          },
-          {
-            title: '备注',
-            width: '20%',
-            key: 'staffNote',
-            dataIndex: 'staffNote',
-          },
-          {
+            key: 'staffName',
+          }, {
+            title: '部门',
+            width: 120,
+            dataIndex: 'department',
+            key: 'department',
+          }, {
+            title: '人员类别',
+            width: 120,
+            dataIndex: 'staffClass',
+            key: 'staffClass',
+          }, {
+            title: '职级',
+            width: 100,
+            dataIndex: 'rank',
+            key: 'rank',
+          }, {
+            title: '学历',
+            width: 120,
+            dataIndex: 'degree',
+            key: 'degree',
+          }, {
+            title: '专业技术资格名称',
+            width: 180,
+            dataIndex: 'techQualification',
+            key: 'techQualification',
+          }, {
+            title: '执业注册资格名称',
+            width: 180,
+            dataIndex: 'proQualification',
+            key: 'proQualification',
+          }, {
+            title: '职务',
+            width: 100,
+            dataIndex: 'duty',
+            key: 'duty',
+          }, {
+            title: '证件号码',
+            width: 200,
+            dataIndex: 'idNumber',
+            key: 'idNumber',
+          }, {
+            title: '性别',
+            width: 100,
+            dataIndex: 'gender',
+            key: 'gender',
+          }, {
+            title: '民族',
+            width: 100,
+            dataIndex: 'nation',
+            key: 'nation',
+          }, {
+            title: '岗位',
+            width: 150,
+            dataIndex: 'job',
+            key: 'job',
+          }, {
+            title: '政治面貌',
+            width: 100,
+            dataIndex: 'politic',
+            key: 'politic',
+          }, {
+            title: '出生日期',
+            width: 150,
+            dataIndex: 'dob',
+            key: 'dob',
+          }, {
+            title: '年龄',
+            width: 80,
+            dataIndex: 'age',
+            key: 'age',
+          }, {
+            title: '参加工作日期',
+            width: 150,
+            dataIndex: 'participation',
+            key: 'participation',
+          },  {
+            title: '进入系统日期',
+            width: 150,
+            dataIndex: 'createdAt',
+            key: 'createdAt',
+          }, {
+            title: '第一学历学校',
+            width: 150,
+            dataIndex: 'firstEducation',
+            key: 'firstEducation',
+          }, {
+            title: '第二学历学校',
+            width: 150,
+            dataIndex: 'secondEducation',
+            key: 'secondEducation',
+          }, {
+            title: '专业',
+            width: 150,
+            dataIndex: 'major',
+            key: 'major',
+          }, {
             title: '工资详情',
-            width: '20%',
+            fixed: 'right',
+            width: 100,
             key: 'operation',
             scopedSlots: {customRender: 'operation'},
           },
           {
             title: '工资导出',
-            width: '20%',
+            fixed: 'right',
+            width: 120,
             key: 'export',
             scopedSlots: {customRender: 'export'},
           }
@@ -158,6 +266,7 @@
         exportByStaff: 'salaryOperation/exportByStaff', // 导出职员工资
       }),
       handleQuery() {
+        this.staffPaginationProps.current = 1;
         this.updateStaffTableData();
       },
       // 选择每页个数
@@ -174,7 +283,37 @@
           pageNum: this.staffPaginationProps.current,
           pageLimit: this.staffPaginationProps.pageSize
         };
-        this.getStaffListByNameLikeTable(params).then((data) => {
+        this.getStaffListByNameLikeTable(params).then((res) => {
+          if (res && res.data.meta.success) {
+            this.staffPaginationProps.total = res.data.data.totalElements;
+            this.staffTableData = res.data.data.content.map((item, index) => {
+              return {
+                key: index,
+                id: item.id,
+                createdAt: item.createdAt && moment(item.createdAt).format('YYYY-MM-DD HH:mm:ss'),
+                staffCode: item.staffCode,
+                staffName: item.staffName,
+                staffClass: item.staffClass,
+                degree: item.degree,
+                department: item.department,
+                dob: item.dob,
+                duty: item.duty,
+                firstEducation: item.firstEducation,
+                gender: item.gender,
+                idNumber: item.idNumber,
+                job: item.job,
+                major: item.major,
+                nation: item.nation,
+                participation: item.participation && moment(item.participation).format('YYYY-MM-DD HH:mm:ss'),
+                proQualification: item.proQualification,
+                rank: item.rank,
+                secondEducation: item.secondEducation,
+                techQualification: item.techQualification,
+              }
+            });
+          }else {
+            this.$message.error('服务器错误')
+          }
           this.spinning = false;
         }).catch((error) => {
           this.spinning = false;
@@ -189,13 +328,17 @@
           if (!data.data) {
             return
           }
-          let url = window.URL.createObjectURL(new Blob([data.data]));
-          let link = document.createElement('a');
-          link.style.display = 'none';
-          link.href = url;
-          link.setAttribute('download', fileName);
-          document.body.appendChild(link);
-          link.click();
+          if ('msSaveOrOpenBlob' in navigator){ // IE下导出
+            window.navigator.msSaveOrOpenBlob(new Blob([data.data]), fileName);//设置导出的文件名
+          } else {
+            let url = window.URL.createObjectURL(new Blob([data.data]));
+            let link = document.createElement('a');
+            link.style.display = 'none';
+            link.href = url;
+            link.setAttribute('download', fileName);
+            document.body.appendChild(link);
+            link.click();
+          }
           this.$message.success("导出成功");
         }).catch((error) => {
           this.$message.error("导出失败");

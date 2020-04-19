@@ -19,11 +19,37 @@
           <a-form-item
                   label="查询关键词"
           >
-            <a-input v-model="staffName" placeholder="姓名、工号"/>
+            <a-input style="width: 120px" v-model="staffName" placeholder="姓名、工号"/>
           </a-form-item>
           <a-form-item>
             <a-button type="primary" @click="handleQuery">
               查询
+            </a-button>
+          </a-form-item>
+          <a-form-item>
+            <a-popover title="项目选择列表" placement="bottom" trigger="click" v-model="popVisible">
+              <template slot="content">
+                <div v-if="!!selectStaffInfo.length" style="width: 350px">
+                  <template v-for="(item, index) in selectStaffInfo">
+                    <div :key="index">
+                      <span>{{index + 1}}</span>
+                      <a-divider type="vertical"/>
+                      <span>{{item.staffCode}}</span>
+                      <a-divider type="vertical"/>
+                      <span>{{item.staffName}}</span>
+                    </div>
+                  </template>
+                </div>
+                <a-empty v-else/>
+              </template>
+              <a-button type="dashed" @click="() => this.popVisible = true">
+                选择列表
+              </a-button>
+            </a-popover>
+          </a-form-item>
+          <a-form-item>
+            <a-button type="primary" @click="handleStaffExport">
+              导出
             </a-button>
           </a-form-item>
         </a-form>
@@ -31,14 +57,16 @@
           <a-spin :spinning="spinning" tip="Loading...">
             <a-table bordered :columns="staffColumns" :dataSource="staffTableData"
                      :pagination="staffPaginationProps"
-                     @change="handleStaffTableChange" :scroll="{ x: 3050, y: 500}">
+                     :rowSelection="{selectedRowKeys: selectedRowKeys, onSelect: onSelect, onSelectAll: onSelectAll, onChange: onSelectChange}"
+                     @change="handleStaffTableChange" :scroll="{ x: 3070, y: 500}">
                <span slot="serial" slot-scope="text, record, index">
                 {{ index + 1 }}
               </span>
               <span slot="operation" slot-scope="text, record">
                     <a @click="openSalary(record)">查看</a>
               </span>
-              <a-button slot="export" slot-scope="text, record" type="primary" @click="handleSalaryExport(record)">导出</a-button>
+              <a-button slot="export" slot-scope="text, record" type="primary" @click="handleSalaryExport(record)">导出
+              </a-button>
             </a-table>
           </a-spin>
         </div>
@@ -71,7 +99,7 @@
   const formLayout = 'inline';
   export default {
     name: "StaffPage",
-    components:{
+    components: {
       HeaderPage,
     },
     computed: {
@@ -101,7 +129,7 @@
             dataIndex: 'serial',
             key: 'serial',
             scopedSlots: {customRender: 'serial'}
-          },  {
+          }, {
             title: '工号',
             width: 100,
             fixed: 'left',
@@ -188,7 +216,7 @@
             width: 150,
             dataIndex: 'participation',
             key: 'participation',
-          },  {
+          }, {
             title: '进入系统日期',
             width: 150,
             dataIndex: 'createdAt',
@@ -254,6 +282,9 @@
             dataIndex: 'money',
           },
         ],
+        selectedRowKeys: [],
+        selectStaffInfo: [],
+        popVisible: false,
       }
     },
     mounted() {
@@ -293,25 +324,33 @@
                 createdAt: item.createdAt && moment(item.createdAt).format('YYYY-MM-DD HH:mm:ss'),
                 staffCode: item.staffCode,
                 staffName: item.staffName,
-                staffClass: item.staffClass,
+                staffClass: item.staffClass && item.staffClass.categoryName,
                 degree: item.degree,
-                department: item.department,
-                dob: item.dob,
-                duty: item.duty,
+                department: item.department && item.department.categoryName,
+                dob: item.dob && moment(item.dob).format('YYYY-MM-DD HH:mm:ss'),
+                duty: item.duty && item.duty.categoryName,
                 firstEducation: item.firstEducation,
                 gender: item.gender,
                 idNumber: item.idNumber,
-                job: item.job,
+                job: item.job && item.job.categoryName,
                 major: item.major,
                 nation: item.nation,
                 participation: item.participation && moment(item.participation).format('YYYY-MM-DD HH:mm:ss'),
                 proQualification: item.proQualification,
-                rank: item.rank,
+                rank: item.rank && item.rank.categoryName,
                 secondEducation: item.secondEducation,
                 techQualification: item.techQualification,
+                politic: item.politic,
+                selectIndex: !!this.selectStaffInfo.find(value => value.id === item.id),
               }
             });
-          }else {
+            this.selectedRowKeys = [];
+            this.staffTableData.map((item, index) => {
+              if (item.selectIndex) {
+                this.selectedRowKeys.push(index);
+              }
+            });
+          } else {
             this.$message.error('服务器错误')
           }
           this.spinning = false;
@@ -328,7 +367,7 @@
           if (!data.data) {
             return
           }
-          if ('msSaveOrOpenBlob' in navigator){ // IE下导出
+          if ('msSaveOrOpenBlob' in navigator) { // IE下导出
             window.navigator.msSaveOrOpenBlob(new Blob([data.data]), fileName);//设置导出的文件名
           } else {
             let url = window.URL.createObjectURL(new Blob([data.data]));
@@ -370,6 +409,47 @@
         this.salaryPaginationProps.pageSize = pagination.pageSize;
         this.updateSalaryTableData();
       },
+      removeStaffInfo(id) {
+        this.selectStaffInfo.splice(this.selectStaffInfo.findIndex(item => item.id === id), 1);
+      },
+      // 处理项目移除
+      handleRemoved(rowData) {
+        rowData.selectIndex = false;
+        this.removeStaffInfo(rowData.id);
+        this.popVisible = true;
+      },
+      // 处理项目选择
+      handleSelected(rowData) {
+        rowData.selectIndex = true;
+        this.selectStaffInfo.push({
+          id: rowData.id,
+          staffCode: rowData.staffCode,
+          staffName: rowData.staffName,
+        });
+        this.popVisible = true;
+      },
+      onSelect(record, selected, selectedRows) {
+        if (record.selectIndex) {
+          this.handleRemoved(record);
+        } else {
+          this.handleSelected(record);
+        }
+      },
+      onSelectChange(selectedRowKeys) {
+        this.selectedRowKeys = selectedRowKeys;
+      },
+      onSelectAll(selected, selectedRows, changeRows) {
+        changeRows.map(item => {
+          if (item.selectIndex) {
+            this.handleRemoved(item);
+          } else {
+            this.handleSelected(item);
+          }
+        });
+      },
+      handleStaffExport() {
+        let fileName = '职员信息.xlsx';
+      }
     }
   }
 </script>

@@ -87,6 +87,17 @@ const actions = {
       });
     });
   },
+  // 职员信息导出
+  staffExport({commit}, params) {
+    return new Promise((resolve, reject) => {
+      api.staffController.staffExport(params).then(res => {
+        resolve(res);
+      }).catch(error => {
+        console.log(error, '导出职员信息失败');
+        reject(error);
+      });
+    });
+  },
 };
 
 export default {

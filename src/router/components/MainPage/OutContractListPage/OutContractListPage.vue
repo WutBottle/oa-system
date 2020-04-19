@@ -384,8 +384,6 @@
         queryDate: [],
         outContractCategoryId: undefined,
         outProjectCategoryId: undefined,
-        outContractCategoryList: [], // 分包类型
-        outProjectCategoryList: [], // 分包项目类型
         selectedRowKeys: [],
       }
     },
@@ -397,6 +395,8 @@
         outPaidTableData: state => state.outPaidOperation.tableData, // table数据
         outPaidPaginationProps: state => state.outPaidOperation.paginationProps,// 分页控制
         selectOutContractInfo: state => state.outContractOperation.selectOutContractInfo, // 被选择的分包合同
+        outContractCategoryList: state => state.categoryOperation.outContractCategoryList,
+        outProjectCategoryList: state => state.categoryOperation.outProjectCategoryList,
       }),
     },
     mounted() {
@@ -416,7 +416,6 @@
         getOutPaidsByOutContractId: 'outPaidOperation/getOutPaidsByOutContractId', // 获取分包付款信息
         exportOutContract: 'outContractOperation/exportOutContract', // 导出分包合同
         outPaidExport: 'outPaidOperation/outPaidExport', // 分包回款导出
-        getCategoryListByNameLike: 'categoryOperation/getCategoryListByNameLike', // 获取类型
       }),
       handleReset() {
         Object.assign(this, {
@@ -604,18 +603,6 @@
         });
       },
       handleAccurateQuery() {
-        this.getCategoryListByNameLike({
-          categoryType: 1,
-          categoryName: '',
-        }).then(res => {
-          this.outContractCategoryList = res && res.data.data;
-        });
-        this.getCategoryListByNameLike({
-          categoryType: 2,
-          categoryName: '',
-        }).then(res => {
-          this.outProjectCategoryList = res && res.data.data;
-        });
         this.queryVisible = true;
       },
       onChange(lowerBound, upperBound) {

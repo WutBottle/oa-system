@@ -22,14 +22,17 @@
             <a-input style="width: 120px" v-model="staffName" placeholder="姓名、工号"/>
           </a-form-item>
           <a-form-item>
-            <a-button type="primary" @click="handleQuery">
+            <a-button type="primary" @click="handleQuery(true)">
               查询
             </a-button>
           </a-form-item>
           <a-form-item>
-            <a-popover title="项目选择列表" placement="bottom" trigger="click" v-model="popVisible">
+            <a-button type="primary" icon="search" @click="() => this.queryVisible=true">精确查询</a-button>
+          </a-form-item>
+          <a-form-item>
+            <a-popover title="职员选择列表" placement="bottom" trigger="click" v-model="popVisible">
               <template slot="content">
-                <div v-if="!!selectStaffInfo.length" style="width: 350px">
+                <div v-if="!!selectStaffInfo.length" style="width: 180px">
                   <template v-for="(item, index) in selectStaffInfo">
                     <div :key="index">
                       <span>{{index + 1}}</span>
@@ -88,6 +91,195 @@
         </a-table>
       </a-spin>
     </a-modal>
+    <a-drawer
+            title="筛选条件"
+            placement="right"
+            :closable="false"
+            @close="() => this.queryVisible = false"
+            :visible="queryVisible"
+            width="500"
+    >
+      <a-form formLayout="horizontal">
+        <a-form-item
+                :label-col="formItemLayout.labelCol"
+                :wrapper-col="formItemLayout.wrapperCol"
+                label="年龄"
+        >
+          <a-input-number :min="0" :max="Infinity" v-model="ageLowerBound"
+                          @blur="onChange('ageLowerBound','ageUpperBound')"/>
+          ~
+          <a-input-number :min="0" :max="Infinity" v-model="ageUpperBound"
+                          @blur="onChange('ageLowerBound','ageUpperBound')"/>
+        </a-form-item>
+        <a-form-item
+                :label-col="formItemLayout.labelCol"
+                :wrapper-col="formItemLayout.wrapperCol"
+                label="性别"
+        >
+          <a-select
+                  :allowClear="true"
+                  v-model="gender"
+                  placeholder="请选择性别"
+          >
+            <a-select-option value="男">男</a-select-option>
+            <a-select-option value="女">女</a-select-option>
+          </a-select>
+        </a-form-item>
+        <a-form-item
+                :label-col="formItemLayout.labelCol"
+                :wrapper-col="formItemLayout.wrapperCol"
+                label="政治面貌"
+        >
+          <a-select
+                  :allowClear="true"
+                  v-model="politic"
+                  placeholder="请选择政治面貌"
+          >
+            <a-select-option value="中共党员">中共党员</a-select-option>
+            <a-select-option value="中共预备党员">中共预备党员</a-select-option>
+            <a-select-option value="共青团员">共青团员</a-select-option>
+            <a-select-option value="群众">群众</a-select-option>
+            <a-select-option value="其他">其他</a-select-option>
+          </a-select>
+        </a-form-item>
+        <a-form-item
+                :label-col="formItemLayout.labelCol"
+                :wrapper-col="formItemLayout.wrapperCol"
+                label="民族"
+        >
+          <a-select
+                  :allowClear="true"
+                  v-model="nation"
+                  placeholder="请选择民族"
+          >
+            <a-select-option v-for="item in nationList" :value="item" :key="item">{{item}}</a-select-option>
+          </a-select>
+        </a-form-item>
+        <a-form-item
+                :label-col="formItemLayout.labelCol"
+                :wrapper-col="formItemLayout.wrapperCol"
+                label="岗位"
+        >
+          <a-select
+                  :allowClear="true"
+                  v-model="job"
+                  placeholder="请选择岗位"
+          >
+            <template v-for="option in jobList">
+              <a-select-option :key="option.categoryId">
+                {{option.categoryName}}
+              </a-select-option>
+            </template>
+          </a-select>
+        </a-form-item>
+        <a-form-item
+                :label-col="formItemLayout.labelCol"
+                :wrapper-col="formItemLayout.wrapperCol"
+                label="部门"
+        >
+          <a-select
+                  :allowClear="true"
+                  v-model="department"
+                  placeholder="请选择部门"
+          >
+            <template v-for="option in departmentList">
+              <a-select-option :key="option.categoryId">
+                {{option.categoryName}}
+              </a-select-option>
+            </template>
+          </a-select>
+        </a-form-item>
+        <a-form-item
+                :label-col="formItemLayout.labelCol"
+                :wrapper-col="formItemLayout.wrapperCol"
+                label="人员类别"
+        >
+          <a-select
+                  :allowClear="true"
+                  v-model="staffClass"
+                  placeholder="请选择人员类别"
+          >
+            <template v-for="option in staffClassList">
+              <a-select-option :key="option.categoryId">
+                {{option.categoryName}}
+              </a-select-option>
+            </template>
+          </a-select>
+        </a-form-item>
+        <a-form-item
+                :label-col="formItemLayout.labelCol"
+                :wrapper-col="formItemLayout.wrapperCol"
+                label="职级"
+        >
+          <a-select
+                  :allowClear="true"
+                  v-model="rank"
+                  placeholder="请选择职级"
+          >
+            <template v-for="option in rankList">
+              <a-select-option :key="option.categoryId">
+                {{option.categoryName}}
+              </a-select-option>
+            </template>
+          </a-select>
+        </a-form-item>
+        <a-form-item
+                :label-col="formItemLayout.labelCol"
+                :wrapper-col="formItemLayout.wrapperCol"
+                label="学历"
+        >
+          <a-select
+                  :allowClear="true"
+                  v-model="degree"
+                  placeholder="学历"
+          >
+            <a-select-option value="专科">专科</a-select-option>
+            <a-select-option value="本科">本科</a-select-option>
+            <a-select-option value="硕士研究生">硕士研究生</a-select-option>
+            <a-select-option value="博士研究生">博士研究生</a-select-option>
+          </a-select>
+        </a-form-item>
+        <a-form-item
+                :label-col="formItemLayout.labelCol"
+                :wrapper-col="formItemLayout.wrapperCol"
+                label="职务"
+        >
+          <a-select
+                  :allowClear="true"
+                  v-model="duty"
+                  placeholder="请选择职级"
+          >
+            <template v-for="option in dutyList">
+              <a-select-option :key="option.categoryId">
+                {{option.categoryName}}
+              </a-select-option>
+            </template>
+          </a-select>
+        </a-form-item>
+        <a-form-item
+                :label-col="formItemLayout.labelCol"
+                :wrapper-col="formItemLayout.wrapperCol"
+                label="参加工作日期"
+        >
+          <a-range-picker style="width: 220px;" v-model="participationDate"/>
+        </a-form-item>
+        <a-form-item
+                :label-col="formItemLayout.labelCol"
+                :wrapper-col="formItemLayout.wrapperCol"
+                label="进入系统日期"
+        >
+          <a-range-picker style="width: 220px;" v-model="createdAtDate"/>
+        </a-form-item>
+        <a-form-item :label-col="formTailLayout.labelCol" :wrapper-col="formTailLayout.wrapperCol">
+          <a-button type="primary" @click="handleQuery(false)">
+            查找
+          </a-button>
+          <a-button style="margin-left: 16px" @click="handleReset">
+            重置
+          </a-button>
+        </a-form-item>
+      </a-form>
+    </a-drawer>
   </div>
 </template>
 
@@ -97,6 +289,14 @@
   import moment from 'moment';
 
   const formLayout = 'inline';
+  const formItemLayout = {
+    labelCol: {span: 6},
+    wrapperCol: {span: 16},
+  };
+  const formTailLayout = {
+    labelCol: {span: 4},
+    wrapperCol: {span: 8, offset: 6},
+  };
   export default {
     name: "StaffPage",
     components: {
@@ -106,11 +306,18 @@
       ...mapState({
         salaryTableData: state => state.salaryOperation.tableData, // 工资信息数据
         salaryPaginationProps: state => state.salaryOperation.paginationProps, // 工资信息table分页
+        departmentList: state => state.categoryOperation.departmentList,
+        staffClassList: state => state.categoryOperation.classificationList,
+        rankList: state => state.categoryOperation.rankList,
+        dutyList: state => state.categoryOperation.dutyList,
+        jobList: state => state.categoryOperation.jobList,
       }),
     },
     data() {
       return {
         formLayout,
+        formItemLayout,
+        formTailLayout,
         staffName: '', // 搜索的职员名称
         spinning: false,
         staffTableData: [],
@@ -285,6 +492,79 @@
         selectedRowKeys: [],
         selectStaffInfo: [],
         popVisible: false,
+        nationList: [
+          "汉族",
+          "壮族",
+          "满族",
+          "回族",
+          "苗族",
+          "维吾尔族",
+          "土家族",
+          "彝族",
+          "蒙古族",
+          "藏族",
+          "布依族",
+          "侗族",
+          "瑶族",
+          "朝鲜族",
+          "白族",
+          "哈尼族",
+          "哈萨克族",
+          "黎族",
+          "傣族",
+          "畲族",
+          "傈僳族",
+          "仡佬族",
+          "东乡族",
+          "高山族",
+          "拉祜族",
+          "水族",
+          "佤族",
+          "纳西族",
+          "羌族",
+          "土族",
+          "仫佬族",
+          "锡伯族",
+          "柯尔克孜族",
+          "达斡尔族",
+          "景颇族",
+          "毛南族",
+          "撒拉族",
+          "布朗族",
+          "塔吉克族",
+          "阿昌族",
+          "普米族",
+          "鄂温克族",
+          "怒族",
+          "京族",
+          "基诺族",
+          "德昂族",
+          "保安族",
+          "俄罗斯族",
+          "裕固族",
+          "乌孜别克族",
+          "门巴族",
+          "鄂伦春族",
+          "独龙族",
+          "塔塔尔族",
+          "赫哲族",
+          "珞巴族",
+          "其他"
+        ],
+        queryVisible: false,
+        ageLowerBound: null,
+        ageUpperBound: null,
+        gender: undefined,
+        politic: undefined,
+        nation: undefined,
+        job: undefined,
+        department: undefined,
+        staffClass: undefined,
+        rank: undefined,
+        degree: undefined,
+        duty: undefined,
+        participationDate: [],
+        createdAtDate: [],
       }
     },
     mounted() {
@@ -295,8 +575,12 @@
         getStaffListByNameLikeTable: 'staffOperation/getStaffListByNameLikeTable', // 获取职员列表
         getSalaryListByStaffId: 'salaryOperation/getSalaryListByStaffId', // 获取职员工资列表
         exportByStaff: 'salaryOperation/exportByStaff', // 导出职员工资
+        staffExport: 'staffOperation/staffExport',
       }),
-      handleQuery() {
+      handleQuery(isReset) {
+        if (isReset) {
+          this.handleReset();
+        }
         this.staffPaginationProps.current = 1;
         this.updateStaffTableData();
       },
@@ -309,8 +593,31 @@
       // 更新职员列表数据
       updateStaffTableData() {
         this.spinning = true;
+        let participation, createdAt;
+        if (this.participationDate.length) {
+          participation = [moment(this.participationDate[0]).format('YYYY-MM-DD'), moment(this.participationDate[1]).format('YYYY-MM-DD')]
+        } else {
+          participation = ['', '']
+        }
+        if (this.createdAtDate.length) {
+          createdAt = [moment(this.createdAtDate[0]).format('YYYY-MM-DD'), moment(this.createdAtDate[1]).format('YYYY-MM-DD')]
+        } else {
+          createdAt = ['', '']
+        }
         const params = {
           staffName: this.staffName,
+          participation: participation,
+          createdAt: createdAt,
+          age: [this.ageLowerBound ? String(this.ageLowerBound) : '', this.ageUpperBound ? String(this.ageUpperBound) : ''],
+          gender: this.gender,
+          politic: this.politic,
+          nation: this.nation,
+          jobId: this.job,
+          departmentId: this.department,
+          staffClassId: this.staffClass,
+          rankId: this.rank,
+          degree: this.degree,
+          dutyId: this.duty,
           pageNum: this.staffPaginationProps.current,
           pageLimit: this.staffPaginationProps.pageSize
         };
@@ -321,13 +628,13 @@
               return {
                 key: index,
                 id: item.id,
-                createdAt: item.createdAt && moment(item.createdAt).format('YYYY-MM-DD HH:mm:ss'),
+                createdAt: item.createdAt && moment(item.createdAt).format('YYYY-MM-DD'),
                 staffCode: item.staffCode,
                 staffName: item.staffName,
                 staffClass: item.staffClass && item.staffClass.categoryName,
                 degree: item.degree,
                 department: item.department && item.department.categoryName,
-                dob: item.dob && moment(item.dob).format('YYYY-MM-DD HH:mm:ss'),
+                dob: item.dob && moment(item.dob).format('YYYY-MM-DD'),
                 duty: item.duty && item.duty.categoryName,
                 firstEducation: item.firstEducation,
                 gender: item.gender,
@@ -335,7 +642,7 @@
                 job: item.job && item.job.categoryName,
                 major: item.major,
                 nation: item.nation,
-                participation: item.participation && moment(item.participation).format('YYYY-MM-DD HH:mm:ss'),
+                participation: item.participation && moment(item.participation).format('YYYY-MM-DD'),
                 proQualification: item.proQualification,
                 rank: item.rank && item.rank.categoryName,
                 secondEducation: item.secondEducation,
@@ -449,7 +756,56 @@
       },
       handleStaffExport() {
         let fileName = '职员信息.xlsx';
-      }
+        if (this.selectStaffInfo.length) {
+          this.staffExport({
+            staffIds: this.selectStaffInfo.map((item) => {return item.id.toString()}),
+          }).then((data) => {
+            if (!data.data) {
+              return
+            }
+            if ('msSaveOrOpenBlob' in navigator){ // IE下导出
+              window.navigator.msSaveOrOpenBlob(new Blob([data.data]), fileName);//设置导出的文件名
+            } else {
+              let url = window.URL.createObjectURL(new Blob([data.data]));
+              let link = document.createElement('a');
+              link.style.display = 'none';
+              link.href = url;
+              link.setAttribute('download', fileName);
+              document.body.appendChild(link);
+              link.click();
+            }
+            this.$message.success("导出成功");
+          }).catch((error) => {
+            this.$message.error("导出失败");
+          });
+        } else {
+          this.$message.warning('您的选择列表为空！');
+        }
+      },
+      onChange(lowerBound, upperBound) {
+        if (this[lowerBound] && this[upperBound] && this[upperBound] < this[lowerBound]) {
+          let temp = this[lowerBound];
+          this[lowerBound] = this[upperBound];
+          this[upperBound] = temp;
+        }
+      },
+      handleReset() {
+        Object.assign(this, {
+          ageLowerBound: null,
+          ageUpperBound: null,
+          gender: undefined,
+          politic: undefined,
+          nation: undefined,
+          job: undefined,
+          department: undefined,
+          staffClass: undefined,
+          rank: undefined,
+          degree: undefined,
+          duty: undefined,
+          participationDate: [],
+          createdAtDate: [],
+        })
+      },
     }
   }
 </script>

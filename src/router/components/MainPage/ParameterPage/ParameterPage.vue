@@ -350,7 +350,7 @@
 </template>
 
 <script>
-  import {mapActions} from 'vuex'
+  import {mapState, mapActions} from 'vuex'
 
   import HeaderPage from "../HeaderPage/HeaderPage";
 
@@ -364,101 +364,53 @@
         currentMode: '分包类型',
         addOutContractCategoryVisible: false,
         newOutContractCategory: '',
-        outContractCategoryList: [],
         addOutProjectCategoryVisible: false,
         newOutProjectCategory: '',
-        outProjectCategoryList: [],
         addProjectCategoryVisible: false,
         newProjectCategory: '',
-        projectCategoryList: [],
         addSubCategoryVisible: false,
         newSubCategory: '',
-        subCategoryList: [],
         addOrganizationVisible: false,
         newOrganization: '',
-        organizationList: [],
         addProductionStageVisible: false,
         productionStage: '',
-        productionStageList: [],
         addDepartmentVisible: false,
         department: '',
-        departmentList: [],
         addClassificationVisible: false,
         classification: '',
-        classificationList: [],
         addRankVisible: false,
         rank: '',
-        rankList: [],
         addDutyVisible: false,
         duty: '',
-        dutyList: [],
         addJobVisible: false,
         job: '',
-        jobList: [],
       }
     },
-    activated() {
-      this.handleUpdateCategory(1);
-      this.handleUpdateCategory(2);
-      this.handleUpdateCategory(3);
-      this.handleUpdateCategory(4);
-      this.handleUpdateCategory(5);
-      this.handleUpdateCategory(6);
-      this.handleUpdateCategory(7);
-      this.handleUpdateCategory(8);
-      this.handleUpdateCategory(9);
-      this.handleUpdateCategory(10);
-      this.handleUpdateCategory(11);
+    computed: {
+      ...mapState({
+        outContractCategoryList: state => state.categoryOperation.outContractCategoryList,
+        outProjectCategoryList: state => state.categoryOperation.outProjectCategoryList,
+        projectCategoryList: state => state.categoryOperation.projectCategoryList,
+        subCategoryList: state => state.categoryOperation.subCategoryList,
+        organizationList: state => state.categoryOperation.organizationList,
+        productionStageList: state => state.categoryOperation.productionStageList,
+        departmentList: state => state.categoryOperation.departmentList,
+        classificationList: state => state.categoryOperation.classificationList,
+        rankList: state => state.categoryOperation.rankList,
+        dutyList: state => state.categoryOperation.dutyList,
+        jobList: state => state.categoryOperation.jobList,
+      })
     },
     methods: {
       ...mapActions({
-        getCategoryListByNameLike: 'categoryOperation/getCategoryListByNameLike',
+        getCategoryList: 'categoryOperation/getCategoryList',
         deleteCategory: 'categoryOperation/deleteCategory',
         addCategory: 'categoryOperation/addCategory',
       }),
       handleUpdateCategory(type) {
-        this.getCategoryListByNameLike({
+        this.getCategoryList({
           categoryType: type,
-          categoryName: '',
-        }).then(res => {
-          switch (type) {
-            case 1:
-              this.outContractCategoryList = res && res.data.data;
-              break;
-            case 2:
-              this.outProjectCategoryList = res && res.data.data;
-              break;
-            case 3:
-              this.projectCategoryList = res && res.data.data;
-              break;
-            case 4:
-              this.subCategoryList = res && res.data.data;
-              break;
-            case 5:
-              this.organizationList = res && res.data.data;
-              break;
-            case 6:
-              this.productionStageList = res && res.data.data;
-              break;
-            case 7:
-              this.departmentList = res && res.data.data;
-              break;
-            case 8:
-              this.classificationList = res && res.data.data;
-              break;
-            case 9:
-              this.rankList = res && res.data.data;
-              break;
-            case 10:
-              this.dutyList = res && res.data.data;
-              break;
-            case 11:
-              this.jobList = res && res.data.data;
-              break;
-            default:
-              break;
-          }
-        });
+        })
       },
       handleDeleteCategory(id, type) {
         this.deleteCategory({

@@ -24,6 +24,11 @@ const staffController = {
   verifyStaff(params) {
     return axios.post(`${baseUrl.staffController}/verifyStaff`, params);
   },
+  staffExport(params) {
+    return axios.post(`${baseUrl.staffController}/export`, params, {
+      responseType: 'blob'
+    });
+  }
 };
 
 export default staffController;

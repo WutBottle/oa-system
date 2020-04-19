@@ -55,7 +55,6 @@ const errorHandle = (status, otherStatus) => {
       Vue.prototype.$message.error('网络问题，请稍后重试');
       break;
     default:
-      console.log(otherStatus);
       break;
   }
 };

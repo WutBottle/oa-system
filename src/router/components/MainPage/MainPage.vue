@@ -273,7 +273,17 @@
     name: 'MainPage',
     mounted() {
       this.generateMenuList();
-
+      this.handleUpdateCategory(1);
+      this.handleUpdateCategory(2);
+      this.handleUpdateCategory(3);
+      this.handleUpdateCategory(4);
+      this.handleUpdateCategory(5);
+      this.handleUpdateCategory(6);
+      this.handleUpdateCategory(7);
+      this.handleUpdateCategory(8);
+      this.handleUpdateCategory(9);
+      this.handleUpdateCategory(10);
+      this.handleUpdateCategory(11);
       this.screenWidth = document.body.clientWidth;
       window.onresize = () => {
         return (() => {
@@ -316,7 +326,13 @@
       }),
       ...mapActions({
         logout: 'tokensOperation/logout',
+        getCategoryList: 'categoryOperation/getCategoryList',
       }),
+      handleUpdateCategory(type) {
+        this.getCategoryList({
+          categoryType: type,
+        })
+      },
       generateMenuList() {
         let commonMenuList =
           [{

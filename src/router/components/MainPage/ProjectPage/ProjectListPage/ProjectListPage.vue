@@ -210,7 +210,7 @@
 </template>
 
 <script>
-  import {mapActions} from 'vuex'
+  import {mapState, mapActions} from 'vuex'
   import ProjectInfo from "../ProjectInfo/ProjectInfo";
   import moment from "moment";
   const statusMap = {
@@ -239,6 +239,11 @@
     name: "ProjectListPage",
     components: {
       ProjectInfo,
+    },
+    computed: {
+      ...mapState({
+        subCategoryList: state => state.categoryOperation.subCategoryList,
+      })
     },
     data() {
       return {
@@ -442,7 +447,6 @@
         projectInfoVisible: false,
         projectInfoData: {},
         projectUsers: [],
-        subCategoryList: [], // 分项list
         tempSubProjects: [],
         queryVisible: false,
         queryDate: [],
@@ -475,27 +479,21 @@
     },
     mounted() {
       this.updateTableData();
-      this.getCategoryListByNameLike({
-        categoryType: 4,
-        categoryName: '',
-      }).then(res => {
-        this.subCategoryList = res && res.data.data;
-        this.subCategoryList.map(item => {
-          this.tempSubProjects.push({
-            organization: null,
-            subCategory: {
-              categoryId: item.categoryId,
-              categoryType: item.categoryType,
-              categoryName: item.categoryName,
-            },
-            outContracts: [],
-            designTeam: null,
-            designFees: 0,
-            price: 0,
-            note: null,
-          })
-        });
-      })
+      this.subCategoryList.map(item => {
+        this.tempSubProjects.push({
+          organization: null,
+          subCategory: {
+            categoryId: item.categoryId,
+            categoryType: item.categoryType,
+            categoryName: item.categoryName,
+          },
+          outContracts: [],
+          designTeam: null,
+          designFees: 0,
+          price: 0,
+          note: null,
+        })
+      });
     },
     activated() {
       this.updateTableData();
@@ -505,7 +503,6 @@
         getProjectListAfterFilter: 'contractList/getProjectListAfterFilter',
         getSalaryListByContractId: 'salaryOperation/getSalaryListByContractId',
         getProjectByContractId: 'contractList/getProjectByContractId',
-        getCategoryListByNameLike: 'categoryOperation/getCategoryListByNameLike',
         getHistoryByContractId: 'projectCirculationOperation/getHistoryByContractId',
       }),
       updateTableData() {

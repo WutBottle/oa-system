@@ -17,12 +17,15 @@
             <a-form-item
                     label="查询关键词"
             >
-              <a-input placeholder="姓名、工号" v-model="staffName"/>
+              <a-input style="width: 120px" placeholder="姓名、工号" v-model="staffName"/>
             </a-form-item>
             <a-form-item>
-              <a-button type="primary" @click="handleQuery">
+              <a-button type="primary" @click="handleQuery(true)">
                 查询
               </a-button>
+            </a-form-item>
+            <a-form-item>
+              <a-button type="primary" icon="search" @click="() => this.queryVisible=true">精确查询</a-button>
             </a-form-item>
             <a-form-item>
               <a-button type="primary" @click="showAdd">
@@ -35,7 +38,7 @@
           <a-spin :spinning="spinning" tip="Loading...">
             <a-table bordered :columns="columns" :dataSource="tableData"
                      :pagination="tablePaginationProps"
-                     @change="handleTableChange" :scroll="{ x: 2950, y: 550}">
+                     @change="handleTableChange" :scroll="{ x: 2930, y: 550}">
               <span slot="serial" slot-scope="text, record, index">
                 {{ index + 1 }}
               </span>
@@ -99,11 +102,10 @@
           <a-select
                   v-decorator="[
           'department',
-          {rules: [{ required: true, message: '请选择部门！' }]}
         ]"
                   placeholder="请选择部门"
           >
-            <template v-for="option in departmentCategoryList">
+            <template v-for="option in departmentList">
               <a-select-option :key="option.categoryId">
                 {{option.categoryName}}
               </a-select-option>
@@ -117,11 +119,10 @@
           <a-select
                   v-decorator="[
           'staffClass',
-          {rules: [{ required: true, message: '请选择人员类别！' }]}
         ]"
                   placeholder="请选择人员类别"
           >
-            <template v-for="option in staffClassCategoryList">
+            <template v-for="option in staffClassList">
               <a-select-option :key="option.categoryId">
                 {{option.categoryName}}
               </a-select-option>
@@ -135,11 +136,10 @@
           <a-select
                   v-decorator="[
           'rank',
-          {rules: [{ required: true, message: '请选择职级！' }]}
         ]"
                   placeholder="请选择职级"
           >
-            <template v-for="option in rankCategoryList">
+            <template v-for="option in rankList">
               <a-select-option :key="option.categoryId">
                 {{option.categoryName}}
               </a-select-option>
@@ -192,11 +192,10 @@
           <a-select
                   v-decorator="[
           'duty',
-          {rules: [{ required: true, message: '请选择职务！' }]}
         ]"
                   placeholder="请选择职务"
           >
-            <template v-for="option in dutyCategoryList">
+            <template v-for="option in dutyList">
               <a-select-option :key="option.categoryId">
                 {{option.categoryName}}
               </a-select-option>
@@ -210,9 +209,6 @@
           <a-input
                   v-decorator="[
           'idNumber',
-          {rules: [{
-            required: true, message: '请输入证件号码!'
-          }]}
         ]"
                   placeholder="请输入证件号码"
           />
@@ -224,7 +220,6 @@
           <a-select
                   v-decorator="[
           'gender',
-          {rules: [{ required: true, message: '请选择性别！' }]}
         ]"
                   placeholder="请选择性别"
           >
@@ -253,11 +248,10 @@
           <a-select
                   v-decorator="[
           'job',
-          {rules: [{ required: true, message: '请选择岗位！' }]}
         ]"
                   placeholder="请选择岗位"
           >
-            <template v-for="option in jobCategoryList">
+            <template v-for="option in jobList">
               <a-select-option :key="option.categoryId">
                 {{option.categoryName}}
               </a-select-option>
@@ -288,7 +282,6 @@
         >
           <a-date-picker
                   v-decorator="['dob',  {
-        rules: [{ type: 'object', required: true, message: '请选择出生日期!' }],
       }]"
                   format="YYYY-MM-DD"
           />
@@ -316,7 +309,9 @@
                 label="参加工作日期"
         >
           <a-date-picker
-                  v-decorator="['participation']"
+                  v-decorator="['participation',{
+                    rules: [{required: true, message: '请选择参加工作日期!'}]
+                  }]"
                   format="YYYY-MM-DD"
           />
         </a-form-item>
@@ -326,7 +321,8 @@
         >
           <a-input
                   v-decorator="[
-          'firstEducation']"
+          'firstEducation', {rules: [{required: true, message: '请输入第一学历学校!'}]}
+          ]"
                   placeholder="请输入第一学历学校"
           />
         </a-form-item>
@@ -336,7 +332,8 @@
         >
           <a-input
                   v-decorator="[
-          'secondEducation']"
+          'secondEducation', {rules: [{required: true, message: '请输入第二学历学校!'}]}
+          ]"
                   placeholder="请输入第二学历学校"
           />
         </a-form-item>
@@ -346,7 +343,8 @@
         >
           <a-input
                   v-decorator="[
-          'major']"
+          'major', {rules: [{required: true, message: '请输入专业!'}]}
+          ]"
                   placeholder="请输入专业"
           />
         </a-form-item>
@@ -399,11 +397,11 @@
           <a-select
                   v-decorator="[
           'department',
-          {initialValue: this.editFormData.departmentId, rules: [{ required: true, message: '请选择部门！' }]}
+          {initialValue: this.editFormData.departmentId}
         ]"
                   placeholder="请选择部门"
           >
-            <template v-for="option in departmentCategoryList">
+            <template v-for="option in departmentList">
               <a-select-option :key="option.categoryId">
                 {{option.categoryName}}
               </a-select-option>
@@ -417,11 +415,11 @@
           <a-select
                   v-decorator="[
           'staffClass',
-          {initialValue: this.editFormData.staffClassId, rules: [{ required: true, message: '请选择人员类别！' }]}
+          {initialValue: this.editFormData.staffClassId}
         ]"
                   placeholder="请选择人员类别"
           >
-            <template v-for="option in staffClassCategoryList">
+            <template v-for="option in staffClassList">
               <a-select-option :key="option.categoryId">
                 {{option.categoryName}}
               </a-select-option>
@@ -435,11 +433,11 @@
           <a-select
                   v-decorator="[
           'rank',
-          {initialValue: this.editFormData.rankId, rules: [{ required: true, message: '请选择职级！' }]}
+          {initialValue: this.editFormData.rankId}
         ]"
                   placeholder="请选择职级"
           >
-            <template v-for="option in rankCategoryList">
+            <template v-for="option in rankList">
               <a-select-option :key="option.categoryId">
                 {{option.categoryName}}
               </a-select-option>
@@ -492,11 +490,11 @@
           <a-select
                   v-decorator="[
           'duty',
-          {initialValue: this.editFormData.dutyId, rules: [{ required: true, message: '请选择职务！' }]}
+          {initialValue: this.editFormData.dutyId}
         ]"
                   placeholder="请选择职务"
           >
-            <template v-for="option in dutyCategoryList">
+            <template v-for="option in dutyList">
               <a-select-option :key="option.categoryId">
                 {{option.categoryName}}
               </a-select-option>
@@ -510,9 +508,7 @@
           <a-input
                   v-decorator="[
           'idNumber',
-          {initialValue: this.editFormData.idNumber, rules: [{
-            required: true, message: '请输入证件号码!'
-          }]}
+          {initialValue: this.editFormData.idNumber}
         ]"
                   placeholder="请输入证件号码"
           />
@@ -524,7 +520,7 @@
           <a-select
                   v-decorator="[
           'gender',
-          {initialValue: this.editFormData.gender, rules: [{ required: true, message: '请选择性别！' }]}
+          {initialValue: this.editFormData.gender}
         ]"
                   placeholder="请选择性别"
           >
@@ -553,11 +549,11 @@
           <a-select
                   v-decorator="[
           'job',
-          {initialValue: this.editFormData.jobId, rules: [{ required: true, message: '请选择岗位！' }]}
+          {initialValue: this.editFormData.jobId}
         ]"
                   placeholder="请选择岗位"
           >
-            <template v-for="option in jobCategoryList">
+            <template v-for="option in jobList">
               <a-select-option :key="option.categoryId">
                 {{option.categoryName}}
               </a-select-option>
@@ -587,9 +583,7 @@
                 label="出生日期"
         >
           <a-date-picker
-                  v-decorator="['dob',  {
-                  initialValue: this.editFormData.dob, rules: [{ type: 'object', required: true, message: '请选择出生日期!' }],
-      }]"
+                  v-decorator="['dob',  {initialValue: this.editFormData.dob}]"
                   format="YYYY-MM-DD"
           />
         </a-form-item>
@@ -616,7 +610,8 @@
                 label="参加工作日期"
         >
           <a-date-picker
-                  v-decorator="['participation', {initialValue: this.editFormData.participation}]"
+                  v-decorator="['participation', {initialValue: this.editFormData.participation,
+                  rules: [{required: true, message: '请选择参加工作日期!'}]}]"
                   format="YYYY-MM-DD"
           />
         </a-form-item>
@@ -626,7 +621,7 @@
         >
           <a-input
                   v-decorator="[
-          'firstEducation', {initialValue: this.editFormData.firstEducation}]"
+          'firstEducation', {initialValue: this.editFormData.firstEducation, rules: [{required: true, message: '请输入第一学历学校!'}]}]"
                   placeholder="请输入第一学历学校"
           />
         </a-form-item>
@@ -636,7 +631,7 @@
         >
           <a-input
                   v-decorator="[
-          'secondEducation', {initialValue: this.editFormData.secondEducation}]"
+          'secondEducation', {initialValue: this.editFormData.secondEducation, rules: [{required: true, message: '请输入第二学历学校!'}]}]"
                   placeholder="请输入第二学历学校"
           />
         </a-form-item>
@@ -646,7 +641,7 @@
         >
           <a-input
                   v-decorator="[
-          'major', {initialValue: this.editFormData.major}]"
+          'major', {initialValue: this.editFormData.major, rules: [{required: true, message: '请输入专业!'}]}]"
                   placeholder="请输入专业"
           />
         </a-form-item>
@@ -663,11 +658,200 @@
         </a-form-item>
       </a-form>
     </a-drawer>
+    <a-drawer
+            title="筛选条件"
+            placement="right"
+            :closable="false"
+            @close="() => this.queryVisible = false"
+            :visible="queryVisible"
+            width="500"
+    >
+      <a-form formLayout="horizontal">
+        <a-form-item
+                :label-col="formItemLayout.labelCol"
+                :wrapper-col="formItemLayout.wrapperCol"
+                label="年龄"
+        >
+          <a-input-number :min="0" :max="Infinity" v-model="ageLowerBound"
+                          @blur="onChange('ageLowerBound','ageUpperBound')"/>
+          ~
+          <a-input-number :min="0" :max="Infinity" v-model="ageUpperBound"
+                          @blur="onChange('ageLowerBound','ageUpperBound')"/>
+        </a-form-item>
+        <a-form-item
+                :label-col="formItemLayout.labelCol"
+                :wrapper-col="formItemLayout.wrapperCol"
+                label="性别"
+        >
+          <a-select
+                  :allowClear="true"
+                  v-model="gender"
+                  placeholder="请选择性别"
+          >
+            <a-select-option value="男">男</a-select-option>
+            <a-select-option value="女">女</a-select-option>
+          </a-select>
+        </a-form-item>
+        <a-form-item
+                :label-col="formItemLayout.labelCol"
+                :wrapper-col="formItemLayout.wrapperCol"
+                label="政治面貌"
+        >
+          <a-select
+                  :allowClear="true"
+                  v-model="politic"
+                  placeholder="请选择政治面貌"
+          >
+            <a-select-option value="中共党员">中共党员</a-select-option>
+            <a-select-option value="中共预备党员">中共预备党员</a-select-option>
+            <a-select-option value="共青团员">共青团员</a-select-option>
+            <a-select-option value="群众">群众</a-select-option>
+            <a-select-option value="其他">其他</a-select-option>
+          </a-select>
+        </a-form-item>
+        <a-form-item
+                :label-col="formItemLayout.labelCol"
+                :wrapper-col="formItemLayout.wrapperCol"
+                label="民族"
+        >
+          <a-select
+                  :allowClear="true"
+                  v-model="nation"
+                  placeholder="请选择民族"
+          >
+            <a-select-option v-for="item in nationList" :value="item" :key="item">{{item}}</a-select-option>
+          </a-select>
+        </a-form-item>
+        <a-form-item
+                :label-col="formItemLayout.labelCol"
+                :wrapper-col="formItemLayout.wrapperCol"
+                label="岗位"
+        >
+          <a-select
+                  :allowClear="true"
+                  v-model="job"
+                  placeholder="请选择岗位"
+          >
+            <template v-for="option in jobList">
+              <a-select-option :key="option.categoryId">
+                {{option.categoryName}}
+              </a-select-option>
+            </template>
+          </a-select>
+        </a-form-item>
+        <a-form-item
+                :label-col="formItemLayout.labelCol"
+                :wrapper-col="formItemLayout.wrapperCol"
+                label="部门"
+        >
+          <a-select
+                  :allowClear="true"
+                  v-model="department"
+                  placeholder="请选择部门"
+          >
+            <template v-for="option in departmentList">
+              <a-select-option :key="option.categoryId">
+                {{option.categoryName}}
+              </a-select-option>
+            </template>
+          </a-select>
+        </a-form-item>
+        <a-form-item
+                :label-col="formItemLayout.labelCol"
+                :wrapper-col="formItemLayout.wrapperCol"
+                label="人员类别"
+        >
+          <a-select
+                  :allowClear="true"
+                  v-model="staffClass"
+                  placeholder="请选择人员类别"
+          >
+            <template v-for="option in staffClassList">
+              <a-select-option :key="option.categoryId">
+                {{option.categoryName}}
+              </a-select-option>
+            </template>
+          </a-select>
+        </a-form-item>
+        <a-form-item
+                :label-col="formItemLayout.labelCol"
+                :wrapper-col="formItemLayout.wrapperCol"
+                label="职级"
+        >
+          <a-select
+                  :allowClear="true"
+                  v-model="rank"
+                  placeholder="请选择职级"
+          >
+            <template v-for="option in rankList">
+              <a-select-option :key="option.categoryId">
+                {{option.categoryName}}
+              </a-select-option>
+            </template>
+          </a-select>
+        </a-form-item>
+        <a-form-item
+                :label-col="formItemLayout.labelCol"
+                :wrapper-col="formItemLayout.wrapperCol"
+                label="学历"
+        >
+          <a-select
+                  :allowClear="true"
+                  v-model="degree"
+                  placeholder="学历"
+          >
+            <a-select-option value="专科">专科</a-select-option>
+            <a-select-option value="本科">本科</a-select-option>
+            <a-select-option value="硕士研究生">硕士研究生</a-select-option>
+            <a-select-option value="博士研究生">博士研究生</a-select-option>
+          </a-select>
+        </a-form-item>
+        <a-form-item
+                :label-col="formItemLayout.labelCol"
+                :wrapper-col="formItemLayout.wrapperCol"
+                label="职务"
+        >
+          <a-select
+                  :allowClear="true"
+                  v-model="duty"
+                  placeholder="请选择职级"
+          >
+            <template v-for="option in dutyList">
+              <a-select-option :key="option.categoryId">
+                {{option.categoryName}}
+              </a-select-option>
+            </template>
+          </a-select>
+        </a-form-item>
+        <a-form-item
+                :label-col="formItemLayout.labelCol"
+                :wrapper-col="formItemLayout.wrapperCol"
+                label="参加工作日期"
+        >
+          <a-range-picker style="width: 220px;" v-model="participationDate"/>
+        </a-form-item>
+        <a-form-item
+                :label-col="formItemLayout.labelCol"
+                :wrapper-col="formItemLayout.wrapperCol"
+                label="进入系统日期"
+        >
+          <a-range-picker style="width: 220px;" v-model="createdAtDate"/>
+        </a-form-item>
+        <a-form-item :label-col="formTailLayout.labelCol" :wrapper-col="formTailLayout.wrapperCol">
+          <a-button type="primary" @click="handleQuery(false)">
+            查找
+          </a-button>
+          <a-button style="margin-left: 16px" @click="handleReset">
+            重置
+          </a-button>
+        </a-form-item>
+      </a-form>
+    </a-drawer>
   </div>
 </template>
 
 <script>
-  import {mapActions} from 'vuex'
+  import {mapState, mapActions} from 'vuex'
   import HeaderPage from "../HeaderPage/HeaderPage";
   import moment from "moment";
 
@@ -683,6 +867,15 @@
     name: "StaffEntryPage",
     components: {
       HeaderPage
+    },
+    computed: {
+      ...mapState({
+        departmentList: state => state.categoryOperation.departmentList,
+        staffClassList: state => state.categoryOperation.classificationList,
+        rankList: state => state.categoryOperation.rankList,
+        dutyList: state => state.categoryOperation.dutyList,
+        jobList: state => state.categoryOperation.jobList,
+      })
     },
     data() {
       return {
@@ -828,11 +1021,6 @@
             scopedSlots: {customRender: 'operation'},
           }
         ],
-        departmentCategoryList: [], // 部门列表
-        staffClassCategoryList: [], // 人员类别列表
-        rankCategoryList: [], // 职级列表
-        dutyCategoryList: [], // 职务列表
-        jobCategoryList: [], // 岗位列表
         nationList: [
           "汉族",
           "壮族",
@@ -891,41 +1079,25 @@
           "赫哲族",
           "珞巴族",
           "其他"
-        ]
+        ],
+        queryVisible: false,
+        ageLowerBound: null,
+        ageUpperBound: null,
+        gender: undefined,
+        politic: undefined,
+        nation: undefined,
+        job: undefined,
+        department: undefined,
+        staffClass: undefined,
+        rank: undefined,
+        degree: undefined,
+        duty: undefined,
+        participationDate: [],
+        createdAtDate: [],
       }
     },
     mounted() {
       this.updateTableData();
-      this.getCategoryListByNameLike({
-        categoryType: 7,
-        categoryName: '',
-      }).then(res => {
-        this.departmentCategoryList = res && res.data.data;
-      });
-      this.getCategoryListByNameLike({
-        categoryType: 8,
-        categoryName: '',
-      }).then(res => {
-        this.staffClassCategoryList = res && res.data.data;
-      });
-      this.getCategoryListByNameLike({
-        categoryType: 9,
-        categoryName: '',
-      }).then(res => {
-        this.rankCategoryList = res && res.data.data;
-      });
-      this.getCategoryListByNameLike({
-        categoryType: 10,
-        categoryName: '',
-      }).then(res => {
-        this.dutyCategoryList = res && res.data.data;
-      });
-      this.getCategoryListByNameLike({
-        categoryType: 11,
-        categoryName: '',
-      }).then(res => {
-        this.jobCategoryList = res && res.data.data;
-      });
     },
     methods: {
       ...mapActions({
@@ -933,7 +1105,6 @@
         getStaffListByNameLikeTable: 'staffOperation/getStaffListByNameLikeTable',
         deleteStaff: 'staffOperation/deleteStaff',
         verifyStaff: 'staffOperation/verifyStaff',
-        getCategoryListByNameLike: 'categoryOperation/getCategoryListByNameLike',
       }),
       handleTableChange(pagination) {
         this.tablePaginationProps.current = pagination.current;
@@ -942,8 +1113,31 @@
       },
       updateTableData() {
         this.spinning = true;
+        let participation, createdAt;
+        if (this.participationDate.length) {
+          participation = [moment(this.participationDate[0]).format('YYYY-MM-DD'), moment(this.participationDate[1]).format('YYYY-MM-DD')]
+        } else {
+          participation = ['', '']
+        }
+        if (this.createdAtDate.length) {
+          createdAt = [moment(this.createdAtDate[0]).format('YYYY-MM-DD'), moment(this.createdAtDate[1]).format('YYYY-MM-DD')]
+        } else {
+          createdAt = ['', '']
+        }
         const params = {
           staffName: this.staffName,
+          participation: participation,
+          createdAt: createdAt,
+          age: [this.ageLowerBound ? String(this.ageLowerBound) : '', this.ageUpperBound ? String(this.ageUpperBound) : ''],
+          gender: this.gender,
+          politic: this.politic,
+          nation: this.nation,
+          jobId: this.job,
+          departmentId: this.department,
+          staffClassId: this.staffClass,
+          rankId: this.rank,
+          degree: this.degree,
+          dutyId: this.duty,
           pageNum: this.tablePaginationProps.current,
           pageLimit: this.tablePaginationProps.pageSize
         };
@@ -955,7 +1149,7 @@
                 key: index,
                 id: item.id,
                 age: item.age,
-                createdAt: item.createdAt && moment(item.createdAt).format('YYYY-MM-DD HH:mm:ss'),
+                createdAt: item.createdAt && moment(item.createdAt).format('YYYY-MM-DD'),
                 staffCode: item.staffCode,
                 staffName: item.staffName,
                 staffClass: item.staffClass && item.staffClass.categoryName,
@@ -963,7 +1157,7 @@
                 degree: item.degree ? item.degree : undefined,
                 department: item.department && item.department.categoryName,
                 departmentId: item.department ? item.department.categoryId : undefined,
-                dob: item.dob && moment(item.dob).format('YYYY-MM-DD HH:mm:ss'),
+                dob: item.dob && moment(item.dob).format('YYYY-MM-DD'),
                 duty: item.duty && item.duty.categoryName,
                 dutyId: item.duty ? item.duty.categoryId : undefined,
                 firstEducation: item.firstEducation,
@@ -973,7 +1167,7 @@
                 jobId: item.job ? item.job.categoryId : undefined,
                 major: item.major,
                 nation: item.nation ? item.nation : undefined,
-                participation: item.participation && moment(item.participation).format('YYYY-MM-DD HH:mm:ss'),
+                participation: item.participation && moment(item.participation).format('YYYY-MM-DD'),
                 proQualification: item.proQualification,
                 rank: item.rank && item.rank.categoryName,
                 rankId: item.rank ? item.rank.categoryId : undefined,
@@ -992,7 +1186,10 @@
         });
       },
       // 处理查询
-      handleQuery() {
+      handleQuery(isReset) {
+        if (isReset) {
+          this.handleReset();
+        }
         this.tablePaginationProps.current = 1;
         this.updateTableData();
       },
@@ -1140,7 +1337,31 @@
         }).catch(error => {
           this.$message.error(error);
         });
-      }
+      },
+      onChange(lowerBound, upperBound) {
+        if (this[lowerBound] && this[upperBound] && this[upperBound] < this[lowerBound]) {
+          let temp = this[lowerBound];
+          this[lowerBound] = this[upperBound];
+          this[upperBound] = temp;
+        }
+      },
+      handleReset() {
+        Object.assign(this, {
+          ageLowerBound: null,
+          ageUpperBound: null,
+          gender: undefined,
+          politic: undefined,
+          nation: undefined,
+          job: undefined,
+          department: undefined,
+          staffClass: undefined,
+          rank: undefined,
+          degree: undefined,
+          duty: undefined,
+          participationDate: [],
+          createdAtDate: [],
+        })
+      },
     }
   }
 </script>

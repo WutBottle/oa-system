@@ -94,8 +94,8 @@
     <a-row class="cell bb b18">
       设 计 项 目 基 本 情 况 表
     </a-row>
-    <a-row class="bb" style="display: flex;display: -ms-flexbox;align-items: stretch;">
-      <a-col class="b14 br" :span="2" style="display: flex;display: -ms-flexbox;align-items: center;justify-content: center">
+    <a-row class="bb" style="display: flex;align-items: stretch;">
+      <a-col class="b14 br" :span="2" style="display: flex;align-items: center;justify-content: center">
         概况
       </a-col>
       <a-col :span="22">
@@ -112,8 +112,8 @@
       </a-col>
     </a-row>
     <a-divider/>
-    <a-row class="bb" style="display: flex;display: -ms-flexbox;align-items: stretch;">
-      <a-col class="b14 br bt" :span="2" style="display: flex;display: -ms-flexbox;align-items: center;justify-content: center">
+    <a-row class="bb" style="display: flex;align-items: stretch;">
+      <a-col class="b14 br bt" :span="2" style="display: flex;align-items: center;justify-content: center">
         项目经营
       </a-col>
       <a-col :span="22">
@@ -206,8 +206,8 @@
       </a-col>
     </a-row>
     <a-divider/>
-    <a-row class="bb" style="display: flex;display: -ms-flexbox;align-items: stretch;">
-      <a-col class="b14 br bt" :span="2" style="display: flex;display: -ms-flexbox;align-items: center;justify-content: center">
+    <a-row class="bb" style="display: flex;align-items: stretch;">
+      <a-col class="b14 br bt" :span="2" style="display: flex;align-items: center;justify-content: center">
         项目生产
       </a-col>
       <a-col :span="22">
@@ -256,9 +256,9 @@
         </a-row>
       </a-col>
     </a-row>
-    <a-row class="bb" style="display: flex;display: -ms-flexbox;align-items: stretch;">
+    <a-row class="bb" style="display: flex;align-items: stretch;">
       <a-col class="b14 br bt click-font bgDDEBF7" :span="2"
-             style="display: flex;display: -ms-flexbox;align-items: center;justify-content: center">
+             style="display: flex;align-items: center;justify-content: center">
         内部流转
       </a-col>
       <a-col :span="22">

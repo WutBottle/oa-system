@@ -145,7 +145,7 @@
             >
               <a-list :dataSource="memorandumUndoneData" size="small">
                 <a-list-item slot="renderItem" slot-scope="item, index">
-                  <div style="display: flex;display: -ms-flexbox;align-items: center">
+                  <div style="display: flex;display: -ms-flex;align-items: center">
                     <span style="width: 76px;">
                       <a-tag v-if="item.remain < 0" color="grey">
                         已过期
@@ -187,7 +187,7 @@
             >
               <a-list :dataSource="memorandumDoneData" size="small">
                 <a-list-item slot="renderItem" slot-scope="item, index">
-                  <div style="display: flex;display: -ms-flexbox;align-items: center">
+                  <div style="display: flex;display: -ms-flex;align-items: center">
                     <span style="width: 76px;">
                       <a-tag color="green">
                         {{item.finishDate}}
@@ -267,7 +267,7 @@
           'content',
           {rules: [{required: true, message: '请输入备忘事项!'}]}
         ]"
-                  :autosize="{ minRows: 2, maxRows: 6 }"
+                  :autoSize="{ minRows: 2, maxRows: 6 }"
                   placeholder="请输入备忘事项"
           />
         </a-form-item>
@@ -304,7 +304,7 @@
           'content',
           {initialValue: this.editFormData.content, rules: [{required: true, message: '请输入备忘事项!'}]}
         ]"
-                  :autosize="{ minRows: 2, maxRows: 6 }"
+                  :autoSize="{ minRows: 2, maxRows: 6 }"
                   placeholder="请输入备忘事项"
           />
         </a-form-item>

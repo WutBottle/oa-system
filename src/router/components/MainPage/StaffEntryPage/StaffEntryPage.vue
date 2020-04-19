@@ -1204,21 +1204,21 @@
                 staffCode: values.staffCode,
                 staffName: values.staffName,
                 age: values.age,
-                department: {
+                department: values.department ? {
                   categoryId: values.department
-                },
-                staffClass: {
+                } : null,
+                staffClass: values.staffClass ? {
                   categoryId: values.staffClass
-                },
-                job: {
+                } : null,
+                job: values.job ? {
                   categoryId: values.job,
-                },
-                duty: {
+                } : null,
+                duty: values.duty ? {
                   categoryId: values.duty,
-                },
-                rank: {
+                } : null,
+                rank: values.rank ? {
                   categoryId: values.rank,
-                },
+                } : null,
                 degree: values.degree,
                 proQualification: values.proQualification,
                 techQualification: values.techQualification,
@@ -1273,21 +1273,21 @@
                 staffCode: values.staffCode,
                 staffName: values.staffName,
                 age: values.age,
-                department: {
+                department: values.department ? {
                   categoryId: values.department
-                },
-                staffClass: {
+                } : null,
+                staffClass: values.staffClass ? {
                   categoryId: values.staffClass
-                },
-                job: {
+                } : null,
+                job: values.job ? {
                   categoryId: values.job,
-                },
-                duty: {
+                } : null,
+                duty: values.duty ? {
                   categoryId: values.duty,
-                },
-                rank: {
+                } : null,
+                rank: values.rank ? {
                   categoryId: values.rank,
-                },
+                } : null,
                 degree: values.degree,
                 proQualification: values.proQualification,
                 techQualification: values.techQualification,

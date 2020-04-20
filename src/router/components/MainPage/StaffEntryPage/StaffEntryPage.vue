@@ -97,6 +97,117 @@
         </a-form-item>
         <a-form-item
                 v-bind="formItemLayout"
+                label="学历"
+        >
+          <a-select
+                  v-decorator="[
+          'degree',
+          {rules: [{ required: true, message: '请选择学历！' }]}
+        ]"
+                  placeholder="请选择学历"
+          >
+            <a-select-option value="专科">专科</a-select-option>
+            <a-select-option value="本科">本科</a-select-option>
+            <a-select-option value="硕士研究生">硕士研究生</a-select-option>
+            <a-select-option value="博士研究生">博士研究生</a-select-option>
+          </a-select>
+        </a-form-item>
+        <a-form-item
+                v-bind="formItemLayout"
+                label="民族"
+        >
+          <a-select
+                  v-decorator="[
+          'nation',
+          {rules: [{ required: true, message: '请选择民族！' }]}
+        ]"
+                  placeholder="请选择民族"
+          >
+            <a-select-option v-for="item in nationList" :value="item" :key="item">{{item}}</a-select-option>
+          </a-select>
+        </a-form-item>
+        <a-form-item
+                v-bind="formItemLayout"
+                label="政治面貌"
+        >
+          <a-select
+                  v-decorator="[
+          'politic',
+          {rules: [{ required: true, message: '请选择政治面貌！' }]}
+        ]"
+                  placeholder="请选择政治面貌"
+          >
+            <a-select-option value="中共党员">中共党员</a-select-option>
+            <a-select-option value="中共预备党员">中共预备党员</a-select-option>
+            <a-select-option value="共青团员">共青团员</a-select-option>
+            <a-select-option value="群众">群众</a-select-option>
+            <a-select-option value="其他">其他</a-select-option>
+          </a-select>
+        </a-form-item>
+        <a-form-item
+                v-bind="formItemLayout"
+                label="年龄"
+        >
+          <a-input
+                  v-decorator="[
+          'age',
+          {rules: [{
+            required: true, message: '请输入年龄!'
+          }, {
+                type: 'number',
+                message: '请输入数字',
+                transform:(value)=> {return Number(value)}
+          }]}
+        ]"
+                  placeholder="请输入年龄"
+          />
+        </a-form-item>
+        <a-form-item
+                v-bind="formItemLayout"
+                label="参加工作日期"
+        >
+          <a-date-picker
+                  v-decorator="['participation',{
+                    rules: [{required: true, message: '请选择参加工作日期!'}]
+                  }]"
+                  format="YYYY-MM-DD"
+          />
+        </a-form-item>
+        <a-form-item
+                v-bind="formItemLayout"
+                label="第一学历学校"
+        >
+          <a-input
+                  v-decorator="[
+          'firstEducation', {rules: [{required: true, message: '请输入第一学历学校!'}]}
+          ]"
+                  placeholder="请输入第一学历学校"
+          />
+        </a-form-item>
+        <a-form-item
+                v-bind="formItemLayout"
+                label="第二学历学校"
+        >
+          <a-input
+                  v-decorator="[
+          'secondEducation', {rules: [{required: true, message: '请输入第二学历学校!'}]}
+          ]"
+                  placeholder="请输入第二学历学校"
+          />
+        </a-form-item>
+        <a-form-item
+                v-bind="formItemLayout"
+                label="专业"
+        >
+          <a-input
+                  v-decorator="[
+          'major', {rules: [{required: true, message: '请输入专业!'}]}
+          ]"
+                  placeholder="请输入专业"
+          />
+        </a-form-item>
+        <a-form-item
+                v-bind="formItemLayout"
                 label="部门"
         >
           <a-select
@@ -144,23 +255,6 @@
                 {{option.categoryName}}
               </a-select-option>
             </template>
-          </a-select>
-        </a-form-item>
-        <a-form-item
-                v-bind="formItemLayout"
-                label="学历"
-        >
-          <a-select
-                  v-decorator="[
-          'degree',
-          {rules: [{ required: true, message: '请选择学历！' }]}
-        ]"
-                  placeholder="请选择学历"
-          >
-            <a-select-option value="专科">专科</a-select-option>
-            <a-select-option value="本科">本科</a-select-option>
-            <a-select-option value="硕士研究生">硕士研究生</a-select-option>
-            <a-select-option value="博士研究生">博士研究生</a-select-option>
           </a-select>
         </a-form-item>
         <a-form-item
@@ -229,20 +323,6 @@
         </a-form-item>
         <a-form-item
                 v-bind="formItemLayout"
-                label="民族"
-        >
-          <a-select
-                  v-decorator="[
-          'nation',
-          {rules: [{ required: true, message: '请选择民族！' }]}
-        ]"
-                  placeholder="请选择民族"
-          >
-            <a-select-option v-for="item in nationList" :value="item" :key="item">{{item}}</a-select-option>
-          </a-select>
-        </a-form-item>
-        <a-form-item
-                v-bind="formItemLayout"
                 label="岗位"
         >
           <a-select
@@ -260,92 +340,12 @@
         </a-form-item>
         <a-form-item
                 v-bind="formItemLayout"
-                label="政治面貌"
-        >
-          <a-select
-                  v-decorator="[
-          'politic',
-          {rules: [{ required: true, message: '请选择政治面貌！' }]}
-        ]"
-                  placeholder="请选择政治面貌"
-          >
-            <a-select-option value="中共党员">中共党员</a-select-option>
-            <a-select-option value="中共预备党员">中共预备党员</a-select-option>
-            <a-select-option value="共青团员">共青团员</a-select-option>
-            <a-select-option value="群众">群众</a-select-option>
-            <a-select-option value="其他">其他</a-select-option>
-          </a-select>
-        </a-form-item>
-        <a-form-item
-                v-bind="formItemLayout"
                 label="出生日期"
         >
           <a-date-picker
                   v-decorator="['dob',  {
       }]"
                   format="YYYY-MM-DD"
-          />
-        </a-form-item>
-        <a-form-item
-                v-bind="formItemLayout"
-                label="年龄"
-        >
-          <a-input
-                  v-decorator="[
-          'age',
-          {rules: [{
-            required: true, message: '请输入年龄!'
-          }, {
-                type: 'number',
-                message: '请输入数字',
-                transform:(value)=> {return Number(value)}
-          }]}
-        ]"
-                  placeholder="请输入年龄"
-          />
-        </a-form-item>
-        <a-form-item
-                v-bind="formItemLayout"
-                label="参加工作日期"
-        >
-          <a-date-picker
-                  v-decorator="['participation',{
-                    rules: [{required: true, message: '请选择参加工作日期!'}]
-                  }]"
-                  format="YYYY-MM-DD"
-          />
-        </a-form-item>
-        <a-form-item
-                v-bind="formItemLayout"
-                label="第一学历学校"
-        >
-          <a-input
-                  v-decorator="[
-          'firstEducation', {rules: [{required: true, message: '请输入第一学历学校!'}]}
-          ]"
-                  placeholder="请输入第一学历学校"
-          />
-        </a-form-item>
-        <a-form-item
-                v-bind="formItemLayout"
-                label="第二学历学校"
-        >
-          <a-input
-                  v-decorator="[
-          'secondEducation', {rules: [{required: true, message: '请输入第二学历学校!'}]}
-          ]"
-                  placeholder="请输入第二学历学校"
-          />
-        </a-form-item>
-        <a-form-item
-                v-bind="formItemLayout"
-                label="专业"
-        >
-          <a-input
-                  v-decorator="[
-          'major', {rules: [{required: true, message: '请输入专业!'}]}
-          ]"
-                  placeholder="请输入专业"
           />
         </a-form-item>
       </a-form>
@@ -388,6 +388,113 @@
           }]}
         ]"
                   placeholder="请输入姓名"
+          />
+        </a-form-item>
+        <a-form-item
+                v-bind="formItemLayout"
+                label="学历"
+        >
+          <a-select
+                  v-decorator="[
+          'degree',
+          {initialValue: this.editFormData.degree, rules: [{ required: true, message: '请选择学历！' }]}
+        ]"
+                  placeholder="请选择学历"
+          >
+            <a-select-option value="专科">专科</a-select-option>
+            <a-select-option value="本科">本科</a-select-option>
+            <a-select-option value="硕士研究生">硕士研究生</a-select-option>
+            <a-select-option value="博士研究生">博士研究生</a-select-option>
+          </a-select>
+        </a-form-item>
+        <a-form-item
+                v-bind="formItemLayout"
+                label="民族"
+        >
+          <a-select
+                  v-decorator="[
+          'nation',
+          {initialValue: this.editFormData.nation, rules: [{ required: true, message: '请选择民族！' }]}
+        ]"
+                  placeholder="请选择民族"
+          >
+            <a-select-option v-for="item in nationList" :value="item" :key="item">{{item}}</a-select-option>
+          </a-select>
+        </a-form-item>
+        <a-form-item
+                v-bind="formItemLayout"
+                label="政治面貌"
+        >
+          <a-select
+                  v-decorator="[
+          'politic',
+          {initialValue: this.editFormData.politic, rules: [{ required: true, message: '请选择政治面貌！' }]}
+        ]"
+                  placeholder="请选择政治面貌"
+          >
+            <a-select-option value="中共党员">中共党员</a-select-option>
+            <a-select-option value="中共预备党员">中共预备党员</a-select-option>
+            <a-select-option value="共青团员">共青团员</a-select-option>
+            <a-select-option value="群众">群众</a-select-option>
+            <a-select-option value="其他">其他</a-select-option>
+          </a-select>
+        </a-form-item>
+        <a-form-item
+                v-bind="formItemLayout"
+                label="年龄"
+        >
+          <a-input
+                  v-decorator="[
+          'age',
+          {initialValue: this.editFormData.age, rules: [{
+            required: true, message: '请输入年龄!'
+          }, {
+                type: 'number',
+                message: '请输入数字',
+                transform:(value)=> {return Number(value)}
+          }]}
+        ]"
+                  placeholder="请输入年龄"
+          />
+        </a-form-item>
+        <a-form-item
+                v-bind="formItemLayout"
+                label="参加工作日期"
+        >
+          <a-date-picker
+                  v-decorator="['participation', {initialValue: this.editFormData.participation,
+                  rules: [{required: true, message: '请选择参加工作日期!'}]}]"
+                  format="YYYY-MM-DD"
+          />
+        </a-form-item>
+        <a-form-item
+                v-bind="formItemLayout"
+                label="第一学历学校"
+        >
+          <a-input
+                  v-decorator="[
+          'firstEducation', {initialValue: this.editFormData.firstEducation, rules: [{required: true, message: '请输入第一学历学校!'}]}]"
+                  placeholder="请输入第一学历学校"
+          />
+        </a-form-item>
+        <a-form-item
+                v-bind="formItemLayout"
+                label="第二学历学校"
+        >
+          <a-input
+                  v-decorator="[
+          'secondEducation', {initialValue: this.editFormData.secondEducation, rules: [{required: true, message: '请输入第二学历学校!'}]}]"
+                  placeholder="请输入第二学历学校"
+          />
+        </a-form-item>
+        <a-form-item
+                v-bind="formItemLayout"
+                label="专业"
+        >
+          <a-input
+                  v-decorator="[
+          'major', {initialValue: this.editFormData.major, rules: [{required: true, message: '请输入专业!'}]}]"
+                  placeholder="请输入专业"
           />
         </a-form-item>
         <a-form-item
@@ -442,23 +549,6 @@
                 {{option.categoryName}}
               </a-select-option>
             </template>
-          </a-select>
-        </a-form-item>
-        <a-form-item
-                v-bind="formItemLayout"
-                label="学历"
-        >
-          <a-select
-                  v-decorator="[
-          'degree',
-          {initialValue: this.editFormData.degree, rules: [{ required: true, message: '请选择学历！' }]}
-        ]"
-                  placeholder="请选择学历"
-          >
-            <a-select-option value="专科">专科</a-select-option>
-            <a-select-option value="本科">本科</a-select-option>
-            <a-select-option value="硕士研究生">硕士研究生</a-select-option>
-            <a-select-option value="博士研究生">博士研究生</a-select-option>
           </a-select>
         </a-form-item>
         <a-form-item
@@ -530,20 +620,6 @@
         </a-form-item>
         <a-form-item
                 v-bind="formItemLayout"
-                label="民族"
-        >
-          <a-select
-                  v-decorator="[
-          'nation',
-          {initialValue: this.editFormData.nation, rules: [{ required: true, message: '请选择民族！' }]}
-        ]"
-                  placeholder="请选择民族"
-          >
-            <a-select-option v-for="item in nationList" :value="item" :key="item">{{item}}</a-select-option>
-          </a-select>
-        </a-form-item>
-        <a-form-item
-                v-bind="formItemLayout"
                 label="岗位"
         >
           <a-select
@@ -562,87 +638,11 @@
         </a-form-item>
         <a-form-item
                 v-bind="formItemLayout"
-                label="政治面貌"
-        >
-          <a-select
-                  v-decorator="[
-          'politic',
-          {initialValue: this.editFormData.politic, rules: [{ required: true, message: '请选择政治面貌！' }]}
-        ]"
-                  placeholder="请选择政治面貌"
-          >
-            <a-select-option value="中共党员">中共党员</a-select-option>
-            <a-select-option value="中共预备党员">中共预备党员</a-select-option>
-            <a-select-option value="共青团员">共青团员</a-select-option>
-            <a-select-option value="群众">群众</a-select-option>
-            <a-select-option value="其他">其他</a-select-option>
-          </a-select>
-        </a-form-item>
-        <a-form-item
-                v-bind="formItemLayout"
                 label="出生日期"
         >
           <a-date-picker
                   v-decorator="['dob',  {initialValue: this.editFormData.dob}]"
                   format="YYYY-MM-DD"
-          />
-        </a-form-item>
-        <a-form-item
-                v-bind="formItemLayout"
-                label="年龄"
-        >
-          <a-input
-                  v-decorator="[
-          'age',
-          {initialValue: this.editFormData.age, rules: [{
-            required: true, message: '请输入年龄!'
-          }, {
-                type: 'number',
-                message: '请输入数字',
-                transform:(value)=> {return Number(value)}
-          }]}
-        ]"
-                  placeholder="请输入年龄"
-          />
-        </a-form-item>
-        <a-form-item
-                v-bind="formItemLayout"
-                label="参加工作日期"
-        >
-          <a-date-picker
-                  v-decorator="['participation', {initialValue: this.editFormData.participation,
-                  rules: [{required: true, message: '请选择参加工作日期!'}]}]"
-                  format="YYYY-MM-DD"
-          />
-        </a-form-item>
-        <a-form-item
-                v-bind="formItemLayout"
-                label="第一学历学校"
-        >
-          <a-input
-                  v-decorator="[
-          'firstEducation', {initialValue: this.editFormData.firstEducation, rules: [{required: true, message: '请输入第一学历学校!'}]}]"
-                  placeholder="请输入第一学历学校"
-          />
-        </a-form-item>
-        <a-form-item
-                v-bind="formItemLayout"
-                label="第二学历学校"
-        >
-          <a-input
-                  v-decorator="[
-          'secondEducation', {initialValue: this.editFormData.secondEducation, rules: [{required: true, message: '请输入第二学历学校!'}]}]"
-                  placeholder="请输入第二学历学校"
-          />
-        </a-form-item>
-        <a-form-item
-                v-bind="formItemLayout"
-                label="专业"
-        >
-          <a-input
-                  v-decorator="[
-          'major', {initialValue: this.editFormData.major, rules: [{required: true, message: '请输入专业!'}]}]"
-                  placeholder="请输入专业"
           />
         </a-form-item>
         <a-form-item

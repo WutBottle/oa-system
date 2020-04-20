@@ -45,96 +45,153 @@ export const constantRouterMap = [
     path: '/main',
     name: 'MainPage',
     component: MainPage,
+    meta: {
+      requireAuth: true,  // 添加该字段，表示进入这个路由是需要登录的
+    },
     children: [
       {
         path: 'workplace',
         name: 'workplace',
         component: WorkPlace,
+        meta: {
+          requireAuth: true,  // 添加该字段，表示进入这个路由是需要登录的
+        },
       },
       {
         path: 'project',
         name: 'project',
         component: ProjectPage,
+        meta: {
+          requireAuth: true,  // 添加该字段，表示进入这个路由是需要登录的
+        },
       },
       {
         path: 'receipt',
         name: 'receipt',
         component: ReceiptPage,
+        meta: {
+          requireAuth: true,  // 添加该字段，表示进入这个路由是需要登录的
+        },
       },
       {
         path: 'analysis',
         name: 'analysis',
         component: AnalysisPage,
+        meta: {
+          requireAuth: true,  // 添加该字段，表示进入这个路由是需要登录的
+        },
       },
       {
         path: 'parameter',
         name: 'parameter',
         component: ParameterPage,
+        meta: {
+          requireAuth: true,  // 添加该字段，表示进入这个路由是需要登录的
+        },
       },
       {
         path: 'users',
         name: 'users',
         component: UsersPage,
+        meta: {
+          requireAuth: true,  // 添加该字段，表示进入这个路由是需要登录的
+        },
       },
       {
         path: 'contractmanager',
         name: 'contractManager',
         component: ContractManager,
+        meta: {
+          requireAuth: true,  // 添加该字段，表示进入这个路由是需要登录的
+        },
       },
       {
         path: 'invoice',
         name: 'invoice',
         component: InvoicePage,
+        meta: {
+          requireAuth: true,  // 添加该字段，表示进入这个路由是需要登录的
+        },
       },
       {
         path: 'cash',
         name: 'cash',
         component: CashPage,
+        meta: {
+          requireAuth: true,  // 添加该字段，表示进入这个路由是需要登录的
+        },
       },
       {
         path: 'outcontractlist',
         name: 'outcontractlist',
         component: OutContractListPage,
+        meta: {
+          requireAuth: true,  // 添加该字段，表示进入这个路由是需要登录的
+        },
       },
       {
         path: 'outcontractpaid',
         name: 'outcontractpaid',
         component: OutContractPaidPage,
+        meta: {
+          requireAuth: true,  // 添加该字段，表示进入这个路由是需要登录的
+        },
       },
       {
         path: 'outcontractreceipt',
         name: 'outcontractreceipt',
         component: OutContractReceipt,
+        meta: {
+          requireAuth: true,  // 添加该字段，表示进入这个路由是需要登录的
+        },
       },
       {
         path: 'staffentry',
         name: 'staffentry',
         component: StaffEntryPage,
+        meta: {
+          requireAuth: true,  // 添加该字段，表示进入这个路由是需要登录的
+        },
       },
       {
         path: 'staff',
         name: 'staff',
         component: StaffPage,
+        meta: {
+          requireAuth: true,  // 添加该字段，表示进入这个路由是需要登录的
+        },
       },
       {
         path: 'salaryentry',
         name: 'salaryentry',
         component: SalaryEntryPage,
+        meta: {
+          requireAuth: true,  // 添加该字段，表示进入这个路由是需要登录的
+        },
       },
       {
         path: 'projectexport',
         name: 'projectexport',
         component: ProjectExportPage,
+        meta: {
+          requireAuth: true,  // 添加该字段，表示进入这个路由是需要登录的
+        },
       },
       {
         path: 'subentry',
         name: 'subentry',
         component: SubEntryPage,
+        meta: {
+          requireAuth: true,  // 添加该字段，表示进入这个路由是需要登录的
+        },
       },
       {
         path: 'approvalmanagement',
         name: 'approvalmanagement',
         component: ApprovalManagement,
+        meta: {
+          requireAuth: true,  // 添加该字段，表示进入这个路由是需要登录的
+        },
       },
     ]
   }

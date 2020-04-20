@@ -30,7 +30,7 @@
         <a-popover slot="extra" title="添加分包类型" trigger="click" v-model="addOutContractCategoryVisible">
           <template slot="content">
             <div style="margin-bottom: 8px">
-              <a-input v-model="newOutContractCategory" size="small" placeholder="请输入分包合同类型"></a-input>
+              <a-textarea autoSize v-model="newOutContractCategory" size="small" placeholder="请输入分包合同类型"></a-textarea>
             </div>
             <a-button type="primary" size="small" @click="handleAddCategory(1)">添加</a-button>
           </template>
@@ -39,18 +39,23 @@
         <a-card-grid v-for="item in outContractCategoryList" :key="item.categoryId"
                      style="width:25%;height: 80px;text-align: left;">
           <a-row :gutter="2">
-            <a-col span="16">
+            <a-col span="18">
               {{item.categoryName}}
             </a-col>
-            <a-col span="6" style="text-align: right">
-              <a-popconfirm
-                      @confirm="handleDeleteCategory(item.categoryId, 1)"
-                      title="确定删除？"
-                      okText="确定"
-                      cancelText="取消">
-                <a-icon slot="icon" type="question-circle-o" style="color: red"/>
-                <a>删除</a>
-              </a-popconfirm>
+            <a-col span="5" style="text-align: right">
+              <a-row>
+                <a @click="handleVerify(item, 1)">修改</a>
+              </a-row>
+              <a-row>
+                <a-popconfirm
+                        @confirm="handleDeleteCategory(item.categoryId, 1)"
+                        title="确定删除？"
+                        okText="确定"
+                        cancelText="取消">
+                  <a-icon slot="icon" type="question-circle-o" style="color: red"/>
+                  <a style="color: red">删除</a>
+                </a-popconfirm>
+              </a-row>
             </a-col>
           </a-row>
         </a-card-grid>
@@ -59,7 +64,7 @@
         <a-popover slot="extra" title="添加分包类型" trigger="click" v-model="addOutProjectCategoryVisible">
           <template slot="content">
             <div style="margin-bottom: 8px">
-              <a-input v-model="newOutProjectCategory" size="small" placeholder="请输入分包合同类型"></a-input>
+              <a-textarea autoSize v-model="newOutProjectCategory" size="small" placeholder="请输入分包合同类型"></a-textarea>
             </div>
             <a-button type="primary" size="small" @click="handleAddCategory(2)">添加</a-button>
           </template>
@@ -68,27 +73,32 @@
         <a-card-grid v-for="item in outProjectCategoryList" :key="item.categoryId"
                      style="width:25%;height: 100px;text-align: left;">
           <a-row :gutter="2">
-            <a-col span="16">
+            <a-col span="18">
               {{item.categoryName}}
             </a-col>
-            <a-col span="6" style="text-align: right">
-              <a-popconfirm
-                      @confirm="handleDeleteCategory(item.categoryId, 2)"
-                      title="确定删除？"
-                      okText="确定"
-                      cancelText="取消">
-                <a-icon slot="icon" type="question-circle-o" style="color: red"/>
-                <a>删除</a>
-              </a-popconfirm>
+            <a-col span="5" style="text-align: right">
+              <a-row>
+                <a @click="handleVerify(item, 2)">修改</a>
+              </a-row>
+              <a-row>
+                <a-popconfirm
+                        @confirm="handleDeleteCategory(item.categoryId, 2)"
+                        title="确定删除？"
+                        okText="确定"
+                        cancelText="取消">
+                  <a-icon slot="icon" type="question-circle-o" style="color: red"/>
+                  <a style="color: red">删除</a>
+                </a-popconfirm>
+              </a-row>
             </a-col>
           </a-row>
         </a-card-grid>
       </a-card>
       <a-card v-show="currentMode === '项目类型'" title="项目类型" style="margin-bottom: 12px">
-        <a-popover slot="extra" title="添加分包类型" trigger="click" v-model="addProjectCategoryVisible">
+        <a-popover slot="extra" title="添加项目类型" trigger="click" v-model="addProjectCategoryVisible">
           <template slot="content">
             <div style="margin-bottom: 8px">
-              <a-input v-model="newProjectCategory" size="small" placeholder="请输入分包合同类型"></a-input>
+              <a-textarea autoSize v-model="newProjectCategory" size="small" placeholder="请输入项目类型"></a-textarea>
             </div>
             <a-button type="primary" size="small" @click="handleAddCategory(3)">添加</a-button>
           </template>
@@ -97,18 +107,23 @@
         <a-card-grid v-for="item in projectCategoryList" :key="item.categoryId"
                      style="width:25%;height: 100px;text-align: left;">
           <a-row :gutter="2">
-            <a-col span="16">
+            <a-col span="18">
               {{item.categoryName}}
             </a-col>
-            <a-col span="6" style="text-align: right">
-              <a-popconfirm
-                      @confirm="handleDeleteCategory(item.categoryId, 3)"
-                      title="确定删除？"
-                      okText="确定"
-                      cancelText="取消">
-                <a-icon slot="icon" type="question-circle-o" style="color: red"/>
-                <a>删除</a>
-              </a-popconfirm>
+            <a-col span="5" style="text-align: right">
+              <a-row>
+                <a @click="handleVerify(item, 3)">修改</a>
+              </a-row>
+              <a-row>
+                <a-popconfirm
+                        @confirm="handleDeleteCategory(item.categoryId, 3)"
+                        title="确定删除？"
+                        okText="确定"
+                        cancelText="取消">
+                  <a-icon slot="icon" type="question-circle-o" style="color: red"/>
+                  <a style="color: red">删除</a>
+                </a-popconfirm>
+              </a-row>
             </a-col>
           </a-row>
         </a-card-grid>
@@ -117,7 +132,7 @@
         <a-popover slot="extra" title="添加分项类别" trigger="click" v-model="addSubCategoryVisible">
           <template slot="content">
             <div style="margin-bottom: 8px">
-              <a-input v-model="newSubCategory" size="small" placeholder="请输入分项类别"></a-input>
+              <a-textarea autoSize v-model="newSubCategory" size="small" placeholder="请输入分项类别"></a-textarea>
             </div>
             <a-button type="primary" size="small" @click="handleAddCategory(4)">添加</a-button>
           </template>
@@ -126,18 +141,23 @@
         <a-card-grid v-for="item in subCategoryList" :key="item.categoryId"
                      style="width:25%;height: 100px;text-align: left;">
           <a-row :gutter="2">
-            <a-col span="16">
+            <a-col span="18">
               {{item.categoryName}}
             </a-col>
-            <a-col span="6" style="text-align: right">
-              <a-popconfirm
-                      @confirm="handleDeleteCategory(item.categoryId, 4)"
-                      title="确定删除？"
-                      okText="确定"
-                      cancelText="取消">
-                <a-icon slot="icon" type="question-circle-o" style="color: red"/>
-                <a>删除</a>
-              </a-popconfirm>
+            <a-col span="5" style="text-align: right">
+              <a-row>
+                <a @click="handleVerify(item, 4)">修改</a>
+              </a-row>
+              <a-row>
+                <a-popconfirm
+                        @confirm="handleDeleteCategory(item.categoryId, 4)"
+                        title="确定删除？"
+                        okText="确定"
+                        cancelText="取消">
+                  <a-icon slot="icon" type="question-circle-o" style="color: red"/>
+                  <a style="color: red">删除</a>
+                </a-popconfirm>
+              </a-row>
             </a-col>
           </a-row>
         </a-card-grid>
@@ -146,7 +166,7 @@
       <a-popover slot="extra" title="添加组织方式" trigger="click" v-model="addOrganizationVisible">
         <template slot="content">
           <div style="margin-bottom: 8px">
-            <a-input v-model="newOrganization" size="small" placeholder="请输入组织方式"></a-input>
+            <a-textarea autoSize v-model="newOrganization" size="small" placeholder="请输入组织方式"></a-textarea>
           </div>
           <a-button type="primary" size="small" @click="handleAddCategory(5)">添加</a-button>
         </template>
@@ -155,17 +175,20 @@
       <a-card-grid v-for="item in organizationList" :key="item.categoryId"
                    style="width:25%;height: 100px;text-align: left;">
         <a-row :gutter="2">
-          <a-col span="16">
+          <a-col span="18">
             {{item.categoryName}}
           </a-col>
-          <a-col span="6" style="text-align: right">
+          <a-col span="5" style="text-align: right">
+            <a-row>
+              <a @click="handleVerify(item, 5)">修改</a>
+            </a-row>
             <a-popconfirm
                     @confirm="handleDeleteCategory(item.categoryId, 5)"
                     title="确定删除？"
                     okText="确定"
                     cancelText="取消">
               <a-icon slot="icon" type="question-circle-o" style="color: red"/>
-              <a>删除</a>
+              <a style="color: red">删除</a>
             </a-popconfirm>
           </a-col>
         </a-row>
@@ -175,7 +198,7 @@
         <a-popover slot="extra" title="添加生产阶段" trigger="click" v-model="addProductionStageVisible">
           <template slot="content">
             <div style="margin-bottom: 8px">
-              <a-input v-model="productionStage" size="small" placeholder="请输入生产阶段"></a-input>
+              <a-textarea autoSize v-model="productionStage" size="small" placeholder="请输入生产阶段"></a-textarea>
             </div>
             <a-button type="primary" size="small" @click="handleAddCategory(6)">添加</a-button>
           </template>
@@ -184,18 +207,24 @@
         <a-card-grid v-for="item in productionStageList" :key="item.categoryId"
                      style="width:25%;height: 100px;text-align: left;">
           <a-row :gutter="2">
-            <a-col span="16">
+            <a-col span="18">
               {{item.categoryName}}
             </a-col>
-            <a-col span="6" style="text-align: right">
-              <a-popconfirm
-                      @confirm="handleDeleteCategory(item.categoryId, 6)"
-                      title="确定删除？"
-                      okText="确定"
-                      cancelText="取消">
-                <a-icon slot="icon" type="question-circle-o" style="color: red"/>
-                <a>删除</a>
-              </a-popconfirm>
+            <a-col span="5" style="text-align: right">
+              <a-row>
+                <a @click="handleVerify(item, 6)">修改</a>
+              </a-row>
+              <a-row>
+                <a-popconfirm
+                        @confirm="handleDeleteCategory(item.categoryId, 6)"
+                        title="确定删除？"
+                        okText="确定"
+                        cancelText="取消">
+                  <a-icon slot="icon" type="question-circle-o" style="color: red"/>
+                  <a style="color: red">删除</a>
+                </a-popconfirm>
+              </a-row>
+
             </a-col>
           </a-row>
         </a-card-grid>
@@ -204,7 +233,7 @@
         <a-popover slot="extra" title="添加部门" trigger="click" v-model="addDepartmentVisible">
           <template slot="content">
             <div style="margin-bottom: 8px">
-              <a-input v-model="department" size="small" placeholder="请输入部门"></a-input>
+              <a-textarea autoSize v-model="department" size="small" placeholder="请输入部门"></a-textarea>
             </div>
             <a-button type="primary" size="small" @click="handleAddCategory(7)">添加</a-button>
           </template>
@@ -213,18 +242,23 @@
         <a-card-grid v-for="item in departmentList" :key="item.categoryId"
                      style="width:25%;height: 100px;text-align: left;">
           <a-row :gutter="2">
-            <a-col span="16">
+            <a-col span="18">
               {{item.categoryName}}
             </a-col>
-            <a-col span="6" style="text-align: right">
-              <a-popconfirm
-                      @confirm="handleDeleteCategory(item.categoryId, 7)"
-                      title="确定删除？"
-                      okText="确定"
-                      cancelText="取消">
-                <a-icon slot="icon" type="question-circle-o" style="color: red"/>
-                <a>删除</a>
-              </a-popconfirm>
+            <a-col span="5" style="text-align: right">
+              <a-row>
+                <a @click="handleVerify(item, 7)">修改</a>
+              </a-row>
+              <a-row>
+                <a-popconfirm
+                        @confirm="handleDeleteCategory(item.categoryId, 7)"
+                        title="确定删除？"
+                        okText="确定"
+                        cancelText="取消">
+                  <a-icon slot="icon" type="question-circle-o" style="color: red"/>
+                  <a style="color: red">删除</a>
+                </a-popconfirm>
+              </a-row>
             </a-col>
           </a-row>
         </a-card-grid>
@@ -233,7 +267,7 @@
         <a-popover slot="extra" title="添加人员类别" trigger="click" v-model="addClassificationVisible">
           <template slot="content">
             <div style="margin-bottom: 8px">
-              <a-input v-model="classification" size="small" placeholder="请输入人员类别"></a-input>
+              <a-textarea autoSize v-model="classification" size="small" placeholder="请输入人员类别"></a-textarea>
             </div>
             <a-button type="primary" size="small" @click="handleAddCategory(8)">添加</a-button>
           </template>
@@ -242,17 +276,20 @@
         <a-card-grid v-for="item in classificationList" :key="item.categoryId"
                      style="width:25%;height: 100px;text-align: left;">
           <a-row :gutter="2">
-            <a-col span="16">
+            <a-col span="18">
               {{item.categoryName}}
             </a-col>
-            <a-col span="6" style="text-align: right">
+            <a-col span="5" style="text-align: right">
+              <a-row>
+                <a @click="handleVerify(item, 8)">修改</a>
+              </a-row>
               <a-popconfirm
                       @confirm="handleDeleteCategory(item.categoryId, 8)"
                       title="确定删除？"
                       okText="确定"
                       cancelText="取消">
                 <a-icon slot="icon" type="question-circle-o" style="color: red"/>
-                <a>删除</a>
+                <a style="color: red">删除</a>
               </a-popconfirm>
             </a-col>
           </a-row>
@@ -262,7 +299,7 @@
         <a-popover slot="extra" title="添加岗位" trigger="click" v-model="addJobVisible">
           <template slot="content">
             <div style="margin-bottom: 8px">
-              <a-input v-model="job" size="small" placeholder="请输入岗位"></a-input>
+              <a-textarea autoSize v-model="job" size="small" placeholder="请输入岗位"></a-textarea>
             </div>
             <a-button type="primary" size="small" @click="handleAddCategory(11)">添加</a-button>
           </template>
@@ -271,17 +308,20 @@
         <a-card-grid v-for="item in jobList" :key="item.categoryId"
                      style="width:25%;height: 100px;text-align: left;">
           <a-row :gutter="2">
-            <a-col span="16">
+            <a-col span="18">
               {{item.categoryName}}
             </a-col>
-            <a-col span="6" style="text-align: right">
+            <a-col span="5" style="text-align: right">
+              <a-row>
+                <a @click="handleVerify(item, 11)">修改</a>
+              </a-row>
               <a-popconfirm
                       @confirm="handleDeleteCategory(item.categoryId, 11)"
                       title="确定删除？"
                       okText="确定"
                       cancelText="取消">
                 <a-icon slot="icon" type="question-circle-o" style="color: red"/>
-                <a>删除</a>
+                <a style="color: red">删除</a>
               </a-popconfirm>
             </a-col>
           </a-row>
@@ -291,7 +331,7 @@
         <a-popover slot="extra" title="添加职务" trigger="click" v-model="addDutyVisible">
           <template slot="content">
             <div style="margin-bottom: 8px">
-              <a-input v-model="duty" size="small" placeholder="请输入职务"></a-input>
+              <a-textarea autoSize v-model="duty" size="small" placeholder="请输入职务"></a-textarea>
             </div>
             <a-button type="primary" size="small" @click="handleAddCategory(10)">添加</a-button>
           </template>
@@ -300,17 +340,20 @@
         <a-card-grid v-for="item in dutyList" :key="item.categoryId"
                      style="width:25%;height: 100px;text-align: left;">
           <a-row :gutter="2">
-            <a-col span="16">
+            <a-col span="18">
               {{item.categoryName}}
             </a-col>
-            <a-col span="6" style="text-align: right">
+            <a-col span="5" style="text-align: right">
+              <a-row>
+                <a @click="handleVerify(item, 10)">修改</a>
+              </a-row>
               <a-popconfirm
                       @confirm="handleDeleteCategory(item.categoryId, 10)"
                       title="确定删除？"
                       okText="确定"
                       cancelText="取消">
                 <a-icon slot="icon" type="question-circle-o" style="color: red"/>
-                <a>删除</a>
+                <a style="color: red">删除</a>
               </a-popconfirm>
             </a-col>
           </a-row>
@@ -320,7 +363,7 @@
         <a-popover slot="extra" title="添加职级" trigger="click" v-model="addRankVisible">
           <template slot="content">
             <div style="margin-bottom: 8px">
-              <a-input v-model="rank" size="small" placeholder="请输入职级"></a-input>
+              <a-textarea autoSize v-model="rank" size="small" placeholder="请输入职级"></a-textarea>
             </div>
             <a-button type="primary" size="small" @click="handleAddCategory(9)">添加</a-button>
           </template>
@@ -333,19 +376,27 @@
               {{item.categoryName}}
             </a-col>
             <a-col span="6" style="text-align: right">
-              <a-popconfirm
-                      @confirm="handleDeleteCategory(item.categoryId, 9)"
-                      title="确定删除？"
-                      okText="确定"
-                      cancelText="取消">
-                <a-icon slot="icon" type="question-circle-o" style="color: red"/>
-                <a>删除</a>
-              </a-popconfirm>
+              <a-row>
+                <a @click="handleVerify(item, 9)">修改</a>
+              </a-row>
+              <a-row>
+                <a-popconfirm
+                        @confirm="handleDeleteCategory(item.categoryId, 9)"
+                        title="确定删除？"
+                        okText="确定"
+                        cancelText="取消">
+                  <a-icon slot="icon" type="question-circle-o" style="color: red"/>
+                  <a style="color: red">删除</a>
+                </a-popconfirm>
+              </a-row>
             </a-col>
           </a-row>
         </a-card-grid>
       </a-card>
     </div>
+    <a-modal title="修改参数" v-model="verifyVisible" @ok="handleVerifySubmit">
+      <a-textarea autoSize v-model="currentVerifyName" size="small" placeholder="请输入修改参数"></a-textarea>
+    </a-modal>
   </div>
 </template>
 
@@ -384,6 +435,10 @@
         duty: '',
         addJobVisible: false,
         job: '',
+        verifyVisible: false,
+        currentVerifyId: '',
+        currentVerifyType: '',
+        currentVerifyName: '',
       }
     },
     computed: {
@@ -406,6 +461,7 @@
         getCategoryList: 'categoryOperation/getCategoryList',
         deleteCategory: 'categoryOperation/deleteCategory',
         addCategory: 'categoryOperation/addCategory',
+        verifyCategory: 'categoryOperation/verifyCategory'
       }),
       handleUpdateCategory(type) {
         this.getCategoryList({
@@ -526,6 +582,27 @@
       },
       handleChange(value) {
         this.currentMode = value;
+      },
+      handleVerify(data, type){
+        this.verifyVisible = true;
+        this.currentVerifyName = data.categoryName;
+        this.currentVerifyId = data.categoryId;
+        this.currentVerifyType = type;
+      },
+      handleVerifySubmit() {
+        this.verifyCategory({
+          categoryName: this.currentVerifyName,
+          categoryId: this.currentVerifyId,
+          categoryType: this.currentVerifyType,
+        }).then(res => {
+          if (res && res.data.meta.success){
+            this.verifyVisible = false;
+            this.$message.success('修改成功');
+            this.handleUpdateCategory(this.currentVerifyType);
+          }else {
+            this.$message.error('服务器错误')
+          }
+        })
       }
     }
   }

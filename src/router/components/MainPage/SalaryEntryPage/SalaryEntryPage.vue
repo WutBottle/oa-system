@@ -311,7 +311,7 @@
         addSalary: 'salaryOperation/addSalary',
         deleteSalary: 'salaryOperation/deleteSalary',
         verifySalary: 'salaryOperation/verifySalary',
-        getStaffListByNameLike: 'staffOperation/getStaffListByNameLike',
+        getStaffNamesByNameLike: 'staffOperation/getStaffNamesByNameLike',
       }),
       updateTableData() {
         this.tableSpinning = true;
@@ -445,7 +445,7 @@
           pageLimit: 10,
         };
         this.fetching = true;
-        this.getStaffListByNameLike(params).then((res) => {
+        this.getStaffNamesByNameLike(params).then((res) => {
           this.fetching = false;
         });
       }

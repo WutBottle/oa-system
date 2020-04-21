@@ -98,6 +98,17 @@ const actions = {
       });
     });
   },
+  getStaffNamesByNameLike({commit}, params) {
+    return new Promise((resolve, reject) => {
+      api.staffController.getStaffNamesByNameLike(params).then(res => {
+        res.data.data && commit('setStaffData', res.data.data);
+        resolve(res);
+      }).catch(error => {
+        console.log(error, '获取职员列表失败');
+        reject(error);
+      });
+    });
+  },
 };
 
 export default {

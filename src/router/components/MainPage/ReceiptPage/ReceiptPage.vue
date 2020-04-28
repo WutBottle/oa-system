@@ -299,7 +299,7 @@
           },
           {
             title: '开票日期',
-            width: 200,
+            width: 150,
             key: 'receiptDate',
             dataIndex: 'receiptDate',
             sorter: (a, b) => new Date(a.receiptDate) - new Date(b.receiptDate),
@@ -351,7 +351,7 @@
             dataIndex: 'designId',
           }, {
             title: '现金回款日期',
-            width: 200,
+            width: 150,
             key: 'cashDate',
             dataIndex: 'cashDate',
             sorter: (a, b) => new Date(a.cashDate) - new Date(b.cashDate),

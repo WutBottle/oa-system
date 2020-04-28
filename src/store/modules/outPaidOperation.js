@@ -39,7 +39,7 @@ const mutations = {
         key: index,
         outPaidId: item.outPaidId,
         paidAmount: item.paidAmount,
-        paidDate: moment(item.paidDate).format('YYYY-MM-DD HH:mm:ss'),
+        paidDate: moment(item.paidDate).format('YYYY-MM-DD'),
         paidNote: item.paidNote,
         receipts: item.receipts,
       }

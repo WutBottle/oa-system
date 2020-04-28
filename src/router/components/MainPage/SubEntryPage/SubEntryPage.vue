@@ -94,7 +94,7 @@
               <div class="table-wrapper">
                 <a-table bordered :columns="outContractColumns" :dataSource="outContractTableData"
                          :pagination="outContractPaginationProps"
-                         @change="handleOutContractTableChange" :scroll="{ x: 1960, y: 450}">
+                         @change="handleOutContractTableChange" :scroll="{ x: 1900, y: 450}">
                   <span slot="serial" slot-scope="text, record, index">
                     {{ index + 1 }}
                   </span>
@@ -447,7 +447,7 @@
         rules: [{ type: 'object', required: true, message: '请输入实际归档日期!' }],
       }]"
                   show-time
-                  format="YYYY-MM-DD HH:mm:ss"
+                  format="YYYY-MM-DD"
           />
         </a-form-item>
         <a-form-item
@@ -575,7 +575,7 @@
           {initialValue:this.outContractEditFormData.outContractDate, rules: [{ type: 'object', required: true, message: '请输入开票日期!' }]}
           ]"
                   show-time
-                  format="YYYY-MM-DD HH:mm:ss"
+                  format="YYYY-MM-DD"
           />
         </a-form-item>
         <a-form-item
@@ -809,7 +809,7 @@
             dataIndex: 'ratio',
           }, {
             title: '实际归档日期',
-            width: 200,
+            width: 150,
             key: 'outContractDate',
             dataIndex: 'outContractDate',
           }, {

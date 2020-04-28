@@ -93,7 +93,7 @@
               <div class="table-wrapper">
                 <a-table bordered :columns="columns" :dataSource="tableData"
                          :pagination="paginationProps"
-                         @change="handleTableChange" :scroll="{ x: 900, y: 450 }">
+                         @change="handleTableChange" :scroll="{ x: 850, y: 450 }">
                   <span slot="serial" slot-scope="text, record, index">
                     {{ index + 1 }}
                   </span>
@@ -160,7 +160,7 @@
         rules: [{ type: 'object', required: true, message: '请输入付费时间!' }],
       }]"
                   show-time
-                  format="YYYY-MM-DD HH:mm:ss"
+                  format="YYYY-MM-DD"
           />
         </a-form-item>
         <a-form-item
@@ -245,7 +245,7 @@
           {initialValue:this.editFormData.paidDate, rules: [{ type: 'object', required: true, message: '请输入付费时间!' }]}
           ]"
                   show-time
-                  format="YYYY-MM-DD HH:mm:ss"
+                  format="YYYY-MM-DD"
           />
         </a-form-item>
         <a-form-item
@@ -362,7 +362,7 @@
           },
           {
             title: '付费时间',
-            width: 200,
+            width: 150,
             key: 'paidDate',
             dataIndex: 'paidDate',
           },

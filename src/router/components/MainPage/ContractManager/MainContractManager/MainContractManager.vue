@@ -126,7 +126,7 @@
         rules: [{ type: 'object', required: true, message: '请选择实际签约日期!' }],
       }]"
                     show-time
-                    format="YYYY-MM-DD HH:mm:ss"
+                    format="YYYY-MM-DD"
             />
           </a-form-item>
           <a-form-item
@@ -138,7 +138,7 @@
         rules: [{ type: 'object', required: true, message: '请选择合同归档日期!' }],
       }]"
                     show-time
-                    format="YYYY-MM-DD HH:mm:ss"
+                    format="YYYY-MM-DD"
             />
           </a-form-item>
           <a-form-item

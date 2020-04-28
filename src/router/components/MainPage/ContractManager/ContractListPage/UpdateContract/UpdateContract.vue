@@ -134,7 +134,7 @@
                     initialValue: this.formData.actualSigningDate,
       }]"
                   show-time
-                  format="YYYY-MM-DD HH:mm:ss"
+                  format="YYYY-MM-DD"
           />
         </a-form-item>
         <a-form-item
@@ -146,7 +146,7 @@
                     initialValue: this.formData.contractFilingDate,
       }]"
                   show-time
-                  format="YYYY-MM-DD HH:mm:ss"
+                  format="YYYY-MM-DD"
           />
         </a-form-item>
         <a-form-item

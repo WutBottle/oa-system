@@ -48,7 +48,7 @@ const mutations = {
         outProjectCategory: item.outProjectCategory.categoryName,
         outContractCategoryId: item.outContractCategory.categoryId,
         outProjectCategoryId: item.outProjectCategory.categoryId,
-        outContractDate: moment(item.outContractDate).format('YYYY-MM-DD HH:mm:ss'),
+        outContractDate: moment(item.outContractDate).format('YYYY-MM-DD'),
         note: item.note,
       }
     });

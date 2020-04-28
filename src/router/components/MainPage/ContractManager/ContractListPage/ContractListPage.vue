@@ -261,8 +261,8 @@
             receivedProportion: item.ratio && Number((item.ratio * 100).toFixed(4)), // 已收款比例
             cumulativeInvoicedAmount: item.receiptAmount, // 累计开票金额(元)
             invoicedUncollectedAmount: item.receiptNotCash, // 已开发票未收款金额
-            actualSigningDate: moment(item.actualDate).format('YYYY-MM-DD HH:mm:ss'), // 实际签约日期
-            contractFilingDate: moment(item.contractDate).format('YYYY-MM-DD HH:mm:ss'), // 合同归档日期
+            actualSigningDate: moment(item.actualDate).format('YYYY-MM-DD'), // 实际签约日期
+            contractFilingDate: moment(item.contractDate).format('YYYY-MM-DD'), // 合同归档日期
             itemCategory: !item.projectCategory ? '' : item.projectCategory.categoryName, // 项目类别
             productionStage: item.productionStage ? item.productionStage.categoryId : undefined, // 生产阶段
             productionStageName: item.productionStage ? item.productionStage.categoryName : undefined, // 生产阶段

@@ -34,7 +34,7 @@ const mutations = {
         contractName: data.contractName,
         cashId: item.cashId,
         cashAmount: item.cashAmount,
-        cashDate: moment(item.cashDate).format('YYYY-MM-DD HH:mm:ss'),
+        cashDate: moment(item.cashDate).format('YYYY-MM-DD'),
         receipts: item.receipts,
       }
     });
@@ -49,7 +49,7 @@ const mutations = {
         contractName: item.contractName,
         cashId: item.cash.cashId,
         cashAmount: item.cash.cashAmount,
-        cashDate: moment(item.cash.cashDate).format('YYYY-MM-DD HH:mm:ss'),
+        cashDate: moment(item.cash.cashDate).format('YYYY-MM-DD'),
         receipts: item.cash.receipts,
         selectIndex: !!state.selectCashInfo.find(value => value.cashId === item.cash.cashId),
       }

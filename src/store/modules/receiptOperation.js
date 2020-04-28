@@ -31,7 +31,7 @@ const mutations = {
         receiptFile: item.receipt.receiptFile,
         receiptAmount: item.receipt.receiptAmount,
         receiptClass: item.receipt.receiptClass ? '增值税专用发票' : '增值税普通发票',
-        receiptDate: moment(item.receipt.receiptDate).format('YYYY-MM-DD HH:mm:ss'),
+        receiptDate: moment(item.receipt.receiptDate).format('YYYY-MM-DD'),
         selectIndex: !!state.selectReceiptInfo.find(value => value.id === item.receipt.id),
       }
     });

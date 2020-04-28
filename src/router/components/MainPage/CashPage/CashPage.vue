@@ -160,7 +160,7 @@
         rules: [{ type: 'object', required: true, message: '请输入现金回款日期!' }],
       }]"
                   show-time
-                  format="YYYY-MM-DD HH:mm:ss"
+                  format="YYYY-MM-DD"
           />
         </a-form-item>
         <a-form-item
@@ -234,7 +234,7 @@
           {initialValue:this.editFormData.cashDate, rules: [{ type: 'object', required: true, message: '请输入现金回款日期!' }]}
           ]"
                   show-time
-                  format="YYYY-MM-DD HH:mm:ss"
+                  format="YYYY-MM-DD"
           />
         </a-form-item>
         <a-form-item

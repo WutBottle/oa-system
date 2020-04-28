@@ -66,7 +66,7 @@
               <div class="table-wrapper">
                 <a-table bordered :columns="columns" :dataSource="tableData"
                          :pagination="paginationProps"
-                         @change="handleTableChange" :scroll="{ x: 1270, y: 450}">
+                         @change="handleTableChange" :scroll="{ x: 1220, y: 450}">
                   <span slot="serial" slot-scope="text, record, index">
                   {{ index + 1 }}
                   </span>
@@ -154,7 +154,7 @@
         rules: [{ type: 'object', required: true, message: '请输入开票日期!' }],
       }]"
                   show-time
-                  format="YYYY-MM-DD HH:mm:ss"
+                  format="YYYY-MM-DD"
           />
         </a-form-item>
         <a-form-item
@@ -249,7 +249,7 @@
           {initialValue:this.editFormData.receiptDate, rules: [{ type: 'object', required: true, message: '请输入开票日期!' }]}
           ]"
                   show-time
-                  format="YYYY-MM-DD HH:mm:ss"
+                  format="YYYY-MM-DD"
           />
         </a-form-item>
         <a-form-item
@@ -382,7 +382,7 @@
             dataIndex: 'receiptId',
           }, {
             title: '开票日期',
-            width: 200,
+            width: 150,
             key: 'receiptDate',
             dataIndex: 'receiptDate',
           }, {
@@ -488,7 +488,7 @@
                 receiptFile: item.receiptFile,
                 receiptAmount: item.receiptAmount,
                 receiptClass: item.receiptClass,
-                receiptDate: moment(item.receiptDate).format('YYYY-MM-DD HH:mm:ss'),
+                receiptDate: moment(item.receiptDate).format('YYYY-MM-DD'),
                 note: item.note,
               }
             });

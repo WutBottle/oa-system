@@ -126,12 +126,20 @@
           </a-col>
           <a-col class="b14 br bt cell" :span="4">签约状态</a-col>
           <a-col class="br bt cell" :span="4">已签/洽谈/投标</a-col>
+          <a-col class="b14 br bt cell" :span="4"></a-col>
+          <a-col class="bt cell" :span="4"></a-col>
+        </a-row>
+        <a-row>
           <a-col class="b14 br bt cell bgFCE4D6 click-font" :span="4" @click="handleContractOpen">
             <a-spin :spinning="contractSpinning">
               合同总额
             </a-spin>
           </a-col>
-          <a-col class="bt cell bgFCE4D6" :span="4">{{formData.contractAmount}}</a-col>
+          <a-col class="br bt cell bgFCE4D6" :span="4">{{formData.contractAmount}}</a-col>
+          <a-col class="b14 br bt cell" :span="4"></a-col>
+          <a-col class="br bt cell" :span="4"></a-col>
+          <a-col class="b14 br bt cell" :span="4"></a-col>
+          <a-col class="bt cell" :span="4"></a-col>
         </a-row>
         <template v-if="contractVisible">
           <a-row v-for="(item, index) in contractData" :key="item.id">
@@ -152,14 +160,10 @@
             </a-spin>
           </a-col>
           <a-col class="br bt cell bgBDD7EE" :span="4">{{formData.receiptAmount}}</a-col>
-          <a-col class="b14 br bt cell click-font bgFFD966" :span="4" @click="handleCashOpen">
-            <a-spin :spinning="cashSpinning">
-              累计收费
-            </a-spin>
-          </a-col>
-          <a-col class="br bt cell bgFFD966" :span="4">{{formData.cashAmount}}</a-col>
           <a-col class="b14 br bt cell" :span="4">未收发票</a-col>
-          <a-col class="bt cell" :span="4">{{formData.contractAmount - formData.receiptAmount}}</a-col>
+          <a-col class="br bt cell" :span="4">{{formData.contractAmount - formData.receiptAmount}}</a-col>
+          <a-col class="b14 br bt cell" :span="4"></a-col>
+          <a-col class="bt cell" :span="4"></a-col>
         </a-row>
         <template v-if="receiptVisible">
           <a-row v-for="(item, index) in receiptData" :key="item.receiptId">
@@ -173,6 +177,18 @@
             <a-col class="bt cell bgcae7ff" :span="4">{{item.receiptId}}</a-col>
           </a-row>
         </template>
+        <a-row>
+          <a-col class="b14 br bt cell click-font bgFFD966" :span="4" @click="handleCashOpen">
+            <a-spin :spinning="cashSpinning">
+              累计收费
+            </a-spin>
+          </a-col>
+          <a-col class="br bt cell bgFFD966" :span="4">{{formData.cashAmount}}</a-col>
+          <a-col class="b14 br bt cell" :span="4"></a-col>
+          <a-col class="br bt cell" :span="4"></a-col>
+          <a-col class="b14 br bt cell" :span="4"></a-col>
+          <a-col class="bt cell" :span="4"></a-col>
+        </a-row>
         <template v-if="cashVisible">
           <a-row v-for="(item, index) in cashData" :key="item.cashId">
             <a-col class="b14 br bt cell bgffd966" :span="4">收费{{(index +1 )}}</a-col>
@@ -452,8 +468,8 @@
               this.contractData = res.data.data.map(item => {
                 return {
                   contractAmount: item.contractAmount,
-                  contractDate: moment(item.contractDate).format('YYYY-MM-DD'),
-                  actualDate: moment(item.actualDate).format('YYYY-MM-DD'),
+                  contractDate: item.contractDate && moment(item.contractDate).format('YYYY-MM-DD'),
+                  actualDate: item.actualDate && moment(item.actualDate).format('YYYY-MM-DD'),
                   contractFile: item.contractFile,
                 }
               });

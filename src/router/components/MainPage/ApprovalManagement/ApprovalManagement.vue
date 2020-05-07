@@ -41,8 +41,12 @@
                 <a-tag v-if="text === 3 && role != '超级管理员'" color="red">已驳回</a-tag>
               </span>
               <template slot="operation" slot-scope="text, record">
-                <a-button type="primary" @click="openDetail(record)">
+                <a-button type="primary" size="small" @click="handleOpen(record)">
                   详情
+                </a-button>
+                <a-divider type="vertical"/>
+                <a-button type="primary" size="small" @click="openDetail(record)">
+                  审批
                 </a-button>
               </template>
             </a-table>
@@ -50,6 +54,14 @@
         </div>
       </div>
     </div>
+    <a-modal
+            title="项目信息"
+            v-model="projectInfoVisible"
+            width="90vw"
+            :footer="null"
+    >
+      <ProjectInfo :formData="projectInfoData" :projectUsers="projectUsers"/>
+    </a-modal>
     <a-modal
             title="审批详情"
             v-model="approvalVisible"
@@ -100,11 +112,13 @@
   import HeaderPage from "../HeaderPage/HeaderPage";
   import {mapActions, mapState} from "vuex";
   import moment from 'moment';
+  import ProjectInfo from "../ProjectPage/ProjectInfo/ProjectInfo";
 
   export default {
     name: "ApprovalManagement",
     components: {
       HeaderPage,
+      ProjectInfo,
     },
     data() {
       return {
@@ -128,7 +142,7 @@
           {
             title: '合同名称',
             key: 'contractName',
-            width: '24%',
+            width: '21%',
             dataIndex: 'contractName',
           },
           {
@@ -147,7 +161,7 @@
           {
             title: '项目审批',
             key: 'operation',
-            width: '15%',
+            width: '18%',
             dataIndex: 'operation',
             scopedSlots: {customRender: 'operation'}
           },
@@ -170,6 +184,9 @@
         buttonState: true,
         selectedProjectId: '',
         startButton: false,
+        projectInfoVisible: false,
+        projectUsers: [],
+        projectInfoData: {},
       }
     },
     computed: {
@@ -184,7 +201,8 @@
       ...mapActions({
         getProjectListByIdLike: 'contractList/getProjectListByIdLike',
         getHistoryByContractId: 'projectCirculationOperation/getHistoryByContractId',
-        verifyProjectCirculation: 'projectCirculationOperation/verifyProjectCirculation'
+        verifyProjectCirculation: 'projectCirculationOperation/verifyProjectCirculation',
+        getProjectByContractId: 'contractList/getProjectByContractId',
       }),
       updateTableData() {
         this.spinning = true;
@@ -340,7 +358,28 @@
         }else {
           this.$message.error('请输入审批意见！')
         }
-      }
+      },
+      handleOpen(selectData) {
+        this.projectInfoVisible = true;
+        this.getHistoryByContractId({
+          id: selectData.id,
+        }).then(res => {
+          this.projectUsers = res && res.data.data;
+        });
+        this.getProjectByContractId({
+          contractId: selectData.contractId
+        }).then(res => {
+          this.projectInfoData = res && res.data.data.contract;
+          Object.assign(this.projectInfoData, {
+            aboveGroundArea: selectData.aboveGroundArea,
+            underGroundArea: selectData.underGroundArea
+          });
+          this.projectInfoData.subProjects.map(item => {
+            this.tempSubProjects[this.tempSubProjects.findIndex(tempItem => item.subCategory.categoryId === tempItem.subCategory.categoryId)] = item;
+          });
+          this.projectInfoData.subProjects = this.tempSubProjects;
+        });
+      },
     }
   }
 </script>

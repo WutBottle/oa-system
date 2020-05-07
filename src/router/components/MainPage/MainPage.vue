@@ -309,6 +309,11 @@
         },
       }
     },
+    watch: {
+      '$route': function (to, from) {
+        this.setMenu(to.path);
+      }
+    },
     created() {
       this.setMenu(this.$route.path);
     },

@@ -372,9 +372,9 @@
       handleContractEdit(selectContractData) {
         // 初始化输入数据
         this.contractEditData = JSON.parse(JSON.stringify(selectContractData));
-        this.contractEditData.itemCategory = this.projectCategoryList[this.projectCategoryList.findIndex((item) => this.contractEditData.itemCategory === item.categoryName)].categoryId;
-        this.contractEditData.contractFilingDate = moment(this.contractEditData.contractFilingDate);
-        this.contractEditData.actualSigningDate = moment(this.contractEditData.actualSigningDate);
+        this.contractEditData.itemCategory = this.contractEditData.itemCategory ? this.projectCategoryList[this.projectCategoryList.findIndex((item) => this.contractEditData.itemCategory === item.categoryName)].categoryId : undefined;
+        this.contractEditData.contractFilingDate = this.contractEditData.actualSigningDate === 'Invalid date' ? null : moment(this.contractEditData.contractFilingDate);
+        this.contractEditData.actualSigningDate = this.contractEditData.actualSigningDate === 'Invalid date' ? null : moment(this.contractEditData.actualSigningDate);
         this.editVisible = true;
       },
       onEditClose() {

@@ -59,10 +59,14 @@
             <a-input
                     v-decorator="[
           'ownerId',
-          {rules: [{ required: true, message: '请输入发包人合同编号！' },{
+          {rules: [{
                 type: 'number',
                 message: '请输入数字',
-                transform:(value)=> {return Number(value) || ''}
+                transform:(value)=> {
+                  if(value){
+                    return Number(value);
+                  }
+                }
           }]}
         ]"
                     placeholder="请输入发包人合同编号"
@@ -77,7 +81,7 @@
                     disabled
                     v-decorator="[
           'designId',
-          {initialValue: this.designId, rules: [{ required: true, message: '请输入设计号！' }]}
+          {initialValue: this.designId}
         ]"
                     placeholder="请输入设计号"
             />
@@ -110,11 +114,13 @@
                     v-decorator="[
           'contractAmount',
           {rules: [{
-            required: true, message: '请输入合同额！'
-          }, {
                 type: 'number',
                 message: '请输入数字',
-                transform:(value)=> {return Number(value)}
+                transform:(value)=> {
+                  if(value){
+                    return Number(value);
+                  }
+                }
           }]}
         ]"
                     placeholder="请输入合同额"
@@ -126,7 +132,6 @@
           >
             <a-date-picker
                     v-decorator="['actualDate',  {
-        rules: [{ type: 'object', required: true, message: '请选择实际签约日期!' }],
       }]"
                     show-time
                     format="YYYY-MM-DD"
@@ -138,7 +143,6 @@
           >
             <a-date-picker
                     v-decorator="['contractDate',  {
-        rules: [{ type: 'object', required: true, message: '请选择合同归档日期!' }],
       }]"
                     show-time
                     format="YYYY-MM-DD"
@@ -188,10 +192,14 @@
             <a-input
                     v-decorator="[
           'investment',
-          {rules: [{ required: true, message: '请输入投资额！' }, {
+          {rules: [{
                 type: 'number',
                 message: '请输入数字',
-                transform:(value)=> {return Number(value)}
+                transform:(value)=> {
+                  if(value){
+                    return Number(value);
+                  }
+                }
           }]}
         ]"
                     placeholder="请输入投资额"
@@ -206,11 +214,13 @@
                     v-decorator="[
           'aboveGroundArea',
           {rules: [{
-            required: true, message: '请输入地上面积！'
-          }, {
                 type: 'number',
                 message: '请输入数字',
-                transform:(value)=> {return Number(value)}
+                transform:(value)=> {
+                  if(value){
+                    return Number(value);
+                  }
+                }
           }]}
         ]"
                     placeholder="请输入地上面积"
@@ -225,11 +235,13 @@
                     v-decorator="[
           'underGroundArea',
           {rules: [{
-            required: true, message: '请输入地下面积！'
-          }, {
                 type: 'number',
                 message: '请输入数字',
-                transform:(value)=> {return Number(value)}
+                transform:(value)=> {
+                  if(value){
+                    return Number(value);
+                  }
+                }
           }]}
         ]"
                     placeholder="请输入地下面积"
@@ -279,7 +291,6 @@
             <a-select
                     v-decorator="[
           'isSign',
-          {rules: [{ required: true, message: '请选择签约状态！' }]}
         ]"
                     placeholder="请选择签约状态"
             >
@@ -321,7 +332,6 @@
             <a-select
                     v-decorator="[
           'epc',
-          {rules: [{ required: true, message: '请选择是否EPC项目！' }]}
         ]"
                     placeholder="请选择是否EPC项目"
             >
@@ -341,7 +351,6 @@
             <a-select
                     v-decorator="[
           'projectCategoryId',
-          {rules: [{ required: true, message: '请选择项目类型！' }]}
         ]"
                     placeholder="请选择项目类型"
             >

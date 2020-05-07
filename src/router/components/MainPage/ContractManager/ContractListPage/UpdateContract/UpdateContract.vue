@@ -17,7 +17,7 @@
                   disabled
                   v-decorator="[
           'designId',
-          {initialValue: this.formData.designNum, rules: [{ required: true, message: '请输入设计号！' }]}
+          {initialValue: this.formData.designNum}
         ]"
                   placeholder="请输入设计号"
           />
@@ -115,11 +115,13 @@
                   v-decorator="[
           'contractAmount',
           {initialValue: this.formData.contractAmount, rules: [{
-            required: true, message: '请输入合同额！'
-          }, {
                 type: 'number',
                 message: '请输入数字',
-                transform:(value)=> {return Number(value)}
+                transform:(value)=> {
+                  if(value){
+                    return Number(value);
+                  }
+                }
           }]}
         ]"
                   placeholder="请输入合同额"
@@ -299,11 +301,13 @@
                   v-decorator="[
           'investment',
           {initialValue: this.formData.investmentAmount, rules: [{
-            required: true, message: '请输入投资额！'
-          }, {
                 type: 'number',
                 message: '请输入数字',
-                transform:(value)=> {return Number(value)}
+                transform:(value)=> {
+                  if(value){
+                    return Number(value);
+                  }
+                }
           }]}
         ]"
                   placeholder="请输入投资额"
@@ -318,11 +322,13 @@
                   v-decorator="[
           'aboveGroundArea',
           {initialValue: this.formData.aboveGroundArea, rules: [{
-            required: true, message: '请输入地上面积！'
-          }, {
                 type: 'number',
                 message: '请输入数字',
-                transform:(value)=> {return Number(value)}
+                transform:(value)=> {
+                  if(value){
+                    return Number(value);
+                  }
+                }
           }]}
         ]"
                   placeholder="请输入地上面积"
@@ -337,11 +343,13 @@
                   v-decorator="[
           'underGroundArea',
           {initialValue: this.formData.underGroundArea, rules: [{
-            required: true, message: '请输入地下面积！'
-          }, {
                 type: 'number',
                 message: '请输入数字',
-                transform:(value)=> {return Number(value)}
+                transform:(value)=> {
+                  if(value){
+                    return Number(value);
+                  }
+                }
           }]}
         ]"
                   placeholder="请输入地下面积"
@@ -414,14 +422,14 @@
           <a-select
                   v-decorator="[
           'epc',
-          {initialValue: String(this.formData.epc)}
+          {initialValue: !this.formData.epc ? undefined : String(this.formData.epc)}
         ]"
                   placeholder="请选择是否EPC项目"
           >
-            <a-select-option value="true">
+            <a-select-option value='true'>
               是
             </a-select-option>
-            <a-select-option value="false">
+            <a-select-option value='false'>
               否
             </a-select-option>
           </a-select>

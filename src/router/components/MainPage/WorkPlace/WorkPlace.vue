@@ -99,7 +99,7 @@
               </div>
             </div>
           </a-col>
-          <a-col style="position: relative;" :span="13">
+          <a-col style="position: relative;" v-if="role === '超级管理员'" :span="13">
             <div style="position: absolute; top: -38px;">
               <a-radio-group v-model="selectMonth" buttonStyle="solid" size="small" @change="handleMonthChange">
                 <a-radio-button value="1">一个月</a-radio-button>

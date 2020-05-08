@@ -46,7 +46,7 @@
           <a-select
                   v-decorator="[
           'isSign',
-          {initialValue: String(this.formData.signState)}
+          {initialValue: this.formData.signState >= 0 ? String(this.formData.signState) : undefined}
         ]"
                   placeholder="请选择签约状态"
           >

@@ -566,7 +566,7 @@
                 aboveGroundArea: item.aboveGroundArea,
                 underGroundArea: item.underGroundArea,
                 scale: (item.aboveGroundArea || item.underGroundArea) && ('地上' + item.aboveGroundArea + '+地下' + item.underGroundArea), // 项目规模(平方米)
-                ratio: item.ratio && Number((item.ratio * 100).toFixed(4)),
+                ratio: !isNaN(item.ratio) && Number((item.ratio * 100).toFixed(4)),
               }
             });
             this.spinning = false;

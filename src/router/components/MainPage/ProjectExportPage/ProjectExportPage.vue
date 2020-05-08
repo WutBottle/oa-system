@@ -71,7 +71,7 @@
               <span slot="serial" slot-scope="text, record, index">
                 {{ index + 1 }}
               </span>
-                  <span slot="isSign" slot-scope="text">
+              <span slot="isSign" slot-scope="text">
                 <a-badge :status="text | statusTypeFilter" :text="text | statusFilter"/>
               </span>
               <a-progress slot="ratio" slot-scope="text" type="circle" :percent="text" :width="60"/>
@@ -518,7 +518,7 @@
                 projectInvestment: item.projectInvestment,
                 isSign: item.isSign,
                 scale: item.scale,
-                ratio: item.ratio && Number((item.ratio * 100).toFixed(4)),
+                ratio: !isNaN(item.ratio) && Number((item.ratio * 100).toFixed(4)),
                 selectIndex: !!this.selectProjectInfo.find(value => value.contractId === item.contractId),
               }
             });

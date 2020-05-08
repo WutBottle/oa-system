@@ -125,7 +125,9 @@
             </a-tag>
           </a-col>
           <a-col class="b14 br bt cell" :span="4">签约状态</a-col>
-          <a-col class="br bt cell" :span="4">已签/洽谈/投标</a-col>
+          <a-col class="br bt cell" :span="4">
+            <a-badge :status="formData.isSign | statusTypeFilter" :text="formData.isSign | statusFilter"/>
+          </a-col>
           <a-col class="b14 br bt cell" :span="4"></a-col>
           <a-col class="bt cell" :span="4"></a-col>
         </a-row>
@@ -359,6 +361,24 @@
   import {mapActions} from 'vuex';
   import moment from 'moment';
   import baseUrl from '@/api/baseUrl'
+  const statusMap = {
+    0: {
+      status: 'success',
+      text: '已签'
+    },
+    1: {
+      status: 'processing',
+      text: '洽谈'
+    },
+    2: {
+      status: 'error',
+      text: '投标'
+    },
+    3: {
+      status: 'error',
+      text: '待定'
+    },
+  };
 
   export default {
     name: "ProjectInfo",
@@ -372,6 +392,22 @@
         type: Array,
         default: () => [],
       },
+    },
+    filters: {
+      statusFilter(type) {
+        if (type >= 0){
+          return statusMap[type].text
+        } else {
+          return statusMap[3].text
+        }
+      },
+      statusTypeFilter(type) {
+        if (type >= 0){
+          return statusMap[type].status
+        } else {
+          return statusMap[3].status
+        }
+      }
     },
     watch: {
       formData: {

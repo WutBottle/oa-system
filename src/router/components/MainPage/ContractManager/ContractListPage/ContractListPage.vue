@@ -270,7 +270,7 @@
             contractAmount: item.contractAmount, // 合同额(元)
             accumulatedCashReceipts: item.cashAmount, // 累计现金回款(元)
             remainingContractAmount: item.contractRemain, // 剩余合同额(元)
-            receivedProportion: item.ratio && Number((item.ratio * 100).toFixed(4)), // 已收款比例
+            receivedProportion: !isNaN(item.ratio) && Number((item.ratio * 100).toFixed(4)), // 已收款比例
             cumulativeInvoicedAmount: item.receiptAmount, // 累计开票金额(元)
             invoicedUncollectedAmount: item.receiptNotCash, // 已开发票未收款金额
             actualSigningDate: moment(item.actualDate).format('YYYY-MM-DD'), // 实际签约日期

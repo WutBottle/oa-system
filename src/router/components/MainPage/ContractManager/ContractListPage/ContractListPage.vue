@@ -154,6 +154,10 @@
       status: 'error',
       text: '投标'
     },
+    3: {
+      status: 'error',
+      text: '待定'
+    },
   };
   export default {
     name: "ContractListPage",
@@ -204,10 +208,18 @@
     },
     filters: {
       statusFilter(type) {
-        return statusMap[type].text
+        if (type >= 0){
+          return statusMap[type].text
+        } else {
+          return statusMap[3].text
+        }
       },
       statusTypeFilter(type) {
-        return statusMap[type].status
+        if (type >= 0){
+          return statusMap[type].status
+        } else {
+          return statusMap[3].status
+        }
       }
     },
     mounted() {

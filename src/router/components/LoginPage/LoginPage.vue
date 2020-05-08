@@ -146,17 +146,14 @@
 </template>
 
 <script>
-  import {mapState, mapActions} from 'vuex'
+  import {mapActions} from 'vuex'
 
   export default {
     name: 'LoginPage',
-    beforeCreate() {
-      this.form = this.$form.createForm(this);
-    },
-    computed: {
-      ...mapState({
-        loginStatus: state => state.tokensOperation.status,//登录状态记录
-      }),
+    data() {
+      return {
+        form: this.$form.createForm(this),
+      }
     },
     methods: {
       ...mapActions({

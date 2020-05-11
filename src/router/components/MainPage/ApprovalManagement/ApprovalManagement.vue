@@ -102,7 +102,7 @@
       <div style="padding-top: 12px;">
         <a-button type="primary" :disabled="buttonState" @click="handleChecked('agree')">同意</a-button>
         <a-button type="danger" :disabled="buttonState" style="margin-left: 12px;" @click="handleChecked('disagree')">不同意</a-button>
-        <a-button type="primary" v-if="role === '项目经理' && startButton" style="margin-left: 12px;" @click="handleChecked('restart')">启动审批</a-button>
+        <a-button type="primary" v-if="this.role != '超级管理员' && startButton" style="margin-left: 12px;" @click="handleChecked('restart')">启动审批</a-button>
       </div>
     </a-modal>
   </div>
@@ -183,6 +183,8 @@
         circulationId: '',
         buttonState: true,
         selectedProjectId: '',
+        currentUserState: null, // 当前用户对应选中项目的状态
+        projectManagerId: null, // 当前选中项目的项目经理id
         startButton: false,
         projectInfoVisible: false,
         projectUsers: [],
@@ -192,6 +194,7 @@
     computed: {
       ...mapState({
         role: state => state.tokensOperation.role,
+        userId: state => state.tokensOperation.userId,
       }),
     },
     mounted() {
@@ -215,6 +218,9 @@
           if (data.data.meta.success) {
             this.paginationProps.total = data.data.data.totalElements;
             this.tableData = data.data.data.content.map((item, index) => {
+              if (this.selectedProjectId === item.id) {
+                this.currentUserState = item.state;
+              }
               return {
                 key: index,
                 id: item.id,
@@ -222,6 +228,7 @@
                 designId: item.designId,
                 contractName: item.contractName,
                 state: item.state,
+                projectManagerId: item.projectManagerId,
               }
             });
             this.spinning = false;
@@ -244,7 +251,9 @@
       },
       updateDetailData() {
         this.startButton = false;
-        this.buttonState = true;
+        if (this.currentUserState === 1 && this.role !='超级管理员'){
+          this.buttonState = false;
+        }
         this.getHistoryByContractId({
         id: this.selectedProjectId,
         }).then(res => {
@@ -256,7 +265,9 @@
             if (item === 3) {
               this.approvalCurrent = index;
               this.approvalStatus = 'error';
-              this.startButton = true;
+              if (String(this.userId) === String(this.projectManagerId)) {
+                this.startButton = true;
+              }
               this.buttonState = true;
             }
             if (item === 2 && index === 3) {
@@ -266,18 +277,6 @@
             if (item === 1) {
               this.approvalCurrent = index;
               this.approvalStatus = 'process';
-              if (this.role === '项目经理' && index === 0) {
-                this.buttonState = false;
-              }
-              if (this.role === '行政专员' && index === 1) {
-                this.buttonState = false;
-              }
-              if (this.role === '经营负责人' && index === 2) {
-                this.buttonState = false;
-              }
-              if (this.role === '总监' && index === 3) {
-                this.buttonState = false;
-              }
             }
           });
 
@@ -309,13 +308,11 @@
             })
           });
         }
-        this.updateTableData();
         })
       },
       openDetail(selectData) {
         this.approvalVisible = true;
         this.selectedProjectId = selectData.id;
-
         // 数据初始化
         this.approvalCurrent = 0;
         this.approvalStatus = 'wait';
@@ -323,8 +320,8 @@
         this.commentsData = [];
         this.adviseValue = undefined;
         this.circulationId = '';
-        this.buttonState = true;
-
+        this.currentUserState = selectData.state;
+        this.projectManagerId = selectData.projectManagerId;
         this.updateDetailData();
       },
       handleChecked(isAgree) {
@@ -350,7 +347,13 @@
               isAgree != 'restart' && this.$message.success(res.data.data);
               isAgree === 'restart' && this.$message.success('重启成功!');
               this.adviseValue = undefined;
+              this.currentUserState = null;
+              if (isAgree === 'restart' && String(this.userId) === String(this.projectManagerId)) {
+                this.currentUserState = 1;
+              }
+              this.buttonState = true;
               this.updateDetailData();
+              this.updateTableData();
             }else {
               this.$message.error(res.data.meta.success);
             }

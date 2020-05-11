@@ -27,7 +27,7 @@
       <a-spin :spinning="spinning" tip="Loading...">
         <a-table bordered :columns="columns" :dataSource="tableData"
                  :pagination="paginationProps"
-                 @change="handleTableChange" :scroll="{ x: 2760, y: 550}">
+                 @change="handleTableChange" :scroll="{ x: 2880, y: 550}">
           <span slot="serial" slot-scope="text, record, index">
             {{ index + 1 }}
           </span>
@@ -377,22 +377,28 @@
             dataIndex: 'projectManager',
           },
           {
-            title: '行政专员',
+            title: '商务专员',
             width: 120,
             key: 'projectSecretary',
             dataIndex: 'projectSecretary',
           },
           {
-            title: '总监',
+            title: '财务专员',
             width: 120,
-            key: 'inspector',
-            dataIndex: 'inspector',
+            key: 'financeManager',
+            dataIndex: 'financeManager',
           },
           {
-            title: '经营负责人',
+            title: '项目经营负责人',
             width: 120,
             key: 'runningManager',
             dataIndex: 'runningManager',
+          },
+          {
+            title: '部门经营负责人',
+            width: 120,
+            key: 'inspector',
+            dataIndex: 'inspector',
           },
           {
             width: 100,
@@ -550,6 +556,7 @@
                 projectManager: item.projectManager,
                 projectSecretary: item.projectSecretary,
                 inspector: item.inspector,
+                financeManager: item.financeManager,
                 runningManager: item.runningManager,
                 receiptAmount: item.receiptAmount,
                 receiptNotCash: item.receiptNotCash,

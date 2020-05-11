@@ -382,7 +382,6 @@
 
 <script>
   import {mapState, mapActions} from 'vuex'
-  import moment from 'moment'
   import {debounce} from 'debounce';
 
   const formItemLayout = {
@@ -397,7 +396,6 @@
   export default {
     name: "SubContractManager",
     data() {
-      this.fetchStaffData = debounce(this.fetchStaffData, 800);
       this.fetchContracts = debounce(this.fetchContracts, 500);
       return {
         formItemLayout,
@@ -430,7 +428,6 @@
       ...mapActions({
         uploadContract: 'contractList/uploadContract',
         addContract: 'contractList/addContract',
-        getStaffListByNameLike: 'staffOperation/getStaffListByNameLike',
         getProjectListByIdLike: 'contractList/getProjectListByIdLike',
         getCategoryList: 'categoryOperation/getCategoryList', // 获取类型
       }),
@@ -497,24 +494,12 @@
       onClose() {
         this.visible = false
       },
-      fetchStaffData(value) {
-        const params = {
-          staffName: value,
-          pageNum: 1,
-          pageLimit: 10,
-        };
-        this.fetching = true;
-        this.getStaffListByNameLike(params).then((res) => {
-          this.fetching = false;
-        });
-      },
       fetchContracts(value) {
         const params = {
           contractId: value,
           pageNum: 1,
           pageLimit: 10,
         };
-        this.data = [];
         this.fetching = true;
         this.getProjectListByIdLike(params).then((res) => {
           this.contractsData = res.data.data.content;

@@ -70,9 +70,9 @@
     >
       <a-steps :current="approvalCurrent" :status="approvalStatus">
         <a-step title="项目经理" />
-        <a-step title="行政专员" />
-        <a-step title="经营负责人" />
-        <a-step title="总监" />
+        <a-step title="商务专员" />
+        <a-step title="项目经营负责人" />
+        <a-step title="部门经营负责人" />
       </a-steps>
       <div style="height: 300px;overflow: auto;margin: 24px 0px">
         <a-list
@@ -289,19 +289,19 @@
               content: item.projectManagerNode.note,
               datetime: moment(item.projectManagerNode.createDate),
             }, {
-              name: "行政专员",
+              name: "商务专员",
               auditIndex: item.auditIndex,
               state: item.projectSecretaryNode.state,
               content: item.projectSecretaryNode.note,
               datetime: moment(item.projectSecretaryNode.createDate),
             }, {
-              name: "经营负责人",
+              name: "项目经营负责人",
               auditIndex: item.auditIndex,
               state: item.runningManagerNode.state,
               content: item.runningManagerNode.note,
               datetime: moment(item.runningManagerNode.createDate),
             }, {
-              name: "总监",
+              name: "部门经营负责人",
               auditIndex: item.auditIndex,
               state: item.inspectorNode.state,
               content: item.inspectorNode.note,

@@ -84,6 +84,13 @@
               {{text.nickname}}
             </a-tag>
           </span>
+          <span slot="financeManagerNode" slot-scope="text">
+            {{text.username}}
+            <a-divider type="vertical" />
+            <a-tag color="orange">
+              {{text.nickname}}
+            </a-tag>
+          </span>
           <span slot="runningManagerNode" slot-scope="text">
             {{text.username}}
             <a-divider type="vertical" />
@@ -281,25 +288,35 @@
             mainDesignDepartment: item.departmentDesign, // 主设计部门
             managementDepartment: item.departmentRunning, // 经营部门
             projectManager: item.projectManager ? item.projectManager.userId : undefined, // 项目经理
-            runningManager: item.runningManager ? item.runningManager.userId : undefined, // 经营经理
-            projectSecretary: item.projectSecretary ? item.projectSecretary.userId : undefined, // 项目预算秘书
-            inspector: item.inspector ? item.inspector.userId : undefined, // 总监
+            projectSecretary: item.projectSecretary ? item.projectSecretary.userId : undefined, // 商务专员
+            financeManager: item.financeManager ? item.financeManager.userId : undefined, // 财务专员
+            runningManager: item.runningManager ? item.runningManager.userId : undefined, // 项目经营负责人
+            inspector: item.inspector ? item.inspector.userId : undefined, // 部门经营负责人
             projectManagerNode: {
               username: item.projectManager ? item.projectManager.username : undefined,
               nickname: item.projectManager ? item.projectManager.nickname : undefined,
+              userId: item.projectManager ? item.projectManager.userId : undefined,
             }, // 项目经理
             runningManagerNode: {
               username: item.runningManager ? item.runningManager.username : undefined,
               nickname: item.runningManager ? item.runningManager.nickname : undefined,
-            }, // 经营经理
+              userId: item.runningManager ? item.runningManager.userId : undefined,
+            }, // 项目经营负责人
             projectSecretaryNode: {
               username: item.projectSecretary ? item.projectSecretary.username : undefined,
               nickname: item.projectSecretary ? item.projectSecretary.nickname : undefined,
-            }, // 项目预算秘书
+              userId: item.projectSecretary ? item.projectSecretary.userId : undefined,
+            }, // 商务专员
+            financeManagerNode: {
+              username: item.financeManager ? item.financeManager.username : undefined,
+              nickname: item.financeManager ? item.financeManager.nickname : undefined,
+              userId: item.financeManager ? item.financeManager.userId : undefined,
+            }, // 财务专员
             inspectorNode: {
               username: item.inspector ? item.inspector.username : undefined,
               nickname: item.inspector ? item.inspector.nickname : undefined,
-            }, // 总监
+              userId: item.inspector ? item.inspector.userId : undefined,
+            }, // 部门经营负责人
             contractingParty: item.owner, // 发包方
             investmentAmount: item.investment, // 投资额(万元)
             projectScale: (item.aboveGroundArea || item.underGroundArea) && ('地上' + item.aboveGroundArea + '+地下' + item.underGroundArea), // 项目规模(平方米)
@@ -387,6 +404,16 @@
         this.contractEditData.itemCategory = this.contractEditData.itemCategory ? this.projectCategoryList[this.projectCategoryList.findIndex((item) => this.contractEditData.itemCategory === item.categoryName)].categoryId : undefined;
         this.contractEditData.contractFilingDate = this.contractEditData.actualSigningDate === 'Invalid date' ? null : moment(this.contractEditData.contractFilingDate);
         this.contractEditData.actualSigningDate = this.contractEditData.actualSigningDate === 'Invalid date' ? null : moment(this.contractEditData.actualSigningDate);
+        const currentUserOptions = [
+          this.contractEditData.projectManagerNode,
+          this.contractEditData.runningManagerNode,
+          this.contractEditData.projectSecretaryNode,
+          this.contractEditData.financeManagerNode,
+          this.contractEditData.inspectorNode,
+        ];
+        Object.assign(this.contractEditData, {
+          currentUserOptions: currentUserOptions
+        });
         this.editVisible = true;
       },
       onEditClose() {
@@ -412,8 +439,8 @@
       loadTableColumns(data) {
         this.columns = [];
         this.scrollX = 260;
-        this.columns.push(this.totalColumns[30]);
         this.columns.push(this.totalColumns[31]);
+        this.columns.push(this.totalColumns[32]);
         data.map(item => {
           this.columns.push(this.totalColumns[item]);
           this.scrollX += this.totalColumns[item].width;

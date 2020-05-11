@@ -118,7 +118,7 @@
       </a-col>
       <a-col :span="22">
         <a-row>
-          <a-col class="b14 br bt cell" :span="4">经营负责人</a-col>
+          <a-col class="b14 br bt cell" :span="4">项目经营负责人</a-col>
           <a-col class="br bt cell" :span="4">
             <a-tag color="orange">
               {{formData.runningManager && formData.runningManager.nickname}}
@@ -303,7 +303,7 @@
           </a-row>
           <a-row style="margin-top: 50px;">
             <a-col :span="14">
-              行政专员（签字）：
+              商务专员（签字）：
               <a-tag v-if="projectSecretary.agreeStatus === 0">待发起</a-tag>
               <a-tag v-else-if="projectSecretary.agreeStatus === 1" color="blue">审批中</a-tag>
               <a-tag v-else-if="projectSecretary.agreeStatus === 2" color="green">已通过</a-tag>
@@ -320,7 +320,7 @@
           </a-row>
           <a-row style="margin-top: 50px;">
             <a-col :span="14">
-              经营负责人（签字）：
+              项目经营负责人（签字）：
               <a-tag v-if="runningManager.agreeStatus === 0">待发起</a-tag>
               <a-tag v-else-if="runningManager.agreeStatus === 1" color="blue">审批中</a-tag>
               <a-tag v-else-if="runningManager.agreeStatus === 2" color="green">已通过</a-tag>
@@ -337,7 +337,7 @@
           </a-row>
           <a-row style="margin-top: 50px;">
             <a-col :span="14">
-              总监（签字）：
+              部门经营负责人（签字）：
               <a-tag v-if="inspector.agreeStatus === 0">待发起</a-tag>
               <a-tag v-else-if="inspector.agreeStatus === 1" color="blue">审批中</a-tag>
               <a-tag v-else-if="inspector.agreeStatus === 2" color="green">已通过</a-tag>

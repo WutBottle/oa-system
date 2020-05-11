@@ -11,20 +11,6 @@
         <a-form-item
                 :label-col="formItemLayout.labelCol"
                 :wrapper-col="formItemLayout.wrapperCol"
-                label="设计号"
-        >
-          <a-input
-                  disabled
-                  v-decorator="[
-          'designId',
-          {initialValue: this.formData.designNum}
-        ]"
-                  placeholder="请输入设计号"
-          />
-        </a-form-item>
-        <a-form-item
-                :label-col="formItemLayout.labelCol"
-                :wrapper-col="formItemLayout.wrapperCol"
                 label="合同号"
         >
           <a-input
@@ -36,6 +22,20 @@
           }]}
         ]"
                   placeholder="请输入合同号"
+          />
+        </a-form-item>
+        <a-form-item
+                :label-col="formItemLayout.labelCol"
+                :wrapper-col="formItemLayout.wrapperCol"
+                label="设计号"
+        >
+          <a-input
+                  disabled
+                  v-decorator="[
+          'designId',
+          {initialValue: this.formData.designNum}
+        ]"
+                  placeholder="请输入设计号"
           />
         </a-form-item>
         <a-form-item
@@ -222,61 +222,112 @@
                 v-if="!this.formData.sup"
         >
           <a-select
-                  v-decorator="[
-          'projectManager',
-          {initialValue: this.formData.projectManager}
-        ]"
-                  placeholder="请选择项目经理"
+                  v-decorator="['projectManager',
+                  {initialValue: this.formData.projectManager}]"
+                  showSearch
+                  placeholder="搜索用户"
+                  :showArrow="false"
+                  style="width: 300px"
+                  :filterOption="false"
+                  @search="fetchUsers"
+                  notFoundContent="无搜索结果"
+                  :defaultActiveFirstOption="false"
+                  :allowClear="true"
           >
-            <a-select-option v-for="d in projectManagerList" :key="d.userId">{{d.username}}<a-divider type="vertical" /><a-tag color="orange">{{d.nickname}}</a-tag></a-select-option>
+            <a-spin v-if="fetching" slot="notFoundContent" size="small"/>
+            <a-select-option v-for="(d,index) in usersData" :key="d.userId">{{d.username}}<a-divider type="vertical" /><a-tag color="orange">{{d.nickname}}</a-tag></a-select-option>
+          </a-select>
+        </a-form-item>
+        <a-form-item
+              :label-col="formItemLayout.labelCol"
+              :wrapper-col="formItemLayout.wrapperCol"
+              label="商务专员"
+              v-if="!this.formData.sup"
+      >
+        <a-select
+                v-decorator="['projectSecretary',
+                  {initialValue: this.formData.projectSecretary}]"
+                showSearch
+                placeholder="搜索用户"
+                :showArrow="false"
+                style="width: 300px"
+                :filterOption="false"
+                @search="fetchUsers"
+                notFoundContent="无搜索结果"
+                :defaultActiveFirstOption="false"
+                :allowClear="true"
+        >
+          <a-spin v-if="fetching" slot="notFoundContent" size="small"/>
+          <a-select-option v-for="(d,index) in usersData" :key="d.userId">{{d.username}}<a-divider type="vertical" /><a-tag color="orange">{{d.nickname}}</a-tag></a-select-option>
+        </a-select>
+      </a-form-item>
+        <a-form-item
+                :label-col="formItemLayout.labelCol"
+                :wrapper-col="formItemLayout.wrapperCol"
+                label="财务专员"
+                v-if="!this.formData.sup"
+        >
+          <a-select
+                  v-decorator="['financeManager',
+                  {initialValue: this.formData.financeManager}]"
+                  showSearch
+                  placeholder="搜索用户"
+                  :showArrow="false"
+                  style="width: 300px"
+                  :filterOption="false"
+                  @search="fetchUsers"
+                  notFoundContent="无搜索结果"
+                  :defaultActiveFirstOption="false"
+                  :allowClear="true"
+          >
+            <a-spin v-if="fetching" slot="notFoundContent" size="small"/>
+            <a-select-option v-for="(d,index) in usersData" :key="d.userId">{{d.username}}<a-divider type="vertical" /><a-tag color="orange">{{d.nickname}}</a-tag></a-select-option>
           </a-select>
         </a-form-item>
         <a-form-item
                 :label-col="formItemLayout.labelCol"
                 :wrapper-col="formItemLayout.wrapperCol"
-                label="行政专员"
+                label="项目经营负责人"
                 v-if="!this.formData.sup"
         >
           <a-select
-                  v-decorator="[
-          'projectSecretary',
-          {initialValue: this.formData.projectSecretary}
-        ]"
-                  placeholder="请选择项目经理"
+                  v-decorator="['runningManager',
+                  {initialValue: this.formData.runningManager}]"
+                  showSearch
+                  placeholder="搜索用户"
+                  :showArrow="false"
+                  style="width: 300px"
+                  :filterOption="false"
+                  @search="fetchUsers"
+                  notFoundContent="无搜索结果"
+                  :defaultActiveFirstOption="false"
+                  :allowClear="true"
           >
-            <a-select-option v-for="d in projectSecretaryList" :key="d.userId">{{d.username}}<a-divider type="vertical" /><a-tag color="orange">{{d.nickname}}</a-tag></a-select-option>
+            <a-spin v-if="fetching" slot="notFoundContent" size="small"/>
+            <a-select-option v-for="(d,index) in usersData" :key="d.userId">{{d.username}}<a-divider type="vertical" /><a-tag color="orange">{{d.nickname}}</a-tag></a-select-option>
           </a-select>
         </a-form-item>
         <a-form-item
                 :label-col="formItemLayout.labelCol"
                 :wrapper-col="formItemLayout.wrapperCol"
-                label="经营负责人"
+                label="部门经营负责人"
                 v-if="!this.formData.sup"
         >
           <a-select
-                  v-decorator="[
-          'runningManager',
-          {initialValue: this.formData.runningManager}
-        ]"
-                  placeholder="请选择经营负责人"
+                  v-decorator="['inspector',
+                  {initialValue: this.formData.inspector}]"
+                  showSearch
+                  placeholder="搜索用户"
+                  :showArrow="false"
+                  style="width: 300px"
+                  :filterOption="false"
+                  @search="fetchUsers"
+                  notFoundContent="无搜索结果"
+                  :defaultActiveFirstOption="false"
+                  :allowClear="true"
           >
-            <a-select-option v-for="d in runningManagerList" :key="d.userId">{{d.username}}<a-divider type="vertical" /><a-tag color="orange">{{d.nickname}}</a-tag></a-select-option>
-          </a-select>
-        </a-form-item>
-        <a-form-item
-                :label-col="formItemLayout.labelCol"
-                :wrapper-col="formItemLayout.wrapperCol"
-                label="总监"
-                v-if="!this.formData.sup"
-        >
-          <a-select
-                  v-decorator="[
-          'inspector',
-          {initialValue: this.formData.inspector}
-        ]"
-                  placeholder="请选择经营负责人"
-          >
-            <a-select-option v-for="d in inspectorList" :key="d.userId">{{d.username}}<a-divider type="vertical" /><a-tag color="orange">{{d.nickname}}</a-tag></a-select-option>
+            <a-spin v-if="fetching" slot="notFoundContent" size="small"/>
+            <a-select-option v-for="(d,index) in usersData" :key="d.userId">{{d.username}}<a-divider type="vertical" /><a-tag color="orange">{{d.nickname}}</a-tag></a-select-option>
           </a-select>
         </a-form-item>
         <a-form-item
@@ -465,7 +516,7 @@
 </template>
 
 <script>
-  import {mapState, mapActions} from 'vuex'
+  import {mapActions} from 'vuex'
 
   const formItemLayout = {
     labelCol: {span: 6},
@@ -500,45 +551,35 @@
         form: this.$form.createForm(this),
         pdfFileList: [],
         fetching: false, // 控制拉取列表
-        projectManagerList: [], // 项目经理列表
-        projectSecretaryList: [], // 行政专员列表
-        inspectorList: [], // 总监列表
-        runningManagerList: [], // 经营负责人列表
+        usersData: [],
       }
     },
-    computed: {
-      ...mapState({
-        staffData: state => state.staffOperation.staffData, // 职员信息
-      }),
-    },
-    mounted() {
-      this.getUserListByRoleId({
-        roleId: 5, // 项目经理
-      }).then(res => {
-        this.projectManagerList = res.data.data;
-      });
-      this.getUserListByRoleId({
-        roleId: 4, // 行政专员
-      }).then(res => {
-        this.projectSecretaryList = res.data.data;
-      });
-      this.getUserListByRoleId({
-        roleId: 2, // 总监
-      }).then(res => {
-        this.inspectorList = res.data.data;
-      });
-      this.getUserListByRoleId({
-        roleId: 3, // 经营负责人
-      }).then(res => {
-        this.runningManagerList = res.data.data;
-      });
+    watch: {
+      formData: {
+        immediate: true,
+        handler(val) {
+          this.usersData = val.currentUserOptions
+        }
+      }
     },
     methods: {
       ...mapActions({
         uploadContract: 'contractList/uploadContract',
         verifyContract: 'contractList/verifyContract',
-        getUserListByRoleId: 'userOperation/getUserListByRoleId', // 获取不同角色列表
+        getUserListByNameLike: 'userOperation/getUserListByNameLike', // 获取不同角色列表
       }),
+      fetchUsers(value) {
+        const params = {
+          username: value,
+          pageNum: 1,
+          pageLimit: 10,
+        };
+        this.fetching = true;
+        this.getUserListByNameLike(params).then((res) => {
+          this.usersData = res.data.data.content;
+          this.fetching = false;
+        });
+      },
       check() {
         this.form.validateFields(
           (err, values) => {
@@ -562,6 +603,9 @@
               };
               values.runningManager = values.runningManager && {
                 userId: values.runningManager
+              };
+              values.financeManager = values.financeManager && {
+                userId: values.financeManager
               };
               values.projectSecretary = values.projectSecretary && {
                 userId: values.projectSecretary

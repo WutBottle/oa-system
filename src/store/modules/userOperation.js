@@ -46,8 +46,9 @@ const actions = {
   getUserListByNameLike({commit}, params) {
     return new Promise((resolve, reject) => {
       api.userController.getUserListByNameLike(params).then(res => {
-        resolve(res);
         res.data.data && commit('setListData', res.data.data);
+        resolve(res);
+
       }).catch(error => {
         console.log(error, '获取用户列表失败');
         reject(error);

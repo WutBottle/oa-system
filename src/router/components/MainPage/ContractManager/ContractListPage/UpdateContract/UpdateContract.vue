@@ -576,7 +576,7 @@
         };
         this.fetching = true;
         this.getUserListByNameLike(params).then((res) => {
-          this.usersData = res.data.data.content;
+          this.usersData = res.data.data.content.filter(item => item.roles[0].name != '超级管理员');
           this.fetching = false;
         });
       },

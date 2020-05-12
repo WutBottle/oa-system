@@ -262,7 +262,6 @@
               </a-row>
             </template>
           </a-row>
-
         </template>
         <a-row>
           <a-col class="br bt cell" :span="4"></a-col>

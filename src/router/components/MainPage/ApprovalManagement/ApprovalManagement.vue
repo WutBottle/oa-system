@@ -39,13 +39,14 @@
                 <a-tag v-if="text === 1" color="blue">审批中</a-tag>
                 <a-tag v-if="text === 2" color="green">已通过</a-tag>
                 <a-tag v-if="text === 3 && role != '超级管理员'" color="red">已驳回</a-tag>
+                <a-tag v-if="text === 4" color="red">人员未齐</a-tag>
               </span>
               <template slot="operation" slot-scope="text, record">
                 <a-button type="primary" size="small" @click="handleOpen(record)">
                   详情
                 </a-button>
                 <a-divider type="vertical"/>
-                <a-button type="primary" size="small" @click="openDetail(record)">
+                <a-button :disabled="record.state === 4" type="primary" size="small" @click="openDetail(record)">
                   审批
                 </a-button>
               </template>
@@ -189,16 +190,33 @@
         projectInfoVisible: false,
         projectUsers: [],
         projectInfoData: {},
+        tempSubProjects: [],
       }
     },
     computed: {
       ...mapState({
         role: state => state.tokensOperation.role,
         userId: state => state.tokensOperation.userId,
+        subCategoryList: state => state.categoryOperation.subCategoryList,
       }),
     },
-    mounted() {
+    activated() {
       this.updateTableData();
+      this.subCategoryList.map(item => {
+        this.tempSubProjects.push({
+          organization: null,
+          subCategory: {
+            categoryId: item.categoryId,
+            categoryType: item.categoryType,
+            categoryName: item.categoryName,
+          },
+          outContracts: [],
+          designTeam: null,
+          designFees: 0,
+          price: 0,
+          note: null,
+        })
+      });
     },
     methods: {
       ...mapActions({
@@ -229,6 +247,8 @@
                 contractName: item.contractName,
                 state: item.state,
                 projectManagerId: item.projectManagerId,
+                aboveGroundArea: item.aboveGroundArea,
+                underGroundArea: item.underGroundArea
               }
             });
             this.spinning = false;

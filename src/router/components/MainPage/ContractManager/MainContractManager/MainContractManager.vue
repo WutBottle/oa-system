@@ -182,10 +182,11 @@
                     :showArrow="false"
                     style="width: 300px"
                     :filterOption="false"
-                    @search="fetchUsers"
+                    @search="(val) => {this.fetchUsers(val, false)}"
                     notFoundContent="无搜索结果"
                     :defaultActiveFirstOption="false"
                     :allowClear="true"
+                    @blur="clearUserData"
             >
               <a-spin v-if="fetching" slot="notFoundContent" size="small"/>
               <a-select-option v-for="(d,index) in usersData" :key="d.userId">{{d.username}}<a-divider type="vertical" /><a-tag color="orange">{{d.nickname}}</a-tag></a-select-option>
@@ -203,10 +204,11 @@
                     :showArrow="false"
                     style="width: 300px"
                     :filterOption="false"
-                    @search="fetchUsers"
+                    @search="(val) => {this.fetchUsers(val, false)}"
                     notFoundContent="无搜索结果"
                     :defaultActiveFirstOption="false"
                     :allowClear="true"
+                    @blur="clearUserData"
             >
               <a-spin v-if="fetching" slot="notFoundContent" size="small"/>
               <a-select-option v-for="(d,index) in usersData" :key="d.userId">{{d.username}}<a-divider type="vertical" /><a-tag color="orange">{{d.nickname}}</a-tag></a-select-option>
@@ -224,10 +226,11 @@
                     :showArrow="false"
                     style="width: 300px"
                     :filterOption="false"
-                    @search="fetchUsers"
+                    @search="(val) => {this.fetchUsers(val, false)}"
                     notFoundContent="无搜索结果"
                     :defaultActiveFirstOption="false"
                     :allowClear="true"
+                    @blur="clearUserData"
             >
               <a-spin v-if="fetching" slot="notFoundContent" size="small"/>
               <a-select-option v-for="(d,index) in usersData" :key="d.userId">{{d.username}}<a-divider type="vertical" /><a-tag color="orange">{{d.nickname}}</a-tag></a-select-option>
@@ -245,10 +248,11 @@
                     :showArrow="false"
                     style="width: 300px"
                     :filterOption="false"
-                    @search="fetchUsers"
+                    @search="(val) => {this.fetchUsers(val, false)}"
                     notFoundContent="无搜索结果"
                     :defaultActiveFirstOption="false"
                     :allowClear="true"
+                    @blur="clearUserData"
             >
               <a-spin v-if="fetching" slot="notFoundContent" size="small"/>
               <a-select-option v-for="(d,index) in usersData" :key="d.userId">{{d.username}}<a-divider type="vertical" /><a-tag color="orange">{{d.nickname}}</a-tag></a-select-option>
@@ -266,13 +270,14 @@
                     :showArrow="false"
                     style="width: 300px"
                     :filterOption="false"
-                    @search="fetchUsers"
+                    @search="(val) => {this.fetchUsers(val, true)}"
                     notFoundContent="无搜索结果"
                     :defaultActiveFirstOption="false"
                     :allowClear="true"
+                    @blur="clearUserData"
             >
               <a-spin v-if="fetching" slot="notFoundContent" size="small"/>
-              <a-select-option v-for="(d,index) in usersData" :key="d.userId">{{d.username}}<a-divider type="vertical" /><a-tag color="orange">{{d.nickname}}</a-tag></a-select-option>
+              <a-select-option v-for="(d,index) in usersData" :key="d.userId">{{d.username}}<a-divider type="vertical" /><a-tag color="red">{{d.nickname}}</a-tag></a-select-option>
             </a-select>
           </a-form-item>
           <a-form-item
@@ -729,7 +734,7 @@
         getCategoryList: 'categoryOperation/getCategoryList', // 获取类型
         getUserListByNameLike: 'userOperation/getUserListByNameLike', // 用户的模糊查询
       }),
-      fetchUsers(value) {
+      fetchUsers(value, index) {
         const params = {
           username: value,
           pageNum: 1,
@@ -737,7 +742,11 @@
         };
         this.fetching = true;
         this.getUserListByNameLike(params).then((res) => {
-          this.usersData = res.data.data.content.filter(item => item.roles[0].name != '超级管理员');
+          if (index) {
+            this.usersData = res.data.data.content.filter(item => item.roles[0].name === '部门负责人');
+          } else {
+            this.usersData = res.data.data.content.filter(item => item.roles[0].name === '普通用户');
+          }
           this.fetching = false;
         });
       },
@@ -893,6 +902,9 @@
       onClose() {
         this.visible = false
       },
+      clearUserData() {
+        this.usersData = [];
+      }
     },
   }
 </script>

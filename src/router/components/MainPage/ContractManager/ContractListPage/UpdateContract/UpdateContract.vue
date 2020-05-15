@@ -229,38 +229,48 @@
                   :showArrow="false"
                   style="width: 300px"
                   :filterOption="false"
-                  @search="fetchUsers"
+                  @search="(val) => {this.fetchUsers(val, false)}"
                   notFoundContent="无搜索结果"
                   :defaultActiveFirstOption="false"
                   :allowClear="true"
           >
             <a-spin v-if="fetching" slot="notFoundContent" size="small"/>
-            <a-select-option v-for="(d,index) in usersData" :key="d.userId">{{d.username}}<a-divider type="vertical" /><a-tag color="orange">{{d.nickname}}</a-tag></a-select-option>
+            <template v-for="(d,index) in usersData">
+              <a-select-option v-if="d.role && d.role === '普通用户'" :key="d.userId">{{d.username}}
+                <a-divider type="vertical"/>
+                <a-tag color="orange">{{d.nickname}}</a-tag>
+              </a-select-option>
+            </template>
           </a-select>
         </a-form-item>
         <a-form-item
-              :label-col="formItemLayout.labelCol"
-              :wrapper-col="formItemLayout.wrapperCol"
-              label="商务专员"
-              v-if="!this.formData.sup"
-      >
-        <a-select
-                v-decorator="['projectSecretary',
-                  {initialValue: this.formData.projectSecretary}]"
-                showSearch
-                placeholder="搜索用户"
-                :showArrow="false"
-                style="width: 300px"
-                :filterOption="false"
-                @search="fetchUsers"
-                notFoundContent="无搜索结果"
-                :defaultActiveFirstOption="false"
-                :allowClear="true"
+                :label-col="formItemLayout.labelCol"
+                :wrapper-col="formItemLayout.wrapperCol"
+                label="商务专员"
+                v-if="!this.formData.sup"
         >
-          <a-spin v-if="fetching" slot="notFoundContent" size="small"/>
-          <a-select-option v-for="(d,index) in usersData" :key="d.userId">{{d.username}}<a-divider type="vertical" /><a-tag color="orange">{{d.nickname}}</a-tag></a-select-option>
-        </a-select>
-      </a-form-item>
+          <a-select
+                  v-decorator="['projectSecretary',
+                  {initialValue: this.formData.projectSecretary}]"
+                  showSearch
+                  placeholder="搜索用户"
+                  :showArrow="false"
+                  style="width: 300px"
+                  :filterOption="false"
+                  @search="(val) => {this.fetchUsers(val, false)}"
+                  notFoundContent="无搜索结果"
+                  :defaultActiveFirstOption="false"
+                  :allowClear="true"
+          >
+            <a-spin v-if="fetching" slot="notFoundContent" size="small"/>
+            <template v-for="(d,index) in usersData">
+              <a-select-option v-if="d.role && d.role === '普通用户'" :key="d.userId">{{d.username}}
+                <a-divider type="vertical"/>
+                <a-tag color="orange">{{d.nickname}}</a-tag>
+              </a-select-option>
+            </template>
+          </a-select>
+        </a-form-item>
         <a-form-item
                 :label-col="formItemLayout.labelCol"
                 :wrapper-col="formItemLayout.wrapperCol"
@@ -275,13 +285,18 @@
                   :showArrow="false"
                   style="width: 300px"
                   :filterOption="false"
-                  @search="fetchUsers"
+                  @search="(val) => {this.fetchUsers(val, false)}"
                   notFoundContent="无搜索结果"
                   :defaultActiveFirstOption="false"
                   :allowClear="true"
           >
             <a-spin v-if="fetching" slot="notFoundContent" size="small"/>
-            <a-select-option v-for="(d,index) in usersData" :key="d.userId">{{d.username}}<a-divider type="vertical" /><a-tag color="orange">{{d.nickname}}</a-tag></a-select-option>
+            <template v-for="(d,index) in usersData">
+              <a-select-option v-if="d.role && d.role === '普通用户'" :key="d.userId">{{d.username}}
+                <a-divider type="vertical"/>
+                <a-tag color="orange">{{d.nickname}}</a-tag>
+              </a-select-option>
+            </template>
           </a-select>
         </a-form-item>
         <a-form-item
@@ -298,13 +313,18 @@
                   :showArrow="false"
                   style="width: 300px"
                   :filterOption="false"
-                  @search="fetchUsers"
+                  @search="(val) => {this.fetchUsers(val, false)}"
                   notFoundContent="无搜索结果"
                   :defaultActiveFirstOption="false"
                   :allowClear="true"
           >
             <a-spin v-if="fetching" slot="notFoundContent" size="small"/>
-            <a-select-option v-for="(d,index) in usersData" :key="d.userId">{{d.username}}<a-divider type="vertical" /><a-tag color="orange">{{d.nickname}}</a-tag></a-select-option>
+            <template v-for="(d,index) in usersData">
+              <a-select-option v-if="d.role && d.role === '普通用户'" :key="d.userId">{{d.username}}
+                <a-divider type="vertical"/>
+                <a-tag color="orange">{{d.nickname}}</a-tag>
+              </a-select-option>
+            </template>
           </a-select>
         </a-form-item>
         <a-form-item
@@ -321,13 +341,18 @@
                   :showArrow="false"
                   style="width: 300px"
                   :filterOption="false"
-                  @search="fetchUsers"
+                  @search="(val) => {this.fetchUsers(val, true)}"
                   notFoundContent="无搜索结果"
                   :defaultActiveFirstOption="false"
                   :allowClear="true"
           >
             <a-spin v-if="fetching" slot="notFoundContent" size="small"/>
-            <a-select-option v-for="(d,index) in usersData" :key="d.userId">{{d.username}}<a-divider type="vertical" /><a-tag color="orange">{{d.nickname}}</a-tag></a-select-option>
+            <template v-for="(d,index) in usersData">
+              <a-select-option v-if="d.role && d.role === '部门负责人'" :key="d.userId">{{d.username}}
+                <a-divider type="vertical"/>
+                <a-tag color="red">{{d.nickname}}</a-tag>
+              </a-select-option>
+            </template>
           </a-select>
         </a-form-item>
         <a-form-item
@@ -516,7 +541,7 @@
 </template>
 
 <script>
-  import {mapActions} from 'vuex'
+  import {mapActions, mapState} from 'vuex'
 
   const formItemLayout = {
     labelCol: {span: 6},
@@ -531,7 +556,8 @@
     props: {
       formData: {
         type: Object,
-        default: () => {}
+        default: () => {
+        }
       },
       projectCategoryList: {
         type: Array,
@@ -568,7 +594,7 @@
         verifyContract: 'contractList/verifyContract',
         getUserListByNameLike: 'userOperation/getUserListByNameLike', // 获取不同角色列表
       }),
-      fetchUsers(value) {
+      fetchUsers(value, index) {
         const params = {
           username: value,
           pageNum: 1,
@@ -576,7 +602,30 @@
         };
         this.fetching = true;
         this.getUserListByNameLike(params).then((res) => {
-          this.usersData = res.data.data.content.filter(item => item.roles[0].name != '超级管理员');
+          this.usersData = [];
+          if (index) {
+            res.data.data.content.map(item => {
+              if (item.roles[0].name === '部门负责人') {
+                this.usersData.push({
+                  username: item.username,
+                  nickname: item.nickname,
+                  userId: item.userId,
+                  role: item.roles[0].name,
+                })
+              }
+            });
+          } else {
+            res.data.data.content.map(item => {
+              if (item.roles[0].name === '普通用户') {
+                this.usersData.push({
+                  username: item.username,
+                  nickname: item.nickname,
+                  userId: item.userId,
+                  role: item.roles[0].name,
+                })
+              }
+            });
+          }
           this.fetching = false;
         });
       },

@@ -3,7 +3,7 @@
 * 登录处理
 */
 import api from '@/api/apiSugar'
-import {ACCESS_TOKEN, ROLE, USERNAME, AUTHORITY, USERID} from '@/store/mutation-types'
+import {ACCESS_TOKEN, ROLE, USERNAME, AUTHORITY, USERID} from '@/store/mutation-types';
 
 const state = {
   status: '',

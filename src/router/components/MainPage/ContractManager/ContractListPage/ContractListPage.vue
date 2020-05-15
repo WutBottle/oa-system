@@ -296,26 +296,31 @@
               username: item.projectManager ? item.projectManager.username : undefined,
               nickname: item.projectManager ? item.projectManager.nickname : undefined,
               userId: item.projectManager ? item.projectManager.userId : undefined,
+              role: item.projectManager ? item.projectManager.roles[0].name : undefined,
             }, // 项目经理
             runningManagerNode: {
               username: item.runningManager ? item.runningManager.username : undefined,
               nickname: item.runningManager ? item.runningManager.nickname : undefined,
               userId: item.runningManager ? item.runningManager.userId : undefined,
+              role: item.runningManager ? item.runningManager.roles[0].name : undefined,
             }, // 项目经营负责人
             projectSecretaryNode: {
               username: item.projectSecretary ? item.projectSecretary.username : undefined,
               nickname: item.projectSecretary ? item.projectSecretary.nickname : undefined,
               userId: item.projectSecretary ? item.projectSecretary.userId : undefined,
+              role: item.projectSecretary ? item.projectSecretary.roles[0].name : undefined,
             }, // 商务专员
             financeManagerNode: {
               username: item.financeManager ? item.financeManager.username : undefined,
               nickname: item.financeManager ? item.financeManager.nickname : undefined,
               userId: item.financeManager ? item.financeManager.userId : undefined,
+              role: item.financeManager ? item.financeManager.roles[0].name : undefined,
             }, // 财务专员
             inspectorNode: {
               username: item.inspector ? item.inspector.username : undefined,
               nickname: item.inspector ? item.inspector.nickname : undefined,
               userId: item.inspector ? item.inspector.userId : undefined,
+              role: item.inspector ? item.inspector.roles[0].name : undefined,
             }, // 部门经营负责人
             contractingParty: item.owner, // 发包方
             investmentAmount: item.investment, // 投资额(万元)

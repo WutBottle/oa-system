@@ -339,12 +339,9 @@
         defaultCheckedListStaff: [], // 职员管理默认权限
         defaultCheckedListSalary: [], // 工资管理默认权限
         avatarSetting: {
-          总监: require('@/assets/总监.png'),
+          部门负责人: require('@/assets/总监.png'),
           超级管理员: require('@/assets/超级管理员.png'),
           普通用户: require('@/assets/普通用户.png'),
-          行政专员: require('@/assets/行政专员.png'),
-          经营负责人: require('@/assets/经营负责人.png'),
-          项目经理: require('@/assets/项目经理.png'),
         },
       }
     },
@@ -354,6 +351,7 @@
         showLoadingMore: state => state.userOperation.showLoadingMore, // 控制加载更多按钮
         listData: state => state.userOperation.listData, // list数据
         roleList: state => state.roleOperation.roleList, // 角色list数据
+        role: state => state.tokensOperation.role, // 用户角色
       }),
     },
     mounted() {

@@ -215,11 +215,11 @@
             <a-icon class="icon" @click="toggleCollapsed" :type="collapsed ? 'menu-unfold' : 'menu-fold'"/>
             <div class="user-wrapper">
               <div class="content-box">
-<!--                <span class="action">-->
-<!--                  <a-badge count="12">-->
-<!--                    <a-icon type="bell"/>-->
-<!--                  </a-badge>-->
-<!--                </span>-->
+                <!--                <span class="action">-->
+                <!--                  <a-badge count="12">-->
+                <!--                    <a-icon type="bell"/>-->
+                <!--                  </a-badge>-->
+                <!--                </span>-->
                 <a-dropdown plcement="bottomRight">
                 <span class="action">
                   <span class="avatar">
@@ -228,18 +228,18 @@
                   <span>{{this.username}}</span>
                 </span>
                   <a-menu slot="overlay">
-<!--                    <a-menu-item key="0">-->
-<!--                      <a @click="() => {this.$router.push('/main/usercenter')}">-->
-<!--                        <a-icon type="user" style="margin-right: 8px"/>-->
-<!--                        <span>个人中心</span>-->
-<!--                      </a>-->
-<!--                    </a-menu-item>-->
-<!--                    <a-menu-item key="1">-->
-<!--                      <a @click="() => {this.$router.push('/main/setting')}">-->
-<!--                        <a-icon type="setting" style="margin-right: 8px"/>-->
-<!--                        <span>账户设置</span>-->
-<!--                      </a>-->
-<!--                    </a-menu-item>-->
+                    <!--                    <a-menu-item key="0">-->
+                    <!--                      <a @click="() => {this.$router.push('/main/usercenter')}">-->
+                    <!--                        <a-icon type="user" style="margin-right: 8px"/>-->
+                    <!--                        <span>个人中心</span>-->
+                    <!--                      </a>-->
+                    <!--                    </a-menu-item>-->
+                    <!--                    <a-menu-item key="1">-->
+                    <!--                      <a @click="() => {this.$router.push('/main/setting')}">-->
+                    <!--                        <a-icon type="setting" style="margin-right: 8px"/>-->
+                    <!--                        <span>账户设置</span>-->
+                    <!--                      </a>-->
+                    <!--                    </a-menu-item>-->
                     <a-menu-divider/>
                     <a-menu-item key="3">
                       <a @click="handleLogout">
@@ -300,12 +300,9 @@
         rootSubmenuKeys: ['数据录入', '系统管理'],
         menuList: [],
         avatarSetting: {
-          总监: require('@/assets/总监.png'),
+          部门负责人: require('@/assets/总监.png'),
           超级管理员: require('@/assets/超级管理员.png'),
           普通用户: require('@/assets/普通用户.png'),
-          行政专员: require('@/assets/行政专员.png'),
-          经营负责人: require('@/assets/经营负责人.png'),
-          项目经理: require('@/assets/项目经理.png'),
         },
       }
     },
@@ -322,7 +319,6 @@
         username: state => state.tokensOperation.username,// 选择合同数
         role: state => state.tokensOperation.role,
         menuSelect: state => state.tokensOperation.menuSelect, // 当前menu
-        authority: state => state.tokensOperation.authority, // 录入菜单权限
       }),
     },
     methods: {
@@ -339,116 +335,76 @@
         })
       },
       generateMenuList() {
-        let commonMenuList =
+        const commonMenuList =
           [{
             name: '工作台',
             router: "/main/workplace",
             iconType: "desktop",
           },
-          {
-            name: '项目列表',
-            router: "/main/project",
-            iconType: "table",
-          },
-          {
-            name: '现金发票',
-            router: "/main/receipt",
-            iconType: "snippets",
-          },
-          {
-            name: '分包列表',
-            router: "/main/outcontractlist",
-            iconType: "layout",
-          }, {
+            {
+              name: '项目列表',
+              router: "/main/project",
+              iconType: "table",
+            },
+            {
+              name: '现金发票',
+              router: "/main/receipt",
+              iconType: "snippets",
+            },
+            {
+              name: '分包列表',
+              router: "/main/outcontractlist",
+              iconType: "layout",
+            }, {
             name: '审批管理',
             router: "/main/approvalmanagement",
             iconType: "edit",
-          },
+          }];
+        const inputMenuList =
           {
+            name: "数据管理",
+            iconType: "file-text",
+            sideBars: [
+              {
+                name: "合同管理",
+                router: "/main/contractmanager",
+              },
+              {
+                name: "合同发票管理",
+                router: "/main/invoice",
+              },
+              {
+                name: "合同现金管理",
+                router: "/main/cash",
+              },
+              {
+                name: "分项分包管理",
+                router: "/main/subentry",
+              },
+              {
+                name: "分包发票管理",
+                router: "/main/outcontractreceipt",
+              },
+              {
+                name: "分包付款管理",
+                router: "/main/outcontractpaid",
+              }]
+          };
+
+        if (this.role === '超级管理员' || this.role === '部门负责人') {
+          commonMenuList.push({
             name: '职员列表',
             router: "/main/staff",
             iconType: "team",
-          }];
-        let inputMenuList =
-          {
-          name: "数据管理",
-          iconType: "file-text",
-          sideBars: [
-          {
-            name: "合同管理",
-            router: "/main/contractmanager",
-          },
-          {
-            name: "合同发票管理",
-            router: "/main/invoice",
-          },
-          {
-            name: "合同现金管理",
-            router: "/main/cash",
-          },
-          {
-            name: "分项分包管理",
-            router: "/main/subentry",
-          },
-          {
-            name: "分包发票管理",
-            router: "/main/outcontractreceipt",
-          },
-          {
-            name: "分包付款管理",
-            router: "/main/outcontractpaid",
-          },
-          {
+          });
+          inputMenuList.sideBars.push({
             name: "职员管理",
             router: "/main/staffentry",
-          },
-          {
+          });
+          inputMenuList.sideBars.push({
             name: "工资管理",
             router: "/main/salaryentry",
-          }
-        ]
-        };
-        for (let key in this.authority) {
-          if (!(this.authority[key].length > 1 && this.authority[key].includes('query'))) {
-            switch (key) {
-              case 'OutPaid':
-                inputMenuList.sideBars.splice(inputMenuList.sideBars.findIndex(item => item.name === '分包付款管理'), 1);
-                break;
-              case 'Receipt':
-                inputMenuList.sideBars.splice(inputMenuList.sideBars.findIndex(item => item.name === '合同发票管理'), 1);
-                break;
-              case 'SubProject':
-                inputMenuList.sideBars.splice(inputMenuList.sideBars.findIndex(item => item.name === '分项分包管理'), 1);
-                break;
-              case 'Cash':
-                inputMenuList.sideBars.splice(inputMenuList.sideBars.findIndex(item => item.name === '合同现金管理'), 1);
-                break;
-              case 'Contract':
-                inputMenuList.sideBars.splice(inputMenuList.sideBars.findIndex(item => item.name === '合同管理'), 1);
-                break;
-              case 'Salary':
-                inputMenuList.sideBars.splice(inputMenuList.sideBars.findIndex(item => item.name === '工资管理'), 1);
-                break;
-              case 'Staff':
-                inputMenuList.sideBars.splice(inputMenuList.sideBars.findIndex(item => item.name === '职员管理'), 1);
-                break;
-              case 'OutReceipt':
-                inputMenuList.sideBars.splice(inputMenuList.sideBars.findIndex(item => item.name === '分包发票管理'), 1);
-                break;
-            }
-          }
-        }
-        // 如果不含分项列表查询则去掉
-        if(!this.authority.SubProject.includes('query')) {
-          commonMenuList.splice(commonMenuList.findIndex(item => item.name === '分包列表'), 1);
-        }
-        // 现金发票同时没权限才去掉
-        if (!(this.authority.Cash.includes('query') || this.authority.Receipt.includes('query'))) {
-          commonMenuList.splice(commonMenuList.findIndex(item => item.name === '现金发票'), 1);
-        }
-        this.menuList = this.menuList.concat(commonMenuList);
-        this.menuList = this.menuList.concat(inputMenuList);
-        if (this.role === '超级管理员') {
+          });
           const adminMenu = [
             {
               name: '项目导出',
@@ -468,7 +424,9 @@
                 }
               ]
             }];
-          this.menuList = this.menuList.concat(adminMenu);
+          this.menuList = this.menuList.concat(commonMenuList).concat(inputMenuList).concat(adminMenu);
+        } else {
+          this.menuList = this.menuList.concat(commonMenuList).concat(inputMenuList);
         }
       },
       toggleCollapsed() {

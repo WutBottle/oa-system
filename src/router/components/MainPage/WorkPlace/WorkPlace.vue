@@ -99,7 +99,7 @@
               </div>
             </div>
           </a-col>
-          <a-col style="position: relative;" v-if="role === '超级管理员'" :span="13">
+          <a-col style="position: relative;" v-if="role === '超级管理员' || role === '部门负责人'" :span="13">
             <div style="position: absolute; top: -38px;">
               <a-radio-group v-model="selectMonth" buttonStyle="solid" size="small" @change="handleMonthChange">
                 <a-radio-button value="1">一个月</a-radio-button>
@@ -376,12 +376,9 @@
           total: 6,
         },
         avatarSetting: {
-          总监: require('@/assets/总监.png'),
+          部门负责人: require('@/assets/总监.png'),
           超级管理员: require('@/assets/超级管理员.png'),
           普通用户: require('@/assets/普通用户.png'),
-          行政专员: require('@/assets/行政专员.png'),
-          经营负责人: require('@/assets/经营负责人.png'),
-          项目经理: require('@/assets/项目经理.png'),
         },
       }
     },

@@ -3,6 +3,7 @@
 * 角色控制
 */
 import api from '@/api/apiSugar'
+import {ROLE} from '@/store/mutation-types'
 
 const state = {
   roleList: [],
@@ -10,7 +11,11 @@ const state = {
 
 const mutations = {
   setRoleList(state, data) {
-    state.roleList = data;
+    if (localStorage.getItem(ROLE) === '部门负责人' || localStorage.getItem(ROLE) === '普通用户') {
+      state.roleList = data.filter((item) => item.name === '普通用户');
+    } else {
+      state.roleList = data;
+    }
   }
 };
 

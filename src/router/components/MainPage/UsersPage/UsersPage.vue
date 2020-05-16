@@ -46,12 +46,6 @@
           <a-list-item slot="renderItem" slot-scope="item, index">
             <a-tooltip slot="actions">
               <template slot="title">
-                权限分配
-              </template>
-              <a-icon type="lock" @click="handlePermission(item)"/>
-            </a-tooltip>
-            <a-tooltip slot="actions">
-              <template slot="title">
                 编辑用户
               </template>
               <a-icon type="edit" @click="handleEdit(item)"/>
@@ -176,6 +170,30 @@
             <a-select-option v-for="d in roleList" :key="d.id">{{d.name}}</a-select-option>
           </a-select>
         </a-form-item>
+        <a-form-item
+                v-bind="formItemLayout"
+                label="职员名称"
+        >
+          <a-select
+                  v-decorator="[
+          'staff',
+          {rules: [{ required: true, message: '请选择职员！' }]}
+        ]"
+                  placeholder="请选择职员"
+                  showSearch
+                  :showArrow="false"
+                  :filterOption="false"
+                  @search="fetchStaffData"
+                  notFoundContent="无该人员数据"
+                  :defaultActiveFirstOption="false"
+          >
+            <a-spin v-if="fetching" slot="notFoundContent" size="small"/>
+            <a-select-option v-for="d in staffData" :key="d.id">{{d.staffName}}
+              <a-divider type="vertical"/>
+              <a-tag color="orange">{{d.staffCode}}</a-tag>
+            </a-select-option>
+          </a-select>
+        </a-form-item>
       </a-form>
     </a-modal>
     <a-drawer
@@ -234,6 +252,31 @@
         </a-form-item>
         <a-form-item
                 v-bind="formItemLayout"
+                label="职员名称"
+        >
+          <a-select
+                  v-decorator="[
+          'staff',
+          {initialValue: this.editFormData.staff && this.editFormData.staff.id, rules: [{ required: true, message: '请选择职员！' }]}
+        ]"
+                  placeholder="请选择职员"
+                  showSearch
+                  :showArrow="false"
+                  :filterOption="false"
+                  @search="fetchStaffData"
+                  notFoundContent="无该人员数据"
+                  :defaultActiveFirstOption="false"
+          >
+            <a-spin v-if="fetching" slot="notFoundContent" size="small"/>
+            <a-select-option v-for="d in staffData" :key="d.id">{{d.staffName}}
+              <a-divider type="vertical"/>
+              <a-tag color="orange">{{d.staffCode}}</a-tag>
+            </a-select-option>
+          </a-select>
+        </a-form-item>
+
+        <a-form-item
+                v-bind="formItemLayout"
                 label="新的密码"
         >
           <a-input
@@ -257,48 +300,13 @@
         </a-form-item>
       </a-form>
     </a-drawer>
-    <a-drawer
-            title="分配用户权限"
-            placement="right"
-            width="615"
-            @close="onPermissionClose"
-            :visible="permissionVisible"
-    >
-      <a-row style="margin-bottom: 16px">
-        <PermissionComponent ref="contractPermission" title="合同管理权限" :defaultCheckedList="defaultCheckedListContract"/>
-      </a-row>
-      <a-row style="margin-bottom: 16px">
-        <PermissionComponent ref="subProjectPermission" title="分项分包权限" :defaultCheckedList="defaultCheckedListSupProject"/>
-      </a-row>
-      <a-row style="margin-bottom: 16px">
-        <PermissionComponent ref="receiptPermission" title="合同发票权限" :defaultCheckedList="defaultCheckedListReceipt"/>
-      </a-row>
-      <a-row style="margin-bottom: 16px">
-        <PermissionComponent ref="cashPermission" title="合同现金权限" :defaultCheckedList="defaultCheckedListCash"/>
-      </a-row>
-      <a-row style="margin-bottom: 16px">
-        <PermissionComponent ref="outReceiptPermission" title="分包发票权限" :defaultCheckedList="defaultCheckedListOutReceipt"/>
-      </a-row>
-      <a-row style="margin-bottom: 24px">
-        <PermissionComponent ref="outPaidPermission" title="分包付款权限" :defaultCheckedList="defaultCheckedListOutPaid"/>
-      </a-row>
-      <a-row style="margin-bottom: 24px">
-        <PermissionComponent ref="staffPermission" title="职员管理权限" :defaultCheckedList="defaultCheckedListStaff"/>
-      </a-row>
-      <a-row style="margin-bottom: 24px">
-        <PermissionComponent ref="salaryPermission" title="工资管理权限" :defaultCheckedList="defaultCheckedListSalary"/>
-      </a-row>
-      <a-row>
-        <a-button type="primary" block @click="handlePermissionSubmit">确定</a-button>
-      </a-row>
-    </a-drawer>
   </div>
 </template>
 
 <script>
-  import {mapState, mapActions, mapMutations} from 'vuex'
+  import {mapState, mapActions, mapMutations} from 'vuex';
+  import {debounce} from 'debounce';
   import HeaderPage from "../HeaderPage/HeaderPage";
-  import PermissionComponent from "./PermissionComponent/PermissionComponent";
 
   const formItemLayout = {
     labelCol: {span: 6},
@@ -312,9 +320,9 @@
     name: "UsersPage",
     components: {
       HeaderPage,
-      PermissionComponent,
     },
     data() {
+      this.fetchStaffData = debounce(this.fetchStaffData, 500);
       return {
         formLayout: 'inline',
         formItemLayout,
@@ -329,20 +337,12 @@
         editFormData: {}, // 编辑当前表单数据
         editForm: this.$form.createForm(this),
         currentUserId: '', // 当前编辑的用户id
-        permissionVisible: false, // 分配权限页面
-        defaultCheckedListContract: [], // 合同默认权限
-        defaultCheckedListSupProject: [], // 分项默认权限
-        defaultCheckedListReceipt: [], // 合同发票默认权限
-        defaultCheckedListCash: [], // 合同现金默认权限
-        defaultCheckedListOutReceipt: [], // 分包发票默认权限
-        defaultCheckedListOutPaid: [], // 分包付款默认权限
-        defaultCheckedListStaff: [], // 职员管理默认权限
-        defaultCheckedListSalary: [], // 工资管理默认权限
         avatarSetting: {
           部门负责人: require('@/assets/总监.png'),
           超级管理员: require('@/assets/超级管理员.png'),
           普通用户: require('@/assets/普通用户.png'),
         },
+        fetching: false,
       }
     },
     computed: {
@@ -352,6 +352,7 @@
         listData: state => state.userOperation.listData, // list数据
         roleList: state => state.roleOperation.roleList, // 角色list数据
         role: state => state.tokensOperation.role, // 用户角色
+        staffData: state => state.staffOperation.staffData, // 职员信息
       }),
     },
     mounted() {
@@ -361,6 +362,7 @@
     methods: {
       ...mapMutations({
         resetListData: 'userOperation/resetListData',
+        setStaffData: 'staffOperation/setStaffData',
       }),
       ...mapActions({
         register: 'userOperation/register',
@@ -368,6 +370,7 @@
         deleteUser: 'userOperation/deleteUser',
         verifyUser: 'userOperation/verifyUser',
         getRoleList: 'roleOperation/getRoleList',
+        getStaffNamesByNameLike: 'staffOperation/getStaffNamesByNameLike',
       }),
       updateListData(type) {
         if (type === 'first') {
@@ -407,7 +410,10 @@
                 nickname: values.nickName,
                 roles: [{
                   id: values.roles
-                }]
+                }],
+                staff: {
+                  id: values.staff
+                },
               };
               this.register(params).then(res => {
                 if (res.data.meta.success) {
@@ -471,6 +477,9 @@
         this.editVisible = false;
       },
       handleEdit(selectData) {
+        this.setStaffData({
+          content: [selectData.staff || []],
+        });
         this.editFormData = JSON.parse(JSON.stringify(selectData));
         this.editFormData.roles = this.editFormData.roles[0] && Number(this.editFormData.roles[0].id);
         this.currentUserId = selectData.userId;
@@ -486,7 +495,10 @@
                 nickname: values.nickName,
                 roles: [{
                   id: values.roles
-                }]
+                }],
+                staff: {
+                  id: values.staff
+                },
               };
               if (values.password) {
                 Object.assign(params, {
@@ -510,102 +522,17 @@
           },
         );
       },
-      handlePermission(selectData) {
-        this.currentUserId = selectData.userId;
-        this.handleDataDecoder(selectData.authorityCode === null ? '0101010101010101' : selectData.authorityCode);
-        this.permissionVisible = true;
-      },
-      binary(num, Bits) {
-        let resArry = [];
-        let xresArry = [];
-        let i = 0;
-        //除2取余
-        for (; num > 0;) {
-          resArry.push(num % 2);
-          num = parseInt(num / 2);
-          i++;
-        }
-        //倒序排列
-        for (let j = i - 1; j >= 0; j--) {
-          xresArry.push(resArry[j]);
-        }
-        //补0操作
-        if (Bits) {
-          for (let r = xresArry.length; r < Bits; r++) {
-            xresArry.unshift("0");
-          }
-        }
-        return xresArry.join().replace(/,/g, "");
-      },
-      handleDataDecoder(authorityCode) {
-        this.defaultCheckedListContract = this.setDefaultCheckedList(Number(authorityCode.substr(0,2)));
-        this.defaultCheckedListSupProject = this.setDefaultCheckedList(Number(authorityCode.substr(2,2)));
-        this.defaultCheckedListReceipt = this.setDefaultCheckedList(Number(authorityCode.substr(4,2)));
-        this.defaultCheckedListCash = this.setDefaultCheckedList(Number(authorityCode.substr(6,2)));
-        this.defaultCheckedListOutReceipt = this.setDefaultCheckedList(Number(authorityCode.substr(8,2)));
-        this.defaultCheckedListOutPaid = this.setDefaultCheckedList(Number(authorityCode.substr(10,2)));
-        this.defaultCheckedListStaff = this.setDefaultCheckedList(Number(authorityCode.substr(12,2)));
-        this.defaultCheckedListSalary = this.setDefaultCheckedList(Number(authorityCode.substr(14,2)));
-
-        this.$refs.contractPermission && this.$refs.contractPermission.setCheckedList(this.defaultCheckedListContract);
-        this.$refs.subProjectPermission && this.$refs.subProjectPermission.setCheckedList(this.defaultCheckedListSupProject);
-        this.$refs.receiptPermission && this.$refs.receiptPermission.setCheckedList(this.defaultCheckedListReceipt);
-        this.$refs.cashPermission && this.$refs.cashPermission.setCheckedList(this.defaultCheckedListCash);
-        this.$refs.outReceiptPermission && this.$refs.outReceiptPermission.setCheckedList(this.defaultCheckedListOutReceipt);
-        this.$refs.outPaidPermission && this.$refs.outPaidPermission.setCheckedList(this.defaultCheckedListOutPaid);
-        this.$refs.staffPermission && this.$refs.staffPermission.setCheckedList(this.defaultCheckedListStaff);
-        this.$refs.salaryPermission && this.$refs.salaryPermission.setCheckedList(this.defaultCheckedListSalary);
-      },
-      setDefaultCheckedList(partCode) {
-        const options = ['导入', '导出', '新增', '修改', '删除', '查看'];
-        let tempList = [];
-        this.binary(partCode, 6).split("").map((item, index) => {
-          if (item === '1') {
-            tempList.push(options[index])
-          }
-        });
-        return tempList;
-      },
-      onPermissionClose() {
-        this.permissionVisible = false;
-      },
-      handleDataEncoder(checkedList) {
-        const options = ['导入', '导出', '新增', '修改', '删除', '查看'];
-        let tempCode = [0, 0, 0, 0, 0, 0];
-        options.map((item, index) => {
-          tempCode[index] = checkedList.join('').indexOf(options[index]) < 0 ? 0 : 1;
-        });
-        return parseInt(tempCode.join(''), 2) < 10 ? String('0'+ parseInt(tempCode.join(''), 2)):(parseInt(tempCode.join(''), 2));
-      },
-      handlePermissionSubmit() {
-        const block1 = this.handleDataEncoder(this.$refs.contractPermission.checkedList);
-        const block2 = this.handleDataEncoder(this.$refs.subProjectPermission.checkedList);
-        const block3 = this.handleDataEncoder(this.$refs.receiptPermission.checkedList);
-        const block4 = this.handleDataEncoder(this.$refs.cashPermission.checkedList);
-        const block5 = this.handleDataEncoder(this.$refs.outReceiptPermission.checkedList);
-        const block6 = this.handleDataEncoder(this.$refs.outPaidPermission.checkedList);
-        const block7 = this.handleDataEncoder(this.$refs.staffPermission.checkedList);
-        const block8 = this.handleDataEncoder(this.$refs.salaryPermission.checkedList);
-
-        const block = block1.toString() + block2.toString() + block3.toString() + block4.toString() +
-          block5.toString() + block6.toString() + block7.toString() + block8.toString();
+      fetchStaffData(value) {
         const params = {
-          userId: this.currentUserId,
-          authorityCode: block,
+          staffName: value,
+          pageNum: 1,
+          pageLimit: 10,
         };
-        this.verifyUser(params).then((res) => {
-          if (res.data.meta.success) {
-            this.$message.success('修改成功');
-            this.editForm.resetFields();
-            this.updateListData('first');
-            this.permissionVisible = false;
-          } else {
-            this.$message.error(res.data.meta.message);
-          }
-        }).catch((error) => {
-          this.$message.error(error);
-        })
-      },
+        this.fetching = true;
+        this.getStaffNamesByNameLike(params).then((res) => {
+          this.fetching = false;
+        });
+      }
     }
   }
 </script>

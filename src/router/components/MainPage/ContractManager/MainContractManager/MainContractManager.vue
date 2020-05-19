@@ -54,6 +54,116 @@
           <a-form-item
                   :label-col="formItemLayout.labelCol"
                   :wrapper-col="formItemLayout.wrapperCol"
+                  label="项目经理"
+          >
+            <a-select
+                    v-decorator="['projectManager']"
+                    showSearch
+                    placeholder="搜索用户"
+                    :showArrow="false"
+                    style="width: 300px"
+                    :filterOption="false"
+                    @search="(val) => {this.fetchUsers(val, false)}"
+                    notFoundContent="无搜索结果"
+                    :defaultActiveFirstOption="false"
+                    :allowClear="true"
+                    @blur="clearUserData"
+            >
+              <a-spin v-if="fetching" slot="notFoundContent" size="small"/>
+              <a-select-option v-for="(d,index) in usersData" :key="d.userId">{{d.username}}<a-divider type="vertical" /><a-tag color="orange">{{d.nickname}}</a-tag></a-select-option>
+            </a-select>
+          </a-form-item>
+          <a-form-item
+                  :label-col="formItemLayout.labelCol"
+                  :wrapper-col="formItemLayout.wrapperCol"
+                  label="商务专员"
+          >
+            <a-select
+                    v-decorator="['projectSecretary']"
+                    showSearch
+                    placeholder="搜索用户"
+                    :showArrow="false"
+                    style="width: 300px"
+                    :filterOption="false"
+                    @search="(val) => {this.fetchUsers(val, false)}"
+                    notFoundContent="无搜索结果"
+                    :defaultActiveFirstOption="false"
+                    :allowClear="true"
+                    @blur="clearUserData"
+            >
+              <a-spin v-if="fetching" slot="notFoundContent" size="small"/>
+              <a-select-option v-for="(d,index) in usersData" :key="d.userId">{{d.username}}<a-divider type="vertical" /><a-tag color="orange">{{d.nickname}}</a-tag></a-select-option>
+            </a-select>
+          </a-form-item>
+          <a-form-item
+                  :label-col="formItemLayout.labelCol"
+                  :wrapper-col="formItemLayout.wrapperCol"
+                  label="财务专员"
+          >
+            <a-select
+                    v-decorator="['financeManager']"
+                    showSearch
+                    placeholder="搜索用户"
+                    :showArrow="false"
+                    style="width: 300px"
+                    :filterOption="false"
+                    @search="(val) => {this.fetchUsers(val, false)}"
+                    notFoundContent="无搜索结果"
+                    :defaultActiveFirstOption="false"
+                    :allowClear="true"
+                    @blur="clearUserData"
+            >
+              <a-spin v-if="fetching" slot="notFoundContent" size="small"/>
+              <a-select-option v-for="(d,index) in usersData" :key="d.userId">{{d.username}}<a-divider type="vertical" /><a-tag color="orange">{{d.nickname}}</a-tag></a-select-option>
+            </a-select>
+          </a-form-item>
+          <a-form-item
+                  :label-col="formItemLayout.labelCol"
+                  :wrapper-col="formItemLayout.wrapperCol"
+                  label="项目经营负责人"
+          >
+            <a-select
+                    v-decorator="['runningManager']"
+                    showSearch
+                    placeholder="搜索用户"
+                    :showArrow="false"
+                    style="width: 300px"
+                    :filterOption="false"
+                    @search="(val) => {this.fetchUsers(val, false)}"
+                    notFoundContent="无搜索结果"
+                    :defaultActiveFirstOption="false"
+                    :allowClear="true"
+                    @blur="clearUserData"
+            >
+              <a-spin v-if="fetching" slot="notFoundContent" size="small"/>
+              <a-select-option v-for="(d,index) in usersData" :key="d.userId">{{d.username}}<a-divider type="vertical" /><a-tag color="orange">{{d.nickname}}</a-tag></a-select-option>
+            </a-select>
+          </a-form-item>
+          <a-form-item
+                  :label-col="formItemLayout.labelCol"
+                  :wrapper-col="formItemLayout.wrapperCol"
+                  label="部门经营负责人"
+          >
+            <a-select
+                    v-decorator="['inspector']"
+                    showSearch
+                    placeholder="搜索用户"
+                    :showArrow="false"
+                    style="width: 300px"
+                    :filterOption="false"
+                    @search="(val) => {this.fetchUsers(val, true)}"
+                    notFoundContent="无搜索结果"
+                    :defaultActiveFirstOption="false"
+                    :allowClear="true"
+                    @blur="clearUserData"
+            >
+              <a-spin v-if="fetching" slot="notFoundContent" size="small"/>
+              <a-select-option v-for="(d,index) in usersData" :key="d.userId">{{d.username}}<a-divider type="vertical" /><a-tag color="red">{{d.nickname}}</a-tag></a-select-option>
+            </a-select>
+          </a-form-item>
+          <a-form-item
+                  :label-col="formItemLayout.labelCol"
+                  :wrapper-col="formItemLayout.wrapperCol"
                   label="发包人合同编号"
           >
             <a-input
@@ -169,116 +279,6 @@
         ]"
                     placeholder="请输入经营部门"
             />
-          </a-form-item>
-          <a-form-item
-                  :label-col="formItemLayout.labelCol"
-                  :wrapper-col="formItemLayout.wrapperCol"
-                  label="项目经理"
-          >
-            <a-select
-                    v-decorator="['projectManager']"
-                    showSearch
-                    placeholder="搜索用户"
-                    :showArrow="false"
-                    style="width: 300px"
-                    :filterOption="false"
-                    @search="(val) => {this.fetchUsers(val, false)}"
-                    notFoundContent="无搜索结果"
-                    :defaultActiveFirstOption="false"
-                    :allowClear="true"
-                    @blur="clearUserData"
-            >
-              <a-spin v-if="fetching" slot="notFoundContent" size="small"/>
-              <a-select-option v-for="(d,index) in usersData" :key="d.userId">{{d.username}}<a-divider type="vertical" /><a-tag color="orange">{{d.nickname}}</a-tag></a-select-option>
-            </a-select>
-          </a-form-item>
-          <a-form-item
-                  :label-col="formItemLayout.labelCol"
-                  :wrapper-col="formItemLayout.wrapperCol"
-                  label="商务专员"
-          >
-            <a-select
-                    v-decorator="['projectSecretary']"
-                    showSearch
-                    placeholder="搜索用户"
-                    :showArrow="false"
-                    style="width: 300px"
-                    :filterOption="false"
-                    @search="(val) => {this.fetchUsers(val, false)}"
-                    notFoundContent="无搜索结果"
-                    :defaultActiveFirstOption="false"
-                    :allowClear="true"
-                    @blur="clearUserData"
-            >
-              <a-spin v-if="fetching" slot="notFoundContent" size="small"/>
-              <a-select-option v-for="(d,index) in usersData" :key="d.userId">{{d.username}}<a-divider type="vertical" /><a-tag color="orange">{{d.nickname}}</a-tag></a-select-option>
-            </a-select>
-          </a-form-item>
-          <a-form-item
-                  :label-col="formItemLayout.labelCol"
-                  :wrapper-col="formItemLayout.wrapperCol"
-                  label="财务专员"
-          >
-            <a-select
-                    v-decorator="['financeManager']"
-                    showSearch
-                    placeholder="搜索用户"
-                    :showArrow="false"
-                    style="width: 300px"
-                    :filterOption="false"
-                    @search="(val) => {this.fetchUsers(val, false)}"
-                    notFoundContent="无搜索结果"
-                    :defaultActiveFirstOption="false"
-                    :allowClear="true"
-                    @blur="clearUserData"
-            >
-              <a-spin v-if="fetching" slot="notFoundContent" size="small"/>
-              <a-select-option v-for="(d,index) in usersData" :key="d.userId">{{d.username}}<a-divider type="vertical" /><a-tag color="orange">{{d.nickname}}</a-tag></a-select-option>
-            </a-select>
-          </a-form-item>
-          <a-form-item
-                  :label-col="formItemLayout.labelCol"
-                  :wrapper-col="formItemLayout.wrapperCol"
-                  label="项目经营负责人"
-          >
-            <a-select
-                    v-decorator="['runningManager']"
-                    showSearch
-                    placeholder="搜索用户"
-                    :showArrow="false"
-                    style="width: 300px"
-                    :filterOption="false"
-                    @search="(val) => {this.fetchUsers(val, false)}"
-                    notFoundContent="无搜索结果"
-                    :defaultActiveFirstOption="false"
-                    :allowClear="true"
-                    @blur="clearUserData"
-            >
-              <a-spin v-if="fetching" slot="notFoundContent" size="small"/>
-              <a-select-option v-for="(d,index) in usersData" :key="d.userId">{{d.username}}<a-divider type="vertical" /><a-tag color="orange">{{d.nickname}}</a-tag></a-select-option>
-            </a-select>
-          </a-form-item>
-          <a-form-item
-                  :label-col="formItemLayout.labelCol"
-                  :wrapper-col="formItemLayout.wrapperCol"
-                  label="部门经营负责人"
-          >
-            <a-select
-                    v-decorator="['inspector']"
-                    showSearch
-                    placeholder="搜索用户"
-                    :showArrow="false"
-                    style="width: 300px"
-                    :filterOption="false"
-                    @search="(val) => {this.fetchUsers(val, true)}"
-                    notFoundContent="无搜索结果"
-                    :defaultActiveFirstOption="false"
-                    :allowClear="true"
-                    @blur="clearUserData"
-            >
-              <a-spin v-if="fetching" slot="notFoundContent" size="small"/>
-              <a-select-option v-for="(d,index) in usersData" :key="d.userId">{{d.username}}<a-divider type="vertical" /><a-tag color="red">{{d.nickname}}</a-tag></a-select-option>
-            </a-select>
           </a-form-item>
           <a-form-item
                   :label-col="formItemLayout.labelCol"
@@ -783,6 +783,7 @@
                   this.$message.success(res.data.data);
                   this.form.resetFields();
                   this.$emit('updateContractTableData');
+                  this.$emit('closeAddModal');
                 } else {
                   this.$message.error(res.data.meta.message);
                 }

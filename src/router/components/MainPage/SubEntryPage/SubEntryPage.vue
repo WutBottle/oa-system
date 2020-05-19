@@ -53,7 +53,7 @@
               <a-spin v-if="fetching" slot="notFoundContent" size="small"/>
               <a-select-option v-for="d in contractsData" :key="d.contractId">
                 {{d.contractId}}
-                <a-divider type="vertical" />
+                <a-divider type="vertical"/>
                 {{d.contractName}}
               </a-select-option>
             </a-select>
@@ -390,7 +390,11 @@
           }, {
                 type: 'number',
                 message: '请输入数字',
-                transform:(value)=> {return Number(value)}
+                transform:(value)=> {
+                  if(value){
+                    return Number(value);
+                  }
+                },
           }]}
         ]"
                   placeholder="请输入分包合同号"
@@ -422,24 +426,6 @@
         </a-form-item>
         <a-form-item
                 v-bind="formItemLayout"
-                label="分包合同金额(元)"
-        >
-          <a-input
-                  v-decorator="[
-          'outContractAmount',
-          {rules: [{
-            required: true, message: '请输入分包合同金额!'
-          }, {
-                type: 'number',
-                message: '请输入数字',
-                transform:(value)=> {return Number(value)}
-          }]}
-        ]"
-                  placeholder="请输入分包合同金额"
-          />
-        </a-form-item>
-        <a-form-item
-                v-bind="formItemLayout"
                 label="实际归档日期"
         >
           <a-date-picker
@@ -452,12 +438,31 @@
         </a-form-item>
         <a-form-item
                 v-bind="formItemLayout"
+                label="分包合同金额(元)"
+        >
+          <a-input
+                  v-decorator="[
+          'outContractAmount',
+          {rules: [{
+                type: 'number',
+                message: '请输入数字',
+                transform:(value)=> {
+                  if(value){
+                    return Number(value);
+                  }
+                },
+          }]}
+        ]"
+                  placeholder="请输入分包合同金额"
+          />
+        </a-form-item>
+        <a-form-item
+                v-bind="formItemLayout"
                 label="分包类型"
         >
           <a-select
                   v-decorator="[
           'outContractCategory',
-          {rules: [{ required: true, message: '请选择分包类型！' }]}
         ]"
                   placeholder="请选择分包类型"
           >
@@ -475,7 +480,6 @@
           <a-select
                   v-decorator="[
           'outProjectCategory',
-          {rules: [{ required: true, message: '请选择分包项目类别！' }]}
         ]"
                   placeholder="请选择分包项目类别"
           >
@@ -549,24 +553,6 @@
         </a-form-item>
         <a-form-item
                 v-bind="formItemLayout"
-                label="分包合同金额(元)"
-        >
-          <a-input
-                  v-decorator="[
-          'outContractAmount',
-          {initialValue: this.outContractEditFormData.outContractAmount, rules: [{
-            required: true, message: '请输入分包合同金额!'
-          }, {
-                type: 'number',
-                message: '请输入数字',
-                transform:(value)=> {return Number(value)}
-          }]}
-        ]"
-                  placeholder="请输入分包合同金额"
-          />
-        </a-form-item>
-        <a-form-item
-                v-bind="formItemLayout"
                 label="实际归档日期"
         >
           <a-date-picker
@@ -580,12 +566,32 @@
         </a-form-item>
         <a-form-item
                 v-bind="formItemLayout"
+                label="分包合同金额(元)"
+        >
+          <a-input
+                  v-decorator="[
+          'outContractAmount',
+          {initialValue: this.outContractEditFormData.outContractAmount, rules: [{
+                type: 'number',
+                message: '请输入数字',
+                transform:(value)=> {
+                  if(value){
+                    return Number(value);
+                  }
+                },
+          }]}
+        ]"
+                  placeholder="请输入分包合同金额"
+          />
+        </a-form-item>
+        <a-form-item
+                v-bind="formItemLayout"
                 label="分包类型"
         >
           <a-select
                   v-decorator="[
           'outContractCategory',
-          {initialValue: this.outContractEditFormData.outContractCategoryId, rules: [{ required: true, message: '请选择分包类型！' }]}
+          {initialValue: this.outContractEditFormData.outContractCategoryId}
         ]"
                   placeholder="请选择分包类型"
           >
@@ -603,7 +609,7 @@
           <a-select
                   v-decorator="[
           'outProjectCategory',
-          {initialValue: this.outContractEditFormData.outProjectCategoryId, rules: [{ required: true, message: '请选择分包项目类别！' }]}
+          {initialValue: this.outContractEditFormData.outProjectCategoryId}
         ]"
                   placeholder="请选择分包项目类别"
           >
@@ -867,7 +873,7 @@
     },
     methods: {
       ...mapActions({
-        getContractIdsByIdLike: 'contractList/getContractIdsByIdLike',
+        getContractIdsByIdLike: 'contractList/getSubContractIdsByIdLike',
         getCategoryList: 'categoryOperation/getCategoryList',
         addSubProject: 'subProjectOperation/addSubProject',
         deleteSubProject: 'subProjectOperation/deleteSubProject',
@@ -1103,10 +1109,10 @@
                 outContractAmount: values.outContractAmount,
                 outPaid: values.outPaid,
                 outContractDate: values.outContractDate,
-                outContractCategory: {
+                outContractCategory: values.outContractCategory && {
                   categoryId: values.outContractCategory,
                 },
-                outProjectCategory: {
+                outProjectCategory: values.outProjectCategory && {
                   categoryId: values.outProjectCategory,
                 },
                 note: values.note
@@ -1140,10 +1146,10 @@
                   outContractAmount: values.outContractAmount,
                   outPaid: values.outPaid,
                   outContractDate: values.outContractDate,
-                  outContractCategory: {
+                  outContractCategory: values.outContractCategory && {
                     categoryId: values.outContractCategory,
                   },
-                  outProjectCategory: {
+                  outProjectCategory: values.outProjectCategory && {
                     categoryId: values.outProjectCategory,
                   },
                   note: values.note

@@ -450,6 +450,7 @@
                   this.$message.success(res.data.data);
                   this.form.resetFields();
                   this.$emit('updateContractTableData');
+                  this.$emit('closeAddModal');
                 } else {
                   this.$message.error(res.data.meta.message);
                 }

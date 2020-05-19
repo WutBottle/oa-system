@@ -289,7 +289,8 @@
               <a-tag v-if="projectManager.agreeStatus === 0">待发起</a-tag>
               <a-tag v-else-if="projectManager.agreeStatus === 1" color="blue">审批中</a-tag>
               <a-tag v-else-if="projectManager.agreeStatus === 2" color="green">已通过</a-tag>
-              <a-tag v-else color="red">已驳回</a-tag>
+              <a-tag v-else-if="projectManager.agreeStatus === 3" color="red">已驳回</a-tag>
+              <a-tag v-else color="red">人员未齐</a-tag>
             </a-col>
             <a-col :span="10">
               日期：{{projectManager.agreeDate}}
@@ -306,7 +307,8 @@
               <a-tag v-if="projectSecretary.agreeStatus === 0">待发起</a-tag>
               <a-tag v-else-if="projectSecretary.agreeStatus === 1" color="blue">审批中</a-tag>
               <a-tag v-else-if="projectSecretary.agreeStatus === 2" color="green">已通过</a-tag>
-              <a-tag v-else color="red">已驳回</a-tag>
+              <a-tag v-else-if="projectSecretary.agreeStatus === 3" color="red">已驳回</a-tag>
+              <a-tag v-else color="red">人员未齐</a-tag>
             </a-col>
             <a-col :span="10">
               日期：{{projectSecretary.agreeDate}}
@@ -323,7 +325,8 @@
               <a-tag v-if="runningManager.agreeStatus === 0">待发起</a-tag>
               <a-tag v-else-if="runningManager.agreeStatus === 1" color="blue">审批中</a-tag>
               <a-tag v-else-if="runningManager.agreeStatus === 2" color="green">已通过</a-tag>
-              <a-tag v-else color="red">已驳回</a-tag>
+              <a-tag v-else-if="runningManager.agreeStatus === 3" color="red">已驳回</a-tag>
+              <a-tag v-else color="red">人员未齐</a-tag>
             </a-col>
             <a-col :span="10">
               日期：{{runningManager.agreeDate}}
@@ -340,7 +343,8 @@
               <a-tag v-if="inspector.agreeStatus === 0">待发起</a-tag>
               <a-tag v-else-if="inspector.agreeStatus === 1" color="blue">审批中</a-tag>
               <a-tag v-else-if="inspector.agreeStatus === 2" color="green">已通过</a-tag>
-              <a-tag v-else color="red">已驳回</a-tag>
+              <a-tag v-else-if="inspector.agreeStatus === 3" color="red">已驳回</a-tag>
+              <a-tag v-else color="red">人员未齐</a-tag>
             </a-col>
             <a-col :span="10">
               日期：{{inspector.agreeDate}}

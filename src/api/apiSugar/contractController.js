@@ -51,6 +51,10 @@ const contractController = {
   },
   // 获取合同id模糊查询列表
   getContractIdsByIdLike(params) {
+    return axios.post(`${baseUrl.contractController}/getContractIdsByIdLike`, params);
+  },
+  // 获取合同id模糊查询列表(分项分包管理专属)
+  getSubContractIdsByIdLike(params) {
     return axios.post(`${baseUrl.contractController}/getSubContractIdsByIdLike`, params);
   },
   // 根据合同id获取节点列表

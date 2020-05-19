@@ -389,6 +389,17 @@ const actions = {
       });
     });
   },
+  // 获取合同id迷糊查询列表(分包分项专属)
+  getSubContractIdsByIdLike({commit}, params) {
+    return new Promise((resolve, reject) => {
+      api.contractController.getSubContractIdsByIdLike(params).then(res => {
+        resolve(res);
+      }).catch(error => {
+        console.log(error, '获取失败');
+        reject(error);
+      });
+    });
+  },
   // 获取设计号列表(模糊查询)
   getDesignIdsByIdLike({commit}, params) {
     return new Promise((resolve, reject) => {

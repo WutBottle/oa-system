@@ -20,10 +20,10 @@
              :footer="null">
       <a-tabs :animated="false" defaultActiveKey="1">
         <a-tab-pane tab="主合同" key="1">
-          <MainContractManager @updateContractTableData="updateContractTableData"/>
+          <MainContractManager @updateContractTableData="updateContractTableData" @closeAddModal="closeAddModal"/>
         </a-tab-pane>
         <a-tab-pane tab="补充合同" key="2">
-          <SubContractManager @updateContractTableData="updateContractTableData"/>
+          <SubContractManager @updateContractTableData="updateContractTableData" @closeAddModal="closeAddModal"/>
         </a-tab-pane>
       </a-tabs>
     </a-modal>
@@ -55,6 +55,9 @@
       },
       updateContractTableData() {
         this.$refs.contractListDom.updateTableData();
+      },
+      closeAddModal() {
+        this.contractAddVisible = false;
       }
     }
   }

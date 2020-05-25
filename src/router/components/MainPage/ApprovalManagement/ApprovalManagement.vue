@@ -2,6 +2,7 @@
   .ApprovalManagement {
     .page-content {
       padding: 24px;
+
       .form-wrapper {
         margin-bottom: 18px;
       }
@@ -69,13 +70,8 @@
             width="800px"
             :footer="null"
     >
-      <a-steps :current="approvalCurrent" :status="approvalStatus">
-        <a-step title="项目经理" />
-        <a-step title="商务专员" />
-        <a-step title="项目经营负责人" />
-        <a-step title="部门经营负责人" />
-      </a-steps>
-      <div style="height: 300px;overflow: auto;margin: 24px 0px">
+      <StepsComponent :processStatus="processStatus"/>
+      <div style="height: 360px;overflow: auto;margin: 24px 0px">
         <a-list
                 size="small"
                 itemLayout="horizontal"
@@ -88,12 +84,12 @@
             >
               <div slot="title">
                 <span>{{item.name}}</span>
-                <a-divider type="vertical" />
+                <a-divider type="vertical"/>
                 <a-tooltip :title="isNaN(item.datetime) ? '暂无时间' : item.datetime.format('YYYY-MM-DD HH:mm:ss')">
                   <span>{{isNaN(item.datetime) ? '暂无时间' : item.datetime.fromNow()}}</span>
                 </a-tooltip>
-                <a-divider v-if="(index + 1)%4 === 1" type="vertical" />
-                <a-tag v-if="(index + 1)%4 === 1" color="blue">第{{item.auditIndex + 1}}轮审批</a-tag>
+                <a-divider v-if="(index + 1)%5 === 1" type="vertical"/>
+                <a-tag v-if="(index + 1)%5 === 1" color="blue">第{{item.auditIndex + 1}}轮审批</a-tag>
               </div>
             </a-list-item-meta>
           </a-list-item>
@@ -102,8 +98,12 @@
       <a-textarea placeholder="请输入审批意见" :rows="4" v-model="adviseValue"/>
       <div style="padding-top: 12px;">
         <a-button type="primary" :disabled="buttonState" @click="handleChecked('agree')">同意</a-button>
-        <a-button type="danger" :disabled="buttonState" style="margin-left: 12px;" @click="handleChecked('disagree')">不同意</a-button>
-        <a-button type="primary" v-if="this.role != '超级管理员' && startButton" style="margin-left: 12px;" @click="handleChecked('restart')">启动审批</a-button>
+        <a-button type="danger" :disabled="buttonState" style="margin-left: 12px;" @click="handleChecked('disagree')">
+          不同意
+        </a-button>
+        <a-button type="primary" v-if="this.role != '超级管理员' && startButton" style="margin-left: 12px;"
+                  @click="handleChecked('restart')">启动审批
+        </a-button>
       </div>
     </a-modal>
   </div>
@@ -114,12 +114,14 @@
   import {mapActions, mapState} from "vuex";
   import moment from 'moment';
   import ProjectInfo from "../ProjectPage/ProjectInfo/ProjectInfo";
+  import StepsComponent from "./StepsComponent/StepsComponent";
 
   export default {
     name: "ApprovalManagement",
     components: {
       HeaderPage,
       ProjectInfo,
+      StepsComponent,
     },
     data() {
       return {
@@ -176,8 +178,6 @@
           current: 1,
         },
         approvalVisible: false,
-        approvalCurrent: 0,
-        approvalStatus: 'wait',
         currentState: [],
         commentsData: [],
         adviseValue: undefined,
@@ -191,6 +191,7 @@
         projectUsers: [],
         projectInfoData: {},
         tempSubProjects: [],
+        processStatus: [],
       }
     },
     computed: {
@@ -271,77 +272,73 @@
       },
       updateDetailData() {
         this.startButton = false;
-        if (this.currentUserState === 1 && this.role !='超级管理员'){
+        if (this.currentUserState === 1 && this.role != '超级管理员') {
           this.buttonState = false;
         }
         this.getHistoryByContractId({
-        id: this.selectedProjectId,
+          id: this.selectedProjectId,
         }).then(res => {
-        if (res.data.data.length) {
-          this.commentsData = [];
-          this.currentState = res.data.data[0].states;
-          this.circulationId = res.data.data[0].id;
-          this.currentState.map((item, index) => {
-            if (item === 3) {
-              this.approvalCurrent = index;
-              this.approvalStatus = 'error';
-              if (String(this.userId) === String(this.projectManagerId)) {
-                this.startButton = true;
+          if (res.data.data.length) {
+            this.commentsData = [];
+            this.currentState = res.data.data[0].states;
+            this.circulationId = res.data.data[0].id;
+            this.currentState.map((item, index) => {
+              if (item === 3) {
+                if (String(this.userId) === String(this.projectManagerId)) {
+                  this.startButton = true;
+                }
+                this.buttonState = true;
               }
-              this.buttonState = true;
-            }
-            if (item === 2 && index === 3) {
-              this.approvalCurrent = index;
-              this.approvalStatus = 'finish';
-            }
-            if (item === 1) {
-              this.approvalCurrent = index;
-              this.approvalStatus = 'process';
-            }
-          });
-
-          res.data.data.map(item => {
-            this.commentsData.push({
-              name: "项目经理",
-              auditIndex: item.auditIndex,
-              state: item.projectManagerNode.state,
-              content: item.projectManagerNode.note,
-              datetime: moment(item.projectManagerNode.createDate),
-            }, {
-              name: "商务专员",
-              auditIndex: item.auditIndex,
-              state: item.projectSecretaryNode.state,
-              content: item.projectSecretaryNode.note,
-              datetime: moment(item.projectSecretaryNode.createDate),
-            }, {
-              name: "项目经营负责人",
-              auditIndex: item.auditIndex,
-              state: item.runningManagerNode.state,
-              content: item.runningManagerNode.note,
-              datetime: moment(item.runningManagerNode.createDate),
-            }, {
-              name: "部门经营负责人",
-              auditIndex: item.auditIndex,
-              state: item.inspectorNode.state,
-              content: item.inspectorNode.note,
-              datetime: moment(item.inspectorNode.createDate),
-            })
-          });
-        }
+              this.processStatus.push(item);
+            });
+            console.log(res.data.data)
+            res.data.data.map(item => {
+              this.commentsData.push({
+                name: "项目经理",
+                auditIndex: item.auditIndex,
+                state: item.projectManagerNode.state,
+                content: item.projectManagerNode.note,
+                datetime: moment(item.projectManagerNode.createDate),
+              }, {
+                name: "商务专员",
+                auditIndex: item.auditIndex,
+                state: item.projectSecretaryNode.state,
+                content: item.projectSecretaryNode.note,
+                datetime: moment(item.projectSecretaryNode.createDate),
+              }, {
+                name: "财务专员",
+                auditIndex: item.auditIndex,
+                state: item.financeManagerNode.state,
+                content: item.financeManagerNode.note,
+                datetime: moment(item.financeManagerNode.createDate),
+              }, {
+                name: "项目经营负责人",
+                auditIndex: item.auditIndex,
+                state: item.runningManagerNode.state,
+                content: item.runningManagerNode.note,
+                datetime: moment(item.runningManagerNode.createDate),
+              }, {
+                name: "部门经营负责人",
+                auditIndex: item.auditIndex,
+                state: item.inspectorNode.state,
+                content: item.inspectorNode.note,
+                datetime: moment(item.inspectorNode.createDate),
+              })
+            });
+          }
         })
       },
       openDetail(selectData) {
         this.approvalVisible = true;
         this.selectedProjectId = selectData.id;
         // 数据初始化
-        this.approvalCurrent = 0;
-        this.approvalStatus = 'wait';
         this.currentState = [];
         this.commentsData = [];
         this.adviseValue = undefined;
         this.circulationId = '';
         this.currentUserState = selectData.state;
         this.projectManagerId = selectData.projectManagerId;
+        this.processStatus = [];
         this.updateDetailData();
       },
       handleChecked(isAgree) {
@@ -374,11 +371,11 @@
               this.buttonState = true;
               this.updateDetailData();
               this.updateTableData();
-            }else {
+            } else {
               this.$message.error(res.data.meta.success);
             }
           })
-        }else {
+        } else {
           this.$message.error('请输入审批意见！')
         }
       },

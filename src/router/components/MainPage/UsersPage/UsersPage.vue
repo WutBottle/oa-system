@@ -60,7 +60,7 @@
               <a-icon type="delete" :style="{color: 'red'}"/>
             </a-popconfirm>
             <a-list-item-meta
-                    :description="'真实姓名：' + item.nickname"
+                    :description="'真实姓名：' + item.staff.staffName"
             >
               <a slot="title">
                 用户名：{{item.username}}
@@ -144,20 +144,6 @@
         </a-form-item>
         <a-form-item
                 v-bind="formItemLayout"
-                label="真实姓名"
-        >
-          <a-input
-                  v-decorator="[
-          'nickName',
-          {rules: [{
-            required: true, message: '请输入真实姓名!'
-          }]}
-        ]"
-                  placeholder="请输入真实姓名"
-          />
-        </a-form-item>
-        <a-form-item
-                v-bind="formItemLayout"
                 label="用户权限"
         >
           <a-select
@@ -220,20 +206,6 @@
           }]}
         ]"
                   placeholder="请输入用户名"
-          />
-        </a-form-item>
-        <a-form-item
-                v-bind="formItemLayout"
-                label="真实姓名"
-        >
-          <a-input
-                  v-decorator="[
-          'nickName',
-          {initialValue: this.editFormData.nickname, rules: [{
-            required: true, message: '请输入真实姓名!'
-          }]}
-        ]"
-                  placeholder="请输入真实姓名"
           />
         </a-form-item>
         <a-form-item
@@ -407,7 +379,6 @@
               const params = {
                 username: values.userName,
                 password: values.password,
-                nickname: values.nickName,
                 roles: [{
                   id: values.roles
                 }],
@@ -492,7 +463,6 @@
               let params = {
                 userId: this.currentUserId,
                 username: values.userName,
-                nickname: values.nickName,
                 roles: [{
                   id: values.roles
                 }],

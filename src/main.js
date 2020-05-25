@@ -11,7 +11,6 @@ import 'ant-design-vue/dist/antd.css'
 
 import './permission';
 
-
 import echarts from 'echarts';
 Vue.prototype.$echarts = echarts;
 

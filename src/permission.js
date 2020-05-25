@@ -1,5 +1,5 @@
 import router from './router'
-import store from './store'
+import {ACCESS_TOKEN} from '@/store/mutation-types';
 
 import NProgress from 'nprogress'
 import 'nprogress/nprogress.css'
@@ -13,19 +13,12 @@ router.beforeEach((to, from, next) => {
     // 在免登录白名单，直接进入
     next();
   } else {
-    if (to.meta.requireAuth) {
-      store.dispatch('categoryOperation/getCategoryList', {categoryType: 11}).then(res => {
-        if (res && res.data.meta.success){
-          next();
-        } else {
-          router.replace({
-            path: 'user/login',
-          });
-        }
-      }).catch(error => {
-      })
-    } else {
+    if (to.meta.requireAuth && localStorage.getItem(ACCESS_TOKEN)) {
       next();
+    } else {
+      router.push({
+        path: '/user/login',
+      });
     }
     NProgress.done(); // if current page is login will not trigger afterEach hook, so manually handle it
   }

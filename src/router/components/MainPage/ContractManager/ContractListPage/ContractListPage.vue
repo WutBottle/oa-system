@@ -245,6 +245,8 @@
       });
     },
     activated() {
+      const {contractId = ''} = this.$router.currentRoute.query;
+      this.contractId = contractId;
       this.updateTableData();
     },
     methods: {

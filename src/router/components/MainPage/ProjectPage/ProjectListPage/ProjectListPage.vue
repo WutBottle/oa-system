@@ -27,7 +27,7 @@
       <a-spin :spinning="spinning" tip="Loading...">
         <a-table bordered :columns="columns" :dataSource="tableData"
                  :pagination="paginationProps"
-                 @change="handleTableChange" :scroll="{ x: 2880, y: 550}">
+                 @change="handleTableChange" :scroll="{ x: 2920, y: 550}">
           <span slot="serial" slot-scope="text, record, index">
             {{ index + 1 }}
           </span>
@@ -38,8 +38,10 @@
             <a-button type="primary" size="small" @click="handleOpen(record)">
               查看
             </a-button>
+            <a-divider type="vertical"/>
+            <a @click="jumpToManager(record)">管理</a>
           </template>
-          <a-progress slot="ratio" slot-scope="text" type="circle" :percent="text" :width="60" />
+          <a-progress slot="ratio" slot-scope="text" type="circle" :percent="text" :width="60"/>
           <a slot="projectSalary" slot-scope="text, record" @click="handleOpenSalary(record)">查看工资</a>
         </a-table>
       </a-spin>
@@ -213,6 +215,7 @@
   import {mapState, mapActions} from 'vuex'
   import ProjectInfo from "../ProjectInfo/ProjectInfo";
   import moment from "moment";
+
   const statusMap = {
     0: {
       status: 'success',
@@ -401,7 +404,7 @@
             dataIndex: 'inspector',
           },
           {
-            width: 100,
+            width: 140,
             title: '项目操作',
             fixed: 'right',
             key: 'selectIndex',
@@ -481,14 +484,14 @@
     },
     filters: {
       statusFilter(type) {
-        if (type >= 0){
+        if (type >= 0) {
           return statusMap[type].text
         } else {
           return statusMap[3].text
         }
       },
       statusTypeFilter(type) {
-        if (type >= 0){
+        if (type >= 0) {
           return statusMap[type].status
         } else {
           return statusMap[3].status
@@ -541,7 +544,7 @@
           receiptRemain: [this.receiptRemainLowerBound ? String(this.receiptRemainLowerBound) : '', this.receiptRemainUpperBound ? String(this.receiptRemainUpperBound) : ''],
           receiptAmount: [this.receiptAmountLowerBound ? String(this.receiptAmountLowerBound) : '', this.receiptAmountUpperBound ? String(this.receiptAmountUpperBound) : ''],
           projectAmount: [this.totalLowerBound ? String(this.totalLowerBound) : '', this.totalUpperBound ? String(this.totalUpperBound) : ''],
-          ratio: [this.ratioLowerBound ? String(this.ratioLowerBound/100) : '', this.ratioUpperBound ? String(this.ratioUpperBound/100) : ''],
+          ratio: [this.ratioLowerBound ? String(this.ratioLowerBound / 100) : '', this.ratioUpperBound ? String(this.ratioUpperBound / 100) : ''],
           scale: [this.scaleLowerBound ? String(this.scaleLowerBound) : '', this.scaleUpperBound ? String(this.scaleUpperBound) : ''],
           pageNum: this.paginationProps.current,
           pageLimit: this.paginationProps.pageSize
@@ -685,6 +688,13 @@
           projectInvestmentUpperBound: null,
         })
       },
+      // 跳转到合同管理页面
+      jumpToManager(data) {
+        this.$router.push({
+          path: '/main/contractmanager',
+          query: {contractId: data.contractId}
+        })
+      }
     }
   }
 </script>

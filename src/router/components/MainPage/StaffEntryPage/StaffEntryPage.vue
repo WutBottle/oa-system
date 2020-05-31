@@ -102,7 +102,6 @@
           <a-select
                   v-decorator="[
           'degree',
-          {rules: [{ required: true, message: '请选择学历！' }]}
         ]"
                   placeholder="请选择学历"
           >
@@ -119,7 +118,6 @@
           <a-select
                   v-decorator="[
           'nation',
-          {rules: [{ required: true, message: '请选择民族！' }]}
         ]"
                   placeholder="请选择民族"
           >
@@ -133,7 +131,6 @@
           <a-select
                   v-decorator="[
           'politic',
-          {rules: [{ required: true, message: '请选择政治面貌！' }]}
         ]"
                   placeholder="请选择政治面貌"
           >
@@ -152,11 +149,13 @@
                   v-decorator="[
           'age',
           {rules: [{
-            required: true, message: '请输入年龄!'
-          }, {
-                type: 'number',
-                message: '请输入数字',
-                transform:(value)=> {return Number(value)}
+            type: 'number',
+            message: '请输入数字',
+            transform:(value)=> {
+              if(value){
+                return Number(value);
+              }
+            }
           }]}
         ]"
                   placeholder="请输入年龄"
@@ -167,9 +166,7 @@
                 label="参加工作日期"
         >
           <a-date-picker
-                  v-decorator="['participation',{
-                    rules: [{required: true, message: '请选择参加工作日期!'}]
-                  }]"
+                  v-decorator="['participation']"
                   format="YYYY-MM-DD"
           />
         </a-form-item>
@@ -179,7 +176,7 @@
         >
           <a-input
                   v-decorator="[
-          'firstEducation', {rules: [{required: true, message: '请输入第一学历学校!'}]}
+          'firstEducation'
           ]"
                   placeholder="请输入第一学历学校"
           />
@@ -190,7 +187,7 @@
         >
           <a-input
                   v-decorator="[
-          'secondEducation', {rules: [{required: true, message: '请输入第二学历学校!'}]}
+          'secondEducation'
           ]"
                   placeholder="请输入第二学历学校"
           />
@@ -201,7 +198,7 @@
         >
           <a-input
                   v-decorator="[
-          'major', {rules: [{required: true, message: '请输入专业!'}]}
+          'major'
           ]"
                   placeholder="请输入专业"
           />
@@ -354,7 +351,7 @@
             title="修改职员信息"
             placement="right"
             :closable="false"
-            width="550"
+            width="560"
             @close="onEditClose"
             :visible="editVisible"
     >
@@ -397,7 +394,7 @@
           <a-select
                   v-decorator="[
           'degree',
-          {initialValue: this.editFormData.degree, rules: [{ required: true, message: '请选择学历！' }]}
+          {initialValue: this.editFormData.degree}
         ]"
                   placeholder="请选择学历"
           >
@@ -414,7 +411,7 @@
           <a-select
                   v-decorator="[
           'nation',
-          {initialValue: this.editFormData.nation, rules: [{ required: true, message: '请选择民族！' }]}
+          {initialValue: this.editFormData.nation}
         ]"
                   placeholder="请选择民族"
           >
@@ -428,7 +425,7 @@
           <a-select
                   v-decorator="[
           'politic',
-          {initialValue: this.editFormData.politic, rules: [{ required: true, message: '请选择政治面貌！' }]}
+          {initialValue: this.editFormData.politic}
         ]"
                   placeholder="请选择政治面貌"
           >
@@ -447,11 +444,13 @@
                   v-decorator="[
           'age',
           {initialValue: this.editFormData.age, rules: [{
-            required: true, message: '请输入年龄!'
-          }, {
-                type: 'number',
-                message: '请输入数字',
-                transform:(value)=> {return Number(value)}
+            type: 'number',
+            message: '请输入数字',
+            transform:(value)=> {
+              if(value){
+                return Number(value);
+              }
+            }
           }]}
         ]"
                   placeholder="请输入年龄"
@@ -462,8 +461,7 @@
                 label="参加工作日期"
         >
           <a-date-picker
-                  v-decorator="['participation', {initialValue: this.editFormData.participation,
-                  rules: [{required: true, message: '请选择参加工作日期!'}]}]"
+                  v-decorator="['participation', {initialValue: this.editFormData.participation}]"
                   format="YYYY-MM-DD"
           />
         </a-form-item>
@@ -473,7 +471,7 @@
         >
           <a-input
                   v-decorator="[
-          'firstEducation', {initialValue: this.editFormData.firstEducation, rules: [{required: true, message: '请输入第一学历学校!'}]}]"
+          'firstEducation', {initialValue: this.editFormData.firstEducation}]"
                   placeholder="请输入第一学历学校"
           />
         </a-form-item>
@@ -483,7 +481,7 @@
         >
           <a-input
                   v-decorator="[
-          'secondEducation', {initialValue: this.editFormData.secondEducation, rules: [{required: true, message: '请输入第二学历学校!'}]}]"
+          'secondEducation', {initialValue: this.editFormData.secondEducation}]"
                   placeholder="请输入第二学历学校"
           />
         </a-form-item>
@@ -493,7 +491,7 @@
         >
           <a-input
                   v-decorator="[
-          'major', {initialValue: this.editFormData.major, rules: [{required: true, message: '请输入专业!'}]}]"
+          'major', {initialValue: this.editFormData.major}]"
                   placeholder="请输入专业"
           />
         </a-form-item>

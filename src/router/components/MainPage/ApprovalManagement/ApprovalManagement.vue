@@ -282,6 +282,7 @@
             this.commentsData = [];
             this.currentState = res.data.data[0].states;
             this.circulationId = res.data.data[0].id;
+            this.processStatus = [];
             this.currentState.map((item, index) => {
               if (item === 3) {
                 if (String(this.userId) === String(this.projectManagerId)) {
@@ -291,7 +292,6 @@
               }
               this.processStatus.push(item);
             });
-            console.log(res.data.data)
             res.data.data.map(item => {
               this.commentsData.push({
                 name: "项目经理",
@@ -338,7 +338,6 @@
         this.circulationId = '';
         this.currentUserState = selectData.state;
         this.projectManagerId = selectData.projectManagerId;
-        this.processStatus = [];
         this.updateDetailData();
       },
       handleChecked(isAgree) {

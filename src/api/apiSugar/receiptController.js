@@ -57,6 +57,10 @@ const receiptController = {
       responseType: 'blob'
     });
   },
+  // 现金发票导入
+  receiptInput(params) {
+    return axios.post(`${baseUrl.receiptController}/input`, params);
+  },
 };
 
 export default receiptController;

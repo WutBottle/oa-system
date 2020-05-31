@@ -53,8 +53,7 @@
         <a-breadcrumb-item><a href="/main/workplace">首页</a></a-breadcrumb-item>
         <a-breadcrumb-item>合同发票管理</a-breadcrumb-item>
       </a-breadcrumb>
-      <p class="title">合同发票管理</p>
-<!--      <p class="title">合同发票管理<CashReceiptInput/></p>-->
+      <p class="title">合同发票管理<CashReceiptInput type="receipt"/></p>
     </div>
     <div class="page-content">
       <a-row style="background-color: #fff; padding: 24px;">

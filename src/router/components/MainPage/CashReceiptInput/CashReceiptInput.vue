@@ -20,6 +20,9 @@
 
   export default {
     name: "CashReceiptInput",
+    props: {
+      type: String,
+    },
     data() {
       return {
         fileList: [],
@@ -28,6 +31,7 @@
     methods: {
       ...mapActions({
         cashInput: 'cashOperation/cashInput',
+        receiptInput: 'receiptOperation/receiptInput',
       }),
       handleExcelRemove(file) {
         const index = this.fileList.indexOf(file);
@@ -43,17 +47,18 @@
           this.fileList.forEach((file) => {
             formData.append('multipartFiles', file);
           });
+          const uploadFunction = this.type === 'cash' ? this.cashInput : this.receiptInput;
           // 手动上传
-          this.cashInput(formData).then((data) => {
-            for (let i = 0; i < data.data.data.receipt_results.length; i++) {
+          uploadFunction(formData).then((data) => {
+            const params = Object.keys(data.data.data)[0];
+            for (let i = 0; i < data.data.data[params].length; i++) {
               this.$notification.open({
-                message: data.data.data.receipt_results[i],
+                message: data.data.data[params][i],
                 duration: 10,
-                icon: data.data.data.receipt_results[i].indexOf('添加成功') != -1 ? <a-icon type="check-circle" style="color: green" /> : <a-icon type="close-circle" style="color: red" />,
+                icon: data.data.data[params][i].indexOf('添加成功') != -1 ? <a-icon type="check-circle" style="color: green" /> : <a-icon type="close-circle" style="color: red" />,
             })
             }
           }).catch((error) => {
-            console.log(error)
             this.$message.error('上传失败');
           });
         } else {

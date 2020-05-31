@@ -317,6 +317,24 @@
         </a-row>
         <a-row class="bt" style="text-align: left;padding: 12px">
           <a-row>
+            本人已知晓并核对以上信息。
+          </a-row>
+          <a-row style="margin-top: 50px;">
+            <a-col :span="14">
+              财务专员（签字）：
+              <a-tag v-if="financeManager.agreeStatus === 0">待发起</a-tag>
+              <a-tag v-else-if="financeManager.agreeStatus === 1" color="blue">审批中</a-tag>
+              <a-tag v-else-if="financeManager.agreeStatus === 2" color="green">已通过</a-tag>
+              <a-tag v-else-if="financeManager.agreeStatus === 3" color="red">已驳回</a-tag>
+              <a-tag v-else color="red">人员未齐</a-tag>
+            </a-col>
+            <a-col :span="10">
+              日期：{{financeManager.agreeDate}}
+            </a-col>
+          </a-row>
+        </a-row>
+        <a-row class="bt" style="text-align: left;padding: 12px">
+          <a-row>
             本人已详细阅读此表，并对以上信息进行校核，同意按此表进行项目运营。
           </a-row>
           <a-row style="margin-top: 50px;">
@@ -436,6 +454,8 @@
             this.projectManager.agreeDate = value[0].projectManagerNode.createDate && moment(value[0].projectManagerNode.createDate).format('YYYY-MM-DD HH:mm:ss');
             this.projectSecretary.agreeStatus = value[0].projectSecretaryNode.state;
             this.projectSecretary.agreeDate = value[0].projectSecretaryNode.createDate && moment(value[0].projectSecretaryNode.createDate).format('YYYY-MM-DD HH:mm:ss');
+            this.financeManager.agreeStatus = value[0].financeManagerNode.state;
+            this.financeManager.agreeDate = value[0].financeManagerNode.createDate && moment(value[0].financeManagerNode.createDate).format('YYYY-MM-DD HH:mm:ss');
             this.runningManager.agreeStatus = value[0].runningManagerNode.state;
             this.runningManager.agreeDate = value[0].runningManagerNode.createDate && moment(value[0].runningManagerNode.createDate).format('YYYY-MM-DD HH:mm:ss');
             this.inspector.agreeStatus = value[0].inspectorNode.state;
@@ -465,17 +485,22 @@
           agreeDate: '',
         },
         projectSecretary: {
-          name: '行政专员',
+          name: '商务专员',
+          agreeStatus: null,
+          agreeDate: '',
+        },
+        financeManager: {
+          name: '财务专员',
           agreeStatus: null,
           agreeDate: '',
         },
         runningManager: {
-          name: '经营负责人',
+          name: '项目经营负责人',
           agreeStatus: null,
           agreeDate: '',
         },
         inspector: {
-          name: '总监',
+          name: '部门经营负责人',
           agreeStatus: null,
           agreeDate: '',
         }

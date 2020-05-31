@@ -135,6 +135,7 @@
       <div class="step-item-container">
         <div :class="['steps-item-icon', this.classFilter(processStatus[0])]">
           <a-icon type="check" v-if="processStatus[0] === 2"/>
+          <a-icon type="close" v-else-if="processStatus[0] === 3"/>
           <span v-else>1</span>
         </div>
         <div class="steps-item-content">
@@ -146,6 +147,7 @@
       <div class="step-item-container" style="margin-bottom: 8px">
         <div :class="['steps-item-icon', this.classFilter(processStatus[1])]">
           <a-icon type="check" v-if="processStatus[1] === 2"/>
+          <a-icon type="close" v-else-if="processStatus[1] === 3"/>
           <span v-else>2.1</span>
         </div>
         <div class="steps-item-content">
@@ -155,6 +157,7 @@
       <div class="step-item-container">
         <div :class="['steps-item-icon', this.classFilter(processStatus[2])]">
           <a-icon type="check" v-if="processStatus[2] === 2"/>
+          <a-icon type="close" v-else-if="processStatus[2] === 3"/>
           <span v-else>2.2</span>
         </div>
         <div class="steps-item-content">
@@ -166,6 +169,7 @@
       <div class="step-item-container">
         <div :class="['steps-item-icon', this.classFilter(processStatus[3])]">
           <a-icon type="check" v-if="processStatus[3] === 2"/>
+          <a-icon type="close" v-else-if="processStatus[3] === 3"/>
           <span v-else>3</span>
         </div>
         <div class="steps-item-content">
@@ -177,6 +181,7 @@
       <div class="step-item-container">
         <div :class="['steps-item-icon', this.classFilter(processStatus[4])]">
           <a-icon type="check" v-if="processStatus[4] === 2"/>
+          <a-icon type="close" v-else-if="processStatus[4] === 3"/>
           <span v-else>4</span>
         </div>
         <div class="steps-item-content">

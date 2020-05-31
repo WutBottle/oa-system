@@ -129,7 +129,7 @@ const actions = {
       api.cashController.cashInput(params).then(res => {
         resolve(res);
       }).catch(error => {
-        console.log(error, '现金发票导入失败');
+        console.log(error, '现金导入失败');
         reject(error);
       });
     });

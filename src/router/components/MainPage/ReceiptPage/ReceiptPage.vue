@@ -73,8 +73,11 @@
                   查看文件
                 </a-button>
               </span>
-                <span slot="serial" slot-scope="text, record, index">
-              {{ index + 1 }}
+              <span slot="serial" slot-scope="text, record, index">
+                {{ index + 1 }}
+              </span>
+              <span slot="router" slot-scope="text, record">
+                <a @click="jumpToManager(record)">合同信息</a>
               </span>
               </a-table>
             </a-spin>
@@ -138,6 +141,9 @@
                 <span slot="receipts" slot-scope="tags">
                   <a-tag v-for="tag in tags" color="blue"
                          :key="tag.id">{{tag.receiptId}}</a-tag>
+                </span>
+                <span slot="router" slot-scope="text, record">
+                  <a @click="jumpToManager(record)">合同信息</a>
                 </span>
               </a-table>
             </a-spin>
@@ -324,6 +330,13 @@
             dataIndex: 'receiptFile',
             scopedSlots: {customRender: 'receiptFile'}
           },
+          {
+            title: '合同管理',
+            key: 'router',
+            width: 100,
+            dataIndex: 'router',
+            scopedSlots: {customRender: 'router'}
+          },
         ], // 发票列表项
         cashContractId: '',// 现金回款查询合同号
         cashSpinning: false, // 现金回款加载控制
@@ -367,6 +380,12 @@
             key: 'receipts',
             dataIndex: 'receipts',
             scopedSlots: {customRender: 'receipts'},
+          }, {
+            title: '合同管理',
+            key: 'router',
+            width: 100,
+            dataIndex: 'router',
+            scopedSlots: {customRender: 'router'}
           },
         ], // 现金回款列表项
         popReceiptVisible: false,
@@ -655,6 +674,12 @@
           this[upperBound] = temp;
         }
       },
+      jumpToManager(data) {
+        this.$router.push({
+          path: '/main/contractmanager',
+          query: {contractId: data.contractId}
+        })
+      }
     }
   }
 </script>

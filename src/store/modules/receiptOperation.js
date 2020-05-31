@@ -161,6 +161,17 @@ const actions = {
       });
     });
   },
+  // 发票导入
+  receiptInput({commit}, params) {
+    return new Promise((resolve, reject) => {
+      api.receiptController.receiptInput(params).then(res => {
+        resolve(res);
+      }).catch(error => {
+        console.log(error, '发票导入失败');
+        reject(error);
+      });
+    });
+  },
 };
 
 export default {

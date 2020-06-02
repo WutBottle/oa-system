@@ -132,6 +132,9 @@
       </div>
     </div>
     <div class="page-content">
+      <a-row style="padding-bottom: 16px">
+        <TaskAssign/>
+      </a-row>
       <a-row :gutter="16" style="padding-bottom: 16px">
         <a-col :span="12">
           <a-card>
@@ -330,6 +333,7 @@
   import {mapState, mapActions} from 'vuex'
   import moment from 'moment';
   import Bar from "../EchartsPage/Bar";
+  import TaskAssign from "./TaskAssign/TaskAssign";
 
   const formItemLayout = {
     labelCol: {span: 6},
@@ -339,6 +343,7 @@
     name: "WorkPlace",
     components: {
       Bar,
+      TaskAssign,
     },
     computed: {
       ...mapState({

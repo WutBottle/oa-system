@@ -239,8 +239,7 @@
                   label="实际签约日期"
           >
             <a-date-picker
-                    v-decorator="['actualDate',  {
-      }]"
+                    v-decorator="['actualDate']"
                     show-time
                     format="YYYY-MM-DD"
             />
@@ -250,8 +249,7 @@
                   label="合同归档日期"
           >
             <a-date-picker
-                    v-decorator="['contractDate',  {
-      }]"
+                    v-decorator="['contractDate']"
                     show-time
                     format="YYYY-MM-DD"
             />

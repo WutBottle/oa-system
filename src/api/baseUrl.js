@@ -27,6 +27,7 @@ const distributeUrl = {
   roleController: serverBaseUrl + 'role',
   projectUserController: serverBaseUrl + 'projectUser',
   projectCirculationController: serverBaseUrl + 'projectCirculation',
+  assignmentController: serverBaseUrl + 'assignment'
 };
 
 export default distributeUrl;

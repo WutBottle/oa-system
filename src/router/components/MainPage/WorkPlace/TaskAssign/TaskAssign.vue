@@ -69,68 +69,72 @@
            :infinite-scroll-disabled="undoneBusy"
            :infinite-scroll-distance="10"
       >
-        <a-row :gutter="8">
-          <a-col :span="6" v-for="item in taskListData" :key="item.id">
-            <a-card class="card-style">
-              <img
-                      slot="cover"
-                      alt="image"
-                      :src="item.image || 'https://ss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=2528034250,2637172852&fm=11&gp=0.jpg'"
-                      @click="() => window.open(item.image || 'https://ss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=2528034250,2637172852&fm=11&gp=0.jpg', '_blank')"
-              />
-              <template slot="actions" class="ant-card-actions">
-                <a-tooltip>
+        <template v-for="(item, index) in new Array(Math.ceil(taskListData.length/4))">
+          <a-row :gutter="8" :key="index">
+            <a-col :span="6" v-for="item in taskListData.slice(index*4, index*4 + 4)" :key="item.id">
+              <a-card class="card-style">
+                <img
+                        slot="cover"
+                        alt="image"
+                        :src="item.image || 'https://ss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=2528034250,2637172852&fm=11&gp=0.jpg'"
+                        @click="() => window.open(item.image || 'https://ss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=2528034250,2637172852&fm=11&gp=0.jpg', '_blank')"
+                />
+                <template slot="actions" class="ant-card-actions">
+                  <a-tooltip>
+                    <template slot="title">
+                      分享
+                    </template>
+                    <a-icon key="share-alt" type="share-alt" @click="showShareModal(item.id)"/>
+                  </a-tooltip>
+                  <a-tooltip>
+                    <template slot="title">
+                      完成
+                    </template>
+                    <a-popconfirm title="是否完成任务？" ok-text="确定" cancel-text="取消" @confirm="handleDone(item.id)">
+                      <a-icon key="check-circle" type="check-circle"/>
+                    </a-popconfirm>
+                  </a-tooltip>
+                  <a-tooltip>
+                    <template slot="title">
+                      删除
+                    </template>
+                    <a-popconfirm title="确定要删除该任务？" ok-text="确定" cancel-text="取消" @confirm="handleDelete(item.id)">
+                      <a-icon slot="icon" type="question-circle-o" style="color: red"/>
+                      <a-icon key="delete" type="delete"/>
+                    </a-popconfirm>
+                  </a-tooltip>
+                </template>
+                <a-card-meta>
                   <template slot="title">
-                    分享
-                  </template>
-                  <a-icon key="share-alt" type="share-alt" @click="showShareModal(item.id)"/>
-                </a-tooltip>
-                <a-tooltip>
-                  <template slot="title">
-                    完成
-                  </template>
-                  <a-popconfirm title="是否完成任务？" ok-text="确定" cancel-text="取消" @confirm="handleDone(item.id)">
-                    <a-icon key="check-circle" type="check-circle"/>
-                  </a-popconfirm>
-                </a-tooltip>
-                <a-tooltip>
-                  <template slot="title">
-                    删除
-                  </template>
-                  <a-popconfirm title="确定要删除该任务？" ok-text="确定" cancel-text="取消" @confirm="handleDelete(item.id)">
-                    <a-icon key="delete" type="delete"/>
-                  </a-popconfirm>
-                </a-tooltip>
-              </template>
-              <a-card-meta>
-                <template slot="title">
-                  <div class="title-wrapper">
-                    <a-badge status="success" v-if="item.status"/>
-                    <a-badge status="error" v-else/>
-                    {{item.title}}
-                    <a-divider type="vertical"/>
-                    <a-popover title="任务成员">
-                      <template slot="content">
+                    <div class="title-wrapper">
+                      <a-badge status="success" v-if="item.status"/>
+                      <a-badge status="error" v-else/>
+                      {{item.title}}
+                      <a-divider type="vertical"/>
+                      <a-popover title="任务成员">
+                        <template slot="content">
+                          <a-tag color="green">{{item.founder.nickname}}</a-tag>
+                          <a-tag color="blue" v-for="user in item.assignees" :key="user.userId">{{user.nickname}}
+                          </a-tag>
+                        </template>
                         <a-tag color="green">{{item.founder.nickname}}</a-tag>
-                        <a-tag color="blue" v-for="user in item.assignees" :key="user.userId">{{user.nickname}}</a-tag>
-                      </template>
-                      <a-tag color="green">{{item.founder.nickname}}</a-tag>
-                    </a-popover>
-                  </div>
-                </template>
-                <template slot="description">
-                  <div class="description-wrapper">
-                    {{item.content}}
-                    <div class="ddl">截止时间:{{item.targetDate}}</div>
-                  </div>
-                </template>
-              </a-card-meta>
-              <div class="pdf-wrapper" v-if="item.pdfFile">
-                <a @click="() => window.open(item.pdfFile, '_blank')">myPlan.pdf</a>
-              </div>
-            </a-card>
-          </a-col>
-        </a-row>
+                      </a-popover>
+                    </div>
+                  </template>
+                  <template slot="description">
+                    <div class="description-wrapper">
+                      {{item.content}}
+                      <div class="ddl">截止时间:{{item.targetDate}}</div>
+                    </div>
+                  </template>
+                </a-card-meta>
+                <div class="pdf-wrapper" v-if="item.pdfFile">
+                  <a @click="() => window.open(item.pdfFile, '_blank')">myPlan.pdf</a>
+                </div>
+              </a-card>
+            </a-col>
+          </a-row>
+        </template>
       </div>
     </a-card>
     <a-modal
@@ -533,7 +537,7 @@
               this.$message.error(res.data.meta.message);
             }
           })
-        }else {
+        } else {
           this.$message.warning('您还未选择人员');
         }
       }

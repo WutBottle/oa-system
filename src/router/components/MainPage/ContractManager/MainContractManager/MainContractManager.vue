@@ -829,7 +829,8 @@
       },
       beforeUploadXls(file) {
         this.handleExcelRemove(file);
-        if (file.type === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' || file.type === 'application/vnd.ms-excel') {
+        const suffix = file.name.split('.').reverse()[0];
+        if (suffix === 'xls' || suffix === 'xlsx') {
           this.contractsData = []; // 初始化录入合同列表
           const formData = new FormData();
           this.excelFileList = [...this.excelFileList, file];

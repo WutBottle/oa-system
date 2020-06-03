@@ -37,7 +37,8 @@
       },
       beforeUpload(file) {
         this.handleRemove(file);
-        if (file.type === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' || file.type === 'application/vnd.ms-excel') {
+        const suffix = file.name.split('.').reverse()[0];
+        if (suffix === 'xls' || suffix === 'xlsx') {
           const formData = new FormData();
           this.fileList = [...this.fileList, file];
           this.fileList.forEach((file) => {

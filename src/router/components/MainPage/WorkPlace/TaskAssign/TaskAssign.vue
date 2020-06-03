@@ -8,13 +8,14 @@
       height: 500px;
 
       .card-style {
-        width:100%;
+        width: 100%;
         display: inline-block;
         margin-bottom: 12px;
+
         img {
           margin: 0 auto;
           width: auto;
-          height: 200px;
+          height: 160px;
         }
 
         img:hover {
@@ -25,8 +26,8 @@
           display: flex;
           justify-content: left;
           align-items: center;
-          word-break:break-all;
-          white-space:normal;
+          word-break: break-all;
+          white-space: normal;
         }
 
         .description-wrapper {
@@ -60,7 +61,7 @@
           </a-radio-group>
           <a>筛选</a>
         </a-popover>
-        <a-divider type="vertical" />
+        <a-divider type="vertical"/>
         <a @click="() => this.addVisible = true">添加</a>
       </template>
       <div class="demo-infinite-container"
@@ -82,43 +83,50 @@
                   <template slot="title">
                     分享
                   </template>
-                  <a-icon key="share-alt" type="share-alt" />
+                  <a-icon key="share-alt" type="share-alt" @click="showShareModal(item.id)"/>
                 </a-tooltip>
                 <a-tooltip>
                   <template slot="title">
                     完成
                   </template>
-                  <a-icon key="check-circle" type="check-circle" />
+                  <a-popconfirm title="是否完成任务？" ok-text="确定" cancel-text="取消" @confirm="handleDone(item.id)">
+                    <a-icon key="check-circle" type="check-circle"/>
+                  </a-popconfirm>
                 </a-tooltip>
                 <a-tooltip>
                   <template slot="title">
                     删除
                   </template>
-                  <a-icon key="delete" type="delete" />
+                  <a-popconfirm title="确定要删除该任务？" ok-text="确定" cancel-text="取消" @confirm="handleDelete(item.id)">
+                    <a-icon key="delete" type="delete"/>
+                  </a-popconfirm>
                 </a-tooltip>
               </template>
               <a-card-meta>
                 <template slot="title">
                   <div class="title-wrapper">
-                    雷神山任务<a-divider type="vertical" />
+                    <a-badge status="success" v-if="item.status"/>
+                    <a-badge status="error" v-else/>
+                    {{item.title}}
+                    <a-divider type="vertical"/>
                     <a-popover title="任务成员">
                       <template slot="content">
-                        <a-tag color="red">{{item.founder.nickname}}</a-tag>
+                        <a-tag color="green">{{item.founder.nickname}}</a-tag>
                         <a-tag color="blue" v-for="user in item.assignees" :key="user.userId">{{user.nickname}}</a-tag>
                       </template>
-                      <a-tag color="red">{{item.founder.nickname}}</a-tag>
+                      <a-tag color="green">{{item.founder.nickname}}</a-tag>
                     </a-popover>
                   </div>
                 </template>
                 <template slot="description">
                   <div class="description-wrapper">
-                    任务只许成功不许失败任务只许成功不许失败任务只许成功不许失败
-                    <div class="ddl">截止时间:2020-06-02</div>
+                    {{item.content}}
+                    <div class="ddl">截止时间:{{item.targetDate}}</div>
                   </div>
                 </template>
               </a-card-meta>
-              <div class="pdf-wrapper">
-                <a @click="() => window.open('https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png', '_blank')">myPlan.pdf</a>
+              <div class="pdf-wrapper" v-if="item.pdfFile">
+                <a @click="() => window.open(item.pdfFile, '_blank')">myPlan.pdf</a>
               </div>
             </a-card>
           </a-col>
@@ -153,11 +161,12 @@
                 v-bind="formItemLayout"
                 label="任务详情"
         >
-          <a-input
+          <a-textarea
                   v-decorator="[
           'content',
           {rules: [{required: true, message: '请输入任务详情!'}]}
         ]"
+                  :auto-size="{minRows: 2, maxRows: 4}"
                   placeholder="请输入任务详情"
           />
         </a-form-item>
@@ -181,7 +190,10 @@
                   mode="multiple"
           >
             <a-spin v-if="fetching" slot="notFoundContent" size="small"/>
-            <a-select-option v-for="(d,index) in usersData" :key="d.userId">{{d.username}}<a-divider type="vertical" /><a-tag color="orange">{{d.nickname}}</a-tag></a-select-option>
+            <a-select-option v-for="(d,index) in usersData" :key="d.userId">{{d.username}}
+              <a-divider type="vertical"/>
+              <a-tag color="orange">{{d.nickname}}</a-tag>
+            </a-select-option>
           </a-select>
         </a-form-item>
         <a-form-item
@@ -224,7 +236,7 @@
                   @preview="handlePreview"
           >
             <div v-if="imageList.length < 1">
-              <a-icon type="plus" />
+              <a-icon type="plus"/>
               <div class="ant-upload-text">
                 Upload
               </div>
@@ -234,7 +246,32 @@
       </a-form>
     </a-modal>
     <a-modal :visible="previewVisible" :footer="null" @cancel="handlePreviewCancel">
-      <img alt="example" style="width: 100%" :src="previewImage" />
+      <img alt="example" style="width: 100%" :src="previewImage"/>
+    </a-modal>
+    <a-modal v-model="shareVisible" title="选择共享人员"
+             @ok="handleShare"
+             :maskClosable="false"
+             :afterClose="() => this.sharedUser = undefined"
+    >
+      <a-select
+              v-model="sharedUser"
+              showSearch
+              style="width: 100%;"
+              placeholder="搜索用户"
+              :showArrow="false"
+              :filterOption="false"
+              @search="fetchUsers"
+              notFoundContent="无搜索结果"
+              :defaultActiveFirstOption="false"
+              :allowClear="true"
+              @blur="clearUserData"
+      >
+        <a-spin v-if="fetching" slot="notFoundContent" size="small"/>
+        <a-select-option v-for="(d,index) in usersData" :key="d.userId">{{d.username}}
+          <a-divider type="vertical"/>
+          <a-tag color="orange">{{d.nickname}}</a-tag>
+        </a-select-option>
+      </a-select>
     </a-modal>
   </div>
 </template>
@@ -249,6 +286,7 @@
     labelCol: {span: 8},
     wrapperCol: {span: 12},
   };
+
   function getBase64(file) {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
@@ -257,6 +295,7 @@
       reader.onerror = error => reject(error);
     });
   }
+
   export default {
     name: "TaskAssign",
     data() {
@@ -283,6 +322,9 @@
           total: 8,
         },
         taskListData: [],
+        shareVisible: false,
+        currentTaskId: '',
+        sharedUser: undefined,
       }
     },
     methods: {
@@ -290,7 +332,17 @@
         receiptUpload: 'receiptOperation/receiptUpload',
         getUserListByNameLike: 'userOperation/getUserListByNameLike', // 用户的模糊查询
       }),
-      getAssignmentList() {
+      getAssignmentList(reset) {
+        if (reset) {
+          Object.assign(this, {
+            paginationProps: {
+              pageNum: 1,
+              pageLimit: 8,
+              total: 8,
+            },
+            taskListData: [],
+          });
+        }
         const data = this.taskListData;
         if (data.length === this.paginationProps.total) {
           this.$message.warning('已加载到底部');
@@ -301,7 +353,6 @@
           pageLimit: this.paginationProps.pageLimit,
           isMine: this.isMine,
         }).then(res => {
-          console.log(res);
           if (res.data.data.totalPages > this.paginationProps.pageNum) {
             this.paginationProps.pageNum++;
           }
@@ -315,12 +366,14 @@
               assignees: item.assignees,
               founder: item.founder,
               status: item.status,
+              title: item.title,
             };
           }));
+          this.paginationProps.total = res.data.data.totalElements;
         })
       },
       handleOnLoad() {
-        this.getAssignmentList();
+        this.getAssignmentList(false);
       },
       handleAddReset() {
         this.addForm.resetFields();
@@ -351,7 +404,7 @@
                   this.$message.success('添加成功');
                   this.addVisible = false;
                   this.handleAddReset();
-                  this.getAssignmentList();
+                  this.getAssignmentList(true);
                 } else {
                   this.$message.error(res.data.meta.message);
                 }
@@ -436,7 +489,53 @@
       },
       handleTypeChange(e) {
         this.isMine = e.target.value;
-        this.getAssignmentList();
+        this.getAssignmentList(true);
+      },
+      handleDelete(id) {
+        api.assignmentController.deleteAssignment({
+          assignmentId: id
+        }).then(res => {
+          if (res.data.meta.success) {
+            this.$message.success(res.data.data);
+            this.getAssignmentList(true);
+          } else {
+            this.$message.error(res.data.meta.message);
+          }
+        })
+      },
+      handleDone(id) {
+        api.assignmentController.finish({
+          assignmentId: id
+        }).then(res => {
+          if (res.data.meta.success) {
+            this.$message.success(res.data.data);
+            this.getAssignmentList(true);
+          } else {
+            this.$message.error(res.data.meta.message);
+          }
+        })
+      },
+      showShareModal(id) {
+        this.currentTaskId = id;
+        this.shareVisible = true;
+      },
+      handleShare() {
+        if (this.sharedUser) {
+          api.assignmentController.shareAssignment({
+            beSharedId: this.sharedUser,
+            assignmentId: this.currentTaskId,
+          }).then(res => {
+            if (res.data.meta.success) {
+              this.$message.success(res.data.data);
+              this.shareVisible = false;
+              this.getAssignmentList(true);
+            } else {
+              this.$message.error(res.data.meta.message);
+            }
+          })
+        }else {
+          this.$message.warning('您还未选择人员');
+        }
       }
     }
   }

@@ -20,6 +20,15 @@ const assignmentController = {
   upload(params) {
     return axios.post(`${baseUrl.assignmentController}/upload`, params);
   },
+  shareAssignment(params) {
+    return axios.post(`${baseUrl.assignmentController}/shareAssignment`, params);
+  },
+  deleteAssignment(params) {
+    return axios.post(`${baseUrl.assignmentController}/deleteAssignment`, params);
+  },
+  finish(params) {
+    return axios.post(`${baseUrl.assignmentController}/finish`, params);
+  },
 };
 
 export default assignmentController;

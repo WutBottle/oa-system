@@ -234,7 +234,7 @@
           <a-col class="br bt cell" :span="4">组织方式</a-col>
           <a-col class="br bt cell" :span="4">设计团队</a-col>
           <a-col class="br bt cell" :span="4">分项设计费</a-col>
-          <a-col class="br bt cell" :span="4">价格（拟）</a-col>
+          <a-col class="br bt cell" :span="4">分包合同费</a-col>
           <a-col class="bt cell" :span="4">备注</a-col>
         </a-row>
         <template v-for="(item, index) in formData.subProjects">
@@ -444,6 +444,7 @@
             this.totalFees += item.designFees;
             this.totalPrice += item.price;
           });
+
         },
         immediate: true
       },

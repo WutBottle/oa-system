@@ -86,7 +86,7 @@
             <a-table bordered :columns="columns" :dataSource="listTableData"
                      :pagination="listPaginationProps"
                      :rowSelection="{selectedRowKeys: selectedRowKeys, onSelect: onSelect, onSelectAll: onSelectAll, onChange: onSelectChange}"
-                     @change="handleTableChange" :scroll="{ x: 2380, y: 500}">
+                     @change="handleTableChange" :scroll="{ x: 2400, y: 500}">
               <span slot="serial" slot-scope="text, record, index">
                 {{ index + 1 }}
               </span>
@@ -96,6 +96,11 @@
               <a-tag slot="outProjectCategory" slot-scope="text" color="blue">
                 {{text}}
               </a-tag>
+              <span slot="receiptCash" slot-scope="text, record">
+                <a @click="jumpToReceiptManager(record)">发票</a>
+                <a-divider type="vertical"/>
+                <a @click="jumpToPaidManager(record)">付款</a>
+              </span>
               <template slot="selectIndex" slot-scope="text, record">
                 <a-button type="primary" size="small" @click="openOutPaid(record)">
                   查看付款
@@ -340,6 +345,12 @@
             width: 150,
             key: 'note',
             dataIndex: 'note',
+          }, {
+            title: '发票付款',
+            width: 120,
+            key: 'receiptCash',
+            dataIndex: 'receiptCash',
+            scopedSlots: {customRender: 'receiptCash'},
           }, {
             title: '分包操作',
             width: 120,
@@ -612,6 +623,18 @@
           this[upperBound] = temp;
         }
       },
+      jumpToReceiptManager(data) {
+        this.$router.push({
+          path: '/main/outcontractreceipt',
+          query: {outContractId: data.outContractId}
+        })
+      },
+      jumpToPaidManager(data) {
+        this.$router.push({
+          path: '/main/outcontractpaid',
+          query: {outContractId: data.outContractId}
+        })
+      }
     }
   }
 </script>

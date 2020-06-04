@@ -431,6 +431,14 @@
 
       }
     },
+    activated() {
+      const {outContractId = undefined} = this.$router.currentRoute.query;
+      this.outContractValue = outContractId;
+      if (outContractId) {
+        this.current++;
+        this.updateTableData();
+      }
+    },
     methods: {
       ...mapActions({
         getOutContractIdsByIdLike: 'outContractOperation/getOutContractIdsByIdLike',

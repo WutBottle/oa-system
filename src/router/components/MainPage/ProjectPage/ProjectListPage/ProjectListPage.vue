@@ -498,25 +498,29 @@
         }
       }
     },
-    mounted() {
-      this.updateTableData();
-      this.subCategoryList.map(item => {
-        this.tempSubProjects.push({
-          organization: null,
-          subCategory: {
-            categoryId: item.categoryId,
-            categoryType: item.categoryType,
-            categoryName: item.categoryName,
-          },
-          outContracts: [],
-          designTeam: null,
-          designFees: 0,
-          price: 0,
-          note: null,
-        })
-      });
+    watch:{
+      subCategoryList: {
+        immediate: true,
+        handler() {
+          this.subCategoryList.map(item => {
+            this.tempSubProjects.push({
+              organization: null,
+              subCategory: {
+                categoryId: item.categoryId,
+                categoryType: item.categoryType,
+                categoryName: item.categoryName,
+              },
+              outContracts: [],
+              designTeam: null,
+              designFees: 0,
+              price: 0,
+              note: null,
+            })
+          });
+        }
+      }
     },
-    activated() {
+    mounted() {
       this.updateTableData();
     },
     methods: {

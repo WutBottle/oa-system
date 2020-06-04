@@ -201,23 +201,30 @@
         subCategoryList: state => state.categoryOperation.subCategoryList,
       }),
     },
-    activated() {
+    watch:{
+      subCategoryList: {
+        immediate: true,
+        handler() {
+          this.subCategoryList.map(item => {
+            this.tempSubProjects.push({
+              organization: null,
+              subCategory: {
+                categoryId: item.categoryId,
+                categoryType: item.categoryType,
+                categoryName: item.categoryName,
+              },
+              outContracts: [],
+              designTeam: null,
+              designFees: 0,
+              price: 0,
+              note: null,
+            })
+          });
+        }
+      }
+    },
+    mounted() {
       this.updateTableData();
-      this.subCategoryList.map(item => {
-        this.tempSubProjects.push({
-          organization: null,
-          subCategory: {
-            categoryId: item.categoryId,
-            categoryType: item.categoryType,
-            categoryName: item.categoryName,
-          },
-          outContracts: [],
-          designTeam: null,
-          designFees: 0,
-          price: 0,
-          note: null,
-        })
-      });
     },
     methods: {
       ...mapActions({
@@ -360,7 +367,7 @@
             note: this.adviseValue || '',
           }).then(res => {
             if (res.data.meta.success) {
-              isAgree != 'restart' && this.$message.success(res.data.data);
+              isAgree !== 'restart' && this.$message.success(res.data.data);
               isAgree === 'restart' && this.$message.success('重启成功!');
               this.adviseValue = undefined;
               this.currentUserState = null;

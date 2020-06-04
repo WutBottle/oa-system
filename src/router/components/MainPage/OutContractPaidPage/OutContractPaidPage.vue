@@ -317,7 +317,6 @@
   import {mapState, mapActions} from 'vuex';
   import {debounce} from 'debounce';
   import moment from 'moment'
-  import OutPaidInput from "../OutPaidInput/OutPaidInput";
 
   const formItemLayout = {
     labelCol: {span: 6},
@@ -330,9 +329,6 @@
 
   export default {
     name: "OutContractPaidPage",
-    components: {
-      OutPaidInput,
-    },
     data() {
       this.fetchOutContract = debounce(this.fetchOutContract, 500);
       return {
@@ -413,6 +409,14 @@
         outContractName: state => state.outPaidOperation.outContractName, // 分包合同名称
         outCompanyName: state => state.outPaidOperation.outCompanyName, // 分包单位名称
       }),
+    },
+    activated() {
+      const {outContractId = undefined} = this.$router.currentRoute.query;
+      this.outContractValue = outContractId;
+      if (outContractId) {
+        this.current++;
+        this.updateTableData();
+      }
     },
     methods: {
       ...mapActions({

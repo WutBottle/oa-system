@@ -130,13 +130,22 @@
                     </template>
                     <template slot="description">
                       <div class="description-wrapper">
-                        {{item.content}}
+                        <a-tooltip v-if="item.content.length > 100">
+                          <template slot="title">
+                            {{item.content}}
+                          </template>
+                          {{item.content.substring(0, 100) + '...'}}
+                        </a-tooltip>
+                        <span v-else>
+                          {{item.content}}
+                        </span>
                         <div class="ddl">截止时间:{{item.targetDate}}</div>
                       </div>
                     </template>
                   </a-card-meta>
                   <div class="pdf-wrapper" v-if="item.pdfFile">
-                    <a @click="() => window.open(item.pdfFile, '_blank')">myPlan.pdf</a>
+                    <a @click="() => window.open(item.pdfFile, '_blank')">
+                      {{item.pdfFile.substring(item.pdfFile.length - 10, item.pdfFile.length - 4) + '.' + item.pdfFile.split('.').reverse()[0]}}</a>
                   </div>
                 </a-card>
               </a-col>
@@ -287,6 +296,137 @@
         </a-select-option>
       </a-select>
     </a-modal>
+    <a-drawer
+            title="修改任务信息"
+            placement="right"
+            :closable="false"
+            width="500"
+            @close="onEditClose"
+            :visible="editVisible"
+    >
+      <a-form
+              :form="editForm"
+      >
+        <a-form-item
+                v-bind="formItemLayout"
+                label="标题"
+        >
+          <a-input
+                  v-decorator="[
+          'title',
+          {
+            initialValue: this.editTaskData.title,
+            rules: [{required: true, message: '请输入标题!'}]}
+        ]"
+                  placeholder="请输入标题"
+          />
+        </a-form-item>
+        <a-form-item
+                v-bind="formItemLayout"
+                label="任务详情"
+        >
+          <a-textarea
+                  v-decorator="[
+          'content',
+          {
+            initialValue: this.editTaskData.content,
+            rules: [{required: true, message: '请输入任务详情!'}]}
+        ]"
+                  :auto-size="{minRows: 2, maxRows: 6}"
+                  placeholder="请输入任务详情"
+          />
+        </a-form-item>
+        <a-form-item
+                v-bind="formItemLayout"
+                label="分配人员"
+        >
+          <a-select
+                  v-decorator="[
+            'assignees',
+            {
+              initialValue: this.editTaskData.initialAssignees,
+              rules: [{required: true, message: '请分配人员!'}]}
+            ]"
+            showSearch
+            placeholder="搜索用户"
+            :showArrow="false"
+            :filterOption="false"
+            @search="fetchUsers"
+            notFoundContent="无搜索结果"
+            :defaultActiveFirstOption="false"
+            :allowClear="true"
+            @blur="() => this.initialUser = []"
+            mode="multiple"
+          >
+            <a-spin v-if="fetching" slot="notFoundContent" size="small"/>
+            <a-select-option v-for="(d,index) in initialUser" :key="d.userId">{{d.username}}
+              <a-divider type="vertical"/>
+              <a-tag color="orange">{{d.nickname}}</a-tag>
+            </a-select-option>
+          </a-select>
+        </a-form-item>
+        <a-form-item
+                v-bind="formItemLayout"
+                label="截止时间"
+        >
+          <a-date-picker
+                  v-decorator="['targetDate',
+                  {
+                    initialValue: this.editTaskData.targetDate,
+                    rules: [{required: true, message: '请选择截止时间!'}]}]"
+                  show-time
+                  format="YYYY-MM-DD"
+          />
+        </a-form-item>
+        <a-form-item
+                v-bind="formItemLayout"
+                label="PDF"
+        >
+          <a-upload
+                  :fileList="fileList"
+                  :beforeUpload="file => beforeUpload(file, 'fileList')"
+                  :remove="file => handleRemove(file, 'fileList')"
+                  :multiple="false"
+          >
+            <a-button :loading="uploadSpinning">
+              <a-icon type="upload"/>
+              点击上传
+            </a-button>
+          </a-upload>
+        </a-form-item>
+        <a-form-item
+                v-bind="formItemLayout"
+                label="图片"
+        >
+          <a-upload
+                  :fileList="imageList"
+                  :beforeUpload="file => beforeUpload(file, 'imageList')"
+                  :remove="file => handleRemove(file, 'imageList')"
+                  :multiple="false"
+                  list-type="picture-card"
+                  @preview="handlePreview"
+          >
+            <div v-if="imageList.length < 1">
+              <a-icon type="plus"/>
+              <div class="ant-upload-text">
+                Upload
+              </div>
+            </div>
+          </a-upload>
+        </a-form-item>
+        <a-form-item
+                :label-col="formTailLayout.labelCol"
+                :wrapper-col="formTailLayout.wrapperCol"
+        >
+          <a-button
+                  type="primary"
+                  @click="submitEditForm"
+          >
+            提交
+          </a-button>
+        </a-form-item>
+      </a-form>
+    </a-drawer>
   </div>
 </template>
 
@@ -300,7 +440,10 @@
     labelCol: {span: 8},
     wrapperCol: {span: 12},
   };
-
+  const formTailLayout = {
+    labelCol: {span: 2},
+    wrapperCol: {span: 14, offset: 8},
+  };
   function getBase64(file) {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
@@ -315,12 +458,14 @@
     data() {
       return {
         formItemLayout,
+        formTailLayout,
         undoneBusy: false,
         window: window,
         optionVisible: false,
         isMine: true,
         addVisible: false,
         addForm: this.$form.createForm(this),
+        editForm: this.$form.createForm(this),
         previewVisible: false,
         usersData: [], // 用户列表
         fetching: false,
@@ -339,6 +484,9 @@
         shareVisible: false,
         currentTaskId: '',
         sharedUser: undefined,
+        editVisible: false,
+        editTaskData: {},
+        initialUser: [],
       }
     },
     methods: {
@@ -451,6 +599,7 @@
         this.fetching = true;
         this.getUserListByNameLike(params).then((res) => {
           this.usersData = res.data.data.content;
+          this.initialUser = res.data.data.content;
           this.fetching = false;
         });
       },
@@ -462,6 +611,11 @@
         const newFileList = this[name].slice();
         newFileList.splice(index, 1);
         this[name] = newFileList;
+        if (name === 'imageList') {
+          this.imageFile = '';
+        }else {
+          this.pdfFile = '';
+        }
       },
       beforeUpload(file, name) {
         this.uploadSpinning = true;
@@ -552,8 +706,82 @@
         }
       },
       handleEdit(data) {
-        console.log(data)
-      }
+        const {id, title, targetDate, content, image, pdfFile = '', assignees = ''} = data;
+        const initialAssignees = assignees.map(item => item.userId);
+        this.initialUser = assignees.map(item => {
+          return {
+            userId: item.userId,
+            username: item.username,
+            nickname: item.nickname,
+          }
+        });
+        this.fileList = [];
+        pdfFile && this.fileList.push({
+          uid: '-1',
+          name: pdfFile.substring(pdfFile.length - 10, pdfFile.length - 4) + '.' + pdfFile.split('.').reverse()[0],
+          status: 'done',
+          url: pdfFile,
+        });
+        image && this.imageList.push({
+          uid: '-1',
+          name: image.substring(image.length - 10, image.length - 4) + '.' + image.split('.').reverse()[0],
+          status: 'done',
+          url: image,
+        });
+        this.pdfFile = pdfFile;
+        this.imageFile = image;
+        Object.assign(this.editTaskData, {
+          id,
+          title,
+          targetDate: moment(targetDate),
+          content,
+          image,
+          pdfFile,
+          initialAssignees,
+        });
+        this.editVisible = true;
+      },
+      onEditClose() {
+        this.editVisible = false;
+        Object.assign(this, {
+          initialUser: [],
+          fileList: [],
+          imageList: [],
+          pdfFile: '',
+          imageFile: '',
+        });
+        this.editForm.resetFields();
+      },
+      submitEditForm() {
+        this.editForm.validateFields(
+          (err, values) => {
+            if (!err) {
+              const params = {
+                title: values.title,
+                content: values.content,
+                assignees: values.assignees.map(item => {
+                  return {userId: item}
+                }),
+                targetDate: values.targetDate,
+                pdfFile: this.pdfFile,
+                image: this.imageFile,
+              };
+              api.assignmentController.verifyAssignment(params).then(res => {
+                if (res.data.meta.success) {
+                  this.$message.success('修改成功');
+                  this.addVisible = false;
+                  this.onEditClose();
+                  this.getAssignmentList(true);
+                } else {
+                  this.$message.error(res.data.meta.message);
+                }
+              }).catch(error => {
+                this.$message.error(error);
+              })
+            }
+          },
+        );
+      },
     }
   }
 </script>

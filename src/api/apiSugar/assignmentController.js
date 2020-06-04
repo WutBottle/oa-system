@@ -29,6 +29,9 @@ const assignmentController = {
   finish(params) {
     return axios.post(`${baseUrl.assignmentController}/finish`, params);
   },
+  verifyAssignment(params) {
+    return axios.post(`${baseUrl.assignmentController}/verifyAssignment`, params);
+  },
 };
 
 export default assignmentController;

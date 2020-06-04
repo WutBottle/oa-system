@@ -630,12 +630,12 @@
           });
           // 手动上传
           api.assignmentController.upload(formData).then((data) => {
+            this.handleRemove(file, name);
             if (name === 'fileList') {
               this.pdfFile = baseUrl.serverBaseController + data.data.data;
             } else {
               this.imageFile = baseUrl.serverBaseController + data.data.data;
             }
-            this.handleRemove(file, name);
             this[name].push({
               uid: '-1',
               name: preName,
@@ -706,7 +706,7 @@
         }
       },
       handleEdit(data) {
-        const {id, title, targetDate, content, image, pdfFile = '', assignees = ''} = data;
+        const {id, title, targetDate, content, image, pdfFile = '', assignees = '', founder} = data;
         const initialAssignees = assignees.map(item => item.userId);
         this.initialUser = assignees.map(item => {
           return {
@@ -738,6 +738,7 @@
           image,
           pdfFile,
           initialAssignees,
+          founder,
         });
         this.editVisible = true;
       },
@@ -757,11 +758,13 @@
           (err, values) => {
             if (!err) {
               const params = {
+                id: this.editTaskData.id,
                 title: values.title,
                 content: values.content,
                 assignees: values.assignees.map(item => {
                   return {userId: item}
                 }),
+                founder: this.editTaskData.founder,
                 targetDate: values.targetDate,
                 pdfFile: this.pdfFile,
                 image: this.imageFile,

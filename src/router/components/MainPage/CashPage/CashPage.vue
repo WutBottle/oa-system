@@ -371,7 +371,14 @@
         contractName: state => state.cashOperation.contractName, // 合同名称
       }),
     },
-
+    activated() {
+      const {contractId = undefined} = this.$router.currentRoute.query;
+      this.contractValue = contractId;
+      if (contractId) {
+        this.current++;
+        this.updateTableData();
+      }
+    },
     methods: {
       ...mapActions({
         getContractIdsByIdLike: 'contractList/getContractIdsByIdLike',

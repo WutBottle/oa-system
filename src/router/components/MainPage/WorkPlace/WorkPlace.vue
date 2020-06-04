@@ -91,7 +91,7 @@
               </div>
               <div class="content">
                 <div class="title">
-                  {{username}}，新年新气象！
+                  {{username}}，欢迎使用本系统！
                 </div>
                 <div>
                   中南建筑设计院 | CSADI - EPC中心 - OA平台

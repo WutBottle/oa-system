@@ -77,7 +77,7 @@
                 {{ index + 1 }}
               </span>
               <span slot="router" slot-scope="text, record">
-                <a @click="jumpToManager(record)">合同信息</a>
+                <a @click="jumpToReceiptManager(record)">管理</a>
               </span>
               </a-table>
             </a-spin>
@@ -143,7 +143,7 @@
                          :key="tag.id">{{tag.receiptId}}</a-tag>
                 </span>
                 <span slot="router" slot-scope="text, record">
-                  <a @click="jumpToManager(record)">合同信息</a>
+                  <a @click="jumpToCashManager(record)">管理</a>
                 </span>
               </a-table>
             </a-spin>
@@ -331,7 +331,7 @@
             scopedSlots: {customRender: 'receiptFile'}
           },
           {
-            title: '合同管理',
+            title: '合同发票',
             key: 'router',
             width: 100,
             dataIndex: 'router',
@@ -381,7 +381,7 @@
             dataIndex: 'receipts',
             scopedSlots: {customRender: 'receipts'},
           }, {
-            title: '合同管理',
+            title: '合同现金',
             key: 'router',
             width: 100,
             dataIndex: 'router',
@@ -674,12 +674,18 @@
           this[upperBound] = temp;
         }
       },
-      jumpToManager(data) {
+      jumpToReceiptManager(data) {
         this.$router.push({
-          path: '/main/contractmanager',
+          path: '/main/invoice',
           query: {contractId: data.contractId}
         })
-      }
+      },
+      jumpToCashManager(data) {
+        this.$router.push({
+          path: '/main/cash',
+          query: {contractId: data.contractId}
+        })
+      },
     }
   }
 </script>

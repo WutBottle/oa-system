@@ -454,6 +454,14 @@
         contractName: ''
       }
     },
+    activated() {
+      const {contractId = undefined} = this.$router.currentRoute.query;
+      this.contractValue = contractId;
+      if (contractId) {
+        this.current++;
+        this.updateTableData();
+      }
+    },
     methods: {
       ...mapActions({
         getReceiptsByContractId: 'receiptOperation/getReceiptsByContractId',

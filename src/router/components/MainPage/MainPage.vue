@@ -273,20 +273,7 @@
     name: 'MainPage',
     mounted() {
       this.generateMenuList();
-      Promise.all([
-        this.handleUpdateCategory(1),
-        this.handleUpdateCategory(2),
-        this.handleUpdateCategory(3),
-        this.handleUpdateCategory(4),
-        this.handleUpdateCategory(5),
-        this.handleUpdateCategory(6),
-        this.handleUpdateCategory(7),
-        this.handleUpdateCategory(8),
-        this.handleUpdateCategory(9),
-        this.handleUpdateCategory(10),
-        this.handleUpdateCategory(11),
-      ]).then(() => {
-      });
+      this.getCategoryData();
       this.screenWidth = document.body.clientWidth;
       window.onresize = () => {
         return (() => {
@@ -332,6 +319,14 @@
         logout: 'tokensOperation/logout',
         getCategoryList: 'categoryOperation/getCategoryList',
       }),
+      async getCategoryData() {
+        try {
+          for (let i = 1; i < 12; i++){
+            await this.handleUpdateCategory(i); // 执行到这里报错，直接跳至下面 catch() 语句
+          }
+        } catch(err) {
+        }
+      },
       handleUpdateCategory(type) {
         return new Promise((resolve, reject) => {
           this.getCategoryList({

@@ -205,6 +205,7 @@
           <a-input
                   v-decorator="[
           'paidNote',
+          {rules: [{max: 250, message: '不超过250个字符'}]}
         ]"
                   placeholder="请输入备注"
           />
@@ -290,7 +291,7 @@
           <a-input
                   v-decorator="[
           'paidNote',
-          {initialValue: this.editFormData.paidNote}
+          {initialValue: this.editFormData.paidNote, rules: [{max: 250, message: '不超过250个字符'}]}
         ]"
                   placeholder="请输入备注"
           />

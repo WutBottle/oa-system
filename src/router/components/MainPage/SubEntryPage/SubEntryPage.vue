@@ -243,6 +243,7 @@
           <a-input
                   v-decorator="[
           'note',
+          {rules: [{max: 250, message: '不超过250个字符'}]}
         ]"
                   placeholder="请输入备注"
           />
@@ -348,7 +349,7 @@
           <a-input
                   v-decorator="[
           'note',
-          {initialValue: this.editFormData.note}
+          {initialValue: this.editFormData.note, rules: [{max: 250, message: '不超过250个字符'}]}
         ]"
                   placeholder="请输入备注"
           />
@@ -497,6 +498,7 @@
           <a-input
                   v-decorator="[
           'note',
+          {rules: [{max: 250, message: '不超过250个字符'}]}
         ]"
                   placeholder="请输入备注"
           />
@@ -627,7 +629,7 @@
           <a-input
                   v-decorator="[
           'note',
-          {initialValue: this.outContractEditFormData.note, }
+          {initialValue: this.outContractEditFormData.note, rules: [{max: 250, message: '不超过250个字符'}]}
         ]"
                   placeholder="请输入备注"
           />

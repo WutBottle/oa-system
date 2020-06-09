@@ -2,8 +2,7 @@
 * Author: zp
 * 权限控制
 */
-import { asyncRouterMap, constantRouterMap } from '@/config/router.config'
-import {ROLE} from '@/store/mutation-types'
+import { constantRouterMap } from '@/config/router.config'
 
 const state = {
   routers: constantRouterMap,
@@ -17,20 +16,8 @@ const mutations = {
   }
 };
 
-const actions = {
-  GenerateRoutes ({ commit }) {
-    return new Promise(resolve => {
-      if (localStorage.getItem(ROLE) === 'ROLE_ADMIN') {
-        commit('SET_ROUTERS', asyncRouterMap);
-      }
-      resolve()
-    })
-  }
-};
-
 export default {
   namespaced: true,
   state,
-  actions,
   mutations
 }

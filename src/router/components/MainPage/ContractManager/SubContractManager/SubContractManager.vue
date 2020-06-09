@@ -59,15 +59,7 @@
             <a-input
                     v-decorator="[
           'ownerId',
-          {rules: [{
-                type: 'number',
-                message: '请输入数字',
-                transform:(value)=> {
-                  if(value){
-                    return Number(value);
-                  }
-                }
-          }]}
+            {rules: [{max: 20, message: '不超过20个字符'}]}
         ]"
                     placeholder="请输入发包人合同编号"
             />
@@ -156,6 +148,7 @@
             <a-input
                     v-decorator="[
           'departmentDesign',
+          {rules: [{max: 30, message: '不得超过30个字符'}]}
         ]"
                     placeholder="请输入主设计部门"
             />
@@ -168,6 +161,7 @@
             <a-input
                     v-decorator="[
           'departmentRunning',
+          {rules: [{max: 30, message: '不得超过30个字符'}]}
         ]"
                     placeholder="请输入经营部门"
             />
@@ -180,6 +174,7 @@
             <a-input
                     v-decorator="[
           'owner',
+          {rules: [{max: 30, message: '不得超过30个字符'}]}
         ]"
                     placeholder="请输入发包方"
             />
@@ -255,6 +250,7 @@
             <a-input
                     v-decorator="[
           'district',
+          {rules: [{max: 50, message: '不得超过50个字符'}]}
         ]"
                     placeholder="请输入地区关键词"
             />
@@ -267,6 +263,7 @@
             <a-input
                     v-decorator="[
           'buildOne',
+          {rules: [{max: 30, message: '不得超过30个字符'}]}
         ]"
                     placeholder="请输入建筑一级分类"
             />
@@ -279,6 +276,7 @@
             <a-input
                     v-decorator="[
           'buildTwo',
+          {rules: [{max: 30, message: '不得超过30个字符'}]}
         ]"
                     placeholder="请输入建筑二级分类"
             />

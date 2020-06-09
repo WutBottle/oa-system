@@ -26,14 +26,8 @@
           {rules: [{
             required: true, message: '请输入合同号！'
           }, {
-                type: 'number',
-                message: '请输入数字',
-                transform:(value)=> {
-                  if(value){
-                    return Number(value);
-                  }
-                }
-          }]}
+            validator: validationRule1,
+          }, {max: 14, message: '不得超过14个字符'}]}
         ]"
                     placeholder="请输入合同号"
             />
@@ -46,7 +40,7 @@
             <a-input
                     v-decorator="[
           'contractName',
-          {rules: [{ required: true, message: '请输入合同名称！' }]}
+          {rules: [{ required: true, message: '请输入合同名称！' }, {max: 100, message: '不能超过100个字'}]}
         ]"
                     placeholder="请输入合同名称"
             />
@@ -169,15 +163,7 @@
             <a-input
                     v-decorator="[
           'ownerId',
-          {rules: [{ required: false}, {
-                type: 'number',
-                message: '请输入数字',
-                transform:(value)=> {
-                  if(value){
-                    return Number(value);
-                  }
-                }
-          }]}
+          {rules: [{max: 20, message: '不超过20个字符'}]}
         ]"
                     placeholder="请输入发包人合同编号"
             />
@@ -190,6 +176,7 @@
             <a-input
                     v-decorator="[
           'designId',
+          {rules: [{validator: validationRule1}, {max: 14, message: '不得超过14个字符'}]}
         ]"
                     placeholder="请输入设计号"
             />
@@ -262,6 +249,7 @@
             <a-input
                     v-decorator="[
           'departmentDesign',
+          {rules: [{max: 30, message: '不得超过30个字符'}]}
         ]"
                     placeholder="请输入主设计部门"
             />
@@ -274,6 +262,7 @@
             <a-input
                     v-decorator="[
           'departmentRunning',
+          {rules: [{max: 30, message: '不得超过30个字符'}]}
         ]"
                     placeholder="请输入经营部门"
             />
@@ -286,6 +275,7 @@
             <a-input
                     v-decorator="[
           'owner',
+          {rules: [{max: 30, message: '不得超过30个字符'}]}
         ]"
                     placeholder="请输入发包方"
             />
@@ -361,6 +351,7 @@
             <a-input
                     v-decorator="[
           'district',
+          {rules: [{max: 50, message: '不得超过50个字符'}]}
         ]"
                     placeholder="请输入地区关键词"
             />
@@ -373,6 +364,7 @@
             <a-input
                     v-decorator="[
           'buildOne',
+          {rules: [{max: 30, message: '不得超过30个字符'}]}
         ]"
                     placeholder="请输入建筑一级分类"
             />
@@ -385,6 +377,7 @@
             <a-input
                     v-decorator="[
           'buildTwo',
+          {rules: [{max: 30, message: '不得超过30个字符'}]}
         ]"
                     placeholder="请输入建筑二级分类"
             />
@@ -493,6 +486,8 @@
             <a-input
                     v-decorator="[
           'note',
+          {rules: [{max: 250, message: '不得超过250个字符'}]}
+
         ]"
                     placeholder="请输入备注"
             />
@@ -571,6 +566,14 @@
     wrapperCol: {span: 8, offset: 6},
   };
 
+  const validationRule1 = (rule, value, callback) => {
+    const pattern =  new RegExp(/^(\d{4})(-)(\d{2})(-)(\d{2,})$/)
+    if (!pattern.test(value) && value ) {
+      callback('请输入此格式数据:2019-01-01..')
+    }
+    callback()
+  };
+
   export default {
     name: "MainContractManager",
     data() {
@@ -578,6 +581,7 @@
       return {
         formItemLayout,
         formTailLayout,
+        validationRule1,
         form: this.$form.createForm(this),
         fileName: '',
         pdfFileList: [],

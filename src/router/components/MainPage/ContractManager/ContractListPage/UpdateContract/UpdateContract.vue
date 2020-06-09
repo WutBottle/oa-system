@@ -64,160 +64,6 @@
         <a-form-item
                 :label-col="formItemLayout.labelCol"
                 :wrapper-col="formItemLayout.wrapperCol"
-                label="发包人合同编号"
-        >
-          <a-input
-                  v-decorator="[
-          'ownerId',
-          {initialValue: this.formData.employerContractNum}
-        ]"
-                  placeholder="请输入发包人合同编号"
-          />
-        </a-form-item>
-        <a-form-item
-                :label-col="formItemLayout.labelCol"
-                :wrapper-col="formItemLayout.wrapperCol"
-                label="合同名称"
-        >
-          <a-input
-                  v-decorator="[
-          'contractName',
-          {initialValue: this.formData.contractName}
-        ]"
-                  placeholder="请输入合同名称"
-          />
-        </a-form-item>
-        <a-form-item
-                v-bind="formItemLayout"
-                label="上传合同文件"
-        >
-          <a-upload
-                  v-decorator="['uploadFile', {
-          valuePropName: 'uploadFile',
-        }]"
-                  :fileList="pdfFileList"
-                  :beforeUpload="beforeUpload"
-                  :remove="handlePdfRemove"
-                  :multiple="false"
-          >
-            <a-button>
-              <a-icon type="upload"/>
-              点击上传
-            </a-button>
-          </a-upload>
-        </a-form-item>
-        <a-form-item
-                :label-col="formItemLayout.labelCol"
-                :wrapper-col="formItemLayout.wrapperCol"
-                label="合同额(元)"
-        >
-          <a-input
-                  v-decorator="[
-          'contractAmount',
-          {initialValue: this.formData.contractAmount, rules: [{
-                type: 'number',
-                message: '请输入数字',
-                transform:(value)=> {
-                  if(value){
-                    return Number(value);
-                  }
-                }
-          }]}
-        ]"
-                  placeholder="请输入合同额"
-          />
-        </a-form-item>
-        <a-form-item
-                v-bind="formItemLayout"
-                label="实际签约日期"
-        >
-          <a-date-picker
-                  v-decorator="['actualDate',  {
-                    initialValue: this.formData.actualSigningDate,
-      }]"
-                  show-time
-                  format="YYYY-MM-DD"
-          />
-        </a-form-item>
-        <a-form-item
-                v-bind="formItemLayout"
-                label="合同归档日期"
-        >
-          <a-date-picker
-                  v-decorator="['contractDate',  {
-                    initialValue: this.formData.contractFilingDate,
-      }]"
-                  show-time
-                  format="YYYY-MM-DD"
-          />
-        </a-form-item>
-        <a-form-item
-                :label-col="formItemLayout.labelCol"
-                :wrapper-col="formItemLayout.wrapperCol"
-                label="项目类别"
-        >
-          <a-select
-                  v-decorator="[
-          'projectCategoryId',
-          {initialValue: this.formData.itemCategory}
-        ]"
-                  placeholder="请选择项目类别"
-          >
-            <template v-for="item in this.projectCategoryList">
-              <a-select-option :key="item.categoryId" :value="item.categoryId">
-                {{item.categoryName}}
-              </a-select-option>
-            </template>
-          </a-select>
-        </a-form-item>
-        <a-form-item
-                :label-col="formItemLayout.labelCol"
-                :wrapper-col="formItemLayout.wrapperCol"
-                label="生产阶段"
-        >
-          <a-select
-                  v-decorator="[
-          'productionStageId',
-          {initialValue: this.formData.productionStage}
-        ]"
-                  placeholder="请选择生产阶段"
-          >
-            <template v-for="item in this.productionStageList">
-              <a-select-option :key="item.categoryId" :value="item.categoryId">
-                {{item.categoryName}}
-              </a-select-option>
-            </template>
-          </a-select>
-        </a-form-item>
-        <a-form-item
-                :label-col="formItemLayout.labelCol"
-                :wrapper-col="formItemLayout.wrapperCol"
-                label="主设计部门"
-        >
-          <a-input
-                  v-decorator="[
-          'departmentDesign',
-          {initialValue: this.formData.mainDesignDepartment}
-        ]"
-                  placeholder="请输入主设计部门"
-          />
-        </a-form-item>
-        <a-form-item
-                :label-col="formItemLayout.labelCol"
-                :wrapper-col="formItemLayout.wrapperCol"
-                label="经营部门"
-        >
-          <a-input
-                  v-decorator="[
-          'departmentRunning',
-          {initialValue: this.formData.managementDepartment}
-        ]"
-                  placeholder="请输入经营部门"
-          />
-        </a-form-item>
-        <a-form-item
-                :label-col="formItemLayout.labelCol"
-                :wrapper-col="formItemLayout.wrapperCol"
                 label="项目经理"
                 v-if="!this.formData.sup"
         >
@@ -358,12 +204,167 @@
         <a-form-item
                 :label-col="formItemLayout.labelCol"
                 :wrapper-col="formItemLayout.wrapperCol"
+                label="发包人合同编号"
+        >
+          <a-input
+                  v-decorator="[
+          'ownerId',
+          {initialValue: this.formData.employerContractNum,
+          rules: [{max: 20, message: '不超过20个字符'}]},
+        ]"
+                  placeholder="请输入发包人合同编号"
+          />
+        </a-form-item>
+        <a-form-item
+                :label-col="formItemLayout.labelCol"
+                :wrapper-col="formItemLayout.wrapperCol"
+                label="合同名称"
+        >
+          <a-input
+                  v-decorator="[
+          'contractName',
+          {initialValue: this.formData.contractName, rules: [{max: 100, message: '不能超过100个字'}]}
+        ]"
+                  placeholder="请输入合同名称"
+          />
+        </a-form-item>
+        <a-form-item
+                v-bind="formItemLayout"
+                label="上传合同文件"
+        >
+          <a-upload
+                  v-decorator="['uploadFile', {
+          valuePropName: 'uploadFile',
+        }]"
+                  :fileList="pdfFileList"
+                  :beforeUpload="beforeUpload"
+                  :remove="handlePdfRemove"
+                  :multiple="false"
+          >
+            <a-button>
+              <a-icon type="upload"/>
+              点击上传
+            </a-button>
+          </a-upload>
+        </a-form-item>
+        <a-form-item
+                :label-col="formItemLayout.labelCol"
+                :wrapper-col="formItemLayout.wrapperCol"
+                label="合同额(元)"
+        >
+          <a-input
+                  v-decorator="[
+          'contractAmount',
+          {initialValue: this.formData.contractAmount, rules: [{
+                type: 'number',
+                message: '请输入数字',
+                transform:(value)=> {
+                  if(value){
+                    return Number(value);
+                  }
+                }
+          }]}
+        ]"
+                  placeholder="请输入合同额"
+          />
+        </a-form-item>
+        <a-form-item
+                v-bind="formItemLayout"
+                label="实际签约日期"
+        >
+          <a-date-picker
+                  v-decorator="['actualDate',  {
+                    initialValue: this.formData.actualSigningDate,
+      }]"
+                  show-time
+                  format="YYYY-MM-DD"
+          />
+        </a-form-item>
+        <a-form-item
+                v-bind="formItemLayout"
+                label="合同归档日期"
+        >
+          <a-date-picker
+                  v-decorator="['contractDate',  {
+                    initialValue: this.formData.contractFilingDate,
+      }]"
+                  show-time
+                  format="YYYY-MM-DD"
+          />
+        </a-form-item>
+        <a-form-item
+                :label-col="formItemLayout.labelCol"
+                :wrapper-col="formItemLayout.wrapperCol"
+                label="项目类别"
+        >
+          <a-select
+                  v-decorator="[
+          'projectCategoryId',
+          {initialValue: this.formData.itemCategory}
+        ]"
+                  placeholder="请选择项目类别"
+          >
+            <template v-for="item in this.projectCategoryList">
+              <a-select-option :key="item.categoryId" :value="item.categoryId">
+                {{item.categoryName}}
+              </a-select-option>
+            </template>
+          </a-select>
+        </a-form-item>
+        <a-form-item
+                :label-col="formItemLayout.labelCol"
+                :wrapper-col="formItemLayout.wrapperCol"
+                label="生产阶段"
+        >
+          <a-select
+                  v-decorator="[
+          'productionStageId',
+          {initialValue: this.formData.productionStage}
+        ]"
+                  placeholder="请选择生产阶段"
+          >
+            <template v-for="item in this.productionStageList">
+              <a-select-option :key="item.categoryId" :value="item.categoryId">
+                {{item.categoryName}}
+              </a-select-option>
+            </template>
+          </a-select>
+        </a-form-item>
+        <a-form-item
+                :label-col="formItemLayout.labelCol"
+                :wrapper-col="formItemLayout.wrapperCol"
+                label="主设计部门"
+        >
+          <a-input
+                  v-decorator="[
+          'departmentDesign',
+          {initialValue: this.formData.mainDesignDepartment, rules: [{max: 30, message: '不得超过30个字符'}]}
+        ]"
+                  placeholder="请输入主设计部门"
+          />
+        </a-form-item>
+        <a-form-item
+                :label-col="formItemLayout.labelCol"
+                :wrapper-col="formItemLayout.wrapperCol"
+                label="经营部门"
+        >
+          <a-input
+                  v-decorator="[
+          'departmentRunning',
+          {initialValue: this.formData.managementDepartment, rules: [{max: 30, message: '不得超过30个字符'}]}
+        ]"
+                  placeholder="请输入经营部门"
+          />
+        </a-form-item>
+        <a-form-item
+                :label-col="formItemLayout.labelCol"
+                :wrapper-col="formItemLayout.wrapperCol"
                 label="发包方"
         >
           <a-input
                   v-decorator="[
           'owner',
-          {initialValue: this.formData.contractingParty}
+          {initialValue: this.formData.contractingParty, rules: [{max: 30, message: '不得超过30个字符'}]}
         ]"
                   placeholder="请输入发包方"
           />
@@ -459,7 +460,7 @@
           <a-input
                   v-decorator="[
           'district',
-          {initialValue: this.formData.regionalKeyWords}
+          {initialValue: this.formData.regionalKeyWords, rules: [{max: 50, message: '不得超过50个字符'}]}
         ]"
                   placeholder="请输入地区关键词"
           />
@@ -472,7 +473,7 @@
           <a-input
                   v-decorator="[
           'buildOne',
-          {initialValue: this.formData.class1}
+          {initialValue: this.formData.class1, rules: [{max: 30, message: '不得超过30个字符'}]}
         ]"
                   placeholder="请输入建筑一级分类"
           />
@@ -485,7 +486,7 @@
           <a-input
                   v-decorator="[
           'buildTwo',
-          {initialValue: this.formData.class2}
+          {initialValue: this.formData.class2, rules: [{max: 30, message: '不得超过30个字符'}]}
         ]"
                   placeholder="请输入建筑二级分类"
           />
@@ -518,7 +519,7 @@
           <a-input
                   v-decorator="[
           'note',
-          {initialValue: this.formData.note}
+          {initialValue: this.formData.note, rules: [{max: 250, message: '不得超过250个字符'}]}
         ]"
                   placeholder="请输入备注"
           />
@@ -541,7 +542,7 @@
 </template>
 
 <script>
-  import {mapActions, mapState} from 'vuex'
+  import {mapActions} from 'vuex'
 
   const formItemLayout = {
     labelCol: {span: 6},

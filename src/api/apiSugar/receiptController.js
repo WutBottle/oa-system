@@ -61,6 +61,10 @@ const receiptController = {
   receiptInput(params) {
     return axios.post(`${baseUrl.receiptController}/input`, params);
   },
+  // 分包发票导入
+  outInput(params) {
+    return axios.post(`${baseUrl.receiptController}/outInput`, params);
+  },
 };
 
 export default receiptController;

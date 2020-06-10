@@ -1,5 +1,23 @@
 <style lang="scss" scoped>
   .OutContractReceiptPage {
+    .page-header {
+      background: #fff;
+      padding: 16px 32px 0;
+      border-bottom: 1px solid #e8e8e8;
+
+      .bread {
+        margin-bottom: 16px;
+      }
+
+      .title {
+        font-size: 20px;
+        line-height: 28px;
+        font-weight: 500;
+        color: rgba(0, 0, 0, .85);
+        margin-bottom: 16px;
+      }
+    }
+
     .page-content {
       padding: 30px;
 
@@ -30,7 +48,13 @@
 
 <template>
   <div class="OutContractReceiptPage">
-    <HeaderPage title="分包发票管理"/>
+    <div class="page-header">
+      <a-breadcrumb class="bread">
+        <a-breadcrumb-item><a href="/main/workplace">首页</a></a-breadcrumb-item>
+        <a-breadcrumb-item>分包发票管理</a-breadcrumb-item>
+      </a-breadcrumb>
+      <p class="title">分包发票管理<CashReceiptInput type="outReceipt"/></p>
+    </div>
     <div class="page-content">
       <a-row style="background-color: #fff; padding: 24px;">
         <a-steps :current="current">
@@ -327,11 +351,11 @@
 </template>
 
 <script>
-  import HeaderPage from "../HeaderPage/HeaderPage";
   import baseUrl from '@/api/baseUrl'
   import {mapActions} from 'vuex';
   import {debounce} from 'debounce';
   import moment from 'moment';
+  import CashReceiptInput from "../CashReceiptInput/CashReceiptInput";
 
   const formItemLayout = {
     labelCol: {span: 6},
@@ -344,7 +368,7 @@
   export default {
     name: "OutContractReceiptPage",
     components: {
-      HeaderPage,
+      CashReceiptInput,
     },
     data() {
       this.fetchContracts = debounce(this.fetchContracts, 500);

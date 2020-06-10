@@ -32,6 +32,7 @@
       ...mapActions({
         cashInput: 'cashOperation/cashInput',
         receiptInput: 'receiptOperation/receiptInput',
+        outInput: 'receiptOperation/outInput'
       }),
       handleExcelRemove(file) {
         const index = this.fileList.indexOf(file);
@@ -48,7 +49,19 @@
           this.fileList.forEach((file) => {
             formData.append('multipartFiles', file);
           });
-          const uploadFunction = this.type === 'cash' ? this.cashInput : this.receiptInput;
+          let uploadFunction;
+          switch (this.type) {
+            case 'cash':
+              uploadFunction = this.cashInput;
+              break;
+            case 'receipt':
+              uploadFunction = this.receiptInput;
+              break;
+            case 'outReceipt':
+              uploadFunction = this.outInput;
+            break;
+          }
+
           // 手动上传
           uploadFunction(formData).then((data) => {
             const params = Object.keys(data.data.data)[0];

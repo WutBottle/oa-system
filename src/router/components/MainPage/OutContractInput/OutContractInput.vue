@@ -10,7 +10,7 @@
             :multiple="false" :fileList="fileList" :remove="handleRemove"
             :beforeUpload="beforeUpload"
     >
-      <a-button> <a-icon type="upload" />一键导入</a-button>
+      <a-button><a-icon type="upload" />分包录入</a-button>
     </a-upload>
   </span>
 </template>

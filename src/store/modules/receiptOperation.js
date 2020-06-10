@@ -172,6 +172,17 @@ const actions = {
       });
     });
   },
+  // 分包发票导入
+  outInput({commit}, params) {
+    return new Promise((resolve, reject) => {
+      api.receiptController.outInput(params).then(res => {
+        resolve(res);
+      }).catch(error => {
+        console.log(error, '分包发票导入失败');
+        reject(error);
+      });
+    });
+  },
 };
 
 export default {

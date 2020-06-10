@@ -54,8 +54,7 @@
         <a-breadcrumb-item><a href="/main/workplace">首页</a></a-breadcrumb-item>
         <a-breadcrumb-item>分包付款管理</a-breadcrumb-item>
       </a-breadcrumb>
-      <p class="title">分包付款管理</p>
-<!--      <p class="title">分包付款管理<OutPaidInput/></p>-->
+      <p class="title">分包付款管理<OutPaidInput/></p>
     </div>
     <div class="page-content">
       <a-row style="background-color: #fff; padding: 24px;">
@@ -317,7 +316,8 @@
 <script>
   import {mapState, mapActions} from 'vuex';
   import {debounce} from 'debounce';
-  import moment from 'moment'
+  import moment from 'moment';
+  import OutPaidInput from "../OutPaidInput/OutPaidInput";
 
   const formItemLayout = {
     labelCol: {span: 6},
@@ -330,6 +330,9 @@
 
   export default {
     name: "OutContractPaidPage",
+    components: {
+      OutPaidInput,
+    },
     data() {
       this.fetchOutContract = debounce(this.fetchOutContract, 500);
       return {

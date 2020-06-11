@@ -67,7 +67,7 @@
             <a-table bordered :columns="columns" :dataSource="tableData"
                      :pagination="paginationProps"
                      :rowSelection="{selectedRowKeys: selectedRowKeys, onSelect: onSelect, onSelectAll: onSelectAll, onChange: onSelectChange}"
-                     @change="handleTableChange" :scroll="{ x: 2170, y: 550}">
+                     @change="handleTableChange" :scroll="{ x: 2150, y: 550}">
               <span slot="serial" slot-scope="text, record, index">
                 {{ index + 1 }}
               </span>

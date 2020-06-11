@@ -27,7 +27,7 @@
       <a-spin :spinning="spinning" tip="Loading...">
         <a-table bordered :columns="columns" :dataSource="tableData"
                  :pagination="paginationProps"
-                 @change="handleTableChange" :scroll="{ x: 2920, y: 550}">
+                 @change="handleTableChange" :scroll="{ x: 2770, y: 550}">
           <span slot="serial" slot-scope="text, record, index">
             {{ index + 1 }}
           </span>

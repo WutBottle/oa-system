@@ -388,7 +388,7 @@
             sorter: (a, b) => a.contractRemain - b.contractRemain,
           },
           {
-            title: '项目总投资额(万元)',
+            title: '项目总投资额(元)',
             width: 170,
             key: 'projectInvestment',
             dataIndex: 'projectInvestment',

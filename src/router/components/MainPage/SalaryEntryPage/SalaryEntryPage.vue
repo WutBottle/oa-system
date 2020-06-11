@@ -274,6 +274,7 @@
             width: 100,
             dataIndex: 'money',
             key: 'money',
+            sorter: (a, b) => a.money - b.money,
           },
           {
             title: '备注',

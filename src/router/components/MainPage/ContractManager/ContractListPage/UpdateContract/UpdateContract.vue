@@ -14,11 +14,26 @@
                 label="合同号"
         >
           <a-input
-                  disabled
+                  :disabled="this.formData.signState === 0"
                   v-decorator="[
           'contractId',
           {initialValue: this.formData.contractNum, rules: [{
             required: true, message: '请输入合同号！'
+          }, {
+            type: 'number',
+            message: '请输入数字',
+            transform:(value)=> {
+              if(value){
+                return Number(value);
+              }
+            }
+          }, {
+            validator: (rule, value, callback) => {
+              if (value.toString().length > 14) {
+                callback('请输入长度小于14的合同号')
+              }
+              callback()
+            }
           }]}
         ]"
                   placeholder="请输入合同号"
@@ -372,7 +387,7 @@
         <a-form-item
                 :label-col="formItemLayout.labelCol"
                 :wrapper-col="formItemLayout.wrapperCol"
-                label="投资额(万元)"
+                label="投资额(元)"
         >
           <a-input
                   v-decorator="[

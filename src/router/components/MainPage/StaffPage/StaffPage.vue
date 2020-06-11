@@ -61,7 +61,7 @@
             <a-table bordered :columns="staffColumns" :dataSource="staffTableData"
                      :pagination="staffPaginationProps"
                      :rowSelection="{selectedRowKeys: selectedRowKeys, onSelect: onSelect, onSelectAll: onSelectAll, onChange: onSelectChange}"
-                     @change="handleStaffTableChange" :scroll="{ x: 3070, y: 500}">
+                     @change="handleStaffTableChange" :scroll="{ x: 3090, y: 500}">
                <span slot="serial" slot-scope="text, record, index">
                 {{ index + 1 }}
               </span>
@@ -413,21 +413,25 @@
             width: 150,
             dataIndex: 'dob',
             key: 'dob',
+            sorter: (a, b) => new Date(a.dob) - new Date(b.dob),
           }, {
             title: '年龄',
-            width: 80,
+            width: 100,
             dataIndex: 'age',
             key: 'age',
+            sorter: (a, b) => a.age - b.age,
           }, {
             title: '参加工作日期',
             width: 150,
             dataIndex: 'participation',
             key: 'participation',
+            sorter: (a, b) => new Date(a.participation) - new Date(b.participation),
           }, {
             title: '进入系统日期',
             width: 150,
             dataIndex: 'createdAt',
             key: 'createdAt',
+            sorter: (a, b) => new Date(a.createdAt) - new Date(b.createdAt),
           }, {
             title: '第一学历学校',
             width: 150,
@@ -635,6 +639,7 @@
                 degree: item.degree,
                 department: item.department && item.department.categoryName,
                 dob: item.dob && moment(item.dob).format('YYYY-MM-DD'),
+                age: item.dob && moment().diff(item.dob, 'years'),
                 duty: item.duty && item.duty.categoryName,
                 firstEducation: item.firstEducation,
                 gender: item.gender,

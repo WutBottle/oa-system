@@ -338,11 +338,13 @@
             width: 200,
             key: 'cashDate',
             dataIndex: 'cashDate',
+            sorter: (a, b) => new Date(a.cashDate) - new Date(b.cashDate),
           }, {
             title: '现金回款金额',
             width: 150,
             key: 'cashAmount',
             dataIndex: 'cashAmount',
+            sorter: (a, b) => a.cashAmount - b.cashAmount,
           }, {
             title: '对应发票',
             width: 150,

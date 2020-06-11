@@ -156,17 +156,6 @@
         <a-form-item
                 :label-col="formItemLayout.labelCol"
                 :wrapper-col="formItemLayout.wrapperCol"
-                label="剩余发票额"
-        >
-          <a-input-number :min="0" :max="Infinity" v-model="receiptRemainLowerBound"
-                          @blur="onChange('receiptRemainLowerBound','receiptRemainUpperBound')"/>
-          ~
-          <a-input-number :min="0" :max="Infinity" v-model="receiptRemainUpperBound"
-                          @blur="onChange('receiptRemainLowerBound','receiptRemainUpperBound')"/>
-        </a-form-item>
-        <a-form-item
-                :label-col="formItemLayout.labelCol"
-                :wrapper-col="formItemLayout.wrapperCol"
                 label="项目总额"
         >
           <a-input-number :min="0" :max="Infinity" v-model="totalLowerBound"
@@ -282,8 +271,6 @@
         ratioUpperBound: null,
         receiptAmountLowerBound: null,
         receiptAmountUpperBound: null,
-        receiptRemainLowerBound: null,
-        receiptRemainUpperBound: null,
         cashAmountLowerBound: null,
         cashAmountUpperBound: null,
         contractRemainLowerBound: null,
@@ -293,10 +280,10 @@
         popVisible: false,
         selectProjectInfo: [],
         settingVisible: false,
-        selectOptions: ['合同号', '合同名称', '设计号', '签约状态', '项目规模(平方米)', '已收款比例', '投资额(万元)'],
+        selectOptions: ['合同号', '合同名称', '设计号', '签约状态', '项目规模(平方米)', '已收款比例', '投资额(元)'],
         options: ['签约状态', '设计号', '合同号', '发包人合同编号', '合同名称', '生产阶段', '合同额(元)', '累计现金回款(元)',
           '剩余合同额(元)', '已收款比例', '累计开票金额(元)', '已开发票未收款金额', '实际签约日期', '合同归档日期',
-          '项目类别', '主设计部门', '经营部门', '项目经理', '商务专员', '财务专员', '项目经营负责人', '部门经营负责人', '发包方', '投资额(万元)', '项目规模(平方米)',
+          '项目类别', '主设计部门', '经营部门', '项目经理', '商务专员', '财务专员', '项目经营负责人', '部门经营负责人', '发包方', '投资额(元)', '项目规模(平方米)',
           '地域', '地区关键词', '建筑一级分类', '建筑二级分类', '是否EPC项目'],
         spinning: false,
         tableData: [],
@@ -401,7 +388,7 @@
             sorter: (a, b) => a.contractRemain - b.contractRemain,
           },
           {
-            title: '项目总投资额(元)',
+            title: '项目总投资额(万元)',
             width: 170,
             key: 'projectInvestment',
             dataIndex: 'projectInvestment',
@@ -492,7 +479,6 @@
           cashAmount: [this.cashAmountLowerBound ? String(this.cashAmountLowerBound) : '', this.cashAmountUpperBound ? String(this.cashAmountUpperBound) : ''],
           contractRemain: [this.contractRemainLowerBound ? String(this.contractRemainLowerBound) : '', this.contractRemainUpperBound ? String(this.contractRemainUpperBound) : ''],
           projectInvestment: [this.projectInvestmentLowerBound ? String(this.projectInvestmentLowerBound) : '', this.projectInvestmentUpperBound ? String(this.projectInvestmentUpperBound) : ''],
-          receiptRemain: [this.receiptRemainLowerBound ? String(this.receiptRemainLowerBound) : '', this.receiptRemainUpperBound ? String(this.receiptRemainUpperBound) : ''],
           receiptAmount: [this.receiptAmountLowerBound ? String(this.receiptAmountLowerBound) : '', this.receiptAmountUpperBound ? String(this.receiptAmountUpperBound) : ''],
           projectAmount: [this.totalLowerBound ? String(this.totalLowerBound) : '', this.totalUpperBound ? String(this.totalUpperBound) : ''],
           ratio: [this.ratioLowerBound ? String(this.ratioLowerBound/100) : '', this.ratioUpperBound ? String(this.ratioUpperBound/100) : ''],

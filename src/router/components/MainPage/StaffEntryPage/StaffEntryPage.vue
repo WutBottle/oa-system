@@ -38,7 +38,7 @@
           <a-spin :spinning="spinning" tip="Loading...">
             <a-table bordered :columns="columns" :dataSource="tableData"
                      :pagination="tablePaginationProps"
-                     @change="handleTableChange" :scroll="{ x: 2930, y: 550}">
+                     @change="handleTableChange" :scroll="{ x: 2950, y: 550}">
               <span slot="serial" slot-scope="text, record, index">
                 {{ index + 1 }}
               </span>
@@ -143,22 +143,12 @@
         </a-form-item>
         <a-form-item
                 v-bind="formItemLayout"
-                label="年龄"
+                label="出生日期"
         >
-          <a-input
-                  v-decorator="[
-          'age',
-          {rules: [{
-            type: 'number',
-            message: '请输入数字',
-            transform:(value)=> {
-              if(value){
-                return Number(value);
-              }
-            }
-          }]}
-        ]"
-                  placeholder="请输入年龄"
+          <a-date-picker
+                  v-decorator="['dob',  {
+      }]"
+                  format="YYYY-MM-DD"
           />
         </a-form-item>
         <a-form-item
@@ -335,16 +325,6 @@
             </template>
           </a-select>
         </a-form-item>
-        <a-form-item
-                v-bind="formItemLayout"
-                label="出生日期"
-        >
-          <a-date-picker
-                  v-decorator="['dob',  {
-      }]"
-                  format="YYYY-MM-DD"
-          />
-        </a-form-item>
       </a-form>
     </a-modal>
     <a-drawer
@@ -438,22 +418,11 @@
         </a-form-item>
         <a-form-item
                 v-bind="formItemLayout"
-                label="年龄"
+                label="出生日期"
         >
-          <a-input
-                  v-decorator="[
-          'age',
-          {initialValue: this.editFormData.age, rules: [{
-            type: 'number',
-            message: '请输入数字',
-            transform:(value)=> {
-              if(value){
-                return Number(value);
-              }
-            }
-          }]}
-        ]"
-                  placeholder="请输入年龄"
+          <a-date-picker
+                  v-decorator="['dob',  {initialValue: this.editFormData.dob}]"
+                  format="YYYY-MM-DD"
           />
         </a-form-item>
         <a-form-item
@@ -633,15 +602,6 @@
               </a-select-option>
             </template>
           </a-select>
-        </a-form-item>
-        <a-form-item
-                v-bind="formItemLayout"
-                label="出生日期"
-        >
-          <a-date-picker
-                  v-decorator="['dob',  {initialValue: this.editFormData.dob}]"
-                  format="YYYY-MM-DD"
-          />
         </a-form-item>
         <a-form-item
                 :label-col="formTailLayout.labelCol"
@@ -981,21 +941,25 @@
             width: 150,
             dataIndex: 'dob',
             key: 'dob',
+            sorter: (a, b) => new Date(a.dob) - new Date(b.dob),
           }, {
             title: '年龄',
-            width: 80,
+            width: 100,
             dataIndex: 'age',
             key: 'age',
+            sorter: (a, b) => a.age - b.age,
           }, {
             title: '参加工作日期',
             width: 150,
             dataIndex: 'participation',
             key: 'participation',
+            sorter: (a, b) => new Date(a.participation) - new Date(b.participation),
           }, {
             title: '进入系统日期',
             width: 150,
             dataIndex: 'createdAt',
             key: 'createdAt',
+            sorter: (a, b) => new Date(a.createdAt) - new Date(b.createdAt),
           }, {
             title: '第一学历学校',
             width: 150,
@@ -1146,7 +1110,7 @@
               return {
                 key: index,
                 id: item.id,
-                age: item.age,
+                age: item.dob && moment().diff(item.dob, 'years'),
                 createdAt: item.createdAt && moment(item.createdAt).format('YYYY-MM-DD'),
                 staffCode: item.staffCode,
                 staffName: item.staffName,
@@ -1201,7 +1165,6 @@
               const params = {
                 staffCode: values.staffCode,
                 staffName: values.staffName,
-                age: values.age,
                 department: values.department ? {
                   categoryId: values.department
                 } : null,
@@ -1270,7 +1233,6 @@
                 id: this.currentStaffId,
                 staffCode: values.staffCode,
                 staffName: values.staffName,
-                age: values.age,
                 department: values.department ? {
                   categoryId: values.department
                 } : null,

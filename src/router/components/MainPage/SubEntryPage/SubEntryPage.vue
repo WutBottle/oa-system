@@ -51,9 +51,9 @@
     <div class="page-header">
       <a-breadcrumb class="bread">
         <a-breadcrumb-item><a href="/main/workplace">首页</a></a-breadcrumb-item>
-        <a-breadcrumb-item>分项分包录入</a-breadcrumb-item>
+        <a-breadcrumb-item>分项分包管理</a-breadcrumb-item>
       </a-breadcrumb>
-      <p class="title">分项分包录入
+      <p class="title">分项分包管理
         <OutContractInput/>
       </p>
     </div>
@@ -757,11 +757,13 @@
             width: 200,
             key: 'designFees',
             dataIndex: 'designFees',
+            sorter: (a, b) => a.designFees - b.designFees,
           }, {
             title: '分包金额',
             width: 200,
             key: 'price',
             dataIndex: 'price',
+            sorter: (a, b) => a.price - b.price,
           }, {
             title: '备注',
             width: 200,
@@ -826,26 +828,31 @@
             width: 150,
             key: 'outContractAmount',
             dataIndex: 'outContractAmount',
+            sorter: (a, b) => a.outContractAmount - b.outContractAmount,
           }, {
             title: '已付费金额(元)',
             width: 150,
             key: 'outPaid',
             dataIndex: 'outPaid',
+            sorter: (a, b) => a.outPaid - b.outPaid,
           }, {
             title: '未付费金额(元)',
             width: 150,
             key: 'outUnpaid',
             dataIndex: 'outUnpaid',
+            sorter: (a, b) => a.outUnpaid - b.outUnpaid,
           }, {
             title: '已付费比例',
             width: 150,
             key: 'ratio',
             dataIndex: 'ratio',
+            sorter: (a, b) => a.ratio - b.ratio,
           }, {
             title: '实际归档日期',
             width: 150,
             key: 'outContractDate',
             dataIndex: 'outContractDate',
+            sorter: (a, b) => new Date(a.outContractDate) - new Date(b.outContractDate),
           }, {
             title: '分包类型',
             width: 150,

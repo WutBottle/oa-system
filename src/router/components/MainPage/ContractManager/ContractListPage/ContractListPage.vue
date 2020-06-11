@@ -325,7 +325,7 @@
               role: item.inspector ? item.inspector.roles[0].name : undefined,
             }, // 部门经营负责人
             contractingParty: item.owner, // 发包方
-            investmentAmount: item.investment, // 投资额(万元)
+            investmentAmount: item.investment, // 投资额(元)
             projectScale: (item.aboveGroundArea || item.underGroundArea) && ('地上' + item.aboveGroundArea + '+地下' + item.underGroundArea), // 项目规模(平方米)
             aboveGroundArea: item.aboveGroundArea, // 地上面积(平方米)
             underGroundArea: item.underGroundArea, // 地下面积(平方米)

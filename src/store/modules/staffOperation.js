@@ -3,7 +3,6 @@
 * 职员管理
 */
 import api from '@/api/apiSugar'
-import moment from "moment";
 
 const state = {
   staffData: [],

@@ -26,8 +26,21 @@
           {rules: [{
             required: true, message: '请输入合同号！'
           }, {
-            validator: validationRule1,
-          }, {max: 14, message: '不得超过14个字符'}]}
+            type: 'number',
+            message: '请输入数字',
+            transform:(value)=> {
+              if(value){
+                return Number(value);
+              }
+            }
+          }, {
+            validator: (rule, value, callback) => {
+              if (value.toString().length > 14) {
+                callback('请输入长度小于14的合同号')
+              }
+              callback()
+            }
+          }]}
         ]"
                     placeholder="请输入合同号"
             />
@@ -283,7 +296,7 @@
           <a-form-item
                   :label-col="formItemLayout.labelCol"
                   :wrapper-col="formItemLayout.wrapperCol"
-                  label="投资额(万元)"
+                  label="投资额(元)"
           >
             <a-input
                     v-decorator="[
@@ -567,9 +580,9 @@
   };
 
   const validationRule1 = (rule, value, callback) => {
-    const pattern =  new RegExp(/^(\d{4})(-)(\d{2})(-)(\d{2,})$/)
+    const pattern =  new RegExp(/^(\d{4})(-)(\d{2})(-)(\d{3})$/)
     if (!pattern.test(value) && value ) {
-      callback('请输入此格式数据:2019-01-01..')
+      callback('请输入此格式数据:2019-01-001')
     }
     callback()
   };
@@ -656,7 +669,7 @@
           },
           {
             key: 'investment',
-            title: '投资额(万元)',
+            title: '投资额(元)',
             value: '',
           },
           {

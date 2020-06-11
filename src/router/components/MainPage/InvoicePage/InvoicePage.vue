@@ -161,9 +161,8 @@
           {rules: [{
             required: true, message: '请输入发票号!'
           }, {
-                type: 'number',
-                message: '请输入数字',
-                transform:(value)=> {return Number(value)}
+            pattern: /^[0-9]{8}$/,
+            message: '请输入8位数字',
           }]}
         ]"
                   placeholder="请输入发票号"
@@ -405,11 +404,13 @@
             width: 100,
             key: 'receiptDate',
             dataIndex: 'receiptDate',
+            sorter: (a, b) => new Date(a.receiptDate) - new Date(b.receiptDate),
           }, {
             title: '发票金额(元)',
             width: 100,
             key: 'receiptAmount',
             dataIndex: 'receiptAmount',
+            sorter: (a, b) => a.receiptAmount - b.receiptAmount,
           }, {
             title: '发票类型',
             width: 100,
@@ -456,9 +457,9 @@
     },
     activated() {
       const {contractId = undefined} = this.$router.currentRoute.query;
-      this.contractValue = contractId;
+      this.contractValue = contractId || this.contractValue;
       if (contractId) {
-        this.current++;
+        this.current === 0 && this.current++;
         this.updateTableData();
       }
     },

@@ -182,7 +182,7 @@
           <a-form-item
                   :label-col="formItemLayout.labelCol"
                   :wrapper-col="formItemLayout.wrapperCol"
-                  label="投资额(万元)"
+                  label="投资额(元)"
           >
             <a-input
                     v-decorator="[

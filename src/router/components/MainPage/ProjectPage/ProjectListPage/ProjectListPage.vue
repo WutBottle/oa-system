@@ -139,17 +139,6 @@
         <a-form-item
                 :label-col="formItemLayout.labelCol"
                 :wrapper-col="formItemLayout.wrapperCol"
-                label="剩余发票额"
-        >
-          <a-input-number :min="0" :max="Infinity" v-model="receiptRemainLowerBound"
-                          @blur="onChange('receiptRemainLowerBound','receiptRemainUpperBound')"/>
-          ~
-          <a-input-number :min="0" :max="Infinity" v-model="receiptRemainUpperBound"
-                          @blur="onChange('receiptRemainLowerBound','receiptRemainUpperBound')"/>
-        </a-form-item>
-        <a-form-item
-                :label-col="formItemLayout.labelCol"
-                :wrapper-col="formItemLayout.wrapperCol"
                 label="项目总额"
         >
           <a-input-number :min="0" :max="Infinity" v-model="totalLowerBound"
@@ -332,13 +321,6 @@
             sorter: (a, b) => a.receiptNotCash - b.receiptNotCash,
           },
           {
-            title: '剩余发票额(元)',
-            width: 150,
-            key: 'receiptRemain',
-            dataIndex: 'receiptRemain',
-            sorter: (a, b) => a.receiptRemain - b.receiptRemain,
-          },
-          {
             title: '项目总金额(元)',
             width: 150,
             key: 'projectAmount',
@@ -360,7 +342,7 @@
             sorter: (a, b) => a.contractRemain - b.contractRemain,
           },
           {
-            title: '项目总投资额(元)',
+            title: '项目总投资额(万元)',
             width: 170,
             key: 'projectInvestment',
             dataIndex: 'projectInvestment',
@@ -472,8 +454,6 @@
         ratioUpperBound: null,
         receiptAmountLowerBound: null,
         receiptAmountUpperBound: null,
-        receiptRemainLowerBound: null,
-        receiptRemainUpperBound: null,
         cashAmountLowerBound: null,
         cashAmountUpperBound: null,
         contractRemainLowerBound: null,
@@ -545,7 +525,6 @@
           cashAmount: [this.cashAmountLowerBound ? String(this.cashAmountLowerBound) : '', this.cashAmountUpperBound ? String(this.cashAmountUpperBound) : ''],
           contractRemain: [this.contractRemainLowerBound ? String(this.contractRemainLowerBound) : '', this.contractRemainUpperBound ? String(this.contractRemainUpperBound) : ''],
           projectInvestment: [this.projectInvestmentLowerBound ? String(this.projectInvestmentLowerBound) : '', this.projectInvestmentUpperBound ? String(this.projectInvestmentUpperBound) : ''],
-          receiptRemain: [this.receiptRemainLowerBound ? String(this.receiptRemainLowerBound) : '', this.receiptRemainUpperBound ? String(this.receiptRemainUpperBound) : ''],
           receiptAmount: [this.receiptAmountLowerBound ? String(this.receiptAmountLowerBound) : '', this.receiptAmountUpperBound ? String(this.receiptAmountUpperBound) : ''],
           projectAmount: [this.totalLowerBound ? String(this.totalLowerBound) : '', this.totalUpperBound ? String(this.totalUpperBound) : ''],
           ratio: [this.ratioLowerBound ? String(this.ratioLowerBound / 100) : '', this.ratioUpperBound ? String(this.ratioUpperBound / 100) : ''],
@@ -567,7 +546,6 @@
                 runningManager: item.runningManager,
                 receiptAmount: item.receiptAmount,
                 receiptNotCash: item.receiptNotCash,
-                receiptRemain: item.receiptRemain,
                 projectAmount: item.projectAmount,
                 contractId: item.contractId,
                 cashAmount: item.cashAmount,
@@ -682,8 +660,6 @@
           ratioUpperBound: null,
           receiptAmountLowerBound: null,
           receiptAmountUpperBound: null,
-          receiptRemainLowerBound: null,
-          receiptRemainUpperBound: null,
           cashAmountLowerBound: null,
           cashAmountUpperBound: null,
           contractRemainLowerBound: null,

@@ -365,12 +365,14 @@
             width: 150,
             key: 'paidDate',
             dataIndex: 'paidDate',
+            sorter: (a, b) => new Date(a.paidDate) - new Date(b.paidDate),
           },
           {
             title: '付费金额(元)',
             width: 150,
             key: 'paidAmount',
             dataIndex: 'paidAmount',
+            sorter: (a, b) => a.paidAmount - b.paidAmount,
           },
           {
             title: '对应发票',
@@ -416,9 +418,9 @@
     },
     activated() {
       const {outContractId = undefined} = this.$router.currentRoute.query;
-      this.outContractValue = outContractId;
+      this.outContractValue = outContractId || this.outContractValue;
       if (outContractId) {
-        this.current++;
+        this.current === 0 && this.current++;
         this.updateTableData();
       }
     },

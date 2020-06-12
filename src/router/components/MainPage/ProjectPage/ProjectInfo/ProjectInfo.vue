@@ -106,8 +106,8 @@
           <a-col class="bb cell" :span="12">{{formData.contractName}}</a-col>
         </a-row>
         <a-row class="cell">
-          总建筑面积{{formData.aboveGroundArea +
-          formData.underGroundArea}}平米，地上{{formData.aboveGroundArea}}、地下{{formData.underGroundArea}}。
+          总建筑面积{{numToMoney(formData.aboveGroundArea +
+          formData.underGroundArea)}}平米，地上{{numToMoney(formData.aboveGroundArea)}}、地下{{numToMoney(formData.underGroundArea)}}。
         </a-row>
       </a-col>
     </a-row>

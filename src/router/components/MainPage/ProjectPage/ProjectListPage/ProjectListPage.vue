@@ -320,7 +320,6 @@
             width: 150,
             key: 'scale',
             dataIndex: 'scale',
-            scopedSlots: {customRender: 'scale'}
           },
           {
             title: '收款比例',
@@ -590,7 +589,7 @@
                 scaleArea: item.scale,
                 aboveGroundArea: item.aboveGroundArea,
                 underGroundArea: item.underGroundArea,
-                scale: (item.aboveGroundArea || item.underGroundArea) && ('地上' + item.aboveGroundArea + '+地下' + item.underGroundArea), // 项目规模(平方米)
+                scale: (item.aboveGroundArea || item.underGroundArea) && ('地上' + numToMoney(item.aboveGroundArea) + '+地下' + numToMoney(item.underGroundArea)), // 项目规模(平方米)
                 ratio: !isNaN(item.ratio) && Number((item.ratio * 100).toFixed(4)),
               }
             });

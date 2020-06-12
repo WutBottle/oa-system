@@ -96,6 +96,9 @@
                   <span slot="serial" slot-scope="text, record, index">
                     {{ index + 1 }}
                   </span>
+                  <div slot="cashAmount" slot-scope="text" style="text-align: right;">
+                    {{numToMoney(text)}}
+                  </div>
                   <span slot="receipts" slot-scope="tags">
                     <a-tag v-for="tag in tags" color="blue"
                            :key="tag.id">{{tag.receiptId}}</a-tag>
@@ -292,6 +295,7 @@
   import {debounce} from 'debounce';
   import moment from 'moment';
   import CashReceiptInput from "../CashReceiptInput/CashReceiptInput";
+  import numToMoney from '@utils/numToMoney';
 
   const formItemLayout = {
     labelCol: {span: 8},
@@ -311,6 +315,7 @@
       return {
         formItemLayout,
         formTailLayout,
+        numToMoney,
         current: 0,
         steps: [{
           title: '选择合同',
@@ -345,6 +350,7 @@
             key: 'cashAmount',
             dataIndex: 'cashAmount',
             sorter: (a, b) => a.cashAmount - b.cashAmount,
+            scopedSlots: {customRender: 'cashAmount'}
           }, {
             title: '对应发票',
             width: 150,

@@ -1,5 +1,9 @@
 <style lang="scss" scoped>
   .SubEntryPage {
+    .tr {
+      text-align: right;
+    }
+
     .page-header {
       background: #fff;
       padding: 16px 32px 0;
@@ -96,6 +100,12 @@
                   <span slot="serial" slot-scope="text, record, index">
                     {{ index + 1 }}
                   </span>
+                  <div slot="designFees" slot-scope="text" class="tr">
+                    {{numToMoney(text)}}
+                  </div>
+                  <div slot="price" slot-scope="text" class="tr">
+                    {{numToMoney(text)}}
+                  </div>
                   <span slot="operation" slot-scope="text, record">
                     <a @click="handleSubProjectEdit(record)">修改</a>
                     <a-divider type="vertical"/>
@@ -124,6 +134,15 @@
                   <span slot="serial" slot-scope="text, record, index">
                     {{ index + 1 }}
                   </span>
+                  <div slot="outContractAmount" slot-scope="text" class="tr">
+                    {{numToMoney(text)}}
+                  </div>
+                  <div slot="outPaid" slot-scope="text" class="tr">
+                    {{numToMoney(text)}}
+                  </div>
+                  <div slot="outUnpaid" slot-scope="text" class="tr">
+                    {{numToMoney(text)}}
+                  </div>
                   <span slot="operation" slot-scope="text, record">
                     <a @click="handleOutContractEdit(record)">修改</a>
                     <a-divider type="vertical"/>
@@ -681,6 +700,7 @@
   import OutContractInput from "../OutContractInput/OutContractInput";
   import {debounce} from 'debounce';
   import moment from "moment";
+  import numToMoney from '@utils/numToMoney';
 
   const formItemLayout = {
     labelCol: {span: 8},
@@ -707,6 +727,7 @@
       return {
         formItemLayout,
         formTailLayout,
+        numToMoney,
         current: 0,
         steps: [{
           title: '选择合同',
@@ -758,12 +779,14 @@
             key: 'designFees',
             dataIndex: 'designFees',
             sorter: (a, b) => a.designFees - b.designFees,
+            scopedSlots: {customRender: 'designFees'},
           }, {
             title: '分包金额',
             width: 200,
             key: 'price',
             dataIndex: 'price',
             sorter: (a, b) => a.price - b.price,
+            scopedSlots: {customRender: 'price'},
           }, {
             title: '备注',
             width: 200,
@@ -829,18 +852,21 @@
             key: 'outContractAmount',
             dataIndex: 'outContractAmount',
             sorter: (a, b) => a.outContractAmount - b.outContractAmount,
+            scopedSlots: {customRender: 'outContractAmount'},
           }, {
             title: '已付费金额(元)',
             width: 150,
             key: 'outPaid',
             dataIndex: 'outPaid',
             sorter: (a, b) => a.outPaid - b.outPaid,
+            scopedSlots: {customRender: 'outPaid'},
           }, {
             title: '未付费金额(元)',
             width: 150,
             key: 'outUnpaid',
             dataIndex: 'outUnpaid',
             sorter: (a, b) => a.outUnpaid - b.outUnpaid,
+            scopedSlots: {customRender: 'outUnpaid'},
           }, {
             title: '已付费比例',
             width: 150,

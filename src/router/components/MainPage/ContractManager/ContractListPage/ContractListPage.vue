@@ -3,6 +3,10 @@
     .form-wrapper {
       margin-bottom: 18px;
     }
+
+    .tr {
+      text-align: right;
+    }
   }
 </style>
 
@@ -58,6 +62,27 @@
             <a-tag v-if="!record.sup" color="green">主合同</a-tag>
             <a-tag v-else color="blue">补充</a-tag>
           </span>
+          <div slot="contractAmount" slot-scope="text" class="tr">
+            {{numToMoney(text)}}
+          </div>
+          <div slot="accumulatedCashReceipts" slot-scope="text" class="tr">
+            {{numToMoney(text)}}
+          </div>
+          <div slot="remainingContractAmount" slot-scope="text" class="tr">
+            {{numToMoney(text)}}
+          </div>
+          <div slot="cumulativeInvoicedAmount" slot-scope="text" class="tr">
+            {{numToMoney(text)}}
+          </div>
+          <div slot="invoicedUncollectedAmount" slot-scope="text" class="tr">
+            {{numToMoney(text)}}
+          </div>
+          <div slot="investmentAmount" slot-scope="text" class="tr">
+            {{numToMoney(text)}}
+          </div>
+          <div slot="projectScale" slot-scope="text" class="tr">
+            {{numToMoney(text)}}
+          </div>
           <span slot="signState" slot-scope="text">
             <a-badge :status="text | statusTypeFilter" :text="text | statusFilter"/>
           </span>
@@ -148,6 +173,7 @@
   import {mapState, mapMutations, mapActions} from 'vuex'
   import UpdateContract from "./UpdateContract/UpdateContract";
   import moment from "moment";
+  import numToMoney from '@utils/numToMoney';
   const statusMap = {
     0: {
       status: 'success',
@@ -203,6 +229,7 @@
         scrollX: 0,
         projectCategoryList: [],
         productionStageList: [],
+        numToMoney,
       }
     },
     computed: {

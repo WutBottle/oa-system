@@ -1,5 +1,9 @@
 <style lang="scss" scoped>
   .InvoicePage {
+    .tr {
+      text-align: right;
+    }
+
     .page-header {
       background: #fff;
       padding: 16px 32px 0;
@@ -94,6 +98,9 @@
                   <span slot="serial" slot-scope="text, record, index">
                   {{ index + 1 }}
                   </span>
+                  <div slot="receiptAmount" slot-scope="text" class="tr">
+                    {{numToMoney(text)}}
+                  </div>
                   <span slot="operation" slot-scope="text, record">
                     <a @click="handleInvoiceEdit(record)">修改</a>
                     <a-divider type="vertical" />
@@ -354,7 +361,8 @@
   import {debounce} from 'debounce';
   import moment from 'moment'
   import CashReceiptInput from "../CashReceiptInput/CashReceiptInput";
-  import baseUrl from '@/api/baseUrl'
+  import baseUrl from '@/api/baseUrl';
+  import numToMoney from '@utils/numToMoney';
 
   const formItemLayout = {
     labelCol: {span: 6},
@@ -373,6 +381,7 @@
     data() {
       this.fetchContracts = debounce(this.fetchContracts, 500);
       return {
+        numToMoney,
         current: 0,
         steps: [{
           title: '选择合同',
@@ -411,6 +420,7 @@
             key: 'receiptAmount',
             dataIndex: 'receiptAmount',
             sorter: (a, b) => a.receiptAmount - b.receiptAmount,
+            scopedSlots: {customRender: 'receiptAmount'},
           }, {
             title: '发票类型',
             width: 100,

@@ -7,6 +7,10 @@
         margin-bottom: 18px;
       }
     }
+
+    .tr {
+      text-align: right;
+    }
   }
 </style>
 
@@ -71,6 +75,33 @@
               <span slot="serial" slot-scope="text, record, index">
                 {{ index + 1 }}
               </span>
+              <div slot="scale" slot-scope="text" class="tr">
+                {{numToMoney(text)}}
+              </div>
+              <div slot="ratio" slot-scope="text" class="tr">
+                {{numToMoney(text)}}
+              </div>
+              <div slot="receiptAmount" slot-scope="text" class="tr">
+                {{numToMoney(text)}}
+              </div>
+              <div slot="receiptNotCash" slot-scope="text" class="tr">
+                {{numToMoney(text)}}
+              </div>
+              <div slot="receiptRemain" slot-scope="text" class="tr">
+                {{numToMoney(text)}}
+              </div>
+              <div slot="projectAmount" slot-scope="text" class="tr">
+                {{numToMoney(text)}}
+              </div>
+              <div slot="cashAmount" slot-scope="text" class="tr">
+                {{numToMoney(text)}}
+              </div>
+              <div slot="contractRemain" slot-scope="text" class="tr">
+                {{numToMoney(text)}}
+              </div>
+              <div slot="projectInvestment" slot-scope="text" class="tr">
+                {{numToMoney(text)}}
+              </div>
               <span slot="isSign" slot-scope="text">
                 <a-badge :status="text | statusTypeFilter" :text="text | statusFilter"/>
               </span>
@@ -221,6 +252,7 @@
   import {mapActions} from 'vuex'
   import moment from 'moment';
   import HeaderPage from "../HeaderPage/HeaderPage";
+  import numToMoney from "@utils/numToMoney";
 
   const formItemLayout = {
     labelCol: {span: 6},
@@ -257,6 +289,7 @@
     data() {
       return {
         formLayout: 'inline',
+        numToMoney,
         formItemLayout,
         formTailLayout,
         queryVisible: false,
@@ -335,6 +368,7 @@
             key: 'scale',
             dataIndex: 'scale',
             sorter: (a, b) => a.scale - b.scale,
+            scopedSlots: {customRender: 'scale'}
           },
           {
             title: '收款比例',
@@ -350,6 +384,7 @@
             key: 'receiptAmount',
             dataIndex: 'receiptAmount',
             sorter: (a, b) => a.receiptAmount - b.receiptAmount,
+            scopedSlots: {customRender: 'receiptAmount'}
           },
           {
             title: '已开发票未收款金额(元)',
@@ -357,6 +392,7 @@
             key: 'receiptNotCash',
             dataIndex: 'receiptNotCash',
             sorter: (a, b) => a.receiptNotCash - b.receiptNotCash,
+            scopedSlots: {customRender: 'receiptNotCash'}
           },
           {
             title: '剩余发票额(元)',
@@ -364,6 +400,7 @@
             key: 'receiptRemain',
             dataIndex: 'receiptRemain',
             sorter: (a, b) => a.receiptRemain - b.receiptRemain,
+            scopedSlots: {customRender: 'receiptRemain'}
 
           },
           {
@@ -372,6 +409,7 @@
             key: 'projectAmount',
             dataIndex: 'projectAmount',
             sorter: (a, b) => a.projectAmount - b.projectAmount,
+            scopedSlots: {customRender: 'projectAmount'}
           },
           {
             title: '累计现金回款(元)',
@@ -379,6 +417,7 @@
             key: 'cashAmount',
             dataIndex: 'cashAmount',
             sorter: (a, b) => a.cashAmount - b.cashAmount,
+            scopedSlots: {customRender: 'cashAmount'}
           },
           {
             title: '剩余合同额(元)',
@@ -386,6 +425,7 @@
             key: 'contractRemain',
             dataIndex: 'contractRemain',
             sorter: (a, b) => a.contractRemain - b.contractRemain,
+            scopedSlots: {customRender: 'contractRemain'}
           },
           {
             title: '项目总投资额(元)',
@@ -393,6 +433,7 @@
             key: 'projectInvestment',
             dataIndex: 'projectInvestment',
             sorter: (a, b) => a.projectInvestment - b.projectInvestment,
+            scopedSlots: {customRender: 'projectInvestment'}
           },
         ],
         selectedRowKeys: [],

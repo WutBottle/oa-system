@@ -1,5 +1,9 @@
 <style lang="scss" scoped>
   .OutContractListPage {
+    .tr {
+      text-align: right;
+    }
+
     .page-content {
       padding: 24px;
 
@@ -90,6 +94,15 @@
               <span slot="serial" slot-scope="text, record, index">
                 {{ index + 1 }}
               </span>
+              <div slot="outContractAmount" slot-scope="text" class="tr">
+                {{numToMoney(text)}}
+              </div>
+              <div slot="outPaid" slot-scope="text" class="tr">
+                {{numToMoney(text)}}
+              </div>
+              <div slot="outUnpaid" slot-scope="text" class="tr">
+                {{numToMoney(text)}}
+              </div>
               <a-tag slot="outContractCategory" slot-scope="text" color="blue">
                 {{text}}
               </a-tag>
@@ -121,6 +134,9 @@
         <a-table bordered :columns="outPaidColumns" :dataSource="outPaidTableData"
                  :pagination="outPaidPaginationProps"
                  @change="handleOutPaidTableChange" :scroll="{ x: 600, y: 450}">
+          <div slot="paidAmount" slot-scope="text" style="text-align: right">
+            {{numToMoney(text)}}
+          </div>
         </a-table>
       </a-spin>
     </a-modal>
@@ -238,6 +254,7 @@
   import {mapState, mapMutations, mapActions} from 'vuex'
   import HeaderPage from "../HeaderPage/HeaderPage";
   import moment from "moment";
+  import numToMoney from "@utils/numToMoney";
 
   const formLayout = 'inline';
   const formItemLayout = {
@@ -259,6 +276,7 @@
     data() {
       return {
         formLayout,
+        numToMoney,
         buttonItemLayout,
         formItemLayout,
         formTailLayout,
@@ -304,18 +322,21 @@
             key: 'outContractAmount',
             dataIndex: 'outContractAmount',
             sorter: (a, b) => a.outContractAmount - b.outContractAmount,
+            scopedSlots: {customRender: 'outContractAmount'}
           }, {
             title: '已付费金额(元)',
             width: 150,
             key: 'outPaid',
             dataIndex: 'outPaid',
             sorter: (a, b) => a.outPaid - b.outPaid,
+            scopedSlots: {customRender: 'outPaid'}
           }, {
             title: '未付费金额(元)',
             width: 150,
             key: 'outUnpaid',
             dataIndex: 'outUnpaid',
             sorter: (a, b) => a.outUnpaid - b.outUnpaid,
+            scopedSlots: {customRender: 'outUnpaid'}
           }, {
             title: '已付费比例',
             width: 150,
@@ -372,6 +393,7 @@
             width: 200,
             key: 'paidAmount',
             dataIndex: 'paidAmount',
+            scopedSlots: {customRender: 'paidAmount'}
           },
           {
             title: '备注',

@@ -94,6 +94,9 @@
                   <span slot="serial" slot-scope="text, record, index">
                   {{ index + 1 }}
                   </span>
+                  <div slot="receiptAmount" slot-scope="text" style="text-align: right">
+                    {{numToMoney(text)}}
+                  </div>
                   <span slot="operation" slot-scope="text, record">
                     <a @click="handleInvoiceEdit(record)">修改</a>
                     <a-divider type="vertical" />
@@ -355,6 +358,7 @@
   import {debounce} from 'debounce';
   import moment from 'moment';
   import CashReceiptInput from "../CashReceiptInput/CashReceiptInput";
+  import numToMoney from "@utils/numToMoney";
 
   const formItemLayout = {
     labelCol: {span: 6},
@@ -380,6 +384,7 @@
           title: '添加发票信息',
           type: 'addInfo',
         }],
+        numToMoney,
         formItemLayout,
         formTailLayout,
         addForm: this.$form.createForm(this),
@@ -415,6 +420,7 @@
             key: 'receiptAmount',
             dataIndex: 'receiptAmount',
             sorter: (a, b) => a.receiptAmount - b.receiptAmount,
+            scopedSlots: {customRender: 'receiptAmount'}
           }, {
             title: '发票类型',
             width: 200,

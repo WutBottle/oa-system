@@ -400,10 +400,11 @@
             aboveGroundArea: selectData.aboveGroundArea,
             underGroundArea: selectData.underGroundArea
           });
+          let tempSubProjects = JSON.parse(JSON.stringify(this.tempSubProjects));
           this.projectInfoData.subProjects.map(item => {
-            this.tempSubProjects[this.tempSubProjects.findIndex(tempItem => item.subCategory.categoryId === tempItem.subCategory.categoryId)] = item;
+            tempSubProjects[tempSubProjects.findIndex(tempItem => item.subCategory.categoryId === tempItem.subCategory.categoryId)] = item;
           });
-          this.projectInfoData.subProjects = this.tempSubProjects;
+          this.projectInfoData.subProjects = tempSubProjects;
         });
       },
     }

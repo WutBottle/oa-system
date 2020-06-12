@@ -137,7 +137,7 @@
               合同总额
             </a-spin>
           </a-col>
-          <a-col class="br bt cell bgFCE4D6" :span="4">{{formData.contractAmount}}</a-col>
+          <a-col class="br bt cell bgFCE4D6" :span="4">{{numToMoney(formData.contractAmount)}}</a-col>
           <a-col class="b14 br bt cell" :span="4"></a-col>
           <a-col class="br bt cell" :span="4"></a-col>
           <a-col class="b14 br bt cell" :span="4"></a-col>
@@ -161,9 +161,9 @@
               累计开票
             </a-spin>
           </a-col>
-          <a-col class="br bt cell bgBDD7EE" :span="4">{{formData.receiptAmount}}</a-col>
+          <a-col class="br bt cell bgBDD7EE" :span="4">{{numToMoney(formData.receiptAmount)}}</a-col>
           <a-col class="b14 br bt cell" :span="4">已开发票未收款</a-col>
-          <a-col class="br bt cell" :span="4">{{formData.receiptAmount - formData.cashAmount}}</a-col>
+          <a-col class="br bt cell" :span="4">{{numToMoney(formData.receiptAmount - formData.cashAmount)}}</a-col>
           <a-col class="b14 br bt cell" :span="4"></a-col>
           <a-col class="bt cell" :span="4"></a-col>
         </a-row>
@@ -172,7 +172,7 @@
             <a-col class="b14 br bt cell bgcae7ff click-font" :span="4" @click="handleReceiptPdfOpen(item.receiptFile)">
               开具发票{{(index +1 )}}
             </a-col>
-            <a-col class="br bt cell bgcae7ff" :span="4">{{item.receiptAmount}}</a-col>
+            <a-col class="br bt cell bgcae7ff" :span="4">{{numToMoney(item.receiptAmount)}}</a-col>
             <a-col class="b14 br bt cell bgcae7ff" :span="4">开票日期</a-col>
             <a-col class="br bt cell bgcae7ff" :span="4">{{item.receiptDate}}</a-col>
             <a-col class="b14 br bt cell bgcae7ff" :span="4">发票号码</a-col>
@@ -185,7 +185,7 @@
               累计收费
             </a-spin>
           </a-col>
-          <a-col class="br bt cell bgFFD966" :span="4">{{formData.cashAmount}}</a-col>
+          <a-col class="br bt cell bgFFD966" :span="4">{{numToMoney(formData.cashAmount)}}</a-col>
           <a-col class="b14 br bt cell" :span="4"></a-col>
           <a-col class="br bt cell" :span="4"></a-col>
           <a-col class="b14 br bt cell" :span="4"></a-col>
@@ -194,7 +194,7 @@
         <template v-if="cashVisible">
           <a-row v-for="(item, index) in cashData" :key="item.cashId">
             <a-col class="b14 br bt cell bgffd966" :span="4">收费{{(index +1 )}}</a-col>
-            <a-col class="br bt cell bgffd966" :span="4">{{item.cashAmount}}</a-col>
+            <a-col class="br bt cell bgffd966" :span="4">{{numToMoney(item.cashAmount)}}</a-col>
             <a-col class="b14 br bt cell bgffd966" :span="4">到账日期</a-col>
             <a-col class="br bt cell bgffd966" :span="4">{{item.cashDate}}</a-col>
             <a-col class="b14 br bt cell" :span="4"></a-col>
@@ -203,7 +203,7 @@
         </template>
         <a-row>
           <a-col class="b14 br bt cell" :span="4">分包累计收费</a-col>
-          <a-col class="br bt cell" :span="4">{{formData.subProjectAmount}}
+          <a-col class="br bt cell" :span="4">{{numToMoney(formData.subProjectAmount)}}
           </a-col>
           <a-col class="b14 br bt cell" :span="4"></a-col>
           <a-col class="br bt cell" :span="4"></a-col>
@@ -215,7 +215,7 @@
           <a-col class="br bt cell" :span="4">{{formData.ratio != null && formData.ratio.toFixed(4) * 100}}%
           </a-col>
           <a-col class="b14 br bt cell" :span="4">应收金额</a-col>
-          <a-col class="br bt cell" :span="4">{{formData.contractAmount - formData.cashAmount}}</a-col>
+          <a-col class="br bt cell" :span="4">{{numToMoney(formData.contractAmount - formData.cashAmount)}}</a-col>
           <a-col class="b14 br bt cell" :span="4"></a-col>
           <a-col class="bt cell" :span="4"></a-col>
         </a-row>
@@ -254,8 +254,8 @@
               </a-col>
               <a-col class="br bt cell" :span="4">{{item.organization ? item.organization.categoryName : '/'}}</a-col>
               <a-col class="br bt cell" :span="4">{{item.designTeam ? item.designTeam : '/'}}</a-col>
-              <a-col class="br bt cell" :span="4">{{item.designFees}}</a-col>
-              <a-col class="br bt cell" :span="4">{{item.price}}</a-col>
+              <a-col class="br bt cell" :span="4">{{numToMoney(item.designFees)}}</a-col>
+              <a-col class="br bt cell" :span="4">{{numToMoney(item.price)}}</a-col>
               <a-col class="bt cell" :span="4">{{item.note}}</a-col>
             </a-row>
             <template v-if="categoryIndex[index]">
@@ -263,11 +263,11 @@
                 <a-col class="br bt cell bgececec" :span="4">
                   {{item.subCategory.categoryName}}-{{data.outContractName}}
                 </a-col>
-                <a-col class="br bt cell bgececec" :span="4">{{data.outContractAmount}}</a-col>
+                <a-col class="br bt cell bgececec" :span="4">{{numToMoney(data.outContractAmount)}}</a-col>
                 <a-col class="br bt cell bgececec" :span="4">累开发票</a-col>
-                <a-col class="br bt cell bgececec" :span="4">{{data.receiptAmounts}}</a-col>
+                <a-col class="br bt cell bgececec" :span="4">{{numToMoney(data.receiptAmounts)}}</a-col>
                 <a-col class="br bt cell bgececec" :span="4">累计付费</a-col>
-                <a-col class="bt cell bgececec" :span="4">{{data.outPaid}}</a-col>
+                <a-col class="bt cell bgececec" :span="4">{{numToMoney(data.outPaid)}}</a-col>
               </a-row>
             </template>
           </a-row>
@@ -276,8 +276,8 @@
           <a-col class="br bt cell" :span="4"></a-col>
           <a-col class="br bt cell" :span="4"></a-col>
           <a-col class="br bt cell" :span="4">合计</a-col>
-          <a-col class="br bt cell bgFFF2CC" :span="4">{{totalFees}}</a-col>
-          <a-col class="br bt cell bgFFF2CC" :span="4">{{totalPrice}}</a-col>
+          <a-col class="br bt cell bgFFF2CC" :span="4">{{numToMoney(totalFees)}}</a-col>
+          <a-col class="br bt cell bgFFF2CC" :span="4">{{numToMoney(totalPrice)}}</a-col>
           <a-col class="bt cell bgFFF2CC" :span="4"></a-col>
         </a-row>
       </a-col>
@@ -390,7 +390,9 @@
 <script>
   import {mapActions} from 'vuex';
   import moment from 'moment';
-  import baseUrl from '@/api/baseUrl'
+  import baseUrl from '@/api/baseUrl';
+  import numToMoney from "@utils/numToMoney";
+
   const statusMap = {
     0: {
       status: 'success',
@@ -477,6 +479,7 @@
     },
     data() {
       return {
+        numToMoney,
         categoryIndex: [], // 控制分项展开
         totalFees: 0, // 分项设计费总计
         totalPrice: 0, // 分项价格总计

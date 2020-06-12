@@ -76,6 +76,9 @@
               <span slot="serial" slot-scope="text, record, index">
                 {{ index + 1 }}
               </span>
+              <div slot="receiptAmount" slot-scope="text" style="text-align: right">
+                {{numToMoney(text)}}
+              </div>
               <span slot="router" slot-scope="text, record">
                 <a @click="jumpToReceiptManager(record)">管理</a>
               </span>
@@ -138,6 +141,9 @@
                 <span slot="serial" slot-scope="text, record, index">
                 {{ index + 1 }}
                 </span>
+                <div slot="cashAmount" slot-scope="text" style="text-align: right">
+                  {{numToMoney(text)}}
+                </div>
                 <span slot="receipts" slot-scope="tags">
                   <a-tag v-for="tag in tags" color="blue"
                          :key="tag.id">{{tag.receiptId}}</a-tag>
@@ -246,6 +252,7 @@
   import HeaderPage from "../HeaderPage/HeaderPage";
   import baseUrl from '@/api/baseUrl'
   import moment from "moment";
+  import numToMoney from "@utils/numToMoney";
 
   const formItemLayout = {
     labelCol: {span: 6},
@@ -265,6 +272,7 @@
     },
     data() {
       return {
+        numToMoney,
         formItemLayout,
         formTailLayout,
         buttonItemLayout,
@@ -316,6 +324,7 @@
             key: 'receiptAmount',
             dataIndex: 'receiptAmount',
             sorter: (a, b) => a.receiptAmount - b.receiptAmount,
+            scopedSlots: {customRender: 'receiptAmount'}
           },
           {
             title: '发票类型',
@@ -374,6 +383,7 @@
             key: 'cashAmount',
             dataIndex: 'cashAmount',
             sorter: (a, b) => a.cashAmount - b.cashAmount,
+            scopedSlots: {customRender: 'cashAmount'}
           }, {
             title: '对应发票',
             width: 150,

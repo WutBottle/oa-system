@@ -70,6 +70,9 @@
                   <span slot="serial" slot-scope="text, record, index">
                   {{ index + 1 }}
                   </span>
+                  <div slot="money" slot-scope="text" style="text-align: right;">
+                    {{numToMoney(text)}}
+                  </div>
                   <a-tag slot="staffCode" slot-scope="text" color="orange">{{text}}</a-tag>
                   <span slot="operation" slot-scope="text, record">
                     <a @click="handleEdit(record)">修改</a>
@@ -215,6 +218,7 @@
   import {mapState, mapActions} from 'vuex'
   import {debounce} from 'debounce';
   import HeaderPage from "../HeaderPage/HeaderPage";
+  import numToMoney from "@utils/numToMoney";
 
   const formItemLayout = {
     labelCol: {span: 6},
@@ -233,6 +237,7 @@
       this.fetchContracts = debounce(this.fetchContracts, 500);
       this.fetchStaffData = debounce(this.fetchStaffData, 500);
       return {
+        numToMoney,
         formItemLayout,
         formTailLayout,
         current: 0,
@@ -275,6 +280,7 @@
             dataIndex: 'money',
             key: 'money',
             sorter: (a, b) => a.money - b.money,
+            scopedSlots: {customRender: 'money'}
           },
           {
             title: '备注',

@@ -65,6 +65,7 @@ const state = {
       dataIndex: 'contractAmount',
       sort: 8,
       sorter: (a, b) => a.contractAmount - b.contractAmount,
+      scopedSlots: {customRender: 'contractAmount'},
     },
     {
       title: '累计现金回款(元)',
@@ -73,6 +74,7 @@ const state = {
       sort: 9,
       dataIndex: 'accumulatedCashReceipts',
       sorter: (a, b) => a.accumulatedCashReceipts - b.accumulatedCashReceipts,
+      scopedSlots: {customRender: 'accumulatedCashReceipts'},
     },
     {
       title: '剩余合同额(元)',
@@ -81,6 +83,7 @@ const state = {
       dataIndex: 'remainingContractAmount',
       sort: 10,
       sorter: (a, b) => a.remainingContractAmount - b.remainingContractAmount,
+      scopedSlots: {customRender: 'remainingContractAmount'},
     },
     {
       title: '已收款比例',
@@ -98,6 +101,7 @@ const state = {
       dataIndex: 'cumulativeInvoicedAmount',
       sort: 12,
       sorter: (a, b) => a.cumulativeInvoicedAmount - b.cumulativeInvoicedAmount,
+      scopedSlots: {customRender: 'cumulativeInvoicedAmount'},
     },
     {
       title: '已开发票未收款金额',
@@ -106,6 +110,7 @@ const state = {
       dataIndex: 'invoicedUncollectedAmount',
       sort: 13,
       sorter: (a, b) => a.invoicedUncollectedAmount - b.invoicedUncollectedAmount,
+      scopedSlots: {customRender: 'invoicedUncollectedAmount'},
     },
     {
       title: '实际签约日期',
@@ -199,6 +204,7 @@ const state = {
       dataIndex: 'investmentAmount',
       sort: 25,
       sorter: (a, b) => a.investmentAmount - b.investmentAmount,
+      scopedSlots: {customRender: 'investmentAmount'},
     },
     {
       title: '项目规模(平方米)',
@@ -206,6 +212,7 @@ const state = {
       key: 'projectScale',
       dataIndex: 'projectScale',
       sort: 26,
+      scopedSlots: {customRender: 'projectScale'},
     },
     {
       title: '地域',

@@ -96,6 +96,9 @@
                   <span slot="serial" slot-scope="text, record, index">
                     {{ index + 1 }}
                   </span>
+                  <div slot="paidAmount" slot-scope="text" style="text-align: right">
+                    {{numToMoney(text)}}
+                  </div>
                   <span slot="receipts" slot-scope="tags">
                     <a-tag v-for="tag in tags" color="blue"
                            :key="tag.id">{{tag.receiptId}}</a-tag>
@@ -318,6 +321,7 @@
   import {debounce} from 'debounce';
   import moment from 'moment';
   import OutPaidInput from "../OutPaidInput/OutPaidInput";
+  import numToMoney from "@utils/numToMoney";
 
   const formItemLayout = {
     labelCol: {span: 6},
@@ -336,6 +340,7 @@
     data() {
       this.fetchOutContract = debounce(this.fetchOutContract, 500);
       return {
+        numToMoney,
         formItemLayout,
         formTailLayout,
         current: 0,
@@ -373,6 +378,7 @@
             key: 'paidAmount',
             dataIndex: 'paidAmount',
             sorter: (a, b) => a.paidAmount - b.paidAmount,
+            scopedSlots: {customRender: 'paidAmount'}
           },
           {
             title: '对应发票',

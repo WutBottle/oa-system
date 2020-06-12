@@ -31,6 +31,24 @@
           <span slot="serial" slot-scope="text, record, index">
             {{ index + 1 }}
           </span>
+          <div slot="receiptAmount" slot-scope="text" style="text-align: right;">
+            {{numToMoney(text)}}
+          </div>
+          <div slot="receiptNotCash" slot-scope="text" style="text-align: right;">
+            {{numToMoney(text)}}
+          </div>
+          <div slot="projectAmount" slot-scope="text" style="text-align: right;">
+            {{numToMoney(text)}}
+          </div>
+          <div slot="cashAmount" slot-scope="text" style="text-align: right;">
+            {{numToMoney(text)}}
+          </div>
+          <div slot="contractRemain" slot-scope="text" style="text-align: right;">
+            {{numToMoney(text)}}
+          </div>
+          <div slot="projectInvestment" slot-scope="text" style="text-align: right;">
+            {{numToMoney(text)}}
+          </div>
           <span slot="isSign" slot-scope="text">
             <a-badge :status="text | statusTypeFilter" :text="text | statusFilter"/>
           </span>
@@ -59,6 +77,9 @@
           <span slot="serial" slot-scope="text, record, index">
             {{ index + 1 }}
           </span>
+          <div slot="money" slot-scope="text" style="text-align: right;">
+            {{numToMoney(text)}}
+          </div>
         </a-table>
       </a-spin>
     </a-modal>
@@ -204,6 +225,7 @@
   import {mapState, mapActions} from 'vuex'
   import ProjectInfo from "../ProjectInfo/ProjectInfo";
   import moment from "moment";
+  import numToMoney from "@utils/numToMoney";
 
   const statusMap = {
     0: {
@@ -244,6 +266,7 @@
     data() {
       return {
         formLayout: 'inline',
+        numToMoney,
         formItemLayout,
         formTailLayout,
         contractId: '',
@@ -297,6 +320,7 @@
             width: 150,
             key: 'scale',
             dataIndex: 'scale',
+            scopedSlots: {customRender: 'scale'}
           },
           {
             title: '收款比例',
@@ -312,6 +336,7 @@
             key: 'receiptAmount',
             dataIndex: 'receiptAmount',
             sorter: (a, b) => a.receiptAmount - b.receiptAmount,
+            scopedSlots: {customRender: 'receiptAmount'}
           },
           {
             title: '已开发票未收款金额(元)',
@@ -319,6 +344,7 @@
             key: 'receiptNotCash',
             dataIndex: 'receiptNotCash',
             sorter: (a, b) => a.receiptNotCash - b.receiptNotCash,
+            scopedSlots: {customRender: 'receiptNotCash'}
           },
           {
             title: '项目总金额(元)',
@@ -326,6 +352,7 @@
             key: 'projectAmount',
             dataIndex: 'projectAmount',
             sorter: (a, b) => a.projectAmount - b.projectAmount,
+            scopedSlots: {customRender: 'projectAmount'}
           },
           {
             title: '累计现金回款(元)',
@@ -333,6 +360,7 @@
             key: 'cashAmount',
             dataIndex: 'cashAmount',
             sorter: (a, b) => a.cashAmount - b.cashAmount,
+            scopedSlots: {customRender: 'cashAmount'}
           },
           {
             title: '剩余合同额(元)',
@@ -340,6 +368,7 @@
             key: 'contractRemain',
             dataIndex: 'contractRemain',
             sorter: (a, b) => a.contractRemain - b.contractRemain,
+            scopedSlots: {customRender: 'contractRemain'}
           },
           {
             title: '项目总投资额(元)',
@@ -347,6 +376,7 @@
             key: 'projectInvestment',
             dataIndex: 'projectInvestment',
             sorter: (a, b) => a.projectInvestment - b.projectInvestment,
+            scopedSlots: {customRender: 'projectInvestment'}
           },
           {
             title: '项目工资',
@@ -423,6 +453,7 @@
             dataIndex: 'money',
             key: 'money',
             sorter: (a, b) => a.money - b.money,
+            scopedSlots: {customRender: 'money'}
           },
           {
             title: '备注',
@@ -595,10 +626,11 @@
             aboveGroundArea: selectData.aboveGroundArea,
             underGroundArea: selectData.underGroundArea
           });
+          let tempSubProjects = JSON.parse(JSON.stringify(this.tempSubProjects));
           this.projectInfoData.subProjects.map(item => {
-            this.tempSubProjects[this.tempSubProjects.findIndex(tempItem => item.subCategory.categoryId === tempItem.subCategory.categoryId)] = item;
+            tempSubProjects[tempSubProjects.findIndex(tempItem => item.subCategory.categoryId === tempItem.subCategory.categoryId)] = item;
           });
-          this.projectInfoData.subProjects = this.tempSubProjects;
+          this.projectInfoData.subProjects = tempSubProjects;
         });
       },
       handleTableChange(pagination) {

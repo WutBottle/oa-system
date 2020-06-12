@@ -162,8 +162,8 @@
             </a-spin>
           </a-col>
           <a-col class="br bt cell bgBDD7EE" :span="4">{{formData.receiptAmount}}</a-col>
-          <a-col class="b14 br bt cell" :span="4">未收发票</a-col>
-          <a-col class="br bt cell" :span="4">{{formData.contractAmount - formData.receiptAmount}}</a-col>
+          <a-col class="b14 br bt cell" :span="4">已开发票未收款</a-col>
+          <a-col class="br bt cell" :span="4">{{formData.receiptAmount - formData.cashAmount}}</a-col>
           <a-col class="b14 br bt cell" :span="4"></a-col>
           <a-col class="bt cell" :span="4"></a-col>
         </a-row>
@@ -202,11 +202,11 @@
           </a-row>
         </template>
         <a-row>
-          <a-col class="b14 br bt cell" :span="4">应收比例</a-col>
-          <a-col class="br bt cell" :span="4">{{formData.ratio != null && (100 - formData.ratio.toFixed(4) * 100)}}%
+          <a-col class="b14 br bt cell" :span="4">已收款比例</a-col>
+          <a-col class="br bt cell" :span="4">{{formData.ratio != null && formData.ratio.toFixed(4) * 100}}%
           </a-col>
           <a-col class="b14 br bt cell" :span="4">应收金额</a-col>
-          <a-col class="br bt cell" :span="4">{{formData.contractAmount}}</a-col>
+          <a-col class="br bt cell" :span="4">{{formData.contractAmount - formData.cashAmount}}</a-col>
           <a-col class="b14 br bt cell" :span="4"></a-col>
           <a-col class="bt cell" :span="4"></a-col>
         </a-row>

@@ -268,7 +268,7 @@
                 :wrapper-col="formItemLayout.wrapperCol"
                 label="进入系统日期"
         >
-          <a-range-picker style="width: 220px;" v-model="createdAtDate"/>
+          <a-range-picker style="width: 220px;" v-model="workDateSearchDate"/>
         </a-form-item>
         <a-form-item :label-col="formTailLayout.labelCol" :wrapper-col="formTailLayout.wrapperCol">
           <a-button type="primary" @click="handleQuery(false)">
@@ -429,9 +429,9 @@
           }, {
             title: '进入系统日期',
             width: 150,
-            dataIndex: 'createdAt',
-            key: 'createdAt',
-            sorter: (a, b) => new Date(a.createdAt) - new Date(b.createdAt),
+            dataIndex: 'workDate',
+            key: 'workDate',
+            sorter: (a, b) => new Date(a.workDate) - new Date(b.workDate),
           }, {
             title: '第一学历学校',
             width: 150,
@@ -491,6 +491,7 @@
             width: 100,
             key: 'money',
             dataIndex: 'money',
+            sorter: (a, b) => a.money - b.money,
           },
         ],
         selectedRowKeys: [],
@@ -568,7 +569,7 @@
         degree: undefined,
         duty: undefined,
         participationDate: [],
-        createdAtDate: [],
+        workDateSearchDate: [],
       }
     },
     mounted() {
@@ -597,21 +598,21 @@
       // 更新职员列表数据
       updateStaffTableData() {
         this.spinning = true;
-        let participation, createdAt;
+        let participation, workDate;
         if (this.participationDate.length) {
           participation = [moment(this.participationDate[0]).format('YYYY-MM-DD'), moment(this.participationDate[1]).format('YYYY-MM-DD')]
         } else {
           participation = ['', '']
         }
-        if (this.createdAtDate.length) {
-          createdAt = [moment(this.createdAtDate[0]).format('YYYY-MM-DD'), moment(this.createdAtDate[1]).format('YYYY-MM-DD')]
+        if (this.workDateSearchDate.length) {
+          workDate = [moment(this.workDateSearchDate[0]).format('YYYY-MM-DD'), moment(this.workDateSearchDate[1]).format('YYYY-MM-DD')]
         } else {
-          createdAt = ['', '']
+          workDate = ['', '']
         }
         const params = {
           staffName: this.staffName,
           participation: participation,
-          createdAt: createdAt,
+          workDate: workDate,
           age: [this.ageLowerBound ? String(this.ageLowerBound) : '', this.ageUpperBound ? String(this.ageUpperBound) : ''],
           gender: this.gender,
           politic: this.politic,
@@ -632,7 +633,7 @@
               return {
                 key: index,
                 id: item.id,
-                createdAt: item.createdAt && moment(item.createdAt).format('YYYY-MM-DD'),
+                workDate: item.workDate && moment(item.workDate).format('YYYY-MM-DD'),
                 staffCode: item.staffCode,
                 staffName: item.staffName,
                 staffClass: item.staffClass && item.staffClass.categoryName,

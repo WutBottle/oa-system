@@ -162,6 +162,15 @@
         </a-form-item>
         <a-form-item
                 v-bind="formItemLayout"
+                label="进入系统日期"
+        >
+          <a-date-picker
+                  v-decorator="['workDate']"
+                  format="YYYY-MM-DD"
+          />
+        </a-form-item>
+        <a-form-item
+                v-bind="formItemLayout"
                 label="第一学历学校"
         >
           <a-input
@@ -431,6 +440,15 @@
         >
           <a-date-picker
                   v-decorator="['participation', {initialValue: this.editFormData.participation}]"
+                  format="YYYY-MM-DD"
+          />
+        </a-form-item>
+        <a-form-item
+                v-bind="formItemLayout"
+                label="进入系统日期"
+        >
+          <a-date-picker
+                  v-decorator="['workDate', {initialValue: this.editFormData.workDate}]"
                   format="YYYY-MM-DD"
           />
         </a-form-item>
@@ -793,7 +811,7 @@
                 :wrapper-col="formItemLayout.wrapperCol"
                 label="进入系统日期"
         >
-          <a-range-picker style="width: 220px;" v-model="createdAtDate"/>
+          <a-range-picker style="width: 220px;" v-model="workDateSearchDate"/>
         </a-form-item>
         <a-form-item :label-col="formTailLayout.labelCol" :wrapper-col="formTailLayout.wrapperCol">
           <a-button type="primary" @click="handleQuery(false)">
@@ -957,9 +975,9 @@
           }, {
             title: '进入系统日期',
             width: 150,
-            dataIndex: 'createdAt',
-            key: 'createdAt',
-            sorter: (a, b) => new Date(a.createdAt) - new Date(b.createdAt),
+            dataIndex: 'workDate',
+            key: 'workDate',
+            sorter: (a, b) => new Date(a.workDate) - new Date(b.workDate),
           }, {
             title: '第一学历学校',
             width: 150,
@@ -1055,7 +1073,7 @@
         degree: undefined,
         duty: undefined,
         participationDate: [],
-        createdAtDate: [],
+        workDateSearchDate: [],
       }
     },
     mounted() {
@@ -1075,21 +1093,21 @@
       },
       updateTableData() {
         this.spinning = true;
-        let participation, createdAt;
+        let participation, workDate;
         if (this.participationDate.length) {
           participation = [moment(this.participationDate[0]).format('YYYY-MM-DD'), moment(this.participationDate[1]).format('YYYY-MM-DD')]
         } else {
           participation = ['', '']
         }
-        if (this.createdAtDate.length) {
-          createdAt = [moment(this.createdAtDate[0]).format('YYYY-MM-DD'), moment(this.createdAtDate[1]).format('YYYY-MM-DD')]
+        if (this.workDateSearchDate.length) {
+          workDate = [moment(this.workDateSearchDate[0]).format('YYYY-MM-DD'), moment(this.workDateSearchDate[1]).format('YYYY-MM-DD')]
         } else {
-          createdAt = ['', '']
+          workDate = ['', '']
         }
         const params = {
           staffName: this.staffName,
           participation: participation,
-          createdAt: createdAt,
+          workDate: workDate,
           age: [this.ageLowerBound ? String(this.ageLowerBound) : '', this.ageUpperBound ? String(this.ageUpperBound) : ''],
           gender: this.gender,
           politic: this.politic,
@@ -1111,7 +1129,7 @@
                 key: index,
                 id: item.id,
                 age: item.dob && moment().diff(item.dob, 'years'),
-                createdAt: item.createdAt && moment(item.createdAt).format('YYYY-MM-DD'),
+                workDate: item.workDate && moment(item.workDate).format('YYYY-MM-DD'),
                 staffCode: item.staffCode,
                 staffName: item.staffName,
                 staffClass: item.staffClass && item.staffClass.categoryName,
@@ -1189,6 +1207,7 @@
                 politic: values.politic,
                 dob: values.dob,
                 participation: values.participation,
+                workDate: values.workDate,
                 firstEducation: values.firstEducation,
                 secondEducation: values.secondEducation,
                 major: values.major
@@ -1221,6 +1240,7 @@
         this.editFormData = JSON.parse(JSON.stringify(selectData));
         this.editFormData.dob = this.editFormData.dob ? moment(this.editFormData.dob) : undefined;
         this.editFormData.participation = this.editFormData.participation ? moment(this.editFormData.participation) : undefined;
+        this.editFormData.workDate = this.editFormData.workDate ? moment(this.editFormData.workDate) : undefined;
         this.currentStaffId = selectData.id;
         this.editForm.resetFields();
         this.editVisible = true;
@@ -1319,7 +1339,7 @@
           degree: undefined,
           duty: undefined,
           participationDate: [],
-          createdAtDate: [],
+          workDateSearchDate: [],
         })
       },
     }

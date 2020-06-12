@@ -550,6 +550,7 @@
                 projectAmount: item.projectAmount,
                 contractId: item.contractId,
                 cashAmount: item.cashAmount,
+                subProjectAmount: item.subProjectAmount,
                 designId: item.designId,
                 contractName: item.contractName,
                 contractRemain: item.contractRemain,
@@ -590,6 +591,7 @@
         }).then(res => {
           this.projectInfoData = res && res.data.data.contract;
           Object.assign(this.projectInfoData, {
+            subProjectAmount: selectData.subProjectAmount,
             aboveGroundArea: selectData.aboveGroundArea,
             underGroundArea: selectData.underGroundArea
           });

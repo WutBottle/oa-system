@@ -48,8 +48,8 @@ module.exports = {
       .set('assets', resolve('src/assets'))
       .set('components', resolve('src/router/components'))
       .set('layouts', resolve('src/layouts'))
-      .set('base', resolve('src/base'))
-      .set('static', resolve('src/static'));
+      .set('static', resolve('src/static'))
+      .set('@utils', resolve('src/utils'));
     // 打包分析
     if (process.env.IS_ANALYZ) {
       config.plugin('webpack-report')

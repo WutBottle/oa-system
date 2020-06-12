@@ -202,6 +202,15 @@
           </a-row>
         </template>
         <a-row>
+          <a-col class="b14 br bt cell" :span="4">分包累计收费</a-col>
+          <a-col class="br bt cell" :span="4">{{formData.subProjectAmount}}
+          </a-col>
+          <a-col class="b14 br bt cell" :span="4"></a-col>
+          <a-col class="br bt cell" :span="4"></a-col>
+          <a-col class="b14 br bt cell" :span="4"></a-col>
+          <a-col class="bt cell" :span="4"></a-col>
+        </a-row>
+        <a-row>
           <a-col class="b14 br bt cell" :span="4">已收款比例</a-col>
           <a-col class="br bt cell" :span="4">{{formData.ratio != null && formData.ratio.toFixed(4) * 100}}%
           </a-col>

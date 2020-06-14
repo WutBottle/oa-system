@@ -69,7 +69,7 @@ const state = {
     },
     {
       title: '累计现金回款(元)',
-      width: 150,
+      width: 170,
       key: 'accumulatedCashReceipts',
       sort: 9,
       dataIndex: 'accumulatedCashReceipts',

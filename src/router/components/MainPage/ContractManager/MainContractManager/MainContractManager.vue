@@ -35,8 +35,8 @@
             }
           }, {
             validator: (rule, value, callback) => {
-              if (value.toString().length > 14) {
-                callback('请输入长度小于14的合同号')
+              if (value.toString().length !== 7) {
+                callback('请输入格式为2019001的合同号')
               }
               callback()
             }

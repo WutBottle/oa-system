@@ -88,9 +88,6 @@
 
 <template>
   <div class="ProjectInfo">
-    <a-row class="cell bb b14">
-      中南建筑设计院股份有限公司第五营销总监部
-    </a-row>
     <a-row class="cell bb b18">
       设 计 项 目 基 本 情 况 表
     </a-row>
@@ -202,7 +199,7 @@
           </a-row>
         </template>
         <a-row>
-          <a-col class="b14 br bt cell" :span="4">分包累计收费</a-col>
+          <a-col class="b14 br bt cell" :span="4">分包累计付费</a-col>
           <a-col class="br bt cell" :span="4">{{numToMoney(formData.subProjectAmount)}}
           </a-col>
           <a-col class="b14 br bt cell" :span="4"></a-col>
@@ -212,7 +209,7 @@
         </a-row>
         <a-row>
           <a-col class="b14 br bt cell" :span="4">已收款比例</a-col>
-          <a-col class="br bt cell" :span="4">{{formData.ratio != null && formData.ratio.toFixed(4) * 100}}%
+          <a-col class="br bt cell" :span="4">{{formData.ratio != null && numToMoney(formData.ratio * 100)}}%
           </a-col>
           <a-col class="b14 br bt cell" :span="4">应收金额</a-col>
           <a-col class="br bt cell" :span="4">{{numToMoney(formData.contractAmount - formData.cashAmount)}}</a-col>

@@ -153,10 +153,6 @@
           'outContractId',
           {rules: [{
             required: true, message: '请输入分包合同号!'
-          }, {
-                type: 'number',
-                message: '请输入数字',
-                transform:(value)=> {return Number(value)}
           }]}
         ]"
                   placeholder="请输入分包合同号"

@@ -71,7 +71,7 @@
             <a-table bordered :columns="columns" :dataSource="tableData"
                      :pagination="paginationProps"
                      :rowSelection="{selectedRowKeys: selectedRowKeys, onSelect: onSelect, onSelectAll: onSelectAll, onChange: onSelectChange}"
-                     @change="handleTableChange" :scroll="{ x: 2150, y: 550}">
+                     @change="handleTableChange" :scroll="{ x: 2160, y: 550}">
               <span slot="serial" slot-scope="text, record, index">
                 {{ index + 1 }}
               </span>
@@ -100,7 +100,7 @@
                 {{numToMoney(text)}}
               </div>
               <div slot="projectInvestment" slot-scope="text" class="tr">
-                {{numToMoney(text)}}
+                {{numToMoney(text / 10000)}}
               </div>
               <span slot="isSign" slot-scope="text">
                 <a-badge :status="text | statusTypeFilter" :text="text | statusFilter"/>
@@ -428,8 +428,8 @@
             scopedSlots: {customRender: 'contractRemain'}
           },
           {
-            title: '项目总投资额(元)',
-            width: 170,
+            title: '项目总投资额(万元)',
+            width: 180,
             key: 'projectInvestment',
             dataIndex: 'projectInvestment',
             sorter: (a, b) => a.projectInvestment - b.projectInvestment,

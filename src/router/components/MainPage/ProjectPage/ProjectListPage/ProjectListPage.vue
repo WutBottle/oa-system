@@ -27,7 +27,7 @@
       <a-spin :spinning="spinning" tip="Loading...">
         <a-table bordered :columns="columns" :dataSource="tableData"
                  :pagination="paginationProps"
-                 @change="handleTableChange" :scroll="{ x: 2770, y: 550}">
+                 @change="handleTableChange" :scroll="{ x: 2820, y: 550}">
           <span slot="serial" slot-scope="text, record, index">
             {{ index + 1 }}
           </span>
@@ -47,7 +47,7 @@
             {{numToMoney(text)}}
           </div>
           <div slot="projectInvestment" slot-scope="text" style="text-align: right;">
-            {{numToMoney(text)}}
+            {{numToMoney(text / 10000)}}
           </div>
           <span slot="isSign" slot-scope="text">
             <a-badge :status="text | statusTypeFilter" :text="text | statusFilter"/>
@@ -370,8 +370,8 @@
             scopedSlots: {customRender: 'contractRemain'}
           },
           {
-            title: '项目总投资额(元)',
-            width: 170,
+            title: '项目总投资额(万元)',
+            width: 180,
             key: 'projectInvestment',
             dataIndex: 'projectInvestment',
             sorter: (a, b) => a.projectInvestment - b.projectInvestment,
@@ -404,13 +404,13 @@
           },
           {
             title: '项目经营负责人',
-            width: 120,
+            width: 140,
             key: 'runningManager',
             dataIndex: 'runningManager',
           },
           {
             title: '部门经营负责人',
-            width: 120,
+            width: 140,
             key: 'inspector',
             dataIndex: 'inspector',
           },

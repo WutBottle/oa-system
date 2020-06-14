@@ -48,7 +48,7 @@
 <template>
   <div class="TaskAssign">
     <a-card>
-      <a-badge slot="title" status="warning" text="任务分配"/>
+      <a-badge slot="title" status="warning" :text="'任务分配' + (isMine ? '（我创建）' : '（被分配）')"/>
       <template slot="extra">
         <a-popover v-model="optionVisible" title="筛选条件" trigger="click">
           <a-radio-group slot="content" v-model="isMine" button-style="solid" @change="handleTypeChange">
@@ -462,7 +462,7 @@
         undoneBusy: false,
         window: window,
         optionVisible: false,
-        isMine: true,
+        isMine: false,
         addVisible: false,
         addForm: this.$form.createForm(this),
         editForm: this.$form.createForm(this),

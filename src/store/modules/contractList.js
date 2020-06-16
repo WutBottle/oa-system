@@ -198,7 +198,7 @@ const state = {
       sort: 24,
     },
     {
-      title: '投资额(元)',
+      title: '投资额(万元)',
       width: 150,
       key: 'investmentAmount',
       dataIndex: 'investmentAmount',

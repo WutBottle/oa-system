@@ -125,8 +125,12 @@
           <a-col class="br bt cell" :span="4">
             <a-badge :status="formData.isSign | statusTypeFilter" :text="formData.isSign | statusFilter"/>
           </a-col>
-          <a-col class="b14 br bt cell" :span="4"></a-col>
-          <a-col class="bt cell" :span="4"></a-col>
+          <a-col class="b14 br bt cell" :span="4">项目类型</a-col>
+          <a-col class="bt cell" :span="4">
+            <a-tag color="blue">
+              {{formData.projectCategory && formData.projectCategory.categoryName}}
+            </a-tag>
+          </a-col>
         </a-row>
         <a-row>
           <a-col class="b14 br bt cell bgFCE4D6 click-font" :span="4" @click="handleContractOpen">

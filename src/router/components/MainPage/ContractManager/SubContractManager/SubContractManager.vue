@@ -314,10 +314,13 @@
         ]"
                     placeholder="请选择地域"
             >
-              <a-select-option value="true">
+              <a-select-option :value="1">
+                市内
+              </a-select-option>
+              <a-select-option :value="2">
                 省内
               </a-select-option>
-              <a-select-option value="false">
+              <a-select-option :value="3">
                 省外
               </a-select-option>
             </a-select>

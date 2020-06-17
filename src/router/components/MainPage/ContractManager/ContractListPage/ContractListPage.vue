@@ -254,7 +254,7 @@
         } else {
           return statusMap[3].status
         }
-      }
+      },
     },
     mounted() {
       this.loadSettingOptions();
@@ -292,6 +292,15 @@
       handleQuery() {
         this.paginationProps.current = 1;
         this.updateTableData();
+      },
+      regionFilter(type) {
+        if (type === 1) {
+          return '市内';
+        } else if (type === 2) {
+          return '省内';
+        } else if (type === 3) {
+          return '省外';
+        }else return '';
       },
       setPageInfo(data) {
         this.tableData = data.content.map((item, index) => {
@@ -356,7 +365,8 @@
             projectScale: (item.aboveGroundArea || item.underGroundArea) && ('地上' + item.aboveGroundArea + '+地下' + item.underGroundArea), // 项目规模(平方米)
             aboveGroundArea: item.aboveGroundArea, // 地上面积(平方米)
             underGroundArea: item.underGroundArea, // 地下面积(平方米)
-            region: item.region ? '省内' : '省外', // 地域
+            region: this.regionFilter(item.region), // 地域
+            regionId: item.region,
             regionalKeyWords: item.district, // 地区关键词
             class1: item.buildOne, // 建筑一级分类
             class2: item.buildTwo, // 建筑二级分类

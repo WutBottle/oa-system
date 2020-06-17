@@ -45,10 +45,17 @@
                 label="设计号"
         >
           <a-input
-                  disabled
+                  :disabled="this.formData.signState === 0"
                   v-decorator="[
           'designId',
-          {initialValue: this.formData.designNum}
+          {initialValue: this.formData.designNum,
+          rules: [{validator: (rule, value, callback) => {
+          const pattern =  new RegExp(/^(\d{4})(-)(\d{2})(-)(\d{3})$/)
+          if (!pattern.test(value) && value ) {
+            callback('请输入此格式数据:2019-01-001')
+          }
+          callback()
+          }}, {max: 14, message: '不得超过14个字符'}]}
         ]"
                   placeholder="请输入设计号"
           />

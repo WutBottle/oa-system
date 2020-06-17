@@ -408,6 +408,7 @@
             width: 100,
             key: 'receiptId',
             dataIndex: 'receiptId',
+            sorter: (a, b) => (b.receiptId || '').localeCompare(a.receiptId || ''),
           }, {
             title: '开票日期',
             width: 100,

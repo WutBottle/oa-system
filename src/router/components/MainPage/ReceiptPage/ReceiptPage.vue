@@ -292,24 +292,28 @@
             width: 150,
             key: 'receiptId',
             dataIndex: 'receiptId',
+            sorter: (a, b) => (b.receiptId || '').localeCompare(a.receiptId || ''),
           },
           {
             title: '设计号',
             width: 200,
             key: 'designId',
             dataIndex: 'designId',
+            sorter: (a, b) => (b.designId || '').localeCompare(a.designId || ''),
           },
           {
             title: '合同号',
             width: 200,
             key: 'contractId',
             dataIndex: 'contractId',
+            sorter: (a, b) => (b.contractId || '').localeCompare(a.contractId || ''),
           },
           {
             title: '合同名称',
             width: 200,
             key: 'contractName',
             dataIndex: 'contractName',
+            sorter: (a, b) => (b.contractName || '').localeCompare(a.contractName || ''),
           },
           {
             title: '开票日期',
@@ -361,16 +365,19 @@
             width: 120,
             key: 'contractId',
             dataIndex: 'contractId',
+            sorter: (a, b) => (b.contractId || '').localeCompare(a.contractId || ''),
           }, {
             title: '合同名称',
             width: 200,
             key: 'contractName',
             dataIndex: 'contractName',
+            sorter: (a, b) => (b.contractName || '').localeCompare(a.contractName || ''),
           }, {
             title: '设计号',
             width: 120,
             key: 'designId',
             dataIndex: 'designId',
+            sorter: (a, b) => (b.designId || '').localeCompare(a.designId || ''),
           }, {
             title: '现金回款日期',
             width: 150,

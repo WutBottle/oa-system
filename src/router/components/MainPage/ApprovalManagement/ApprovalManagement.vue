@@ -141,18 +141,21 @@
             key: 'contractId',
             width: '18%',
             dataIndex: 'contractId',
+            sorter: (a, b) => (b.contractId || '').localeCompare(a.contractId || ''),
           },
           {
             title: '合同名称',
             key: 'contractName',
             width: '21%',
             dataIndex: 'contractName',
+            sorter: (a, b) => (b.contractName || '').localeCompare(a.contractName || ''),
           },
           {
             title: '设计号',
             key: 'designId',
             width: '18%',
             dataIndex: 'designId',
+            sorter: (a, b) => (b.designId || '').localeCompare(a.designId || ''),
           },
           {
             title: '项目状态',

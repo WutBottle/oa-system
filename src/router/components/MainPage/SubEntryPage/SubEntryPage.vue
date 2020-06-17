@@ -130,7 +130,7 @@
               <div class="table-wrapper">
                 <a-table bordered :columns="outContractColumns" :dataSource="outContractTableData"
                          :pagination="outContractPaginationProps"
-                         @change="handleOutContractTableChange" :scroll="{ x: 1900, y: 450}">
+                         @change="handleOutContractTableChange" :scroll="{ x: 1920, y: 450}">
                   <span slot="serial" slot-scope="text, record, index">
                     {{ index + 1 }}
                   </span>
@@ -753,18 +753,21 @@
             width: 150,
             key: 'subCategory',
             dataIndex: 'subCategory',
+            sorter: (a, b) => (b.subCategory || '').localeCompare(a.subCategory || ''),
             scopedSlots: {customRender: 'subCategory'},
           }, {
             title: '组织方式',
             width: 150,
             key: 'organization',
             dataIndex: 'organization',
+            sorter: (a, b) => (b.organization || '').localeCompare(a.organization || ''),
             scopedSlots: {customRender: 'organization'},
           }, {
             title: '设计团队',
             width: 200,
             key: 'designTeam',
             dataIndex: 'designTeam',
+            sorter: (a, b) => (b.designTeam || '').localeCompare(a.designTeam || ''),
           }, {
             title: '设计费',
             width: 200,
@@ -828,19 +831,22 @@
             fixed: 'left',
             key: 'outContractId',
             dataIndex: 'outContractId',
+            sorter: (a, b) => (b.outContractId || '').localeCompare(a.outContractId || ''),
           }, {
             title: '分包合同名称',
             width: 150,
             key: 'outContractName',
             dataIndex: 'outContractName',
+            sorter: (a, b) => (b.outContractName || '').localeCompare(a.outContractName || ''),
           }, {
             title: '分包单位名称',
             width: 150,
             key: 'outCompanyName',
             dataIndex: 'outCompanyName',
+            sorter: (a, b) => (b.outCompanyName || '').localeCompare(a.outCompanyName || ''),
           }, {
             title: '分包合同金额(元)',
-            width: 150,
+            width: 170,
             key: 'outContractAmount',
             dataIndex: 'outContractAmount',
             sorter: (a, b) => a.outContractAmount - b.outContractAmount,

@@ -294,19 +294,21 @@
             fixed: 'left',
             key: 'contractId',
             dataIndex: 'contractId',
+            sorter: (a, b) => (b.contractId || '').localeCompare(a.contractId || ''),
           },
           {
             title: '合同名称',
             width: 150,
             key: 'contractName',
             dataIndex: 'contractName',
-            ellipsis: true,
+            sorter: (a, b) => (b.contractName || '').localeCompare(a.contractName || ''),
           },
           {
             title: '设计号',
             width: 150,
             key: 'designId',
             dataIndex: 'designId',
+            sorter: (a, b) => (b.designId || '').localeCompare(a.designId || ''),
           },
           {
             title: '签约状态',
@@ -438,13 +440,15 @@
             width: 100,
             dataIndex: 'staffName',
             key: 'staffName',
+            sorter: (a, b) => (b.staffName || '').localeCompare(a.staffName || ''),
           },
           {
             title: '员工号',
             width: 100,
             dataIndex: 'staffCode',
             key: 'staffCode',
-            scopedSlots: {customRender: 'staffCode'}
+            sorter: (a, b) => (b.staffCode || '').localeCompare(a.staffCode || ''),
+            scopedSlots: {customRender: 'staffCode'},
           },
           {
             title: '工资',

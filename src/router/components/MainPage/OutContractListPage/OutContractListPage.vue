@@ -296,26 +296,31 @@
             fixed: 'left',
             key: 'outContractId',
             dataIndex: 'outContractId',
+            sorter: (a, b) => (b.outContractId || '').localeCompare(a.outContractId || ''),
           }, {
             title: '分包合同名称',
             width: 160,
             key: 'outContractName',
             dataIndex: 'outContractName',
+            sorter: (a, b) => (b.outContractName || '').localeCompare(a.outContractName || ''),
           }, {
             title: '合同号',
             width: 150,
             key: 'contractId',
             dataIndex: 'contractId',
+            sorter: (a, b) => (b.contractId || '').localeCompare(a.contractId || ''),
           }, {
             title: '设计号',
             width: 150,
             key: 'designId',
             dataIndex: 'designId',
+            sorter: (a, b) => (b.designId || '').localeCompare(a.designId || ''),
           }, {
             title: '合同名称',
             width: 200,
             key: 'contractName',
             dataIndex: 'contractName',
+            sorter: (a, b) => (b.contractName || '').localeCompare(a.contractName || ''),
           }, {
             title: '分包合同金额(元)',
             width: 170,

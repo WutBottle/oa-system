@@ -20,6 +20,7 @@ const state = {
       key: 'designNum',
       dataIndex: 'designNum',
       sort: 2,
+      sorter: (a, b) => (b.designNum || '').localeCompare(a.designNum || ''),
     },
     {
       title: '合同号',
@@ -27,6 +28,7 @@ const state = {
       key: 'contractNum',
       dataIndex: 'contractNum',
       sort: 3,
+      sorter: (a, b) => (b.contractNum || '').localeCompare(a.contractNum || ''),
     },
     {
       title: '发包人合同编号',
@@ -34,6 +36,7 @@ const state = {
       key: 'employerContractNum',
       dataIndex: 'employerContractNum',
       sort: 4,
+      sorter: (a, b) => (b.employerContractNum || '').localeCompare(a.employerContractNum || ''),
     },
     {
       title: '合同名称',
@@ -41,6 +44,7 @@ const state = {
       key: 'contractName',
       dataIndex: 'contractName',
       sort: 5,
+      sorter: (a, b) => (b.contractName || '').localeCompare(a.contractName || ''),
     },
     {
       width: 150,
@@ -142,6 +146,7 @@ const state = {
       key: 'mainDesignDepartment',
       dataIndex: 'mainDesignDepartment',
       sort: 17,
+      sorter: (a, b) => (b.mainDesignDepartment || '').localeCompare(a.mainDesignDepartment || ''),
     },
     {
       title: '经营部门',
@@ -149,6 +154,7 @@ const state = {
       key: 'managementDepartment',
       dataIndex: 'managementDepartment',
       sort: 18,
+      sorter: (a, b) => (b.managementDepartment || '').localeCompare(a.managementDepartment || ''),
     },
     {
       title: '项目经理',
@@ -196,6 +202,7 @@ const state = {
       key: 'contractingParty',
       dataIndex: 'contractingParty',
       sort: 24,
+      sorter: (a, b) => (b.contractingParty || '').localeCompare(a.contractingParty || ''),
     },
     {
       title: '投资额(万元)',
@@ -220,6 +227,7 @@ const state = {
       key: 'region',
       dataIndex: 'region',
       sort: 27,
+      sorter: (a, b) => (b.region || '').localeCompare(a.region || ''),
     },
     {
       title: '地区关键词',
@@ -227,6 +235,7 @@ const state = {
       key: 'regionalKeyWords',
       dataIndex: 'regionalKeyWords',
       sort: 28,
+      sorter: (a, b) => (b.regionalKeyWords || '').localeCompare(a.regionalKeyWords || ''),
     },
     {
       title: '建筑一级分类',
@@ -234,6 +243,7 @@ const state = {
       key: 'class1',
       dataIndex: 'class1',
       sort: 29,
+      sorter: (a, b) => (b.class1 || '').localeCompare(a.class1 || ''),
     },
     {
       title: '建筑二级分类',
@@ -241,6 +251,7 @@ const state = {
       key: 'class2',
       dataIndex: 'class2',
       sort: 30,
+      sorter: (a, b) => (b.class2 || '').localeCompare(a.class2 || ''),
     },
     {
       title: '是否EPC项目',

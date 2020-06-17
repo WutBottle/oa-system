@@ -266,12 +266,14 @@
             width: 100,
             dataIndex: 'staffName',
             key: 'staffName',
+            sorter: (a, b) => (b.staffName || '').localeCompare(a.staffName || ''),
           },
           {
             title: '员工号',
             width: 100,
             dataIndex: 'staffCode',
             key: 'staffCode',
+            sorter: (a, b) => (b.staffCode || '').localeCompare(a.staffCode || ''),
             scopedSlots: {customRender: 'staffCode'}
           },
           {

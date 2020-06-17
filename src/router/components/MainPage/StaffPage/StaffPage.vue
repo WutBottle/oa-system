@@ -61,7 +61,7 @@
             <a-table bordered :columns="staffColumns" :dataSource="staffTableData"
                      :pagination="staffPaginationProps"
                      :rowSelection="{selectedRowKeys: selectedRowKeys, onSelect: onSelect, onSelectAll: onSelectAll, onChange: onSelectChange}"
-                     @change="handleStaffTableChange" :scroll="{ x: 3090, y: 500}">
+                     @change="handleStaffTableChange" :scroll="{ x: 3110, y: 500}">
                <span slot="serial" slot-scope="text, record, index">
                 {{ index + 1 }}
               </span>
@@ -342,72 +342,86 @@
             fixed: 'left',
             dataIndex: 'staffCode',
             key: 'staffCode',
+            sorter: (a, b) => (b.staffCode || '').localeCompare(a.staffCode || ''),
           }, {
             title: '姓名',
             width: 100,
             fixed: 'left',
             dataIndex: 'staffName',
             key: 'staffName',
+            sorter: (a, b) => (b.staffName || '').localeCompare(a.staffName || ''),
           }, {
             title: '部门',
             width: 120,
             dataIndex: 'department',
             key: 'department',
+            sorter: (a, b) => (b.staffName || '').localeCompare(a.staffName || ''),
           }, {
             title: '人员类别',
             width: 120,
             dataIndex: 'staffClass',
             key: 'staffClass',
+            sorter: (a, b) => (b.staffClass || '').localeCompare(a.staffClass || ''),
           }, {
             title: '职级',
             width: 100,
             dataIndex: 'rank',
             key: 'rank',
+            sorter: (a, b) => (b.rank || '').localeCompare(a.rank || ''),
           }, {
             title: '学历',
             width: 120,
             dataIndex: 'degree',
             key: 'degree',
+            sorter: (a, b) => (b.degree || '').localeCompare(a.degree || ''),
           }, {
             title: '专业技术资格名称',
             width: 180,
             dataIndex: 'techQualification',
             key: 'techQualification',
+            sorter: (a, b) => (b.techQualification || '').localeCompare(a.techQualification || ''),
           }, {
             title: '执业注册资格名称',
             width: 180,
             dataIndex: 'proQualification',
             key: 'proQualification',
+            sorter: (a, b) => (b.proQualification || '').localeCompare(a.proQualification || ''),
           }, {
             title: '职务',
             width: 100,
             dataIndex: 'duty',
             key: 'duty',
+            sorter: (a, b) => (b.duty || '').localeCompare(a.duty || ''),
           }, {
             title: '证件号码',
             width: 200,
             dataIndex: 'idNumber',
             key: 'idNumber',
+            sorter: (a, b) => (b.idNumber || '').localeCompare(a.idNumber || ''),
           }, {
             title: '性别',
             width: 100,
             dataIndex: 'gender',
             key: 'gender',
+            sorter: (a, b) => (b.gender || '').localeCompare(a.gender || ''),
           }, {
             title: '民族',
             width: 100,
             dataIndex: 'nation',
             key: 'nation',
+            sorter: (a, b) => (b.nation || '').localeCompare(a.nation || ''),
           }, {
             title: '岗位',
             width: 150,
             dataIndex: 'job',
             key: 'job',
+            sorter: (a, b) => (b.job || '').localeCompare(a.job || ''),
           }, {
             title: '政治面貌',
-            width: 100,
+            width: 120,
             dataIndex: 'politic',
             key: 'politic',
+            sorter: (a, b) => (b.politic || '').localeCompare(a.politic || ''),
           }, {
             title: '出生日期',
             width: 150,
@@ -437,16 +451,19 @@
             width: 150,
             dataIndex: 'firstEducation',
             key: 'firstEducation',
+            sorter: (a, b) => (b.firstEducation || '').localeCompare(a.firstEducation || ''),
           }, {
             title: '第二学历学校',
             width: 150,
             dataIndex: 'secondEducation',
             key: 'secondEducation',
+            sorter: (a, b) => (b.secondEducation || '').localeCompare(a.secondEducation || ''),
           }, {
             title: '专业',
             width: 150,
             dataIndex: 'major',
             key: 'major',
+            sorter: (a, b) => (b.major || '').localeCompare(a.major || ''),
           }, {
             title: '工资详情',
             fixed: 'right',
@@ -479,12 +496,14 @@
             width: 150,
             key: 'contractId',
             dataIndex: 'contractId',
+            sorter: (a, b) => (b.contractId || '').localeCompare(a.contractId || ''),
           },
           {
             title: '合同名称',
             width: 200,
             key: 'contractName',
             dataIndex: 'contractName',
+            sorter: (a, b) => (b.contractName || '').localeCompare(a.contractName || ''),
           },
           {
             title: '金额(元)',

@@ -568,6 +568,7 @@
 
 <script>
   import {mapActions} from 'vuex'
+  import baseUrl from '@api/baseUrl';
 
   const formItemLayout = {
     labelCol: {span: 6},
@@ -610,7 +611,15 @@
       formData: {
         immediate: true,
         handler(val) {
-          this.usersData = val.currentUserOptions
+          this.usersData = val.currentUserOptions;
+          this.fileName = val.currentFile;
+          this.pdfFileList = [];
+          val.currentFile && this.pdfFileList.push({
+            uid: '-1',
+            name: val.currentFile.substring(val.currentFile.length - 9),
+            status: 'done',
+            url: baseUrl.serverBaseController + val.currentFile,
+          });
         }
       }
     },
@@ -670,7 +679,7 @@
                 productionStage: productionStage,
                 id: this.formData.id,
                 sup: this.formData.sup,
-                contractFile: this.fileName ? this.fileName : this.formData.currentFile,
+                contractFile: this.fileName,
                 projectCategory: projectCategory
               });
               values.projectManager = values.projectManager && {
@@ -710,7 +719,8 @@
         const index = this.pdfFileList.indexOf(file);
         const newFileList = this.pdfFileList.slice();
         newFileList.splice(index, 1);
-        this.pdfFileList = newFileList
+        this.pdfFileList = newFileList;
+        this.fileName = '';
       },
       beforeUpload(file) {
         this.spinning = true;

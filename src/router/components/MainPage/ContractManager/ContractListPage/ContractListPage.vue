@@ -402,6 +402,7 @@
         });
       },
       handleFileDownload(contractFile) {
+        this.$message.warning("下载中，请稍等！");
         contractFile.isDownload = true;
         this.downloadContract({
           id: contractFile.contractId,
@@ -418,6 +419,7 @@
           link.click();
           contractFile.isDownload = false;
           this.$message.success("下载成功");
+          document.removeChild(link);
         }).catch((error) => {
           contractFile.isDownload = false;
         });

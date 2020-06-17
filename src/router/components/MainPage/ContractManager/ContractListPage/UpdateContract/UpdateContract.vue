@@ -514,7 +514,7 @@
           <a-select
                   v-decorator="[
           'epc',
-          {initialValue: !this.formData.epc ? undefined : String(this.formData.epc)}
+          {initialValue: this.formData.epc === null ? undefined : String(this.formData.epc)}
         ]"
                   placeholder="请选择是否EPC项目"
           >

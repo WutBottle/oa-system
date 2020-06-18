@@ -56,9 +56,23 @@
               </a-popover>
             </a-form-item>
             <a-form-item>
-              <a-button type="primary" @click="handleReceiptExport">
-                导出
-              </a-button>
+              <a-dropdown :trigger="['click']">
+                <a-button icon="down" type="primary">
+                  导出
+                </a-button>
+                <a-menu slot="overlay">
+                  <a-menu-item key="0">
+                    <a-button type="primary" @click="handleReceiptExport(false)">
+                      选择导出
+                    </a-button>
+                  </a-menu-item>
+                  <a-menu-item key="1">
+                    <a-button type="primary" @click="handleReceiptExport(true)">
+                      全部导出
+                    </a-button>
+                  </a-menu-item>
+                </a-menu>
+              </a-dropdown>
             </a-form-item>
           </a-form>
           <div class="table-wrapper">
@@ -127,9 +141,23 @@
               </a-popover>
             </a-form-item>
             <a-form-item>
-              <a-button type="primary" @click="handleCashExport">
-                导出
-              </a-button>
+              <a-dropdown :trigger="['click']">
+                <a-button icon="down" type="primary">
+                  导出
+                </a-button>
+                <a-menu slot="overlay">
+                  <a-menu-item key="0">
+                    <a-button type="primary" @click="handleCashExport(false)">
+                      选择导出
+                    </a-button>
+                  </a-menu-item>
+                  <a-menu-item key="1">
+                    <a-button type="primary" @click="handleCashExport(true)">
+                      全部导出
+                    </a-button>
+                  </a-menu-item>
+                </a-menu>
+              </a-dropdown>
             </a-form-item>
           </a-form>
           <div class="table-wrapper">
@@ -636,10 +664,11 @@
           }
         });
       },
-      handleReceiptExport() {
+      handleReceiptExport(type) {
         let fileName = '发票导出.xlsx';
         this.receiptExport({
           receiptIds: this.selectReceiptInfo.map((item) => {return item.id.toString()}),
+          all: type,
         }).then((data) => {
           if (!data.data) {
             return
@@ -660,10 +689,11 @@
           this.$message.error("导出失败");
         });
       },
-      handleCashExport() {
+      handleCashExport(type) {
         let fileName = '现金导出.xlsx';
         this.cashExport({
           cashIds: this.selectCashInfo.map((item) => {return item.cashId.toString()}),
+          all: type,
         }).then((data) => {
           if (!data.data) {
             return

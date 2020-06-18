@@ -51,9 +51,23 @@
             </a-popover>
           </a-form-item>
           <a-form-item>
-            <a-button type="primary" @click="handleStaffExport">
-              导出
-            </a-button>
+            <a-dropdown :trigger="['click']">
+              <a-button icon="down" type="primary">
+                导出
+              </a-button>
+              <a-menu slot="overlay">
+                <a-menu-item key="0">
+                  <a-button type="primary" @click="handleStaffExport(false)">
+                    选择导出
+                  </a-button>
+                </a-menu-item>
+                <a-menu-item key="1">
+                  <a-button type="primary" @click="handleStaffExport(true)">
+                    全部导出
+                  </a-button>
+                </a-menu-item>
+              </a-menu>
+            </a-dropdown>
           </a-form-item>
         </a-form>
         <div class="table-wrapper">
@@ -779,11 +793,12 @@
           }
         });
       },
-      handleStaffExport() {
+      handleStaffExport(type) {
         let fileName = '职员信息.xlsx';
         if (this.selectStaffInfo.length) {
           this.staffExport({
             staffIds: this.selectStaffInfo.map((item) => {return item.id.toString()}),
+            all: type,
           }).then((data) => {
             if (!data.data) {
               return

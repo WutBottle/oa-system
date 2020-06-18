@@ -42,27 +42,6 @@
           <a-form-item>
             <a-button type="primary" icon="search" @click="handleAccurateQuery">精确查询</a-button>
           </a-form-item>
-          <a-form-item
-                  :wrapper-col="buttonItemLayout.wrapperCol"
-          >
-            <a-dropdown :trigger="['click']">
-              <a-button icon="down" type="primary">
-                导出
-              </a-button>
-              <a-menu slot="overlay">
-                <a-menu-item key="0">
-                  <a-button type="primary" @click="handleExport">
-                    分包导出
-                  </a-button>
-                </a-menu-item>
-                <a-menu-item key="1">
-                  <a-button type="primary" @click="handlePaidExport">
-                    分包回款发票导出
-                  </a-button>
-                </a-menu-item>
-              </a-menu>
-            </a-dropdown>
-          </a-form-item>
           <a-form-item>
             <a-popover title="分包合同选择列表" placement="bottom" trigger="click" v-model="popVisible">
               <template slot="content">
@@ -83,6 +62,37 @@
                 选择列表
               </a-button>
             </a-popover>
+          </a-form-item>
+          <a-form-item
+                  :wrapper-col="buttonItemLayout.wrapperCol"
+          >
+            <a-dropdown :trigger="['click']">
+              <a-button icon="down" type="primary">
+                导出
+              </a-button>
+              <a-menu slot="overlay">
+                <a-menu-item key="0">
+                  <a-button type="primary" @click="handleExport(false)">
+                    分包选择导出
+                  </a-button>
+                </a-menu-item>
+                <a-menu-item key="1">
+                  <a-button type="primary" @click="handleExport(true)">
+                    分包全部导出
+                  </a-button>
+                </a-menu-item>
+                <a-menu-item key="2">
+                  <a-button type="primary" @click="handlePaidExport(false)">
+                    分包回款发票选择导出
+                  </a-button>
+                </a-menu-item>
+                <a-menu-item key="3">
+                  <a-button type="primary" @click="handlePaidExport(true)">
+                    分包回款发票全部导出
+                  </a-button>
+                </a-menu-item>
+              </a-menu>
+            </a-dropdown>
           </a-form-item>
         </a-form>
         <div class="table-wrapper">
@@ -479,11 +489,12 @@
         this.updateTableData();
       },
       // 导出处理
-      handleExport() {
+      handleExport(type) {
         let fileName = '分包导出列表.xlsx';
         if (this.selectOutContractInfo.length) {
           this.exportOutContract({
             outContractIds: this.selectOutContractInfo.map((item) => {return item.outContractId}),
+            all: type,
           }).then((data) => {
             if (!data.data) {
               return
@@ -508,11 +519,12 @@
         }
       },
       // 分包回款发票导出
-      handlePaidExport() {
+      handlePaidExport(type) {
         let fileName = '分包回款导出列表.xlsx';
         if (this.selectOutContractInfo.length) {
           this.outPaidExport({
             outContractIds: this.selectOutContractInfo.map((item) => {return item.outContractId}),
+            all: type,
           }).then((data) => {
             if (!data.data) {
               return

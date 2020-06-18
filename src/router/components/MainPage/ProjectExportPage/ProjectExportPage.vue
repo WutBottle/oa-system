@@ -45,9 +45,23 @@
             </a-popover>
           </a-form-item>
           <a-form-item>
-            <a-button type="primary" @click="handleExport">
-              导出
-            </a-button>
+            <a-dropdown :trigger="['click']">
+              <a-button icon="down" type="primary">
+                导出
+              </a-button>
+              <a-menu slot="overlay">
+                <a-menu-item key="0">
+                  <a-button type="primary" @click="handleExport(false)">
+                    选择导出
+                  </a-button>
+                </a-menu-item>
+                <a-menu-item key="1">
+                  <a-button type="primary" @click="handleExport(true)">
+                    全部导出
+                  </a-button>
+                </a-menu-item>
+              </a-menu>
+            </a-dropdown>
           </a-form-item>
           <a-form-item>
             <a-popover title="项目导出表头配置" placement="bottom" trigger="click" v-model="settingVisible">
@@ -474,11 +488,12 @@
         }
       },
       // 项目导出
-      handleExport() {
+      handleExport(type) {
         let fileName = '项目.xlsx';
         this.exportContract({
           contractIds: this.selectProjectInfo.map((item) => {return item.contractId}),
           header: this.selectOptions,
+          all: type,
         }).then((data) => {
           if (!data.data) {
             return

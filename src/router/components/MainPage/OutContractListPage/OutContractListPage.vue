@@ -83,12 +83,12 @@
                 </a-menu-item>
                 <a-menu-item key="2">
                   <a-button type="primary" @click="handlePaidExport(false)">
-                    分包回款发票选择导出
+                    分包付款发票选择导出
                   </a-button>
                 </a-menu-item>
                 <a-menu-item key="3">
                   <a-button type="primary" @click="handlePaidExport(true)">
-                    分包回款发票全部导出
+                    分包付款发票全部导出
                   </a-button>
                 </a-menu-item>
               </a-menu>
@@ -491,7 +491,7 @@
       // 导出处理
       handleExport(type) {
         let fileName = '分包导出列表.xlsx';
-        if (this.selectOutContractInfo.length) {
+        if (this.selectOutContractInfo.length || type) {
           this.exportOutContract({
             outContractIds: this.selectOutContractInfo.map((item) => {return item.outContractId}),
             all: type,
@@ -518,10 +518,10 @@
           this.$message.warning('您的选择列表为空！');
         }
       },
-      // 分包回款发票导出
+      // 分包付款发票导出
       handlePaidExport(type) {
-        let fileName = '分包回款导出列表.xlsx';
-        if (this.selectOutContractInfo.length) {
+        let fileName = '分包付款发票导出列表.xlsx';
+        if (this.selectOutContractInfo.length || type) {
           this.outPaidExport({
             outContractIds: this.selectOutContractInfo.map((item) => {return item.outContractId}),
             all: type,

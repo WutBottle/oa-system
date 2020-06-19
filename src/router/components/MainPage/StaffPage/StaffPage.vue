@@ -795,7 +795,7 @@
       },
       handleStaffExport(type) {
         let fileName = '职员信息.xlsx';
-        if (this.selectStaffInfo.length) {
+        if (this.selectStaffInfo.length || type) {
           this.staffExport({
             staffIds: this.selectStaffInfo.map((item) => {return item.id.toString()}),
             all: type,

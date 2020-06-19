@@ -490,29 +490,35 @@
       // 项目导出
       handleExport(type) {
         let fileName = '项目.xlsx';
-        this.exportContract({
-          contractIds: this.selectProjectInfo.map((item) => {return item.contractId}),
-          header: this.selectOptions,
-          all: type,
-        }).then((data) => {
-          if (!data.data) {
-            return
-          }
-          if ('msSaveOrOpenBlob' in navigator){ // IE下导出
-            window.navigator.msSaveOrOpenBlob(new Blob([data.data]), fileName);//设置导出的文件名
-          } else {
-            let url = window.URL.createObjectURL(new Blob([data.data]));
-            let link = document.createElement('a');
-            link.style.display = 'none';
-            link.href = url;
-            link.setAttribute('download', fileName);
-            document.body.appendChild(link);
-            link.click();
-          }
-          this.$message.success("导出成功");
-        }).catch((error) => {
-          this.$message.error("导出失败");
-        });
+        if (this.selectProjectInfo.length || type) {
+          this.exportContract({
+            contractIds: this.selectProjectInfo.map((item) => {
+              return item.contractId
+            }),
+            header: this.selectOptions,
+            all: type,
+          }).then((data) => {
+            if (!data.data) {
+              return
+            }
+            if ('msSaveOrOpenBlob' in navigator) { // IE下导出
+              window.navigator.msSaveOrOpenBlob(new Blob([data.data]), fileName);//设置导出的文件名
+            } else {
+              let url = window.URL.createObjectURL(new Blob([data.data]));
+              let link = document.createElement('a');
+              link.style.display = 'none';
+              link.href = url;
+              link.setAttribute('download', fileName);
+              document.body.appendChild(link);
+              link.click();
+            }
+            this.$message.success("导出成功");
+          }).catch((error) => {
+            this.$message.error("导出失败");
+          });
+        }else {
+          this.$message.warning('您的选择列表为空！');
+        }
       },
       // 处理表头选择
       onTableHeaderChange(checkedValues) {

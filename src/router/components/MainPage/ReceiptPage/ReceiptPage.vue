@@ -666,53 +666,65 @@
       },
       handleReceiptExport(type) {
         let fileName = '发票导出.xlsx';
-        this.receiptExport({
-          receiptIds: this.selectReceiptInfo.map((item) => {return item.id.toString()}),
-          all: type,
-        }).then((data) => {
-          if (!data.data) {
-            return
-          }
-          if ('msSaveOrOpenBlob' in navigator){ // IE下导出
-            window.navigator.msSaveOrOpenBlob(new Blob([data.data]), fileName);//设置导出的文件名
-          } else {
-            let url = window.URL.createObjectURL(new Blob([data.data]));
-            let link = document.createElement('a');
-            link.style.display = 'none';
-            link.href = url;
-            link.setAttribute('download', fileName);
-            document.body.appendChild(link);
-            link.click();
-          }
-          this.$message.success("导出成功");
-        }).catch((error) => {
-          this.$message.error("导出失败");
-        });
+        if (this.selectReceiptInfo.length || type) {
+          this.receiptExport({
+            receiptIds: this.selectReceiptInfo.map((item) => {
+              return item.id.toString()
+            }),
+            all: type,
+          }).then((data) => {
+            if (!data.data) {
+              return
+            }
+            if ('msSaveOrOpenBlob' in navigator) { // IE下导出
+              window.navigator.msSaveOrOpenBlob(new Blob([data.data]), fileName);//设置导出的文件名
+            } else {
+              let url = window.URL.createObjectURL(new Blob([data.data]));
+              let link = document.createElement('a');
+              link.style.display = 'none';
+              link.href = url;
+              link.setAttribute('download', fileName);
+              document.body.appendChild(link);
+              link.click();
+            }
+            this.$message.success("导出成功");
+          }).catch((error) => {
+            this.$message.error("导出失败");
+          });
+        }else {
+          this.$message.warning('您的选择列表为空！');
+        }
       },
       handleCashExport(type) {
         let fileName = '现金导出.xlsx';
-        this.cashExport({
-          cashIds: this.selectCashInfo.map((item) => {return item.cashId.toString()}),
-          all: type,
-        }).then((data) => {
-          if (!data.data) {
-            return
-          }
-          if ('msSaveOrOpenBlob' in navigator){ // IE下导出
-            window.navigator.msSaveOrOpenBlob(new Blob([data.data]), fileName);//设置导出的文件名
-          } else {
-            let url = window.URL.createObjectURL(new Blob([data.data]));
-            let link = document.createElement('a');
-            link.style.display = 'none';
-            link.href = url;
-            link.setAttribute('download', fileName);
-            document.body.appendChild(link);
-            link.click();
-          }
-          this.$message.success("导出成功");
-        }).catch((error) => {
-          this.$message.error("导出失败");
-        });
+        if (this.selectCashInfo.length || type) {
+          this.cashExport({
+            cashIds: this.selectCashInfo.map((item) => {
+              return item.cashId.toString()
+            }),
+            all: type,
+          }).then((data) => {
+            if (!data.data) {
+              return
+            }
+            if ('msSaveOrOpenBlob' in navigator) { // IE下导出
+              window.navigator.msSaveOrOpenBlob(new Blob([data.data]), fileName);//设置导出的文件名
+            } else {
+              let url = window.URL.createObjectURL(new Blob([data.data]));
+              let link = document.createElement('a');
+              link.style.display = 'none';
+              link.href = url;
+              link.setAttribute('download', fileName);
+              document.body.appendChild(link);
+              link.click();
+            }
+            this.$message.success("导出成功");
+          }).catch((error) => {
+            this.$message.error("导出失败");
+          });
+        }else {
+          this.$message.warning('您的选择列表为空！');
+        }
       },
       onChange(lowerBound, upperBound) {
         if (this[lowerBound] && this[upperBound] && this[upperBound] < this[lowerBound]) {

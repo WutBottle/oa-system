@@ -410,16 +410,25 @@
           if (!data.data) {
             return
           }
-          let url = window.URL.createObjectURL(new Blob([data.data]));
-          let link = document.createElement('a');
-          link.style.display = 'none';
-          link.href = url;
-          link.setAttribute('download', contractFile.contractId + '.pdf');
-          document.body.appendChild(link);
-          link.click();
-          contractFile.isDownload = false;
-          this.$message.success("下载成功");
-          document.removeChild(link);
+          const blob = new Blob([data.data]);
+          const filename = contractFile.contractId + '.pdf';
+          if('msSaveOrOpenBlob' in navigator){
+            //ie使用的下载方式
+            window.navigator.msSaveOrOpenBlob(blob, filename);
+            contractFile.isDownload = false;
+            this.$message.success("下载成功");
+          }else{
+            let url = window.URL.createObjectURL(blob);
+            let link = document.createElement('a');
+            link.style.display = 'none';
+            link.href = url;
+            link.setAttribute('download', filename);
+            document.body.appendChild(link);
+            link.click();
+            contractFile.isDownload = false;
+            this.$message.success("下载成功");
+            document.removeChild(link);
+          }
         }).catch((error) => {
           contractFile.isDownload = false;
         });

@@ -9,7 +9,7 @@ const state = {
   paginationProps: {
     pageSize: 5, // 默认每页显示数量
     showSizeChanger: true, // 显示可改变每页数量
-    pageSizeOptions: ['5', '15', '20', '40'], // 每页数量选项
+    pageSizeOptions: ['5', '15', '20', '40', 'Infinity'], // 每页数量选项
     total: 0,
     current: 1,
   },
@@ -21,7 +21,7 @@ const state = {
   listPaginationProps: {
     pageSize: 5, // 默认每页显示数量
     showSizeChanger: true, // 显示可改变每页数量
-    pageSizeOptions: ['5', '10', '15'], // 每页数量选项
+    pageSizeOptions: ['5', '15', '20', '40', 'Infinity'], // 每页数量选项
     total: 0,
     current: 1,
   },

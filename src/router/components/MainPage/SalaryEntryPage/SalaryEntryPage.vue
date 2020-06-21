@@ -219,6 +219,7 @@
   import {debounce} from 'debounce';
   import HeaderPage from "../HeaderPage/HeaderPage";
   import numToMoney from "@utils/numToMoney";
+  import {INFINITY} from "@/store/mutation-types";
 
   const formItemLayout = {
     labelCol: {span: 6},
@@ -327,7 +328,7 @@
         const params = {
           contractId: this.contractValue,
           pageNum: this.paginationProps.current,
-          pageLimit: this.paginationProps.pageSize
+          pageLimit: this.paginationProps.pageSize === Infinity ? INFINITY : this.paginationProps.pageSize,
         };
         this.getSalaryListByContractId(params).then((data) => {
           if (!data.data.data) {

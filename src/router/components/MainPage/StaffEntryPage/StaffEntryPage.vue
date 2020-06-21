@@ -830,6 +830,7 @@
   import {mapState, mapActions} from 'vuex'
   import HeaderPage from "../HeaderPage/HeaderPage";
   import moment from "moment";
+  import {INFINITY} from "@/store/mutation-types";
 
   const formItemLayout = {
     labelCol: {span: 6},
@@ -869,7 +870,7 @@
         tablePaginationProps: {
           pageSize: 5, // 默认每页显示数量
           showSizeChanger: true, // 显示可改变每页数量
-          pageSizeOptions: ['5', '15', '20', '40', '100'], // 每页数量选项
+          pageSizeOptions: ['5', '15', '20', '40', 'Infinity'], // 每页数量选项
           total: 0,
           current: 1,
         },
@@ -1136,7 +1137,7 @@
           degree: this.degree,
           dutyId: this.duty,
           pageNum: this.tablePaginationProps.current,
-          pageLimit: this.tablePaginationProps.pageSize
+          pageLimit: this.tablePaginationProps.pageSize === Infinity ? INFINITY : this.tablePaginationProps.pageSize,
         };
         this.getStaffListByNameLikeTable(params).then((res) => {
           if (res && res.data.meta.success) {

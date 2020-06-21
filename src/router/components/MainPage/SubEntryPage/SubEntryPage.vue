@@ -694,6 +694,7 @@
   import {debounce} from 'debounce';
   import moment from "moment";
   import numToMoney from '@utils/numToMoney';
+  import {INFINITY} from "@/store/mutation-types";
 
   const formItemLayout = {
     labelCol: {span: 8},
@@ -806,7 +807,7 @@
         paginationProps: {
           pageSize: 5, // 默认每页显示数量
           showSizeChanger: true, // 显示可改变每页数量
-          pageSizeOptions: ['5', '15', '20', '40'], // 每页数量选项
+          pageSizeOptions: ['5', '15', '20', '40', 'Infinity'], // 每页数量选项
           total: 0,
           current: 1,
         },
@@ -980,7 +981,7 @@
         const params = {
           contractId: this.contractValue,
           pageNum: this.paginationProps.current,
-          pageLimit: this.paginationProps.pageSize
+          pageLimit: this.paginationProps.pageSize === Infinity ? INFINITY : this.paginationProps.pageSize,
         };
         this.getSubProjectListById(params).then((res) => {
           if (res.data.data) {
@@ -1122,7 +1123,7 @@
         const params = {
           subProjectId: this.currentSubProjectId,
           pageNum: this.outContractPaginationProps.current,
-          pageLimit: this.outContractPaginationProps.pageSize
+          pageLimit: this.outContractPaginationProps.pageSize === Infinity ? INFINITY : this.outContractPaginationProps.pageSize,
         };
         this.getOutContractListBySubId(params).then((data) => {
           if (!data.data.data) {

@@ -281,6 +281,7 @@
   import baseUrl from '@/api/baseUrl'
   import moment from "moment";
   import numToMoney from "@utils/numToMoney";
+  import {INFINITY} from "@/store/mutation-types";
 
   const formItemLayout = {
     labelCol: {span: 6},
@@ -500,7 +501,7 @@
           receiptAmount: [this.receiptLowerBound ? String(this.receiptLowerBound) : '', this.receiptUpperBound ? String(this.receiptUpperBound) : ''],
           receiptClass: this.receiptClass,
           pageNum: this.receiptPaginationProps.current,
-          pageLimit: this.receiptPaginationProps.pageSize
+          pageLimit: this.receiptPaginationProps.pageSize === Infinity ? INFINITY : this.receiptPaginationProps.pageSize,
         };
         this.getReceiptListByIdLike(params).then((res) => {
           if (res && res.data.meta.success){
@@ -571,7 +572,7 @@
           actualDate: actualDate,
           cashAmount: [this.cashLowerBound ? String(this.cashLowerBound) : '', this.cashUpperBound ? String(this.cashUpperBound) : ''],
           pageNum: this.cashListPaginationProps.current,
-          pageLimit: this.cashListPaginationProps.pageSize
+          pageLimit: this.cashListPaginationProps.pageSize === Infinity ? INFINITY : this.cashListPaginationProps.pageSize,
         };
         this.getCashesByIdLike(params).then((res) => {
           if (res && res.data.meta.success) {

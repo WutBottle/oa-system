@@ -226,6 +226,7 @@
   import ProjectInfo from "../ProjectInfo/ProjectInfo";
   import moment from "moment";
   import numToMoney from "@utils/numToMoney";
+  import {INFINITY} from '@/store/mutation-types';
 
   const statusMap = {
     0: {
@@ -275,7 +276,7 @@
         paginationProps: {
           pageSize: 5, // 默认每页显示数量
           showSizeChanger: true, // 显示可改变每页数量
-          pageSizeOptions: ['5', '15', '20', '40'], // 每页数量选项
+          pageSizeOptions: ['5', '15', '20', '40', 'Infinity'], // 每页数量选项
           total: 0,
           current: 1,
         },
@@ -469,7 +470,7 @@
         salaryPaginationProps: {
           pageSize: 5, // 默认每页显示数量
           showSizeChanger: true, // 显示可改变每页数量
-          pageSizeOptions: ['5', '10', '15'], // 每页数量选项
+          pageSizeOptions: ['5', '15', '20', '40', 'Infinity'], // 每页数量选项
           total: 0,
           current: 1,
         },
@@ -565,7 +566,7 @@
           ratio: [this.ratioLowerBound ? String(this.ratioLowerBound / 100) : '', this.ratioUpperBound ? String(this.ratioUpperBound / 100) : ''],
           scale: [this.scaleLowerBound ? String(this.scaleLowerBound) : '', this.scaleUpperBound ? String(this.scaleUpperBound) : ''],
           pageNum: this.paginationProps.current,
-          pageLimit: this.paginationProps.pageSize
+          pageLimit: this.paginationProps.pageSize === Infinity ? INFINITY : this.paginationProps.pageSize,
         };
         this.getProjectListAfterFilter(params).then((data) => {
           if (data.data.meta.success) {
@@ -647,7 +648,7 @@
         const params = {
           contractId: this.contractIdForSalary,
           pageNum: this.salaryPaginationProps.current,
-          pageLimit: this.salaryPaginationProps.pageSize
+          pageLimit: this.salaryPaginationProps.pageSize === Infinity ? INFINITY : this.salaryPaginationProps.pageSize,
         };
         this.getSalaryListByContractId(params).then((data) => {
           if (data.data.meta.success) {

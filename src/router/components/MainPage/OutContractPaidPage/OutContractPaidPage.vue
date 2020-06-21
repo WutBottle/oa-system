@@ -322,6 +322,7 @@
   import moment from 'moment';
   import OutPaidInput from "../OutPaidInput/OutPaidInput";
   import numToMoney from "@utils/numToMoney";
+  import {INFINITY} from "@/store/mutation-types";
 
   const formItemLayout = {
     labelCol: {span: 6},
@@ -479,7 +480,7 @@
         const params = {
           outContractId: this.outContractValue,
           pageNum: this.paginationProps.current,
-          pageLimit: this.paginationProps.pageSize
+          pageLimit: this.paginationProps.pageSize === Infinity ? INFINITY : this.paginationProps.pageSize,
         };
         this.getOutPaidsByOutContractId(params).then((data) => {
           if (!data.data.data) {

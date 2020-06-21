@@ -115,6 +115,7 @@
   import moment from 'moment';
   import ProjectInfo from "../ProjectPage/ProjectInfo/ProjectInfo";
   import StepsComponent from "./StepsComponent/StepsComponent";
+  import {INFINITY} from "@/store/mutation-types";
 
   export default {
     name: "ApprovalManagement",
@@ -176,7 +177,7 @@
         paginationProps: {
           pageSize: 5, // 默认每页显示数量
           showSizeChanger: true, // 显示可改变每页数量
-          pageSizeOptions: ['5', '15', '20', '40'], // 每页数量选项
+          pageSizeOptions: ['5', '15', '20', '40', 'Infinity'], // 每页数量选项
           total: 0,
           current: 1,
         },
@@ -241,7 +242,7 @@
         const params = {
           contractId: this.contractId,
           pageNum: this.paginationProps.current,
-          pageLimit: this.paginationProps.pageSize
+          pageLimit: this.paginationProps.pageSize === Infinity ? INFINITY : this.paginationProps.pageSize,
         };
         this.getProjectListByIdLike(params).then((data) => {
           if (data.data.meta.success) {

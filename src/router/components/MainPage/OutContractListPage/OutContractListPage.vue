@@ -265,6 +265,7 @@
   import HeaderPage from "../HeaderPage/HeaderPage";
   import moment from "moment";
   import numToMoney from "@utils/numToMoney";
+  import {INFINITY} from "@/store/mutation-types";
 
   const formLayout = 'inline';
   const formItemLayout = {
@@ -573,7 +574,7 @@
           outContractCategoryId: this.outContractCategoryId,
           outProjectCategoryId: this.outProjectCategoryId,
           pageNum: this.listPaginationProps.current,
-          pageLimit: this.listPaginationProps.pageSize
+          pageLimit: this.listPaginationProps.pageSize === Infinity ? INFINITY : this.listPaginationProps.pageSize,
         };
         this.getOutContractListByIdLike(params).then((res) => {
           if (!res.data.meta.success) {
@@ -598,7 +599,7 @@
         const params = {
           outContractId: this.outContractValue,
           pageNum: this.outPaidPaginationProps.current,
-          pageLimit: this.outPaidPaginationProps.pageSize
+          pageLimit: this.outPaidPaginationProps.pageSize === Infinity ? INFINITY : this.outPaidPaginationProps.pageSize,
         };
         this.getOutPaidsByOutContractId(params).then((data) => {
           this.outPaidTableSpinning = false;

@@ -301,6 +301,7 @@
   import {mapState, mapActions} from 'vuex'
   import HeaderPage from "../HeaderPage/HeaderPage";
   import moment from 'moment';
+  import {INFINITY} from "@/store/mutation-types";
 
   const formLayout = 'inline';
   const formItemLayout = {
@@ -338,7 +339,7 @@
         staffPaginationProps: {
           pageSize: 5, // 默认每页显示数量
           showSizeChanger: true, // 显示可改变每页数量
-          pageSizeOptions: ['5', '15', '20', '40', '100'], // 每页数量选项
+          pageSizeOptions: ['5', '15', '20', '40', 'Infinity'], // 每页数量选项
           total: 0,
           current: 1,
         },
@@ -657,7 +658,7 @@
           degree: this.degree,
           dutyId: this.duty,
           pageNum: this.staffPaginationProps.current,
-          pageLimit: this.staffPaginationProps.pageSize
+          pageLimit: this.staffPaginationProps.pageSize === Infinity ? INFINITY : this.staffPaginationProps.pageSize,
         };
         this.getStaffListByNameLikeTable(params).then((res) => {
           if (res && res.data.meta.success) {
@@ -740,8 +741,8 @@
         this.salaryTableSpinning = true;
         const params = {
           staffId: this.currentStaffId,
-          pageNum: this.staffPaginationProps.current,
-          pageLimit: this.staffPaginationProps.pageSize
+          pageNum: this.salaryPaginationProps.current,
+          pageLimit: this.salaryPaginationProps.pageSize === Infinity ? INFINITY : this.salaryPaginationProps.pageSize,
         };
         this.getSalaryListByStaffId(params).then((data) => {
           this.salaryTableSpinning = false;

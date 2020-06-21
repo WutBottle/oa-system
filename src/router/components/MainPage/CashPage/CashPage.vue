@@ -296,6 +296,7 @@
   import moment from 'moment';
   import CashReceiptInput from "../CashReceiptInput/CashReceiptInput";
   import numToMoney from '@utils/numToMoney';
+  import {INFINITY} from "@/store/mutation-types";
 
   const formItemLayout = {
     labelCol: {span: 8},
@@ -417,7 +418,7 @@
         const params = {
           contractId: this.contractValue,
           pageNum: this.paginationProps.current,
-          pageLimit: this.paginationProps.pageSize
+          pageLimit: this.paginationProps.pageSize === Infinity ? INFINITY : this.paginationProps.pageSize,
         };
         this.getCashesByContractId(params).then((data) => {
           if (!data.data.data) {

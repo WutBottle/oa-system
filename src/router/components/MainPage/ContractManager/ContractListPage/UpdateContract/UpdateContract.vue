@@ -19,22 +19,7 @@
           'contractId',
           {initialValue: this.formData.contractNum, rules: [{
             required: true, message: '请输入合同号！'
-          }, {
-            type: 'number',
-            message: '请输入数字',
-            transform:(value)=> {
-              if(value){
-                return Number(value);
-              }
-            }
-          }, {
-            validator: (rule, value, callback) => {
-              if (value.toString().length !== 7) {
-                callback('请输入格式为2019001的合同号')
-              }
-              callback()
-            }
-          }]}
+          }, {max: 30, message: '不得超过30个字符'}]}
         ]"
                   placeholder="请输入合同号"
           />
@@ -49,13 +34,7 @@
                   v-decorator="[
           'designId',
           {initialValue: this.formData.designNum,
-          rules: [{validator: (rule, value, callback) => {
-          const pattern =  new RegExp(/^(\d{4})(-)(\d{2})(-)(\d{3})$/)
-          if (!pattern.test(value) && value ) {
-            callback('请输入此格式数据:2019-01-001')
-          }
-          callback()
-          }}, {max: 14, message: '不得超过14个字符'}]}
+          rules: [{max: 30, message: '不得超过30个字符'}]}
         ]"
                   placeholder="请输入设计号"
           />

@@ -433,7 +433,7 @@
           'outContractId',
           {rules: [{
             required: true, message: '请输入分包合同号!'
-          }]}
+          }, {max: 30, message: '不得超过30个字符'}]}
         ]"
                   placeholder="请输入分包合同号"
           />
@@ -561,7 +561,8 @@
                   disabled
                   v-decorator="[
           'outContractId',
-          {initialValue: this.outContractEditFormData.outContractId, rules: [{required: true, message: '请输入分包合同号!'}]}
+          {initialValue: this.outContractEditFormData.outContractId,
+          rules: [{required: true, message: '请输入分包合同号!'}, {max: 30, message: '不得超过30个字符'}]}
         ]"
                   placeholder="请输入分包合同号"
           />

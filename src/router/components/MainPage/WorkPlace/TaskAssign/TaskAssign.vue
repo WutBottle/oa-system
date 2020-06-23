@@ -24,10 +24,18 @@
 
         .title-wrapper {
           display: flex;
-          justify-content: left;
+          justify-content: space-between;
           align-items: center;
           word-break: break-all;
           white-space: normal;
+
+          .title {
+            flex: 1;
+          }
+
+          .status-wrapper {
+            width: 160px;
+          }
         }
 
         .description-wrapper {
@@ -52,11 +60,11 @@
       <template slot="extra">
         <a-popover v-model="optionVisible" title="筛选条件" trigger="click">
           <a-radio-group slot="content" v-model="isMine" button-style="solid" @change="handleTypeChange">
-            <a-radio-button :value="true">
-              我创建的
-            </a-radio-button>
             <a-radio-button :value="false">
               被分配的
+            </a-radio-button>
+            <a-radio-button :value="true">
+              我创建的
             </a-radio-button>
           </a-radio-group>
           <a>筛选</a>
@@ -87,11 +95,17 @@
                       </template>
                       <a-icon key="share-alt" type="share-alt" @click="showShareModal(item.id)"/>
                     </a-tooltip>
-                    <a-tooltip>
+                    <a-tooltip v-if="isMine">
                       <template slot="title">
                         编辑
                       </template>
                       <a-icon key="edit" type="edit" @click="handleEdit(item)"/>
+                    </a-tooltip>
+                    <a-tooltip v-if="!isMine">
+                      <template slot="title">
+                        反馈意见
+                      </template>
+                      <a-icon key="message" type="message" @click="handleComment(item)"/>
                     </a-tooltip>
                     <a-tooltip>
                       <template slot="title">
@@ -101,7 +115,7 @@
                         <a-icon key="check-circle" type="check-circle"/>
                       </a-popconfirm>
                     </a-tooltip>
-                    <a-tooltip>
+                    <a-tooltip v-if="isMine">
                       <template slot="title">
                         删除
                       </template>
@@ -114,18 +128,29 @@
                   <a-card-meta>
                     <template slot="title">
                       <div class="title-wrapper">
-                        <a-badge status="success" v-if="item.status"/>
-                        <a-badge status="error" v-else/>
-                        {{item.title}}
-                        <a-divider type="vertical"/>
-                        <a-popover title="任务成员">
-                          <template slot="content">
-                            <a-tag color="green">{{item.founder.nickname}}</a-tag>
-                            <a-tag color="blue" v-for="user in item.assignees" :key="user.userId">{{user.nickname}}
-                            </a-tag>
+                        <a-tooltip v-if="item.title.length > 15">
+                          <template slot="title">
+                            {{item.title}}
                           </template>
-                          <a-tag color="green">{{item.founder.nickname}}</a-tag>
-                        </a-popover>
+                          <span class="title">{{item.title.substring(0, 15) + '...'}}</span>
+                        </a-tooltip>
+                        <span class="title" v-else>
+                          {{item.title}}
+                        </span>
+                        <div class="status-wrapper">
+                          <a-divider type="vertical"/>
+                          <a-popover title="执行人员">
+                            <template slot="content">
+                              <a-tag color="green">{{item.founder.nickname}}</a-tag>
+                              <a-tag color="blue" v-for="user in item.assignees" :key="user.userId">{{user.nickname}}
+                              </a-tag>
+                            </template>
+                            <a>执行人员</a>
+                          </a-popover>
+                          <a-divider type="vertical"/>
+                          <a-tag color="green" v-if="item.status">已完成</a-tag>
+                          <a-tag color="red" v-else>未完成</a-tag>
+                        </div>
                       </div>
                     </template>
                     <template slot="description">
@@ -145,7 +170,7 @@
                   </a-card-meta>
                   <div class="pdf-wrapper" v-if="item.pdfFile">
                     <a @click="() => window.open(item.pdfFile, '_blank')">
-                      {{item.pdfFile.substring(item.pdfFile.length - 10, item.pdfFile.length - 4) + '.' + item.pdfFile.split('.').reverse()[0]}}</a>
+                      任务文件:{{item.pdfFile.substring(item.pdfFile.length - 10, item.pdfFile.length - 4) + '.' + item.pdfFile.split('.').reverse()[0]}}</a>
                   </div>
                 </a-card>
               </a-col>
@@ -195,7 +220,7 @@
         </a-form-item>
         <a-form-item
                 v-bind="formItemLayout"
-                label="分配人员"
+                label="执行人员"
         >
           <a-select
                   v-decorator="['assignees',
@@ -338,7 +363,7 @@
         </a-form-item>
         <a-form-item
                 v-bind="formItemLayout"
-                label="分配人员"
+                label="执行人员"
         >
           <a-select
                   v-decorator="[
@@ -427,6 +452,53 @@
         </a-form-item>
       </a-form>
     </a-drawer>
+    <a-drawer
+            title="任务反馈信息"
+            placement="right"
+            :closable="false"
+            width="500"
+            @close="() => this.commentVisible = false"
+            :visible="commentVisible"
+    >
+      <a-list
+              class="comment-list"
+              :header="`${testData.length} 条反馈意见`"
+              item-layout="horizontal"
+              :data-source="testData"
+      >
+        <a-list-item slot="renderItem" slot-scope="item, index">
+          <a-comment :author="item.author" :avatar="item.avatar">
+            <template slot="actions">
+              <a v-for="(action, index) in item.actions" :key="index">{{ action }}</a>
+            </template>
+            <p slot="content">
+              {{ item.content }}
+            </p>
+            <a-tooltip slot="datetime" :title="item.datetime.format('YYYY-MM-DD HH:mm:ss')">
+              <span>{{ item.datetime.fromNow() }}</span>
+            </a-tooltip>
+          </a-comment>
+        </a-list-item>
+      </a-list>
+      <a-comment>
+        <a-avatar
+                slot="avatar"
+                src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png"
+                alt="Han Solo"
+        />
+        <div slot="content">
+          <a-form-item>
+            <a-textarea :rows="4" :value="commentValue" @change="handleCommentChange" />
+          </a-form-item>
+          <a-form-item>
+            <a-button html-type="submit" :loading="submitting" type="primary" @click="handleCommentSubmit">
+              添加反馈
+            </a-button>
+          </a-form-item>
+        </div>
+      </a-comment>
+    </a-drawer>
+
   </div>
 </template>
 
@@ -459,6 +531,24 @@
       return {
         formItemLayout,
         formTailLayout,
+        testData: [
+          {
+            actions: ['删除'],
+            author: 'Han Solo',
+            avatar: 'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png',
+            content:
+              'We supply a series of design principles, practical patterns and high quality design resources (Sketch and Axure), to help people create their product prototypes beautifully and efficiently.',
+            datetime: moment().subtract(2, 'days'),
+          },{
+            actions: ['删除'],
+            author: 'Han Solo',
+            avatar: 'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png',
+            content:
+              'We supply a series of design principles, practical patterns and high quality design resources (Sketch and Axure), to help people create their product prototypes beautifully and efficiently.',
+            datetime: moment().subtract(2, 'days'),
+          }
+        ],
+        moment,
         undoneBusy: false,
         window: window,
         optionVisible: false,
@@ -487,6 +577,14 @@
         editVisible: false,
         editTaskData: {},
         initialUser: [],
+        commentVisible: false,
+        submitting: false,
+        commentValue: '',
+        avatarSetting: {
+          部门负责人: require('@/assets/总监.png'),
+          超级管理员: require('@/assets/超级管理员.png'),
+          普通用户: require('@/assets/普通用户.png'),
+        },
       }
     },
     methods: {
@@ -785,6 +883,15 @@
           },
         );
       },
+      handleComment(item) {
+        this.commentVisible = true;
+      },
+      handleCommentSubmit() {
+
+      },
+      handleCommentChange(e) {
+        this.commentValue = e.target.value;
+      }
     }
   }
 </script>

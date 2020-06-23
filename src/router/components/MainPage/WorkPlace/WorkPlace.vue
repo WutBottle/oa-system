@@ -101,12 +101,14 @@
           </a-col>
           <a-col style="position: relative;" v-if="role === '超级管理员' || role === '部门负责人'" :span="13">
             <div style="position: absolute; top: -38px;">
-              <a-radio-group v-model="selectMonth" buttonStyle="solid" size="small" @change="handleMonthChange">
-                <a-radio-button value="1">一个月</a-radio-button>
-                <a-radio-button value="3">三个月</a-radio-button>
-                <a-radio-button value="6">半年</a-radio-button>
-                <a-radio-button value="12">一年</a-radio-button>
-              </a-radio-group>
+              选择统计年份：
+              <a-select v-model="selectMonth" size="small" style="width: 100px" @change="handleMonthChange">
+                <template v-for="(item, index) in new Array(new Date().getFullYear() - 2015)">
+                  <a-select-option  :key="index" :value="new Date().getFullYear() - index">
+                    {{new Date().getFullYear() - index}}
+                  </a-select-option>
+                </template>
+              </a-select>
             </div>
             <a-row style="padding-top: 6px">
               <a-col :span="8">
@@ -357,7 +359,7 @@
         formItemLayout,
         listData: [],
         barOptions: {},
-        selectMonth: '1',
+        selectMonth: new Date().getFullYear(),
         indexPropertiesData: {},
         memorandumAddVisible: false, // 控制添加备忘
         addForm: this.$form.createForm(this),

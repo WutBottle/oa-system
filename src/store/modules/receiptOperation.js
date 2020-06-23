@@ -14,13 +14,16 @@ const state = {
     total: 0,
     current: 1,
   },
+  currentReceiptTotal: 0,
   selectReceiptInfo: [],
 };
 
 const mutations = {
   setReceiptListData(state, data) {
     state.receiptPaginationProps.total = data.totalElements;
+    state.currentReceiptTotal = 0;
     state.receiptListData = data.content.map((item, index) => {
+      state.currentReceiptTotal += item.receipt.receiptAmount;
       return {
         key: index,
         contractId: item.contractId,

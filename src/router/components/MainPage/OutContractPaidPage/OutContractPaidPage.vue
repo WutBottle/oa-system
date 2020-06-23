@@ -111,6 +111,11 @@
                     </a-popconfirm>
                   </span>
                 </a-table>
+                <a-statistic title="当前列表付款总额" :precision="2" :value="cashTotal">
+                  <template v-slot:suffix>
+                    <span>元</span>
+                  </template>
+                </a-statistic>
               </div>
             </a-spin>
           </template>
@@ -414,6 +419,7 @@
       ...mapState({
         paginationProps: state => state.outPaidOperation.paginationProps,// 分页控制
         tableData: state => state.outPaidOperation.tableData, // table数据
+        cashTotal: state => state.outPaidOperation.cashTotal, // 当前列表分包付款总额
         contractId: state => state.outPaidOperation.contractId, // 合同号
         contractName: state => state.outPaidOperation.contractName, // 合同名字
         designId: state => state.outPaidOperation.designId, // 设计号

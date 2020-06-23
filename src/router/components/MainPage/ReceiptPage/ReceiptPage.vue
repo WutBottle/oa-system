@@ -99,6 +99,11 @@
               </a-table>
             </a-spin>
           </div>
+          <a-statistic title="当前列表发票总额" :precision="2" :value="currentReceiptTotal">
+            <template v-slot:suffix>
+              <span>元</span>
+            </template>
+          </a-statistic>
         </a-tab-pane>
         <a-tab-pane tab="现金列表" key="cash">
           <a-form class="form-wrapper" :layout="formLayout">
@@ -182,6 +187,11 @@
               </a-table>
             </a-spin>
           </div>
+          <a-statistic title="当前列表现金总额" :precision="2" :value="currentCashTotal">
+            <template v-slot:suffix>
+              <span>元</span>
+            </template>
+          </a-statistic>
         </a-tab-pane>
       </a-tabs>
     </div>
@@ -452,10 +462,12 @@
     computed: {
       ...mapState({
         receiptListData: state => state.receiptOperation.receiptListData,// 发票list数据
+        currentReceiptTotal: state => state.receiptOperation.currentReceiptTotal, // 发票总额
         receiptPaginationProps: state => state.receiptOperation.receiptPaginationProps,// 发票list分页数据
         selectReceiptInfo: state => state.receiptOperation.selectReceiptInfo, // 选中的发票信息
         cashListPaginationProps: state => state.cashOperation.cashListPaginationProps,// 现金列表分页数据
         cashListTableData: state => state.cashOperation.cashListTableData,// 现金回款table数据
+        currentCashTotal: state => state.cashOperation.currentCashTotal,// 现金回款总额
         selectCashInfo: state => state.cashOperation.selectCashInfo,
       }),
     },

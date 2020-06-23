@@ -14,6 +14,7 @@ const state = {
     current: 1,
   },
   cashListTableData: [],
+  currentCashTotal: 0,
   contractId: '',
   designId: '',
   contractName: '',
@@ -26,7 +27,9 @@ const mutations = {
     state.contractId = data.contractId;
     state.designId = data.designId;
     state.contractName = data.contractName;
+    state.currentCashTotal = 0;
     state.cashListTableData = data.cashes.content.map((item, index) => {
+      state.currentCashTotal += item.cashAmount;
       return {
         key: index,
         contractId: data.contractId,
@@ -41,7 +44,9 @@ const mutations = {
   },
   setTableData2(state, data) {
     state.cashListPaginationProps.total = data.totalElements;
+    state.currentCashTotal = 0;
     state.cashListTableData = data.content.map((item, index) => {
+      state.currentCashTotal += item.cash.cashAmount;
       return {
         key: index,
         contractId: item.contractId,

@@ -112,6 +112,11 @@
                   </span>
                   <span slot="receiptClass" slot-scope="text">{{text ? '增值税专用发票' : '增值税普通发票'}}</span>
                 </a-table>
+                <a-statistic title="当前列表发票总额" :precision="2" :value="receiptTotal">
+                  <template v-slot:suffix>
+                    <span>元</span>
+                  </template>
+                </a-statistic>
               </div>
             </a-spin>
           </template>
@@ -450,6 +455,7 @@
           current: 1,
         },
         tableData: [],
+        receiptTotal: 0,
         outContractId: '',
         outContractName: '',
         outCompanyName: '',
@@ -521,7 +527,9 @@
             this.outContractId = res.data.data.outContractId;
             this.outContractName = res.data.data.outContractName;
             this.outCompanyName = res.data.data.outCompanyName;
+            this.receiptTotal = 0;
             this.tableData = res.data.data.receipts.content.map((item, index) => {
+              this.receiptTotal += item.receiptAmount;
               return {
                 key: index,
                 id: item.id,

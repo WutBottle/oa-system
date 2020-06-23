@@ -115,14 +115,14 @@
                 <a-statistic title="签订项目合同总数" :value="indexPropertiesData && indexPropertiesData.projectNum" style="margin-right: 10px"/>
               </a-col>
               <a-col :span="8">
-                <a-statistic title="现金回款总额" :value="indexPropertiesData && numToMoney(indexPropertiesData.projectAllCash)" style="margin-right: 10px">
+                <a-statistic title="现金回款总额" :precision="2" :value="indexPropertiesData && indexPropertiesData.projectAllCash" style="margin-right: 10px">
                   <template v-slot:suffix>
                     <span>元</span>
                   </template>
                 </a-statistic>
               </a-col>
               <a-col :span="8">
-                <a-statistic title="已开发票总额" :value="indexPropertiesData && numToMoney(indexPropertiesData.projectAllReceipt)" style="margin-right: 10px">
+                <a-statistic title="已开发票总额" :precision="2" :value="indexPropertiesData && indexPropertiesData.projectAllReceipt" style="margin-right: 10px">
                   <template v-slot:suffix>
                     <span>元</span>
                   </template>
@@ -336,7 +336,6 @@
   import moment from 'moment';
   import Bar from "../EchartsPage/Bar";
   import TaskAssign from "./TaskAssign/TaskAssign";
-  import numToMoney from "@utils/numToMoney";
 
   const formItemLayout = {
     labelCol: {span: 6},
@@ -358,7 +357,6 @@
     data() {
       return {
         formItemLayout,
-        numToMoney,
         listData: [],
         barOptions: {},
         selectMonth: new Date().getFullYear(),

@@ -21,7 +21,7 @@ const state = {
   outContractName: '',
   outCompanyName: '',
   tableData: [],
-
+  cashTotal: 0,
 };
 
 const mutations = {
@@ -34,7 +34,9 @@ const mutations = {
     state.outContractId = data.outContractId;
     state.outContractName = data.outContractName;
     state.outCompanyName = data.outCompanyName;
+    state.cashTotal = 0;
     state.tableData = data.outPaids.content.map((item, index) => {
+      state.cashTotal += item.paidAmount;
       return {
         key: index,
         outPaidId: item.outPaidId,

@@ -101,7 +101,7 @@
                       </template>
                       <a-icon key="edit" type="edit" @click="handleEdit(item)"/>
                     </a-tooltip>
-                    <a-tooltip v-if="!isMine">
+                    <a-tooltip>
                       <template slot="title">
                         反馈意见
                       </template>

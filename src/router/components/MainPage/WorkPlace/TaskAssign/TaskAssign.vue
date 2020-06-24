@@ -462,18 +462,26 @@
     >
       <a-list
               class="comment-list"
-              :header="`${testData.length} 条反馈意见`"
+              :header="`${commentListData.length} 条反馈意见`"
               item-layout="horizontal"
-              :data-source="testData"
+              :data-source="commentListData"
       >
         <a-list-item slot="renderItem" slot-scope="item, index">
           <a-comment :author="item.author" :avatar="item.avatar">
             <template slot="actions">
-              <a v-for="(action, index) in item.actions" :key="index">{{ action }}</a>
+              <a-popconfirm title="确定删除？" @confirm="handleCommentDelete(item.feedBackId)">
+                <a-icon slot="icon" type="question-circle-o" style="color: red" />
+                <a>{{item.actions}}</a>
+              </a-popconfirm>
             </template>
             <p slot="content">
               {{ item.content }}
             </p>
+            <a v-if="item.fileName" target="_blank" :href="item.fileName">
+              <a-tag color="green">
+                附件：{{item.fileName.substring(item.fileName.length - 12, item.fileName.length)}}
+              </a-tag>
+            </a>
             <a-tooltip slot="datetime" :title="item.datetime.format('YYYY-MM-DD HH:mm:ss')">
               <span>{{ item.datetime.fromNow() }}</span>
             </a-tooltip>
@@ -483,12 +491,22 @@
       <a-comment>
         <a-avatar
                 slot="avatar"
-                src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png"
+                :src="avatarSetting[role]"
                 alt="Han Solo"
         />
         <div slot="content">
           <a-form-item>
-            <a-textarea :rows="4" :value="commentValue" @change="handleCommentChange" />
+            <a-textarea :rows="4" :maxLength="250" :value="commentValue" @change="handleCommentChange" />
+          </a-form-item>
+          <a-form-item>
+            <a-upload
+                    :fileList="commentFileList"
+                    :beforeUpload="beforeCommentUpload"
+                    :remove="file => handleRemove(file, 'commentFileList')"
+                    :multiple="false"
+            >
+              <a-button><a-icon type="upload" />上传附件</a-button>
+            </a-upload>
           </a-form-item>
           <a-form-item>
             <a-button html-type="submit" :loading="submitting" type="primary" @click="handleCommentSubmit">
@@ -503,7 +521,7 @@
 </template>
 
 <script>
-  import {mapActions} from "vuex";
+  import {mapActions, mapState} from "vuex";
   import api from '@/api/apiSugar';
   import baseUrl from '@api/baseUrl';
   import moment from "moment"; // 导入接口域名列表
@@ -527,6 +545,11 @@
 
   export default {
     name: "TaskAssign",
+    computed: {
+      ...mapState({
+        role: state => state.tokensOperation.role, // 工资信息数据
+      }),
+    },
     data() {
       return {
         formItemLayout,
@@ -538,14 +561,14 @@
             avatar: 'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png',
             content:
               'We supply a series of design principles, practical patterns and high quality design resources (Sketch and Axure), to help people create their product prototypes beautifully and efficiently.',
-            datetime: moment().subtract(2, 'days'),
+            datetime: moment().subtract(1, 'days'),
           },{
             actions: ['删除'],
             author: 'Han Solo',
             avatar: 'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png',
             content:
               'We supply a series of design principles, practical patterns and high quality design resources (Sketch and Axure), to help people create their product prototypes beautifully and efficiently.',
-            datetime: moment().subtract(2, 'days'),
+            datetime: moment().subtract(1, 'days'),
           }
         ],
         moment,
@@ -585,6 +608,10 @@
           超级管理员: require('@/assets/超级管理员.png'),
           普通用户: require('@/assets/普通用户.png'),
         },
+        commentFileList: [],
+        commentFile: '',
+        currentTaskData: {},
+        commentListData: [],
       }
     },
     methods: {
@@ -709,10 +736,10 @@
         const newFileList = this[name].slice();
         newFileList.splice(index, 1);
         this[name] = newFileList;
-        if (name === 'imageList') {
-          this.imageFile = '';
-        }else {
-          this.pdfFile = '';
+        switch (name) {
+          case 'imageList': this.imageFile = '';break;
+          case 'fileList' : this.pdfFile = '';break;
+          case 'commentFileList' : this.commentFile = '';break;
         }
       },
       beforeUpload(file, name) {
@@ -751,6 +778,34 @@
           this.handleRemove(file, name);
           this.uploadSpinning = false;
         }
+        return false;
+      },
+      beforeCommentUpload(file) {
+        this.submitting = true;
+        this.handleRemove(file, 'commentFileList');
+        let preName = '';
+        preName = file.name;
+        const formData = new FormData();
+        this.commentFileList = [...this.commentFileList, file];
+        this.commentFileList.forEach((file) => {
+          formData.append('multipartFiles', file);
+        });
+        // 手动上传
+        api.feedBackController.upload(formData).then((data) => {
+          this.handleRemove(file, 'commentFileList');
+          this.commentFile = baseUrl.serverBaseController + data.data.data;
+          this.commentFileList.push({
+            uid: '-1',
+            name: preName,
+            status: 'done',
+            url: this.commentFile,
+          });
+          this.$message.success('文件已上传');
+          this.submitting = false;
+        }).catch((error) => {
+          this.$message.error('上传失败');
+          this.submitting = false;
+        });
         return false;
       },
       handleTypeChange(e) {
@@ -883,14 +938,71 @@
           },
         );
       },
+      getFeedBackList() {
+        api.feedBackController.getFeedBackList({
+          assignmentId: this.currentTaskId
+        }).then(res => {
+          if(res && res.data) {
+            this.commentListData = res.data.data.map(item => {
+              return {
+                actions: '删除',
+                content: item.content,
+                feedBackId: item.feedBackId,
+                author: item.user.nickname,
+                avatar: this.avatarSetting[item.user.roles[0].name],
+                fileName: item.fileName,
+                datetime: moment(item.createDate),
+              }
+            });
+            this.commentVisible = true;
+          }else {
+            this.$message.error('网络错误！');
+          }
+        });
+      },
       handleComment(item) {
-        this.commentVisible = true;
+        this.currentTaskId = item.id;
+        this.getFeedBackList();
       },
       handleCommentSubmit() {
-
+        if (this.commentFile || this.commentValue) {
+          this.submitting = true;
+          api.feedBackController.addFeedBack({
+            assignmentId: this.currentTaskId,
+            content: this.commentValue,
+            fileName: this.commentFile,
+          }).then(res => {
+            if (res.data && res.data.meta.success) {
+              this.$message.success(res.data.data);
+              Object.assign(this, {
+                commentFile: '',
+                commentValue: '',
+                commentFileList: [],
+              });
+              this.getFeedBackList();
+            }else {
+              this.$message.error('网络错误！');
+            }
+            this.submitting = false;
+          })
+        }else {
+          this.$message.error('请输入反馈意见')
+        }
       },
       handleCommentChange(e) {
         this.commentValue = e.target.value;
+      },
+      handleCommentDelete(id) {
+        api.feedBackController.deleteFeedBack({
+          feedBackId: id
+        }).then(res => {
+          if (res.data && res.data.meta.success) {
+            this.$message.success(res.data.data);
+            this.getFeedBackList();
+          }else {
+            this.$message.error('网络错误！');
+          }
+        })
       }
     }
   }

@@ -4,7 +4,7 @@
  * 接口域名的管理
  */
 //设置分服务设置服务器地址，蒲公英地址:http://172.15.67.120:8081/，服务器:http://139.155.1.150:8081/
-const serverBaseUrl = 'http://172.15.67.120:8081/';
+const serverBaseUrl = 'http://139.155.1.150:8081/';
 const distributeUrl = {
   // 用户信息
   serverBaseController: serverBaseUrl,
@@ -27,7 +27,8 @@ const distributeUrl = {
   roleController: serverBaseUrl + 'role',
   projectUserController: serverBaseUrl + 'projectUser',
   projectCirculationController: serverBaseUrl + 'projectCirculation',
-  assignmentController: serverBaseUrl + 'assignment'
+  assignmentController: serverBaseUrl + 'assignment',
+  feedBackController: serverBaseUrl + 'feedBack',
 };
 
 export default distributeUrl;

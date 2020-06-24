@@ -21,6 +21,7 @@ import roleController from "./roleController";
 import projectUserController from "./projectUserController";
 import projectCirculationController from "./projectCirculationController";
 import assignmentController from "./assignmentController";
+import feedBackController from "./feedBackController";
 
 // 导出接口
 export default {
@@ -44,4 +45,5 @@ export default {
   projectUserController: projectUserController, // 项目角色分配控制
   projectCirculationController: projectCirculationController, // 审核控制
   assignmentController: assignmentController, // 任务控制
+  feedBackController: feedBackController, // 任务评论控制
 }

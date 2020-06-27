@@ -274,6 +274,41 @@
           <a-input-number :min="0" :max="Infinity" v-model="cashUpperBound"
                           @blur="onChange('cashLowerBound','cashUpperBound')"/>
         </a-form-item>
+        <a-form-item
+                :label-col="formItemLayout.labelCol"
+                :wrapper-col="formItemLayout.wrapperCol"
+                label="是否EPC项目"
+        >
+          <a-select
+                  :allowClear="true"
+                  v-model="isEPC"
+                  placeholder="是否EPC项目"
+          >
+            <a-select-option value="true">
+              是
+            </a-select-option>
+            <a-select-option value="false">
+              否
+            </a-select-option>
+          </a-select>
+        </a-form-item>
+        <a-form-item
+                :label-col="formItemLayout.labelCol"
+                :wrapper-col="formItemLayout.wrapperCol"
+                label="项目类型"
+        >
+          <a-select
+                  :allowClear="true"
+                  v-model="projectCategory"
+                  placeholder="请选择项目类型"
+          >
+            <template v-for="item in this.projectCategoryList">
+              <a-select-option :key="item.categoryId" :value="item.categoryId">
+                {{item.categoryName}}
+              </a-select-option>
+            </template>
+          </a-select>
+        </a-form-item>
         <a-form-item :label-col="formTailLayout.labelCol" :wrapper-col="formTailLayout.wrapperCol">
           <a-button type="primary" @click="handleCashQuery(false)">
             查找
@@ -457,6 +492,9 @@
         queryCashDate: [], // 精确查询现金时间范围
         cashLowerBound: null, // 发票金额上限
         cashUpperBound: null, // 发票金额下限
+        isEPC: undefined, // 是否epc项目
+        projectCategoryList: [],
+        projectCategory: undefined, // 项目类别
       }
     },
     computed: {
@@ -471,6 +509,13 @@
         selectCashInfo: state => state.cashOperation.selectCashInfo,
       }),
     },
+    mounted() {
+      this.getCategoryList({
+        categoryType: 3
+      }).then(res => {
+        this.projectCategoryList = res && res.data.data;
+      });
+    },
     activated() {
       this.updateTableData();
     },
@@ -480,6 +525,7 @@
         getCashesByIdLike: 'cashOperation/getCashesByIdLike',
         receiptExport: 'receiptOperation/receiptExport',
         cashExport: 'cashOperation/cashExport',
+        getCategoryList: 'categoryOperation/getCategoryList', // 获取类型
       }),
       handleReceiptReset() {
         Object.assign(this, {

@@ -108,7 +108,7 @@
           <a-select
                   :allowClear="true"
                   v-model="isSign"
-                  placeholder="请选择发票类型"
+                  placeholder="请选择签约状态"
           >
             <a-select-option :value="0">
               已签

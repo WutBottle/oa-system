@@ -467,7 +467,6 @@
         editFormData: {}, // 编辑当前表单数据
         editSpinning: false, // 编辑发票提交按钮
         editInvoiceFileList: [], // 编辑发票文件
-
       }
     },
     activated() {
@@ -558,6 +557,15 @@
         this.editForm.resetFields();
         this.editInvoiceFileList = [];
         this.editInvoiceFileName = '';
+        if (selectInvoiceData.receiptFile) {
+          this.editInvoiceFileList.push({
+            uid: '-1',
+            name: selectInvoiceData.receiptFile.substring(selectInvoiceData.receiptFile.length - 9, selectInvoiceData.receiptFile.length),
+            status: 'done',
+            url: baseUrl.serverBaseController + selectInvoiceData.receiptFile,
+          });
+          this.editInvoiceFileName = selectInvoiceData.receiptFile;
+        }
         this.editFormData = JSON.parse(JSON.stringify(selectInvoiceData));
         this.editFormData.receiptDate = moment(this.editFormData.receiptDate);
         this.editVisible = true;
@@ -662,6 +670,7 @@
         const newFileList = this.editInvoiceFileList.slice();
         newFileList.splice(index, 1);
         this.editInvoiceFileList = newFileList;
+        this.editInvoiceFileName = '';
       },
       beforeEditInvoiceUpload(file) {
         this.editSpinning = true;
@@ -695,7 +704,7 @@
               const params = {
                 id: this.editFormData.id,
                 receiptId: values.receiptId,
-                receiptFile: this.editInvoiceFileName ? this.editInvoiceFileName : this.editFormData.receiptFile,
+                receiptFile: this.editInvoiceFileName,
                 receiptAmount: values.receiptAmount,
                 receiptClass: values.receiptClass,
                 receiptDate: values.receiptDate,

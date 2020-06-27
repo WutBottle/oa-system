@@ -525,6 +525,15 @@
         this.editForm.resetFields();
         this.editInvoiceFileList = [];
         this.editInvoiceFileName = '';
+        if (selectInvoiceData.receiptFile) {
+          this.editInvoiceFileList.push({
+            uid: '-1',
+            name: selectInvoiceData.receiptFile.substring(selectInvoiceData.receiptFile.length - 9, selectInvoiceData.receiptFile.length),
+            status: 'done',
+            url: baseUrl.serverBaseController + selectInvoiceData.receiptFile,
+          });
+          this.editInvoiceFileName = selectInvoiceData.receiptFile;
+        }
         this.editFormData = JSON.parse(JSON.stringify(selectInvoiceData));
         this.editFormData.receiptDate = moment(this.editFormData.receiptDate);
         this.editVisible = true;
@@ -636,6 +645,7 @@
         const newFileList = this.editInvoiceFileList.slice();
         newFileList.splice(index, 1);
         this.editInvoiceFileList = newFileList;
+        this.editInvoiceFileName = '';
       },
       beforeEditInvoiceUpload(file) {
         this.editSpinning = true;
@@ -671,7 +681,7 @@
             if (!err) {
               const params = {
                 receiptId: values.receiptId,
-                receiptFile: this.editInvoiceFileName ? this.editInvoiceFileName : this.editFormData.receiptFile,
+                receiptFile: this.editInvoiceFileName,
                 receiptAmount: values.receiptAmount,
                 receiptClass: values.receiptClass,
                 receiptDate: values.receiptDate,

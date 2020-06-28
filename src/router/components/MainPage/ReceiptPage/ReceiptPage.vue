@@ -624,13 +624,14 @@
         } else {
           actualDate = ['', '']
         }
-
         const params = {
           contractId: this.cashContractId,
           actualDate: actualDate,
           cashAmount: [this.cashLowerBound ? String(this.cashLowerBound) : '', this.cashUpperBound ? String(this.cashUpperBound) : ''],
           pageNum: this.cashListPaginationProps.current,
           pageLimit: this.cashListPaginationProps.pageSize === Infinity ? INFINITY : this.cashListPaginationProps.pageSize,
+          isEPC: this.isEPC,
+          projectCategory: this.projectCategory,
         };
         this.getCashesByIdLike(params).then((res) => {
           if (res && res.data.meta.success) {

@@ -42,6 +42,10 @@ const cashController = {
   getCashesByIdLike(params) {
     return axios.post(`${baseUrl.cashController}/getCashesByIdLike`, params);
   },
+  // 根据发票id获取对应现金列表
+  getCashesByReceiptId(params) {
+    return axios.post(`${baseUrl.cashController}/getCashesByReceiptId`, params);
+  },
 };
 
 export default cashController;

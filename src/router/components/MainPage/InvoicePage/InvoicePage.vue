@@ -94,7 +94,7 @@
               <div class="table-wrapper">
                 <a-table bordered :columns="columns" :dataSource="tableData"
                          :pagination="paginationProps"
-                         @change="handleTableChange" :scroll="{ x: 950, y: 450}">
+                         @change="handleTableChange" :scroll="{ x: 940, y: 450}">
                   <span slot="serial" slot-scope="text, record, index">
                   {{ index + 1 }}
                   </span>
@@ -112,6 +112,11 @@
                     <a-button :disabled="!text" type="primary" icon="eye"
                               @click="handleOpenFile(text)">
                       查看文件
+                    </a-button>
+                  </span>
+                  <span slot="cashList" slot-scope="text, record">
+                    <a-button type="primary" @click="openCashList(record)">
+                      现金列表
                     </a-button>
                   </span>
                   <span slot="receiptClass" slot-scope="text">{{text ? '增值税专用发票' : '增值税普通发票'}}</span>
@@ -358,6 +363,28 @@
         </a-form-item>
       </a-form>
     </a-drawer>
+    <a-modal
+            title="现金列表"
+            v-model="cashVisible"
+            width="600px"
+            :footer="null"
+    >
+      <a-spin :spinning="cashTableSpinning">
+        <a-table bordered :columns="cashColumns" :dataSource="cashTableData" :scroll="{ y: 500}">
+          <span slot="serial" slot-scope="text, record, index">
+            {{ index + 1 }}
+          </span>
+          <div slot="cashAmount" slot-scope="text" style="text-align: right;">
+            {{numToMoney(text)}}
+          </div>
+          <span slot="operation" slot-scope="text, record">
+            <a-popconfirm title="确定删除？" @confirm="handleCashDelete(record)" okText="确定" cancelText="取消">
+              <a>删除</a>
+            </a-popconfirm>
+          </span>
+        </a-table>
+      </a-spin>
+    </a-modal>
   </div>
 </template>
 
@@ -367,6 +394,7 @@
   import moment from 'moment'
   import CashReceiptInput from "../CashReceiptInput/CashReceiptInput";
   import baseUrl from '@/api/baseUrl';
+  import api from '@/api/apiSugar';
   import numToMoney from '@utils/numToMoney';
   import {INFINITY} from "@/store/mutation-types";
 
@@ -423,7 +451,7 @@
             sorter: (a, b) => new Date(a.receiptDate) - new Date(b.receiptDate),
           }, {
             title: '发票金额(元)',
-            width: 100,
+            width: 110,
             key: 'receiptAmount',
             dataIndex: 'receiptAmount',
             sorter: (a, b) => a.receiptAmount - b.receiptAmount,
@@ -436,13 +464,19 @@
             scopedSlots: {customRender: 'receiptClass'}
           }, {
             title: '发票文件',
-            width: 150,
+            width: 130,
             key: 'receiptFile',
             dataIndex: 'receiptFile',
             scopedSlots: {customRender: 'receiptFile'}
           }, {
+            title: '现金列表',
+            width: 100,
+            key: 'cashList',
+            dataIndex: 'cashList',
+            scopedSlots: {customRender: 'cashList'}
+          }, {
             title: '编辑发票',
-            width: 120,
+            width: 100,
             key: 'operation',
             scopedSlots: {customRender: 'operation'},
           }],
@@ -470,7 +504,38 @@
         receiptTotal: 0,
         contractId: '',
         designId: '',
-        contractName: ''
+        contractName: '',
+        cashVisible: false,
+        cashTableSpinning: false,
+        selectedReceiptId: '',
+        cashTableData: [],
+        cashColumns: [
+          {
+            title: '序号',
+            width: 70,
+            dataIndex: 'serial',
+            key: 'serial',
+            scopedSlots: {customRender: 'serial'}
+          }, {
+            title: '现金回款日期',
+            width: 150,
+            key: 'cashDate',
+            dataIndex: 'cashDate',
+            sorter: (a, b) => new Date(a.cashDate) - new Date(b.cashDate),
+          }, {
+            title: '现金回款金额',
+            width: 150,
+            key: 'cashAmount',
+            dataIndex: 'cashAmount',
+            sorter: (a, b) => a.cashAmount - b.cashAmount,
+            scopedSlots: {customRender: 'cashAmount'}
+          },  {
+            title: '编辑操作',
+            width: 120,
+            key: 'operation',
+            scopedSlots: {customRender: 'operation'},
+          }
+        ],
       }
     },
     activated() {
@@ -562,6 +627,7 @@
               this.receiptTotal += item.receiptAmount;
               return {
                 key: index,
+                id: item.id,
                 receiptId: item.receiptId,
                 receiptFile: item.receiptFile,
                 receiptAmount: item.receiptAmount,
@@ -724,7 +790,43 @@
             this.$message.error(res.data.meta.message)
           }
         })
-      }
+      },
+      getCashesByReceiptId() {
+        api.cashController.getCashesByReceiptId({
+          receiptId: this.selectedReceiptId
+        }).then(res => {
+            if (res && res.data) {
+              this.cashTableData = res.data.data.map((item, index) => {
+                return {
+                  key: index,
+                  cashId: item.cash.cashId,
+                  cashAmount: item.cash.cashAmount,
+                  cashDate: moment(item.cash.cashDate).format('YYYY-MM-DD'),
+                }
+              });
+              this.cashVisible = true;
+            } else {
+              this.$message.error('网络错误')
+            }
+        })
+
+      },
+      openCashList(data) {
+        this.selectedReceiptId = data.id;
+        this.getCashesByReceiptId();
+      },
+      handleCashDelete(data) {
+        api.cashController.deleteCash({
+          cashIds: [data.cashId]
+        }).then((res) => {
+          if (res && res.data.meta.success){
+            this.getCashesByReceiptId();
+            this.$message.success(res.data.data)
+          } else {
+            this.$message.error('网络错误')
+          }
+        })
+      },
     },
   }
 </script>

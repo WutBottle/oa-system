@@ -147,7 +147,7 @@
       </a-row>
     </div>
     <a-modal
-            title="新增发票信息"
+            title="新增现金信息"
             v-model="addVisible"
             @ok="submitForm"
             okText="提交"

@@ -215,7 +215,7 @@ const state = {
     },
     {
       title: '项目规模(平方米)',
-      width: 150,
+      width: 200,
       key: 'projectScale',
       dataIndex: 'projectScale',
       sort: 26,
@@ -239,7 +239,7 @@ const state = {
     },
     {
       title: '建筑一级分类',
-      width: 120,
+      width: 150,
       key: 'class1',
       dataIndex: 'class1',
       sort: 29,

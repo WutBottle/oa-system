@@ -23,6 +23,7 @@
         }
 
         .title-wrapper {
+          height: 40px;
           display: flex;
           justify-content: space-between;
           align-items: center;
@@ -31,6 +32,9 @@
 
           .title {
             flex: 1;
+            overflow:hidden;
+            text-overflow:ellipsis;
+            white-space:nowrap;
           }
 
           .status-wrapper {
@@ -39,6 +43,15 @@
         }
 
         .description-wrapper {
+          height: 160px;
+          .content {
+            display: -webkit-box;
+            -webkit-line-clamp: 5;/*规定超过两行的部分截断*/
+            -webkit-box-orient: vertical;
+            text-overflow: ellipsis; /*有些示例里需要定义该属性，实际可省略*/
+            overflow : hidden;
+            word-break: break-all;
+          }
           .ddl {
             text-align: right;
           }
@@ -128,15 +141,12 @@
                   <a-card-meta>
                     <template slot="title">
                       <div class="title-wrapper">
-                        <a-tooltip v-if="item.title.length > 15">
+                        <a-tooltip>
                           <template slot="title">
                             {{item.title}}
                           </template>
-                          <span class="title">{{item.title.substring(0, 15) + '...'}}</span>
+                          <span class="title">{{item.title}}</span>
                         </a-tooltip>
-                        <span class="title" v-else>
-                          {{item.title}}
-                        </span>
                         <div class="status-wrapper">
                           <a-divider type="vertical"/>
                           <a-popover title="执行人员">
@@ -155,23 +165,22 @@
                     </template>
                     <template slot="description">
                       <div class="description-wrapper">
-                        <a-tooltip v-if="item.content.length > 100">
+                        <a-tooltip>
                           <template slot="title">
                             {{item.content}}
                           </template>
-                          {{item.content.substring(0, 100) + '...'}}
+                          <span class="content">
+                            {{item.content}}
+                          </span>
                         </a-tooltip>
-                        <span v-else>
-                          {{item.content}}
-                        </span>
                         <div class="ddl">截止时间:{{item.targetDate}}</div>
+                        <div class="pdf-wrapper" v-if="item.pdfFile">
+                          <a @click="() => window.open(item.pdfFile, '_blank')">
+                            任务文件:{{item.pdfFile.substring(item.pdfFile.length - 10, item.pdfFile.length - 4) + '.' + item.pdfFile.split('.').reverse()[0]}}</a>
+                        </div>
                       </div>
                     </template>
                   </a-card-meta>
-                  <div class="pdf-wrapper" v-if="item.pdfFile">
-                    <a @click="() => window.open(item.pdfFile, '_blank')">
-                      任务文件:{{item.pdfFile.substring(item.pdfFile.length - 10, item.pdfFile.length - 4) + '.' + item.pdfFile.split('.').reverse()[0]}}</a>
-                  </div>
                 </a-card>
               </a-col>
             </a-row>

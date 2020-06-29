@@ -240,6 +240,12 @@
                     <!--                        <span>账户设置</span>-->
                     <!--                      </a>-->
                     <!--                    </a-menu-item>-->
+                    <a-menu-item key="2">
+                      <a @click="jumpToHelp">
+                        <a-icon type="question-circle" style="margin-right: 8px"/>
+                        <span>帮助</span>
+                      </a>
+                    </a-menu-item>
                     <a-menu-divider/>
                     <a-menu-item key="3">
                       <a @click="handleLogout">
@@ -454,6 +460,9 @@
           this.openKeys = latestOpenKey ? [latestOpenKey] : [];
         }
       },
+      jumpToHelp() {
+        this.$router.push('/main/help');
+      }
     }
   }
 </script>

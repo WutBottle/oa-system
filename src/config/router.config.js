@@ -20,6 +20,7 @@ const ProjectExportPage = r => require.ensure([], () => r(require('components/Ma
 const SubEntryPage = r => require.ensure([], () => r(require('components/MainPage/SubEntryPage/SubEntryPage')));
 const ApprovalManagement = r => require.ensure([], () => r(require('components/MainPage/ApprovalManagement/ApprovalManagement')));
 const OutContractReceipt = r => require.ensure([], () => r(require('components/MainPage/OutContractReceiptPage/OutContractReceiptPage')));
+const HelpPage = r => require.ensure([], () => r(require('components/HelpPage/HelpPage')));
 
 /**
  * 基础路由
@@ -193,6 +194,14 @@ export const constantRouterMap = [
           requireAuth: true,  // 添加该字段，表示进入这个路由是需要登录的
         },
       },
+      {
+        path: 'help',
+        name: 'help',
+        component: HelpPage,
+        meta: {
+          requireAuth: true,  // 添加该字段，表示进入这个路由是需要登录的
+        },
+      }
     ]
   }
 ];

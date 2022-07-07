@@ -17,7 +17,7 @@
     "echarts": "^4.6.0",
     "element-resize-detector": "^1.2.1",
     "js-md5": "^0.7.3",
-    "moment": "^2.24.0",
+    "moment": "^2.29.4",
     "nprogress": "^0.2.0",
     "qs.js": "^0.1.12",
     "vue": "^2.6.10",
